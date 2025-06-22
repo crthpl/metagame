@@ -1,5 +1,3 @@
-import { DISCORD_WEBHOOK_URL } from './env';
-
 interface DiscordWebhookPayload {
   content?: string;
   embeds?: Array<{
@@ -19,10 +17,11 @@ interface DiscordWebhookPayload {
 }
 
 export async function sendDiscordWebhook(
+  webhookUrl: string,
   payload: DiscordWebhookPayload
 ): Promise<boolean> {
   try {
-    const response = await fetch(DISCORD_WEBHOOK_URL, {
+    const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
