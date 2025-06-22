@@ -47,47 +47,83 @@ export function createTicketPurchaseEmbed(
   ticketType: string,
   price: number,
   paymentIntentId: string,
+  originalPrice?: number,
+  couponCode?: string,
   timestamp: string = new Date().toISOString()
 ) {
-  return {
-    title: '🎫 New Ticket Purchase!',
-    description: 'A new ticket has been purchased for MetaGame.',
-    color: 0x00ff00, // Green color
-    fields: [
+  const fields = [
+    {
+      name: '👤 Customer',
+      value: name,
+      inline: true,
+    },
+    {
+      name: '📧 Email',
+      value: email,
+      inline: true,
+    },
+    {
+      name: '🎟️ Ticket Type',
+      value: ticketType,
+      inline: true,
+    },
+  ];
+
+  // Show price information
+  if (originalPrice && originalPrice !== price && couponCode) {
+    // Coupon was applied
+    fields.push(
       {
-        name: '�� Customer',
-        value: name,
+        name: '💰 Original Price',
+        value: `$${originalPrice.toFixed(2)}`,
         inline: true,
       },
       {
-        name: '📧 Email',
-        value: email,
+        name: '🎫 Coupon Applied',
+        value: couponCode,
         inline: true,
       },
       {
-        name: '🎟️ Ticket Type',
-        value: ticketType,
-        inline: true,
-      },
-      {
-        name: '💰 Price',
+        name: '💳 Final Price',
         value: `$${price.toFixed(2)}`,
         inline: true,
-      },
-      {
-        name: '🆔 Payment ID',
-        value: paymentIntentId,
-        inline: true,
-      },
-      {
-        name: '⏰ Purchase Time',
-        value: new Date(timestamp).toLocaleString(),
-        inline: true,
-      },
-    ],
+      }
+    );
+  } else {
+    // No coupon applied
+    fields.push({
+      name: '💰 Price',
+      value: `$${price.toFixed(2)}`,
+      inline: true,
+    });
+  }
+
+  fields.push(
+    {
+      name: '🆔 Payment ID',
+      value: paymentIntentId,
+      inline: true,
+    },
+    {
+      name: '⏰ Purchase Time',
+      value: new Date(timestamp).toLocaleString(),
+      inline: true,
+    },
+    {
+      name: '📊 View in Airtable',
+      value: '[Click here to view tickets](https://airtable.com/appTvPARUssZp4qiB/shrqbCK5lYh0fJlyk)',
+      inline: false,
+    }
+  );
+
+  return {
+    title: '🎫 New Ticket Purchase!',
+    description: 'A new ticket has been purchased for Metagame.',
+    color: 0x00ff00, // Green color
+    fields,
     timestamp,
     footer: {
-      text: 'MetaGame Ticket System',
+      text: 'Metagame Ticket System',
     },
   };
 } 

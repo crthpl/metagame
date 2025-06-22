@@ -11,7 +11,7 @@ import { sendDiscordWebhook, createTicketPurchaseEmbed } from '../../lib/discord
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { paymentIntentId, name, email, ticketType, price } = body;
+    const { paymentIntentId, name, email, ticketType, price, originalPrice, couponCode } = body;
 
     // Validate required fields
     if (!paymentIntentId || !name || !email || !ticketType || !price) {
@@ -56,7 +56,9 @@ export const POST: APIRoute = async ({ request }) => {
         email,
         ticketType,
         price,
-        paymentIntentId
+        paymentIntentId,
+        originalPrice,
+        couponCode
       );
 
       // Send the notification asynchronously (don't wait for it to complete)
