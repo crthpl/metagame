@@ -32,8 +32,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [discordHandle, setDiscordHandle] = useState('');
   const [couponCode, setCouponCode] = useState('');
-  const [errors, setErrors] = useState<{ name?: string; email?: string; couponCode?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; discordHandle?: string; couponCode?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
@@ -47,7 +48,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
   const [finalPrice, setFinalPrice] = useState(ticketType.price);
 
   const validateForm = () => {
-    const newErrors: { name?: string; email?: string; couponCode?: string } = {};
+    const newErrors: { name?: string; email?: string; discordHandle?: string; couponCode?: string } = {};
 
     if (!name.trim()) {
       newErrors.name = 'Name is required';
@@ -57,6 +58,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Discord Handle validation (optional field, but if provided, should have basic format)
+    if (discordHandle.trim() && !/^[a-zA-Z0-9_#]+$/.test(discordHandle.trim())) {
+      newErrors.discordHandle = 'Discord handle can only contain letters, numbers, underscores, and #';
     }
 
     setErrors(newErrors);
@@ -150,6 +156,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
           ticketTypeId: ticketType.id,
           name,
           email,
+          discordHandle: discordHandle.trim() || undefined,
           couponCode: appliedCoupon?.code || '',
         }),
       });
@@ -210,8 +217,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
             paymentIntentId: intentId,
             name,
             email,
+            discordHandle: discordHandle.trim() || undefined,
             ticketType: ticketType.title,
-            price: ticketType.price,
+            price: finalPrice,
           }),
         });
 
@@ -273,9 +281,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
       <TicketFormFields
         name={name}
         email={email}
+        discordHandle={discordHandle}
         couponCode={couponCode}
         onNameChange={setName}
         onEmailChange={setEmail}
+        onDiscordHandleChange={setDiscordHandle}
         onCouponChange={setCouponCode}
         onApplyCoupon={handleApplyCoupon}
         errors={errors}

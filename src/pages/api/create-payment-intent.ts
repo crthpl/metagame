@@ -11,7 +11,7 @@ import { validateCoupon, applyCouponDiscount } from '../../lib/coupons';
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { ticketTypeId, name, email, couponCode } = body;
+    const { ticketTypeId, name, email, discordHandle, couponCode } = body;
 
     // Validate required fields
     if (!ticketTypeId || !name || !email) {
@@ -26,6 +26,14 @@ export const POST: APIRoute = async ({ request }) => {
     if (!emailRegex.test(email)) {
       return new Response(
         JSON.stringify({ error: 'Invalid email format' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate Discord Handle format if provided
+    if (discordHandle && !/^[a-zA-Z0-9_#]+$/.test(discordHandle.trim())) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid Discord handle format' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -61,6 +69,7 @@ export const POST: APIRoute = async ({ request }) => {
       ticketType: ticketType.title,
       customerName: name,
       customerEmail: email,
+      customerDiscordHandle: discordHandle,
       originalPrice: originalPriceInCents.toString(),
       couponCode: coupon?.code || '',
       discountAmount: coupon ? coupon.discountAmount.toString() : '0',
