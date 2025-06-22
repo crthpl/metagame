@@ -86,6 +86,31 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
         }),
       });
 
+      console.log('Coupon validation response status:', response.status);
+      console.log('Coupon validation response ok:', response.ok);
+
+      if (!response.ok) {
+        // Handle non-200 responses
+        const responseText = await response.text();
+        console.error('Coupon validation API error response:', responseText);
+        
+        let errorData: { error?: string } | null = null;
+        try {
+          errorData = JSON.parse(responseText);
+          console.error('Parsed coupon validation error data:', errorData);
+        } catch (e) {
+          console.error('Failed to parse coupon validation error response as JSON:', responseText);
+        }
+        
+        setErrors(prev => ({ 
+          ...prev, 
+          couponCode: errorData?.error || `API error (${response.status})` 
+        }));
+        setAppliedCoupon(null);
+        setFinalPrice(ticketType.price);
+        return;
+      }
+
       const data = await response.json();
       console.log('Coupon validation response:', data);
 
