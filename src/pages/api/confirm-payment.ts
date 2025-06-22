@@ -62,7 +62,7 @@ export const POST: APIRoute = async ({ request }) => {
       );
 
       // Send the notification asynchronously (don't wait for it to complete)
-      sendDiscordWebhook(discordWebhookUrl, {
+      sendDiscordWebhook({
         content: '🎉 **New ticket purchase!**',
         embeds: [embed],
       }).catch(error => {

@@ -11,6 +11,3 @@ export const SOCIAL_LINKS = {
     DISCORD: 'https://discord.gg/8pxvc9p4Ss',
     TWITTER: 'https://x.com/tradegal_'
 } as const;
-
-// Discord webhook for ticket purchase notifications
-export const DISCORD_WEBHOOK_URL = import.meta.env.DISCORD_WEBHOOK_URL;
