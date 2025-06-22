@@ -1,11 +1,5 @@
 import { COUPONS } from './env';
 
-console.log('COUPONS:', {
-  hasCOUPONS: !!COUPONS,
-  COUPONS_LENGTH: COUPONS?.length,
-  COUPONS_TOJSON: JSON.parse(COUPONS),
-});
-
 export interface Coupon {
   code: string;
   discountAmount: number; // in cents
@@ -15,11 +9,7 @@ export interface Coupon {
 
 // Get all coupons from environment
 const getAllCoupons = (): Record<string, Coupon> => {
-
   try {
-    console.log('COUPONS:', COUPONS);
-    console.log('COUPONS length:', COUPONS.length);
-    console.log('COUPONS toJSON:', JSON.parse(COUPONS));
     return JSON.parse(COUPONS);
   } catch (error) {
     console.error('Invalid coupons data:', error);

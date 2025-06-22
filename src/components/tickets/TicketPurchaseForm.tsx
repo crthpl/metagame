@@ -73,8 +73,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
     setErrors(prev => ({ ...prev, couponCode: undefined }));
 
     try {
-      console.log('Applying coupon:', couponCode.trim());
-      
       const response = await fetch('/api/validate-coupon', {
         method: 'POST',
         headers: {
@@ -86,20 +84,14 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
         }),
       });
 
-      console.log('Coupon validation response status:', response.status);
-      console.log('Coupon validation response ok:', response.ok);
-
       if (!response.ok) {
-        // Handle non-200 responses
         const responseText = await response.text();
-        console.error('Coupon validation API error response:', responseText);
         
         let errorData: { error?: string } | null = null;
         try {
           errorData = JSON.parse(responseText);
-          console.error('Parsed coupon validation error data:', errorData);
         } catch (e) {
-          console.error('Failed to parse coupon validation error response as JSON:', responseText);
+          // Ignore parsing errors
         }
         
         setErrors(prev => ({ 
@@ -112,10 +104,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
       }
 
       const data = await response.json();
-      console.log('Coupon validation response:', data);
 
       if (!data.valid) {
-        console.log('Coupon invalid:', data.error);
         setErrors(prev => ({ ...prev, couponCode: data.error || 'Invalid coupon code' }));
         setAppliedCoupon(null);
         setFinalPrice(ticketType.price);
@@ -123,13 +113,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
       }
 
       // Apply the coupon
-      console.log('Coupon valid, applying...');
       setAppliedCoupon(data.coupon);
       setFinalPrice(data.discountedPrice / 100);
       setCouponCode(''); // Clear the input field
       setErrors(prev => ({ ...prev, couponCode: undefined }));
     } catch (error) {
-      console.log('Error applying coupon:', error);
+      console.error('Error applying coupon:', error);
       setErrors(prev => ({ ...prev, couponCode: 'Failed to validate coupon' }));
     } finally {
       setIsApplyingCoupon(false);

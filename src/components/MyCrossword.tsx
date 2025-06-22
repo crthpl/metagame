@@ -506,7 +506,6 @@ export default function MyCrossword() {
 
   const fetchCouponInfo = async () => {
     try {
-      console.log('Fetching coupon info...');
       const response = await fetch('/api/get-coupon-display', {
         method: 'POST',
         headers: {
@@ -518,32 +517,14 @@ export default function MyCrossword() {
         }),
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-
       if (response.ok) {
         const data = await response.json();
-        console.log('Coupon data received:', data);
         setCouponInfo(data);
       } else {
-        // Handle non-200 responses
-        const responseText = await response.text();
-        console.error('API error response:', responseText);
-        
-        let errorData;
-        try {
-          errorData = JSON.parse(responseText);
-          console.error('Parsed error data:', errorData);
-        } catch (e) {
-          console.error('Failed to parse error response as JSON:', responseText);
-        }
-        
-        // You could set an error state here if you want to show it to the user
-        console.error(`API call failed with status ${response.status}:`, errorData || responseText);
+        console.error('Failed to fetch coupon info:', response.status);
       }
     } catch (error) {
       console.error('Failed to fetch coupon info:', error);
-      // You could set an error state here if you want to show it to the user
     }
   };
 
