@@ -49,26 +49,23 @@ export const POST: APIRoute = async ({ request }) => {
     const airtableResult = await createTicketRecord(airtableRecord);
 
     // Send Discord notification
-    const discordWebhookUrl = import.meta.env.DISCORD_WEBHOOK_URL;
-    if (discordWebhookUrl) {
-      const embed = createTicketPurchaseEmbed(
-        name,
-        email,
-        ticketType,
-        price,
-        paymentIntentId,
-        originalPrice,
-        couponCode
-      );
+    const embed = createTicketPurchaseEmbed(
+      name,
+      email,
+      ticketType,
+      price,
+      paymentIntentId,
+      originalPrice,
+      couponCode
+    );
 
-      // Send the notification asynchronously (don't wait for it to complete)
-      sendDiscordWebhook({
-        content: '🎉 **New ticket purchase!**',
-        embeds: [embed],
-      }).catch(error => {
-        console.error('Failed to send Discord notification:', error);
-      });
-    }
+    // Send the notification asynchronously (don't wait for it to complete)
+    sendDiscordWebhook({
+      content: '🎉 **New ticket purchase!**',
+      embeds: [embed],
+    }).catch(error => {
+      console.error('Failed to send Discord notification:', error);
+    });
 
     return new Response(
       JSON.stringify({
