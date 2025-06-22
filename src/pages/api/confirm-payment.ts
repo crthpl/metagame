@@ -7,7 +7,7 @@ import type { APIRoute } from 'astro';
 import { stripe } from '../../lib/stripe';
 import { createTicketRecord, formatAirtableRecord } from '../../lib/airtable';
 import { sendDiscordWebhook, createTicketPurchaseEmbed } from '../../lib/discord';
-import { DISCORD_WEBHOOK_URL } from '../../lib/env';
+import { DISCORD_WEBHOOK_URL } from '../../config';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
