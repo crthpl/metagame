@@ -1,5 +1,11 @@
 import { COUPONS } from './env';
 
+console.log('COUPONS:', {
+  hasCOUPONS: !!COUPONS,
+  COUPONS_LENGTH: COUPONS?.length,
+  COUPONS_TOJSON: JSON.parse(COUPONS),
+});
+
 export interface Coupon {
   code: string;
   discountAmount: number; // in cents
