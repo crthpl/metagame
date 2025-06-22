@@ -6,6 +6,7 @@ if (!process.env.ROLLUP_SKIP_NATIVE) {
 import type { APIRoute } from 'astro';
 import { stripe } from '../../lib/stripe';
 import { createTicketRecord, formatAirtableRecord } from '../../lib/airtable';
+import { sendDiscordWebhook, createTicketPurchaseEmbed } from '../../lib/discord';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -46,6 +47,26 @@ export const POST: APIRoute = async ({ request }) => {
     );
 
     const airtableResult = await createTicketRecord(airtableRecord);
+
+    // Send Discord notification
+    const discordWebhookUrl = import.meta.env.DISCORD_WEBHOOK_URL;
+    if (discordWebhookUrl) {
+      const embed = createTicketPurchaseEmbed(
+        name,
+        email,
+        ticketType,
+        price,
+        paymentIntentId
+      );
+
+      // Send the notification asynchronously (don't wait for it to complete)
+      sendDiscordWebhook(discordWebhookUrl, {
+        content: '🎉 **New ticket purchase!**',
+        embeds: [embed],
+      }).catch(error => {
+        console.error('Failed to send Discord notification:', error);
+      });
+    }
 
     return new Response(
       JSON.stringify({
