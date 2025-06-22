@@ -10,7 +10,7 @@ import { createTicketRecord, formatAirtableRecord } from '../../lib/airtable';
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { paymentIntentId, name, email, ticketType, price } = body;
+    const { paymentIntentId, name, email, discordHandle, ticketType, price } = body;
 
     // Validate required fields
     if (!paymentIntentId || !name || !email || !ticketType || !price) {
@@ -42,7 +42,8 @@ export const POST: APIRoute = async ({ request }) => {
       ticketType,
       price,
       paymentIntentId,
-      success
+      success,
+      discordHandle
     );
 
     const airtableResult = await createTicketRecord(airtableRecord);

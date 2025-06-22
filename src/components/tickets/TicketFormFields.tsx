@@ -3,12 +3,14 @@ import React from 'react';
 interface TicketFormFieldsProps {
   name: string;
   email: string;
+  discordHandle: string;
   couponCode: string;
   onNameChange: (name: string) => void;
   onEmailChange: (email: string) => void;
+  onDiscordHandleChange: (discordHandle: string) => void;
   onCouponChange: (coupon: string) => void;
   onApplyCoupon: () => void;
-  errors: { name?: string; email?: string; couponCode?: string };
+  errors: { name?: string; email?: string; discordHandle?: string; couponCode?: string };
   disabled?: boolean;
   isApplyingCoupon?: boolean;
 }
@@ -16,9 +18,11 @@ interface TicketFormFieldsProps {
 export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
   name,
   email,
+  discordHandle,
   couponCode,
   onNameChange,
   onEmailChange,
+  onDiscordHandleChange,
   onCouponChange,
   onApplyCoupon,
   errors,
@@ -64,6 +68,26 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
         />
         {errors.email && (
           <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="discordHandle" className="block text-sm font-medium text-gray-300 mb-2">
+          Discord Handle (Optional)
+        </label>
+        <input
+          type="text"
+          id="discordHandle"
+          value={discordHandle}
+          onChange={(e) => onDiscordHandleChange(e.target.value)}
+          disabled={disabled}
+          className={`w-full px-3 py-2 border rounded-md bg-gray-800 text-white border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
+            errors.discordHandle ? 'border-red-500' : ''
+          } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+          placeholder="Enter your Discord handle (e.g., username#1234)"
+        />
+        {errors.discordHandle && (
+          <p className="mt-1 text-sm text-red-400">{errors.discordHandle}</p>
         )}
       </div>
 

@@ -24,18 +24,23 @@ export const createTicketRecord = async (recordData: AirtableRecord) => {
     
     console.log('Table object created, attempting to create record...');
     
+    const fields: any = {
+      'Name': recordData.Name,
+      'Email': recordData.Email,
+      'Ticket Type': recordData['Ticket Type'],
+      'Price': recordData.Price,
+      'Stripe Payment ID': recordData['Stripe Payment ID'],
+      'Purchase Date': recordData['Purchase Date'],
+      'Status': recordData.Status,
+    };
+
+    // Only add Discord Handle if it's provided
+    if (recordData['Discord Handle']) {
+      fields['Discord Handle'] = recordData['Discord Handle'];
+    }
+    
     const record = await table.create([
-      {
-        fields: {
-          'Name': recordData.Name,
-          'Email': recordData.Email,
-          'Ticket Type': recordData['Ticket Type'],
-          'Price': recordData.Price,
-          'Stripe Payment ID': recordData['Stripe Payment ID'],
-          'Purchase Date': recordData['Purchase Date'],
-          'Status': recordData.Status,
-        },
-      },
+      { fields },
     ]);
 
     console.log('Airtable record created successfully:', record[0].id);
@@ -60,7 +65,8 @@ export const formatAirtableRecord = (
   ticketType: string,
   price: number,
   stripePaymentId: string,
-  success: boolean
+  success: boolean,
+  discordHandle?: string
 ): AirtableRecord => {
   // Format date for Airtable (YYYY-MM-DD format)
   const today = new Date();
@@ -69,6 +75,7 @@ export const formatAirtableRecord = (
   return {
     Name: name,
     Email: email,
+    'Discord Handle': discordHandle,
     'Ticket Type': ticketType,
     Price: price,
     'Stripe Payment ID': stripePaymentId,

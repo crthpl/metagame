@@ -11,6 +11,7 @@ export interface TicketType {
 export interface TicketPurchaseData {
   name: string;
   email: string;
+  discordHandle?: string;
   ticketType: string;
   price: number;
 }
@@ -24,6 +25,7 @@ export interface PaymentConfirmationData {
   paymentIntentId: string;
   name: string;
   email: string;
+  discordHandle?: string;
   ticketType: string;
   price: number;
   stripePaymentId: string;
@@ -33,6 +35,7 @@ export interface PaymentConfirmationData {
 export interface AirtableRecord {
   Name: string;
   Email: string;
+  'Discord Handle'?: string;
   'Ticket Type': string;
   Price: number;
   'Stripe Payment ID': string;
