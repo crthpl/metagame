@@ -1,9 +1,9 @@
 ---
 id: 4
-name: Jacob "Conflux" Cohen 
-image: /images/conflux_3.jpg
-gameName: "Puzzles for Progress"
-gameUrl: "https://www.puzzlesforprogress.net/"
+name: Nolen Royalty
+image: /images/nolen_royalty.jpg
+gameName: "eieio games"
+gameUrl: "https://eieio.games/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

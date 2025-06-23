@@ -9,10 +9,12 @@ interface Props {
   image?: string;
   gameName: string;
   gameUrl: string;
+  gameName2?: string;
+  gameUrl2?: string;
   slug?: string;
 }
 
-const { name, image, gameName, gameUrl, slug } = Astro.props;
+const { name, image, gameName, gameUrl, gameName2, gameUrl2, slug } = Astro.props;
 // We don't need the image metadata loader anymore
 // const images = import.meta.glob<{ default: ImageMetadata }>(
 //   "/public/assets*.{jpeg,jpg,png,gif,svg,webp}"
@@ -31,7 +33,7 @@ const { name, image, gameName, gameUrl, slug } = Astro.props;
     width="160"
     transition:name={slug && `${slug}-image`}
   />
-  <div class="flex-grow">
+  <div class="flex-grow mx-1">
     <h3
       class:list={[
         "font-bold",
@@ -45,7 +47,7 @@ const { name, image, gameName, gameUrl, slug } = Astro.props;
       href={gameName === "METAGAME" ? `/?metagame=true#speakers` : gameUrl} 
       target="_blank" 
       rel="noopener noreferrer" 
-      class="text-secondary-200 text-sm font-semibold hover:text-secondary-300 inline-flex items-center gap-1"
+      class="text-secondary-200 text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1 mt-1"
     >
       {gameName}
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5">
@@ -54,5 +56,20 @@ const { name, image, gameName, gameUrl, slug } = Astro.props;
         <line x1="10" y1="14" x2="21" y2="3"></line>
       </svg>
     </a>
+    {gameName2 && gameUrl2 && (
+      <a 
+        href={gameName2 === "METAGAME" ? `/?metagame=true#speakers` : gameUrl2} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="text-secondary-200 text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1 mb-1"
+      >
+        {gameName2}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </a>
+    )}
   </div>
 </Card>
