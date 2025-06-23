@@ -1,10 +1,10 @@
 ---
-id: 1
-name: "Patrick McKenzie"
-image: "/images/patio11.jpg"
-gameName: "Starfighter"
-gameUrl: "https://www.kalzumeus.com/2015/03/09/announcing-starfighter/"
-title: lorem ipsum
+id: 5
+name: Nolen Royalty
+image: /images/nolen_royalty.jpg
+gameName: "eieio games"
+gameUrl: "https://eieio.games/"
+title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.

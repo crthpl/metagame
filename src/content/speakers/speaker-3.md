@@ -1,9 +1,11 @@
 ---
 id: 3
-name: Nolen Royalty
-image: /images/nolen_royalty.jpg
-gameName: "eieio games"
-gameUrl: "https://eieio.games/"
+name: "Frank Lantz"
+image: "/images/frank.jpg"
+gameName: "Universal Paperclips"
+gameUrl: "https://decisionproblem.com/paperclips/"
+gameName2: "franklantz.net"
+gameUrl2: "https://franklantz.net"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 
