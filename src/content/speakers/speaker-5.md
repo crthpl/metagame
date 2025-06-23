@@ -1,9 +1,9 @@
 ---
 id: 5
-name: "Uri Bram"
-image: "/images/uri_bram.jpg"
-gameName: "Person Do Thing"
-gameUrl: "https://persondothing.com/"
+name: Nolen Royalty
+image: /images/nolen_royalty.jpg
+gameName: "eieio games"
+gameUrl: "https://eieio.games/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 
