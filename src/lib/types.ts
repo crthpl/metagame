@@ -41,4 +41,5 @@ export interface AirtableRecord {
   'Stripe Payment ID': string;
   'Purchase Date': string;
   Status: 'Success' | 'Failed';
+  'Stripe Fee'?: number;
 } 

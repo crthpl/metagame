@@ -38,6 +38,11 @@ export const createTicketRecord = async (recordData: AirtableRecord) => {
     if (recordData['Discord Handle']) {
       fields['Discord Handle'] = recordData['Discord Handle'];
     }
+
+    // Only add Stripe Fee if it's provided
+    if (recordData['Stripe Fee'] !== undefined) {
+      fields['Stripe Fee'] = recordData['Stripe Fee'];
+    }
     
     const record = await table.create([
       { fields },
@@ -66,7 +71,8 @@ export const formatAirtableRecord = (
   price: number,
   stripePaymentId: string,
   success: boolean,
-  discordHandle?: string
+  discordHandle?: string,
+  stripeFee?: number
 ): AirtableRecord => {
   // Format date for Airtable (YYYY-MM-DD format)
   const today = new Date();
@@ -81,5 +87,6 @@ export const formatAirtableRecord = (
     'Stripe Payment ID': stripePaymentId,
     'Purchase Date': formattedDate,
     Status: success ? 'Success' : 'Failed',
+    'Stripe Fee': stripeFee,
   };
 }; 

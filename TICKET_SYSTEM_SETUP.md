@@ -66,6 +66,8 @@ pnpm install
    - Stripe Payment ID (Single line text)
    - Purchase Date (Date)
    - Status (Single select: Success, Failed)
+   - Stripe Fee (Number) - *Automatically populated with processing fee*
+   - Discord Handle (Single line text) - *Optional field*
 3. **Create a Personal Access Token (PAT):**
    - Go to https://airtable.com/create/tokens
    - Click "Create new token"

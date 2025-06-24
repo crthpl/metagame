@@ -1,14 +1,14 @@
 // Environment variable loader for Astro
-// import { loadEnv } from 'vite';
+import { loadEnv } from 'vite';
 
-// // Load environment variables for local development
-// const env = process.env.NODE_ENV === 'development' 
-//   ? loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '')
-//   : {};
+// Load environment variables for local development
+const env = process.env.NODE_ENV === 'development' 
+  ? loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '')
+  : {};
 
 export const getEnvVar = (key: string): string => {
   // Try local env first (from loadEnv), then process.env
-  const value = process.env[key]; // const value = env[key] || process.env[key];
+  const value = env[key] || process.env[key];
 
   if (!value) {
     console.error(`Environment variable ${key} is not set`);
