@@ -11,7 +11,7 @@ import { validateCoupon, applyCouponDiscount } from '../../lib/coupons';
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { ticketTypeId, name, email, discordHandle, couponCode } = body;
+    const { ticketTypeId, name, email, discordHandle, volunteerRoles, couponCode } = body;
 
     // Validate required fields
     if (!ticketTypeId || !name || !email) {
@@ -70,6 +70,7 @@ export const POST: APIRoute = async ({ request }) => {
       customerName: name,
       customerEmail: email,
       customerDiscordHandle: discordHandle,
+      volunteerRoles: volunteerRoles ? JSON.stringify(volunteerRoles) : '',
       originalPrice: originalPriceInCents.toString(),
       couponCode: coupon?.code || '',
       discountAmount: coupon ? coupon.discountAmount.toString() : '0',

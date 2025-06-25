@@ -2,13 +2,13 @@ import Airtable from 'airtable';
 import type { AirtableRecord } from './types';
 import { AIRTABLE_PAT, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME } from './env';
 
-console.log('Airtable configuration:', {
-  hasPat: !!AIRTABLE_PAT,
-  patLength: AIRTABLE_PAT?.length,
-  hasBaseId: !!AIRTABLE_BASE_ID,
-  hasTableName: !!AIRTABLE_TABLE_NAME,
-  tableName: AIRTABLE_TABLE_NAME
-});
+// console.log('Airtable configuration:', {
+//   hasPat: !!AIRTABLE_PAT,
+//   patLength: AIRTABLE_PAT?.length,
+//   hasBaseId: !!AIRTABLE_BASE_ID,
+//   hasTableName: !!AIRTABLE_TABLE_NAME,
+//   tableName: AIRTABLE_TABLE_NAME
+// });
 
 // Initialize Airtable with Personal Access Token (PAT)
 const base = new Airtable({
@@ -17,12 +17,13 @@ const base = new Airtable({
 
 export const createTicketRecord = async (recordData: AirtableRecord) => {
   try {
-    console.log('Creating Airtable record with data:', recordData);
-    console.log('Using table:', AIRTABLE_TABLE_NAME);
+    // console.log('Creating Airtable record with data:', recordData);
+    // console.log('Volunteer Roles being sent:', recordData['Volunteer Roles']);
+    // console.log('Using table:', AIRTABLE_TABLE_NAME);
     
     const table = base(AIRTABLE_TABLE_NAME);
     
-    console.log('Table object created, attempting to create record...');
+    // console.log('Table object created, attempting to create record...');
     
     const fields: any = {
       'Name': recordData.Name,
@@ -43,12 +44,22 @@ export const createTicketRecord = async (recordData: AirtableRecord) => {
     if (recordData['Stripe Fee'] !== undefined) {
       fields['Stripe Fee'] = recordData['Stripe Fee'];
     }
+
+    // Only add Volunteer Roles if it's provided
+    if (recordData['Volunteer Roles'] && recordData['Volunteer Roles'].length > 0) {
+      fields['Volunteer Roles'] = recordData['Volunteer Roles'];
+      // console.log('Adding Volunteer Roles to fields:', fields['Volunteer Roles']);
+    } else {
+      // console.log('No Volunteer Roles to add');
+    }
+    
+    // console.log('Final fields being sent to Airtable:', fields);
     
     const record = await table.create([
       { fields },
     ]);
 
-    console.log('Airtable record created successfully:', record[0].id);
+    // console.log('Airtable record created successfully:', record[0].id);
     return {
       success: true,
       recordId: record[0].id,
@@ -72,7 +83,8 @@ export const formatAirtableRecord = (
   stripePaymentId: string,
   success: boolean,
   discordHandle?: string,
-  stripeFee?: number
+  stripeFee?: number,
+  volunteerRoles?: string[]
 ): AirtableRecord => {
   // Format date for Airtable (YYYY-MM-DD format)
   const today = new Date();
@@ -88,5 +100,6 @@ export const formatAirtableRecord = (
     'Purchase Date': formattedDate,
     Status: success ? 'Success' : 'Failed',
     'Stripe Fee': stripeFee,
+    'Volunteer Roles': volunteerRoles,
   };
 }; 
