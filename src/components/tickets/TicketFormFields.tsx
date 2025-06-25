@@ -151,7 +151,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
                   <span className="text-sm text-gray-300 font-medium">{role}</span>
                   {VOLUNTEER_ROLE_DESCRIPTIONS[role] && (
                     <span className="text-xs text-gray-500 ml-2">
-                      — {VOLUNTEER_ROLE_DESCRIPTIONS[role]}
+                      {VOLUNTEER_ROLE_DESCRIPTIONS[role]}
                     </span>
                   )}
                 </div>
