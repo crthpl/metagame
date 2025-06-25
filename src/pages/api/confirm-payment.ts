@@ -12,8 +12,8 @@ export const POST: APIRoute = async ({ request }) => {
     const body = await request.json();
     const { paymentIntentId, name, email, discordHandle, ticketType, price, volunteerRoles } = body;
 
-    console.log('confirm-payment received body:', body);
-    console.log('volunteerRoles from request:', volunteerRoles);
+      // console.log('confirm-payment received body:', body);
+      // console.log('volunteerRoles from request:', volunteerRoles);
 
     // Validate required fields
     if (!paymentIntentId || !name || !email || !ticketType || !price) {
@@ -40,13 +40,13 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Debug logging to see what Stripe returns
-    console.log('Payment Intent retrieved:', {
-      id: paymentIntent.id,
-      amount: paymentIntent.amount,
-      status: paymentIntent.status,
-      charges: (paymentIntent as any).charges
-    });
+    // // Debug logging to see what Stripe returns
+    // console.log('Payment Intent retrieved:', {
+    //   id: paymentIntent.id,
+    //   amount: paymentIntent.amount,
+    //   status: paymentIntent.status,
+    //   charges: (paymentIntent as any).charges
+    // });
 
     // Get the Stripe processing fee from the payment intent
     // The fee is available in the 'charges' array, specifically the 'fee' field
@@ -54,22 +54,22 @@ export const POST: APIRoute = async ({ request }) => {
     const expandedPaymentIntent = paymentIntent as any; // Type assertion to access expanded data
     if (expandedPaymentIntent.charges && expandedPaymentIntent.charges.data.length > 0) {
       const charge = expandedPaymentIntent.charges.data[0];
-      console.log('First charge data:', {
-        id: charge.id,
-        fee: charge.fee,
-        fee_details: charge.fee_details,
-        amount: charge.amount,
-        currency: charge.currency
-      });
+      // console.log('First charge data:', {
+      //   id: charge.id,
+      //   fee: charge.fee,
+      //   fee_details: charge.fee_details,
+      //   amount: charge.amount,
+      //   currency: charge.currency
+      // });
       if (charge.fee) {
         // Convert from cents to dollars
         stripeFee = charge.fee / 100;
-        console.log('Stripe fee calculated:', stripeFee);
+        // console.log('Stripe fee calculated:', stripeFee);
       } else {
-        console.log('No fee found in charge');
+        // console.log('No fee found in charge');
       }
     } else {
-      console.log('No charges found in payment intent');
+      // console.log('No charges found in payment intent');
     }
 
     // Alternative approach: Try to get the charge directly if not found in payment intent
@@ -83,18 +83,18 @@ export const POST: APIRoute = async ({ request }) => {
         
         if (charges.data.length > 0) {
           const charge = charges.data[0] as any; // Type assertion to access fee properties
-          console.log('Retrieved charge directly:', {
-            id: charge.id,
-            fee: charge.fee,
-            fee_details: charge.fee_details
-          });
+          // console.log('Retrieved charge directly:', {
+          //   id: charge.id,
+          //   fee: charge.fee,
+          //   fee_details: charge.fee_details
+          // });
           if (charge.fee) {
             stripeFee = charge.fee / 100;
-            console.log('Stripe fee from direct charge retrieval:', stripeFee);
+            // console.log('Stripe fee from direct charge retrieval:', stripeFee);
           }
         }
       } catch (error) {
-        console.log('Error retrieving charge directly:', error);
+        // console.log('Error retrieving charge directly:', error);
       }
     }
 
@@ -104,7 +104,7 @@ export const POST: APIRoute = async ({ request }) => {
       const amountInDollars = paymentIntent.amount / 100;
       // Calculate 2.9% + $0.30
       stripeFee = (amountInDollars * 0.029) + 0.30;
-      console.log('Fallback fee calculated:', stripeFee);
+      // console.log('Fallback fee calculated:', stripeFee);
     }
 
     // Create Airtable record
@@ -120,7 +120,7 @@ export const POST: APIRoute = async ({ request }) => {
       volunteerRoles
     );
 
-    console.log('Airtable record being created:', airtableRecord);
+    // console.log('Airtable record being created:', airtableRecord);
 
     const airtableResult = await createTicketRecord(airtableRecord);
 
