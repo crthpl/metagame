@@ -27,12 +27,8 @@ interface PaymentFormProps {
 }
 
 const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSuccess }) => {
-  console.log('PaymentForm render:', { ticketType });
-  
   const stripe = useStripe();
   const elements = useElements();
-  
-  console.log('Stripe elements:', { stripe: !!stripe, elements: !!elements });
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -51,15 +47,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
     description: string;
   } | null>(null);
   const [finalPrice, setFinalPrice] = useState(ticketType.price);
-
-  console.log('PaymentForm state:', { 
-    name, 
-    email, 
-    volunteerRoles, 
-    isLoading, 
-    finalPrice,
-    isNpcTicket: ticketType.id === 'npc'
-  });
 
   const validateForm = () => {
     const newErrors: { name?: string; email?: string; discordHandle?: string; couponCode?: string; volunteerRoles?: string } = {};
@@ -286,12 +273,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
 
   return (
     <div className="space-y-6">
-      <div style={{ border: '2px solid blue', padding: '10px', margin: '10px 0' }}>
-        <p>DEBUG: PaymentForm rendering</p>
-        <p>Ticket type: {ticketType.title}</p>
-        <p>Is NPC: {ticketType.id === 'npc' ? 'Yes' : 'No'}</p>
-      </div>
-
       <TicketFormFields
         name={name}
         email={email}
@@ -335,7 +316,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
               </button>
             </div>
             <span className="text-green-300 text-sm">
-              -${Math.min(appliedCoupon.discountAmount / 100, ticketType.price - .5).toFixed(2)}
+              -${Math.min(appliedCoupon.discountAmount / 100, ticketType.price).toFixed(2)}
             </span>
           </div>
 
@@ -414,8 +395,6 @@ export const TicketPurchaseForm: React.FC<TicketPurchaseFormProps> = ({
   onClose,
   onSuccess,
 }) => {
-  console.log('TicketPurchaseForm wrapper render:', { ticketType });
-  
   return (
     <Elements stripe={stripePromise}>
       <PaymentForm
