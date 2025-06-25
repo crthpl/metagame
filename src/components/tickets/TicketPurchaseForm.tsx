@@ -296,6 +296,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
         name={name}
         email={email}
         discordHandle={discordHandle}
+        couponCode={couponCode}
         volunteerRoles={volunteerRoles}
         isNpcTicket={ticketType.id === 'npc'}
         onNameChange={setName}
