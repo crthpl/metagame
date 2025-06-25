@@ -5,32 +5,87 @@ interface TicketFormFieldsProps {
   email: string;
   discordHandle: string;
   couponCode: string;
+  volunteerRoles: string[];
+  isNpcTicket: boolean;
   onNameChange: (name: string) => void;
   onEmailChange: (email: string) => void;
   onDiscordHandleChange: (discordHandle: string) => void;
   onCouponChange: (coupon: string) => void;
+  onVolunteerRolesChange: (roles: string[]) => void;
   onApplyCoupon: () => void;
-  errors: { name?: string; email?: string; discordHandle?: string; couponCode?: string };
+  errors: { name?: string; email?: string; discordHandle?: string; couponCode?: string; volunteerRoles?: string };
   disabled?: boolean;
   isApplyingCoupon?: boolean;
 }
+
+// Updated volunteer role options to be shorter
+const VOLUNTEER_ROLE_OPTIONS = [
+  'Standard conference labor',
+  'Game development',
+  'Tech support',
+  'Physical labor',
+  'Childcare',
+  'Pre-conference quests',
+  'Indifferent'
+];
+
+// Descriptions for each role
+const VOLUNTEER_ROLE_DESCRIPTIONS: Record<string, string> = {
+  'Standard conference labor': 'Registration desk staffing, room setup, general event support',
+  'Game development': 'Running the megagame (judging tournaments, litigating disputes, transferring points between teams, etc.)',
+  'Tech support': 'Helping with technical issues, equipment setup, and troubleshooting',
+  'Physical labor': 'Moving equipment, setting up rooms, general physical tasks',
+  'Childcare': 'Helping our childcare lead take care of kids ages 0-12',
+  'Pre-conference quests': 'We\'ll post our quests on Discord, and you can snag them to fulfill your shifts',
+  'Indifferent': 'Slot me in anywhere, coach!'
+};
 
 export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
   name,
   email,
   discordHandle,
   couponCode,
+  volunteerRoles,
+  isNpcTicket,
   onNameChange,
   onEmailChange,
   onDiscordHandleChange,
   onCouponChange,
+  onVolunteerRolesChange,
   onApplyCoupon,
   errors,
   disabled = false,
   isApplyingCoupon = false,
 }) => {
+  console.log('TicketFormFields render:', { 
+    name, 
+    email, 
+    volunteerRoles, 
+    isNpcTicket, 
+    disabled,
+    errors 
+  });
+
+  const handleVolunteerRoleToggle = (role: string) => {
+    console.log('Toggling volunteer role:', role);
+    const newRoles = volunteerRoles.includes(role)
+      ? volunteerRoles.filter(r => r !== role)
+      : [...volunteerRoles, role];
+    console.log('New volunteer roles:', newRoles);
+    onVolunteerRolesChange(newRoles);
+  };
+
+  // Ensure couponCode is always a string
+  const safeCouponCode = couponCode || '';
+
   return (
     <div className="space-y-4">
+      <div style={{ border: '2px solid green', padding: '10px', margin: '10px 0' }}>
+        <p>DEBUG: TicketFormFields rendering</p>
+        <p>Is NPC ticket: {isNpcTicket ? 'Yes' : 'No'}</p>
+        <p>Volunteer roles count: {volunteerRoles.length}</p>
+      </div>
+
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
           Full Name *
@@ -91,6 +146,41 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
         )}
       </div>
 
+      {isNpcTicket && (
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Volunteer Role Preferences
+          </label>
+          <p className="text-sm text-gray-400 mb-3">
+            We can't guarantee you'll be assigned to the role of your choice, but we'll do our best to accommodate preferences
+          </p>
+          <div className="space-y-2">
+            {VOLUNTEER_ROLE_OPTIONS.map((role) => (
+              <label key={role} className="flex items-start space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={volunteerRoles.includes(role)}
+                  onChange={() => handleVolunteerRoleToggle(role)}
+                  disabled={disabled}
+                  className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-600 rounded bg-gray-800 disabled:opacity-50"
+                />
+                <div className="flex-1">
+                  <span className="text-sm text-gray-300 font-medium">{role}</span>
+                  {VOLUNTEER_ROLE_DESCRIPTIONS[role] && (
+                    <span className="text-xs text-gray-500 ml-2">
+                      {VOLUNTEER_ROLE_DESCRIPTIONS[role]}
+                    </span>
+                  )}
+                </div>
+              </label>
+            ))}
+          </div>
+          {errors.volunteerRoles && (
+            <p className="mt-1 text-sm text-red-400">{errors.volunteerRoles}</p>
+          )}
+        </div>
+      )}
+
       <div>
         <label htmlFor="couponCode" className="block text-sm font-medium text-gray-300 mb-2">
           Coupon Code (Optional)
@@ -99,7 +189,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
           <input
             type="text"
             id="couponCode"
-            value={couponCode}
+            value={safeCouponCode}
             onChange={(e) => onCouponChange(e.target.value.toUpperCase())}
             disabled={disabled || isApplyingCoupon}
             className={`flex-1 px-3 py-2 border rounded-md bg-gray-800 text-white border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
@@ -110,7 +200,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
           <button
             type="button"
             onClick={onApplyCoupon}
-            disabled={disabled || isApplyingCoupon || !couponCode.trim()}
+            disabled={disabled || isApplyingCoupon || !safeCouponCode.trim()}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {isApplyingCoupon ? 'Applying...' : 'Apply'}

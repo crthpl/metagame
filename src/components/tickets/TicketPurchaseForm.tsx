@@ -27,14 +27,19 @@ interface PaymentFormProps {
 }
 
 const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSuccess }) => {
+  console.log('PaymentForm render:', { ticketType });
+  
   const stripe = useStripe();
   const elements = useElements();
+  
+  console.log('Stripe elements:', { stripe: !!stripe, elements: !!elements });
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [discordHandle, setDiscordHandle] = useState('');
+  const [volunteerRoles, setVolunteerRoles] = useState<string[]>([]);
   const [couponCode, setCouponCode] = useState('');
-  const [errors, setErrors] = useState<{ name?: string; email?: string; discordHandle?: string; couponCode?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; discordHandle?: string; couponCode?: string; volunteerRoles?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
@@ -47,8 +52,17 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
   } | null>(null);
   const [finalPrice, setFinalPrice] = useState(ticketType.price);
 
+  console.log('PaymentForm state:', { 
+    name, 
+    email, 
+    volunteerRoles, 
+    isLoading, 
+    finalPrice,
+    isNpcTicket: ticketType.id === 'npc'
+  });
+
   const validateForm = () => {
-    const newErrors: { name?: string; email?: string; discordHandle?: string; couponCode?: string } = {};
+    const newErrors: { name?: string; email?: string; discordHandle?: string; couponCode?: string; volunteerRoles?: string } = {};
 
     if (!name.trim()) {
       newErrors.name = 'Name is required';
@@ -157,6 +171,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
           name,
           email,
           discordHandle: discordHandle.trim() || undefined,
+          volunteerRoles: ticketType.id === 'npc' ? volunteerRoles : undefined,
           couponCode: appliedCoupon?.code || '',
         }),
       });
@@ -220,6 +235,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
             discordHandle: discordHandle.trim() || undefined,
             ticketType: ticketType.title,
             price: finalPrice,
+            volunteerRoles: ticketType.id === 'npc' ? volunteerRoles : undefined,
           }),
         });
 
@@ -270,22 +286,22 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
 
   return (
     <div className="space-y-6">
-      {/* <div className="bg-gray-800 p-4 rounded-lg">
-        <h3 className="text-lg font-semibold text-white mb-2">Purchase Details</h3>
-        <p className="text-gray-300 mb-4">
-          {ticketType.title} - ${ticketType.price}
-        </p>
-        <p className="text-sm text-gray-400">{ticketType.description}</p>
-      </div> */}
+      <div style={{ border: '2px solid blue', padding: '10px', margin: '10px 0' }}>
+        <p>DEBUG: PaymentForm rendering</p>
+        <p>Ticket type: {ticketType.title}</p>
+        <p>Is NPC: {ticketType.id === 'npc' ? 'Yes' : 'No'}</p>
+      </div>
 
       <TicketFormFields
         name={name}
         email={email}
         discordHandle={discordHandle}
-        couponCode={couponCode}
+        volunteerRoles={volunteerRoles}
+        isNpcTicket={ticketType.id === 'npc'}
         onNameChange={setName}
         onEmailChange={setEmail}
         onDiscordHandleChange={setDiscordHandle}
+        onVolunteerRolesChange={setVolunteerRoles}
         onCouponChange={setCouponCode}
         onApplyCoupon={handleApplyCoupon}
         errors={errors}
@@ -397,6 +413,8 @@ export const TicketPurchaseForm: React.FC<TicketPurchaseFormProps> = ({
   onClose,
   onSuccess,
 }) => {
+  console.log('TicketPurchaseForm wrapper render:', { ticketType });
+  
   return (
     <Elements stripe={stripePromise}>
       <PaymentForm

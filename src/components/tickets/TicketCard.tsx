@@ -67,15 +67,21 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     return <div>Invalid ticket type</div>;
   }
 
-  // Map ticketTypeId to Stripe URL
+  // Map ticketTypeId to Stripe URL - only for specific ticket types that should redirect
   const ticketUrl =
     ticketTypeId === 'early_bird' ? TICKET_EARLY_BIRD_URL :
-    ticketTypeId === 'volunteer' ? TICKET_VOLUNTEER_URL :
     ticketTypeId === 'supporter' ? TICKET_SUPPORTER_URL :
     ticketTypeId === 'regular' ? TICKET_REGULAR_URL :
     '';
 
   const handleBuyNow = () => {
+    // If there's a specific URL for this ticket type, redirect to it
+    if (ticketUrl) {
+      window.open(ticketUrl, '_blank');
+      return;
+    }
+    
+    // Otherwise, show the purchase form
     setIsExpanded(true);
     setShowPurchaseForm(true);
   };
@@ -100,15 +106,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       isExpanded ? 'md:col-span-3' : ''
     }`}>
       <div className="card rounded-md border-amber-400 border-2 transition-all text-center flex flex-col p-6 h-full">
-        {/* Discount Badge
-        {ticketType.regularPrice && discountPercentage > 0 && (
-          <div className="absolute right-[-38px] h-10 w-[164px] border-b-2 rotate-45 transition-all border-amber-400 group-hover:border-fuchsia-400 motion-reduce:animate-pulse">
-            <div className="mb-8 text-3xl text-secondary-300 font-bold animate-pulse">
-              -{discountPercentage}%
-            </div>
-          </div>
-        )} */}
-
         {/* Ticket Header */}
         <div className="flex-grow flex flex-col">
           <div>

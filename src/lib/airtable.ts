@@ -18,6 +18,7 @@ const base = new Airtable({
 export const createTicketRecord = async (recordData: AirtableRecord) => {
   try {
     console.log('Creating Airtable record with data:', recordData);
+    console.log('Volunteer Roles being sent:', recordData['Volunteer Roles']);
     console.log('Using table:', AIRTABLE_TABLE_NAME);
     
     const table = base(AIRTABLE_TABLE_NAME);
@@ -43,6 +44,16 @@ export const createTicketRecord = async (recordData: AirtableRecord) => {
     if (recordData['Stripe Fee'] !== undefined) {
       fields['Stripe Fee'] = recordData['Stripe Fee'];
     }
+
+    // Only add Volunteer Roles if it's provided
+    if (recordData['Volunteer Roles'] && recordData['Volunteer Roles'].length > 0) {
+      fields['Volunteer Roles'] = recordData['Volunteer Roles'];
+      console.log('Adding Volunteer Roles to fields:', fields['Volunteer Roles']);
+    } else {
+      console.log('No Volunteer Roles to add');
+    }
+    
+    console.log('Final fields being sent to Airtable:', fields);
     
     const record = await table.create([
       { fields },
@@ -72,7 +83,8 @@ export const formatAirtableRecord = (
   stripePaymentId: string,
   success: boolean,
   discordHandle?: string,
-  stripeFee?: number
+  stripeFee?: number,
+  volunteerRoles?: string[]
 ): AirtableRecord => {
   // Format date for Airtable (YYYY-MM-DD format)
   const today = new Date();
@@ -88,5 +100,6 @@ export const formatAirtableRecord = (
     'Purchase Date': formattedDate,
     Status: success ? 'Success' : 'Failed',
     'Stripe Fee': stripeFee,
+    'Volunteer Roles': volunteerRoles,
   };
 }; 

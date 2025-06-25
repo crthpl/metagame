@@ -14,6 +14,7 @@ export interface TicketPurchaseData {
   discordHandle?: string;
   ticketType: string;
   price: number;
+  volunteerRoles?: string[];
 }
 
 export interface PaymentIntentResponse {
@@ -30,6 +31,7 @@ export interface PaymentConfirmationData {
   price: number;
   stripePaymentId: string;
   success: boolean;
+  volunteerRoles?: string[];
 }
 
 export interface AirtableRecord {
@@ -42,4 +44,5 @@ export interface AirtableRecord {
   'Purchase Date': string;
   Status: 'Success' | 'Failed';
   'Stripe Fee'?: number;
+  'Volunteer Roles'?: string[];
 } 
