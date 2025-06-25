@@ -32,11 +32,11 @@ const VOLUNTEER_ROLE_OPTIONS = [
 // Descriptions for each role
 const VOLUNTEER_ROLE_DESCRIPTIONS: Record<string, string> = {
   'Standard conference labor': 'Registration desk staffing, room setup, general event support',
-  'Game development': 'Running the megagame (judging tournaments, litigating disputes, transferring points between teams, etc.)',
+  'Game development': 'Judging contests, litigating disputes, transferring points between teams',
   'Tech support': 'Helping with technical issues, equipment setup, and troubleshooting',
   'Physical labor': 'Moving equipment, setting up rooms, general physical tasks',
-  'Childcare': 'Helping our childcare lead take care of kids ages 0-12',
-  'Pre-conference quests': 'We\'ll post our quests on Discord, and you can snag them to fulfill your shifts',
+  'Childcare': 'Supervising and entertaining children during the event',
+  'Pre-conference quests': 'Helping with pre-event activities and coordination',
   'Indifferent': 'Slot me in anywhere, coach!'
 };
 
@@ -57,21 +57,10 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
   disabled = false,
   isApplyingCoupon = false,
 }) => {
-  console.log('TicketFormFields render:', { 
-    name, 
-    email, 
-    volunteerRoles, 
-    isNpcTicket, 
-    disabled,
-    errors 
-  });
-
   const handleVolunteerRoleToggle = (role: string) => {
-    console.log('Toggling volunteer role:', role);
     const newRoles = volunteerRoles.includes(role)
       ? volunteerRoles.filter(r => r !== role)
       : [...volunteerRoles, role];
-    console.log('New volunteer roles:', newRoles);
     onVolunteerRolesChange(newRoles);
   };
 
@@ -80,12 +69,6 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
 
   return (
     <div className="space-y-4">
-      <div style={{ border: '2px solid green', padding: '10px', margin: '10px 0' }}>
-        <p>DEBUG: TicketFormFields rendering</p>
-        <p>Is NPC ticket: {isNpcTicket ? 'Yes' : 'No'}</p>
-        <p>Volunteer roles count: {volunteerRoles.length}</p>
-      </div>
-
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
           Full Name *
@@ -149,10 +132,10 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
       {isNpcTicket && (
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">
-            Volunteer Role Preferences
+            Volunteer Roles (Optional)
           </label>
           <p className="text-sm text-gray-400 mb-3">
-            We can't guarantee you'll be assigned to the role of your choice, but we'll do our best to accommodate preferences
+            Select the roles you'd be interested in volunteering for:
           </p>
           <div className="space-y-2">
             {VOLUNTEER_ROLE_OPTIONS.map((role) => (
@@ -168,7 +151,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
                   <span className="text-sm text-gray-300 font-medium">{role}</span>
                   {VOLUNTEER_ROLE_DESCRIPTIONS[role] && (
                     <span className="text-xs text-gray-500 ml-2">
-                      {VOLUNTEER_ROLE_DESCRIPTIONS[role]}
+                      — {VOLUNTEER_ROLE_DESCRIPTIONS[role]}
                     </span>
                   )}
                 </div>
