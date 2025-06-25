@@ -64,5 +64,5 @@ export const getCouponByName = (name: string): Coupon | null => {
 
 export const applyCouponDiscount = (originalPrice: number, coupon: Coupon): number => {
   const discountedPrice = originalPrice - coupon.discountAmount;
-  return Math.max(discountedPrice, 0);
+  return Math.max(discountedPrice, 0.50);
 }; 
