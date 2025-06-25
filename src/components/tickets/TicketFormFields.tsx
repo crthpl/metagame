@@ -122,7 +122,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
           className={`w-full px-3 py-2 border rounded-md bg-gray-800 text-white border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
             errors.discordHandle ? 'border-red-500' : ''
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-          placeholder="Enter your Discord handle (e.g., username#1234)"
+          placeholder="Enter your Discord handle"
         />
         {errors.discordHandle && (
           <p className="mt-1 text-sm text-red-400">{errors.discordHandle}</p>
