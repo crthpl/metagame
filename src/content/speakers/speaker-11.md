@@ -1,7 +1,7 @@
 ---
 id: 11
 name: Jamie Wahls
-image: /images/aaron_silverbook.png
+image: /images/aaron_heist.jpg
 gameName: "Heist"
 gameUrl: "https://welcometotheheist.com"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
