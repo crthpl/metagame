@@ -132,7 +132,7 @@ const imageURL = "https://metagame.games/images/metagame_website_cover.png";
               justClosed = true;
               
               // Clear URL parameter if it exists
-              if (window.location.search.includes('metagame=true')) {
+              if (window.location.search.includes('metagame=true') || window.location.search.includes('arbor-metagame=true')) {
                 const newUrl = window.location.pathname + window.location.hash;
                 window.history.replaceState({}, document.title, newUrl);
               }
@@ -151,6 +151,7 @@ const imageURL = "https://metagame.games/images/metagame_website_cover.png";
             
             const urlParams = new URLSearchParams(window.location.search);
             const showMetaModal = urlParams.get('metagame') === 'true';
+            const showArborMetaModal = urlParams.get('arbor-metagame') === 'true';
             
             if (showMetaModal) {
               // First scroll to the speakers section
@@ -164,6 +165,11 @@ const imageURL = "https://metagame.games/images/metagame_website_cover.png";
                     (metagameModal as HTMLDialogElement).showModal();
                   }
                 }, 1000); // Delay to ensure scrolling completes
+              }
+            } else if (showArborMetaModal) {
+              // Show modal immediately without scrolling
+              if (metagameModal && !justClosed) {
+                (metagameModal as HTMLDialogElement).showModal();
               }
             }
           }
