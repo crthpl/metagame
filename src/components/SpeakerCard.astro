@@ -21,11 +21,11 @@ const { name, image, gameName, gameUrl, gameName2, gameUrl2, slug } = Astro.prop
 // );
 ---
 
-<Card class="w-30 sm:w-48 flex flex-col items-center p-1 bg-slate-700 bg-opacity-50" padless >
+<Card class="w-24 sm:w-32 md:w-48 flex flex-col items-center py-1 sm:pt-2 bg-slate-700 bg-opacity-50" padless >
   <img
     alt={name || "YOU?"}
     class:list={[
-      "glitch mb-2 rounded aspect-square object-cover",
+      "glitch mb-2 rounded aspect-square object-cover w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40",
       image ? "object-cover" : "object-fill",
     ]}
     src={image ? `/images/${image.split('/').pop()}` : "/images/incognito.svg"}
@@ -36,8 +36,8 @@ const { name, image, gameName, gameUrl, gameName2, gameUrl2, slug } = Astro.prop
   <div class="flex-grow mx-1">
     <h3
       class:list={[
-        "font-bold",
-        name.length > 20 ? "text-sm" : "text-base",
+        "font-bold text-xs",
+        name.length > 20 ? "md:text-sm" : "md:text-base",
       ]}
       transition:name={slug && `${slug}-name`}
     >
@@ -47,10 +47,10 @@ const { name, image, gameName, gameUrl, gameName2, gameUrl2, slug } = Astro.prop
       href={gameName === "METAGAME" ? `/?metagame=true#speakers` : gameUrl} 
       target="_blank" 
       rel="noopener noreferrer" 
-      class="text-secondary-200 text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1 mt-1"
+      class="text-secondary-200 text-[10px] sm:text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1 mt-1"
     >
       {gameName}
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5">
+      <svg xmlns="http://www.w3.org/2000/svg"  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 hidden md:inline">
         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
         <polyline points="15 3 21 3 21 9"></polyline>
         <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -61,10 +61,10 @@ const { name, image, gameName, gameUrl, gameName2, gameUrl2, slug } = Astro.prop
         href={gameName2 === "METAGAME" ? `/?metagame=true#speakers` : gameUrl2} 
         target="_blank" 
         rel="noopener noreferrer" 
-        class="text-secondary-200 text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1 mb-1"
+        class="text-secondary-200 text-[10px] sm:text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1"
       >
         {gameName2}
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 hidden md:inline">
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
           <polyline points="15 3 21 3 21 9"></polyline>
           <line x1="10" y1="14" x2="21" y2="3"></line>
