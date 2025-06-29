@@ -1,11 +1,9 @@
 ---
 id: 4
-name: "Tommy Honton"
-image: "/images/tommy.png"
-gameName: "Stash House"
-gameUrl: "https://www.stashhou.se/"
-gameName2: "tommyhonton"
-gameUrl2: "https://tommyhonton.com/"
+name: "Patrick McKenzie"
+image: "/images/patio11.jpg"
+gameName: "Starfighter"
+gameUrl: "https://www.kalzumeus.com/2015/03/09/announcing-starfighter/"
 title: lorem ipsum
 ---
 
