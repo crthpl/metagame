@@ -9,9 +9,6 @@ export default defineConfig({
     commonjsOptions: {
       ignore: ["@resvg/resvg-js"],
     },
-    rollupOptions: {
-      external: ["vite"],
-    }
   },
   resolve: {
     alias: {
