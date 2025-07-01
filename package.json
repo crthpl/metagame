@@ -60,5 +60,6 @@
     "vite": {
       "rollup": "npm:@rollup/wasm-node"
     }
-  }
+  },
+  "os": ["darwin", "linux"]
 }
