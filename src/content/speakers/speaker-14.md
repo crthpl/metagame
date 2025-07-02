@@ -1,9 +1,9 @@
 ---
-id: 4
-name: Matthew Stein
-image: /images/matthew_stein.jpeg
-gameName: "imakepuzzles.com"
-gameUrl: "http://imakepuzzles.com"
+id: 14
+name: Justin Kuiper
+image: /images/justin_kuiper.jpg
+gameName: "Idol Manager"
+gameUrl: "https://kineticliterature.com/games/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 
