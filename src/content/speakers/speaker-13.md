@@ -1,10 +1,10 @@
 ---
 id: 13
-name: David Zvi Kalman
-image: /images/david_zvi_painting.jpeg
-gameName: "Dreidel20"
-gameUrl: "https://davidzvi.com/dreidels/"
-title: Senior Developer at Tech Corp, Expert in Web Technologies
+name: "Myles Nye"
+image: "/images/myles_nye.jpg"
+gameName: "Wise Guys Events"
+gameUrl: "https://www.teambuildingandtraining.com/"
+title: lorem ipsum
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
