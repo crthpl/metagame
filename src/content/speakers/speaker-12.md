@@ -1,9 +1,9 @@
 ---
 id: 12
-name: Gamel James
-image: /images/gamel_james.jpeg
-gameName: "Unified Pieces"
-gameUrl: "https://unifiedpieces.com"
+name: Alice Maynwaring
+image: /images/alice_maynwaring.jpg
+gameName: "Fielding's Hollow"
+gameUrl: "https://www.maynwaring.com/fieldings-hollow"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

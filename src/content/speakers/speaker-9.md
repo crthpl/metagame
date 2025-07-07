@@ -1,9 +1,9 @@
 ---
 id: 9
-name: Jacob "Conflux" Cohen 
-image: /images/conflux_crosswords.JPG
-gameName: "Puzzles for Progress"
-gameUrl: "https://www.puzzlesforprogress.net/"
+name: Ricki Heicklen
+image: /images/ricki_pinball.jpg
+gameName: "METAGAME"
+gameUrl: /#speakers
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

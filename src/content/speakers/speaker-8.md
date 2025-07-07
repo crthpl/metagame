@@ -1,9 +1,9 @@
 ---
 id: 8
-name: Ricki Heicklen
-image: /images/ricki_pinball.jpg
-gameName: "METAGAME"
-gameUrl: /#speakers
+name: "Uri Bram"
+image: "/images/uri_bram.jpg"
+gameName: "Person Do Thing"
+gameUrl: "https://persondothing.com/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

@@ -1,9 +1,9 @@
 ---
 id: 15
-name: "David Chee"
-image: "/images/david_chee.jpg"
-gameName: "SirSalty"
-gameUrl: "https://www.twitch.tv/sirsalty"
+name: Justin Kuiper
+image: /images/justin_kuiper.jpg
+gameName: "Idol Manager"
+gameUrl: "https://kineticliterature.com/games/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

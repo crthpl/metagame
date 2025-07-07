@@ -1,9 +1,9 @@
 ---
 id: 11
-name: Jamie Wahls
-image: /images/aaron_heist.jpg
-gameName: "Heist"
-gameUrl: "https://welcometotheheist.com"
+name: Jacob "Conflux" Cohen 
+image: /images/conflux_crosswords.JPG
+gameName: "Puzzles for Progress"
+gameUrl: "https://www.puzzlesforprogress.net/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 
