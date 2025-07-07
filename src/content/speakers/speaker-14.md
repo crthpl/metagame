@@ -1,9 +1,9 @@
 ---
-id: 14
-name: Gamel James
-image: /images/gamel_james.jpeg
-gameName: "Unified Pieces"
-gameUrl: "https://unifiedpieces.com"
+id: 13
+name: Jamie Wahls
+image: /images/aaron_heist.jpg
+gameName: "Heist"
+gameUrl: "https://welcometotheheist.com"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

@@ -1,9 +1,9 @@
 ---
 id: 7
-name: Nolen Royalty
-image: /images/nolen_royalty.jpg
-gameName: "eieio games"
-gameUrl: "https://eieio.games/"
+name: Rita Orlov
+image: /images/rita_orlov.jpeg
+gameName: "PostCurious"
+gameUrl: "https://getpostcurious.com"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

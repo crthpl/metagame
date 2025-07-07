@@ -1,9 +1,9 @@
 ---
-id: 12
-name: Jacob "Conflux" Cohen 
-image: /images/conflux_crosswords.JPG
-gameName: "Puzzles for Progress"
-gameUrl: "https://www.puzzlesforprogress.net/"
+id: 17
+name: "David Chee"
+image: "/images/david_chee.jpg"
+gameName: "SirSalty"
+gameUrl: "https://www.twitch.tv/sirsalty"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

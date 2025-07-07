@@ -1,9 +1,9 @@
 ---
-id: 16
-name: David Zvi Kalman
-image: /images/david_zvi_painting.jpeg
-gameName: "Dreidel20"
-gameUrl: "https://davidzvi.com/dreidels/"
+id: 15
+name: Justin Kuiper
+image: /images/justin_kuiper.jpg
+gameName: "Idol Manager"
+gameUrl: "https://kineticliterature.com/games/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

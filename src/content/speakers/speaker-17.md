@@ -1,9 +1,9 @@
 ---
-id: 17
-name: "David Chee"
-image: "/images/david_chee.jpg"
-gameName: "SirSalty"
-gameUrl: "https://www.twitch.tv/sirsalty"
+id: 16
+name: David Zvi Kalman
+image: /images/david_zvi_painting.jpeg
+gameName: "Dreidel20"
+gameUrl: "https://davidzvi.com/dreidels/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 
