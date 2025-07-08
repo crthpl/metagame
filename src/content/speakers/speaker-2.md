@@ -1,5 +1,5 @@
 ---
-id: 2
+id: 1
 name: "Emmett Shear"
 image: "/images/emmett_shear.jpeg"
 gameName: "Softmax"
