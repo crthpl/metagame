@@ -1,9 +1,9 @@
 {
   "id": 4,
-  "name": "Silver Sponsor 1",
-  "logo": "/incognito.svg",
+  "name": "RECON",
+  "logo": "/logos/recon.webp",
   "wideLogo": false,
-  "website": "https://example.com",
+  "website": "https://realityescapecon.com/",
   "type": "sponsor",
   "tier": "silver"
 }

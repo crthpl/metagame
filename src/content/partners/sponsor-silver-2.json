@@ -1,9 +1,9 @@
 {
   "id": 5,
-  "name": "Silver Sponsor 2",
-  "logo": "/incognito.svg",
+  "name": "Morty",
+  "logo": "/logos/morty.svg",
   "wideLogo": false,
-  "website": "https://example.com",
+  "website": "https://morty.app/",
   "type": "sponsor",
   "tier": "silver"
 }

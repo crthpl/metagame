@@ -115,7 +115,7 @@ const partnersCollection = defineCollection({
       logo: z.string(),
       logoSize: z.string().optional(),
       wideLogo: z.boolean().optional(),
-      website: z.string(),
+      website: z.string().optional(),
       type: z.enum([
         "organizer",
         "supporter",
@@ -124,20 +124,24 @@ const partnersCollection = defineCollection({
         "drinks'n'bytes",
       ]),
       tier: z.enum(["bronze", "silver", "gold", "platinum"]).optional(),
+      // Add new fields for sponsor information
+      description: z.string().optional(),
+      tagline: z.string().optional(),
+      industry: z.string().optional(),
+      twitter: z.string().optional(),
+      linkedin: z.string().optional(),
+      github: z.string().optional(),
     })
     .refine(
       (data) => {
-        if (
-          data.type === "organizer" ||
-          data.type === "supporter" ||
-          data.type === "media"
-        ) {
+        // Fix the logic: tier is required ONLY for sponsors
+        if (data.type === "sponsor") {
           return data.tier !== undefined;
         }
         return true;
       },
       {
-        message: "Tier is required if type is sponsor",
+        message: "Tier is required for sponsors",
         path: ["tier"],
       }
     ),
@@ -151,5 +155,5 @@ export const collections = {
   sessions: sessionsCollection,
   faq: faqCollection,
   agenda: agendaCollection,
-  partner: partnersCollection,
+  partners: partnersCollection,
 };

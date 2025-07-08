@@ -1,9 +1,15 @@
 {
   "id": 7,
-  "name": "Gold Sponsor 1",
-  "logo": "/incognito.svg",
+  "name": "Sovereign",
+  "logo": "/logos/L_Sovereign_Logo_Gold_Gradient_Gold_Typeface.svg",
   "wideLogo": false,
-  "website": "https://example.com",
+  "website": "",
   "type": "sponsor",
-  "tier": "gold"
+  "tier": "gold",
+  "description": "TechCorp is a leading provider of innovative gaming infrastructure and technology solutions, supporting the next generation of game developers.",
+  "tagline": "Powering the Future of Gaming",
+  "industry": "Gaming Technology",
+  "twitter": "https://twitter.com/techcorp",
+  "linkedin": "https://linkedin.com/company/techcorp",
+  "github": "https://github.com/techcorp"
 }
