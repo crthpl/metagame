@@ -19,7 +19,7 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     title: 'Player',
     price: 500,
     regularPrice: 650,
-    description: 'Early bird price through July 9th, 2025',
+    description: 'Early bird price through July 17th, 2025',
     // features: [
     //   'Full access to all games and activities',
     //   'Event materials and swag',
