@@ -80,7 +80,7 @@ const data = {
       col: 0,
     },
     21: {
-      clue: "Plans",
+      clue: "Aspires",
       answer: "INTENDS",
       row: 3,
       col: 0,
