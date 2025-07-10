@@ -41,6 +41,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.2
         version: 18.3.7(@types/react@18.3.23)
+      '@vercel/analytics':
+        specifier: ^1.5.0
+        version: 1.5.0(react@18.2.0)
       airtable:
         specifier: ^0.12.2
         version: 0.12.2
