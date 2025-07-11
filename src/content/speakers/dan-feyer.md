@@ -1,9 +1,9 @@
 ---
-id: 16
-name: David Zvi Kalman
-image: /images/david_zvi_painting.jpeg
-gameName: "Dreidel20"
-gameUrl: "https://davidzvi.com/dreidels/"
+id: 8
+name: Dan Feyer
+image: /images/dan_feyer.jpg
+gameName: "ACPT Recordholder (most wins)"
+gameUrl: "https://en.wikipedia.org/wiki/Dan_Feyer"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

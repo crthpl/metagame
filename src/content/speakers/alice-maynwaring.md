@@ -1,9 +1,9 @@
 ---
-id: 11
-name: Ricki Heicklen
-image: /images/ricki_pinball.jpg
-gameName: "METAGAME"
-gameUrl: /#speakers
+id: 18
+name: Alice Maynwaring
+image: /images/alice_maynwaring.jpg
+gameName: "Fielding's Hollow"
+gameUrl: "https://www.maynwaring.com/fieldings-hollow"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

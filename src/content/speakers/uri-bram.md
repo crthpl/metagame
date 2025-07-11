@@ -1,9 +1,9 @@
 ---
-id: 17
-name: "David Chee"
-image: "/images/david_chee.jpg"
-gameName: "SirSalty"
-gameUrl: "https://www.twitch.tv/sirsalty"
+id: 13
+name: "Uri Bram"
+image: "/images/uri_bram.jpg"
+gameName: "Person Do Thing"
+gameUrl: "https://persondothing.com/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

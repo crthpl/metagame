@@ -1,9 +1,9 @@
 ---
-id: 14
-name: Gamel James
-image: /images/gamel_james.jpeg
-gameName: "Unified Pieces"
-gameUrl: "https://unifiedpieces.com"
+id: 16
+name: Justin Kuiper
+image: /images/justin_kuiper.jpg
+gameName: "Idol Manager"
+gameUrl: "https://kineticliterature.com/games/"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

@@ -1,9 +1,9 @@
 ---
-id: 15
-name: Justin Kuiper
-image: /images/justin_kuiper.jpg
-gameName: "Idol Manager"
-gameUrl: "https://kineticliterature.com/games/"
+id: 14
+name: Ricki Heicklen
+image: /images/ricki_pinball.jpg
+gameName: "METAGAME"
+gameUrl: /#speakers
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

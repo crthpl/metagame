@@ -1,9 +1,9 @@
 ---
-id: 12
-name: Alice Maynwaring
-image: /images/alice_maynwaring.jpg
-gameName: "Fielding's Hollow"
-gameUrl: "https://www.maynwaring.com/fieldings-hollow"
+id: 11
+name: Matthew Stein
+image: /images/matthew_stein.jpeg
+gameName: "imakepuzzles.com"
+gameUrl: "http://imakepuzzles.com"
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 
