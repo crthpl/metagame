@@ -5,6 +5,7 @@ export const TICKET_VOLUNTEER_URL = import.meta.env.PUBLIC_TICKET_VOLUNTEER_URL 
 export const TICKET_SUPPORTER_URL = import.meta.env.PUBLIC_TICKET_SUPPORTER_URL ?? 'https://bit.ly/metagame-supporter-ticket';
 
 export const CALL_FOR_SPEAKERS = import.meta.env.PUBLIC_CALL_FOR_SPEAKERS ?? 'https://airtable.com/appTvPARUssZp4qiB/pagqYAgxKlTdRbS6n/form';
+export const CALL_FOR_SESSIONS = import.meta.env.PUBLIC_CALL_FOR_SESSIONS ?? 'https://airtable.com/appTvPARUssZp4qiB/pagVuzTEXODlUwoi0/form';
 export const CALL_FOR_VOLUNTEERS = import.meta.env.PUBLIC_CALL_FOR_VOLUNTEERS ?? 'https://airtable.com/appTvPARUssZp4qiB/pagqYAgxKlTdRbS6n/form';
 export const CALL_FOR_SPONSORS = import.meta.env.PUBLIC_CALL_FOR_SPONSORS ?? 'https://airtable.com/appTvPARUssZp4qiB/pagqYAgxKlTdRbS6n/form';
 export const SOCIAL_LINKS = {
