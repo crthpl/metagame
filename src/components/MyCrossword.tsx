@@ -80,7 +80,7 @@ const data = {
       col: 0,
     },
     21: {
-      clue: "Aspires",
+      clue: "Aims",
       answer: "INTENDS",
       row: 3,
       col: 0,
@@ -94,7 +94,7 @@ const data = {
   },
   down: {
     1: {
-      clue: "Side kick",
+      clue: "Sidekick",
       answer: "CRONY",
       row: 0,
       col: 1,
@@ -106,7 +106,7 @@ const data = {
       col: 2,
     },
     3: {
-      clue: "Satisfy fully",
+      clue: "Fill fully",
       answer: "SATE",
       row: 0,
       col: 3,
