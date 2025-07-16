@@ -18,7 +18,7 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     id: 'player',
     title: 'Player',
     price: 500,
-    regularPrice: 650,
+    regularPrice: 580,
     description: 'Early bird price through July 17th, 2025',
     // features: [
     //   'Full access to all games and activities',
