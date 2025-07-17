@@ -109,6 +109,15 @@ export const TicketCard: React.FC<TicketCardProps> = ({
         {/* Ticket Header */}
         <div className="flex-grow flex flex-col">
           <div>
+            {/* Early Bird Urgency Badge for Player ticket - REMOVE AFTER DEADLINE */}
+            {ticketTypeId === 'player' && (
+              <div className="mb-3 inline-block">
+                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-bounce">
+                  ⏰ ENDS JULY 17TH!
+                </span>
+              </div>
+            )}
+            
             <h3 className="uppercase text-5xl md:text-3xl font-black text-primary-300">
               {ticketType.title}
             </h3>

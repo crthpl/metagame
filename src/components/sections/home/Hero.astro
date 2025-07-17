@@ -8,8 +8,25 @@ import './Hero.css';
 const game_names = ["board games", "card games", "puzzle hunts", "LARPS", "video games", "chess", "poker", "factorio", "hanabi", "magic the gathering", "tetris", "dnd", "calvinball", "escape rooms", "wordle", "bridge", "minecraft", "set", "ricochet robots"]
 ---
 
+<!-- Bird with banner - moved outside hero section to position relative to viewport -->
+<div class="bird-container" id="birdContainer">
+  <div class="angry-bird">
+    <div class="bird-body"></div>
+    <div class="bird-eye left-eye"></div>
+    <div class="bird-eye right-eye"></div>
+    <div class="bird-pupil left-pupil"></div>
+    <div class="bird-pupil right-pupil"></div>
+    <div class="bird-beak"></div>
+    <div class="bird-eyebrow left-eyebrow"></div>
+    <div class="bird-eyebrow right-eyebrow"></div>
+  </div>
+  <div class="banner">
+    <div class="banner-text">EARLY BIRD ENDS JULY 17TH</div>
+  </div>
+</div>
+
 <section
-  class="h-[80vh] flex flex-col items-center justify-center pb-2 px-0 md:px-12"
+  class="h-[80vh] flex flex-col items-center justify-center pb-2 px-0 md:px-12 relative overflow-hidden"
   id="hero"
 >
   <div class="flex flex-col items-center justify-center max-w-prose">
@@ -29,7 +46,9 @@ const game_names = ["board games", "card games", "puzzle hunts", "LARPS", "video
         A conference about game design, strategy, narrative, and play. Join us September 12-14 in Berkeley, California.
       </span>
     </p>
-    <Button background="bg-cyan-500" link="#tickets">GET YOUR TICKET</Button>
+    <div class="relative">
+      <Button background="bg-cyan-500" link="#tickets">GET YOUR TICKET</Button>
+    </div>
   </div>
 </section>
 
@@ -41,6 +60,253 @@ const game_names = ["board games", "card games", "puzzle hunts", "LARPS", "video
   @media (min-width: 768px) {
     .outlines {
       text-shadow: -2px -2px 0 #4deeea, 2px -2px 0 #4deeea, -2px 2px 0 #4deeea, 2px 2px 0 #4deeea, 0 0 5px #fff, 0 0 10px #34e2e4, 0 0 25px #764ba2, 0 0 35px #764ba2, 0 0 55px #764ba2, 0 0 65px #764ba2;
+    }
+  }
+
+  /* Bird Animation Styles */
+  .bird-container {
+    position: fixed;
+    top: 20%;
+    left: -400px;
+    z-index: 10;
+    opacity: 0;
+    transform: translateX(0) translateY(0);
+    pointer-events: none;
+  }
+
+  .bird-container.flying {
+    animation: flyBounceAndLand 12s linear forwards;
+  }
+
+  @keyframes flyBounceAndLand {
+    0% {
+      left: -400px;
+      top: 20%;
+      opacity: 1;
+      transform: translateY(0px) rotate(-5deg) scale(1);
+    }
+    /* Simple linear movement across screen */
+    100% {
+      left: calc(100vw + 400px);
+      top: 20%;
+      transform: translateY(0px) rotate(-5deg) scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Angry Bird Styles */
+  .angry-bird {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+  }
+
+  .bird-body {
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 30%, #ff4444, #cc0000);
+    border-radius: 50%;
+    position: relative;
+    border: 3px solid #990000;
+    box-shadow: 0 0 0 2px #ff6666 inset;
+  }
+
+  .bird-eye {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    border: 2px solid #000;
+    top: 15px;
+  }
+
+  .left-eye {
+    left: 12px;
+  }
+
+  .right-eye {
+    right: 12px;
+  }
+
+  .bird-pupil {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: black;
+    border-radius: 50%;
+    top: 19px;
+  }
+
+  .left-pupil {
+    left: 18px;
+  }
+
+  .right-pupil {
+    right: 18px;
+  }
+
+  .bird-beak {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 12px solid #ffa500;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3));
+  }
+
+  .bird-eyebrow {
+    position: absolute;
+    width: 20px;
+    height: 6px;
+    background: #990000;
+    border-radius: 3px;
+    top: 8px;
+    transform: rotate(-20deg);
+  }
+
+  .left-eyebrow {
+    left: 8px;
+  }
+
+  .right-eyebrow {
+    right: 8px;
+    transform: rotate(20deg);
+  }
+
+  /* Banner Styles */
+  .banner {
+    position: absolute;
+    top: 70px;
+    left: -40px;
+    background: linear-gradient(45deg, #ffeb3b, #ffd700);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 3px solid #ffa000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transform: rotate(-5deg);
+    white-space: nowrap;
+    transition: opacity 0.5s ease;
+  }
+
+  /* Hide banner during landing sequence */
+  .bird-container.flying {
+    animation: flyBounceAndLand 15s ease-in-out forwards;
+  }
+
+  .bird-container.flying .banner {
+    /* Keep banner visible throughout the flight */
+    opacity: 1;
+  }
+
+  .banner::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ffd700;
+  }
+
+  .banner-text {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    color: #d84315;
+    text-shadow: 1px 1px 0 white;
+    letter-spacing: 0.5px;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .bird-container {
+      top: 15%;
+      left: -300px;
+    }
+    
+    @keyframes flyBounceAndLand {
+      0% {
+        left: -300px;
+        top: 15%;
+        opacity: 1;
+        transform: translateY(0px) rotate(-5deg) scale(1);
+      }
+      /* Simple linear movement across screen */
+      100% {
+        left: calc(100vw + 300px);
+        top: 15%;
+        transform: translateY(0px) rotate(-5deg) scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .angry-bird {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .bird-body {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .bird-eye {
+      width: 12px;
+      height: 12px;
+      top: 10px;
+    }
+    
+    .left-eye {
+      left: 8px;
+    }
+    
+    .right-eye {
+      right: 8px;
+    }
+    
+    .bird-pupil {
+      width: 5px;
+      height: 5px;
+      top: 12px;
+    }
+    
+    .left-pupil {
+      left: 12px;
+    }
+    
+    .right-pupil {
+      right: 12px;
+    }
+    
+    .bird-beak {
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 8px solid #ffa500;
+      top: 18px;
+    }
+    
+    .bird-eyebrow {
+      width: 14px;
+      height: 4px;
+      top: 5px;
+    }
+    
+    .banner {
+      top: 50px;
+      left: -30px;
+      padding: 6px 12px;
+    }
+    
+    .banner-text {
+      font-size: 11px;
     }
   }
 </style>
@@ -65,4 +331,67 @@ const game_names = ["board games", "card games", "puzzle hunts", "LARPS", "video
     }
     requestAnimationFrame(doAnimationStep);
   }
+
+  // Bird animation trigger
+  setTimeout(() => {
+    const birdContainer = document.getElementById('birdContainer');
+    if (birdContainer) {
+      birdContainer.classList.add('flying');
+      
+      // After animation completes, position bird relative to button
+      setTimeout(() => {
+        const heroSection = document.getElementById('hero');
+        if (!heroSection || !birdContainer) return;
+        
+        const buttonContainer = heroSection.querySelector('.relative');
+        if (!buttonContainer) return;
+        
+        // Get button's position
+        const buttonRect = buttonContainer.getBoundingClientRect();
+        const heroRect = heroSection.getBoundingClientRect();
+        
+        // Calculate relative position within hero section
+        const relativeLeft = buttonRect.left - heroRect.left;
+        const relativeTop = buttonRect.bottom - heroRect.top;
+        
+        // Remove animation class to prevent conflicts
+        birdContainer.classList.remove('flying');
+        
+        // Switch to absolute positioning relative to hero section
+        birdContainer.style.position = 'absolute';
+        
+        // Check if mobile and adjust positioning accordingly
+        const isMobileView = window.matchMedia('(max-width: 768px)').matches;
+        if (isMobileView) {
+          // On mobile, center the bird above the button
+          birdContainer.style.left = `${relativeLeft + 20}px`; // Center above button
+          birdContainer.style.top = `${relativeTop - 30}px`; // Position higher above button
+          birdContainer.style.transform = 'translateX(-50%) translateY(0px) rotate(0deg) scale(0.6)';
+        } else {
+          // On desktop, position to the left of button
+          birdContainer.style.left = `${relativeLeft - 100}px`; // Position to the left of button
+          birdContainer.style.top = `${relativeTop - 50}px`; // Position at button level
+          birdContainer.style.transform = 'translateY(0px) rotate(0deg) scale(0.8)';
+        }
+        
+        birdContainer.style.opacity = '0'; // Start invisible
+        birdContainer.style.transition = 'opacity 0.8s ease-in';
+        
+        // Reposition to be a child of the hero section
+        heroSection.appendChild(birdContainer);
+        
+        // Fade in at final position
+        setTimeout(() => {
+          birdContainer.style.opacity = '1';
+          
+          // Show banner again after positioning
+          const banner = birdContainer.querySelector('.banner') as HTMLElement;
+          if (banner) {
+            banner.style.opacity = '1';
+            banner.style.transition = 'opacity 0.5s ease-in';
+          }
+        }, 100);
+      }, 15000); // Match animation duration
+    }
+  }, 500); // Start animation after 1 second
 </script>
