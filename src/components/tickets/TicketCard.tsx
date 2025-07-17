@@ -113,7 +113,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             {ticketTypeId === 'player' && (
               <div className="mb-3 inline-block">
                 <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-bounce">
-                  ⏰ ENDS JULY 17TH!
+                  EARLY BIRD ENDS JULY 17
                 </span>
               </div>
             )}
