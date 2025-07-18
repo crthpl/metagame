@@ -17,9 +17,9 @@ export const TICKET_TYPES: Record<string, TicketType> = {
   player: {
     id: 'player',
     title: 'Player',
-    price: 500,
+    price: 580,
     regularPrice: 580,
-    description: 'Early bird price through July 17th, 2025',
+    description: 'Full access to the event, including participating in the megagame',
     // features: [
     //   'Full access to all games and activities',
     //   'Event materials and swag',
