@@ -1,6 +1,5 @@
 export const getEnvVar = (key: string): string => {
-  // Try astro's dev env setup first, then process.env
-  const value = (import.meta.env && import.meta.env[key]) || process.env[key];
+  const value = process.env[key];
 
   if (!value) {
     console.error(`Environment variable ${key} is not set`);

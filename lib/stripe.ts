@@ -3,7 +3,7 @@ import { STRIPE_SECRET_KEY } from './env';
 
 // Initialize Stripe with secret key
 export const stripe = new Stripe(STRIPE_SECRET_KEY, {
-  apiVersion: '2025-05-28.basil',
+  apiVersion: '2025-06-30.basil',
 });
 
 export const createPaymentIntent = async (
