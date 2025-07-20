@@ -25,7 +25,7 @@ export const createTicketRecord = async (recordData: AirtableRecord) => {
     
     // console.log('Table object created, attempting to create record...');
     
-    const fields: any = {
+    const fields: Record<string, AirtableRecord[keyof AirtableRecord]> = {
       'Name': recordData.Name,
       'Email': recordData.Email,
       'Ticket Type': recordData['Ticket Type'],

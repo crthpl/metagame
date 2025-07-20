@@ -12,11 +12,9 @@ import {
   CrosswordProvider,
   CrosswordContext,
   CrosswordGrid,
-  CrosswordSizeContext,
   type CrosswordProviderImperative,
 } from "@jaredreisinger/react-crossword";
 import { RotateCcw } from "lucide-react";
-import type { Direction } from "@jaredreisinger/react-crossword/dist/types";
 
 const themeContext = {
   allowNonSquare: true,
@@ -151,14 +149,12 @@ interface Dimensions {
 }
 
 interface OverlaysContainerProps {
-  gridRef: React.RefObject<HTMLDivElement>;
+  gridRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const OverlaysContainer = ({ gridRef }: OverlaysContainerProps) => {
   const [showOverlays, setShowOverlays] = useState(false);
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
-  const crosswordContext = useContext(CrosswordContext);
-  const crosswordSizeContext = useContext(CrosswordSizeContext);
 
   const calculateDimensions = useCallback(() => {
     if (!gridRef.current) {
@@ -176,7 +172,6 @@ const OverlaysContainer = ({ gridRef }: OverlaysContainerProps) => {
 
     // The viewBox is "0 0 70 50" from the SVG
     const viewBoxWidth = 70;
-    const viewBoxHeight = 50;
     const cellWidth = 9.75; // From the rect width in the SVG
 
     // Calculate the actual size of cells based on the rendered grid size
@@ -274,7 +269,6 @@ const CellOverlay = ({
   col,
   overlay,
   gridSize,
-  cellSize,
   cellInner,
   cellPadding,
   cellHalf,
@@ -442,7 +436,6 @@ export default function MyCrossword() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [escapeHoldCompleted, setEscapeHoldCompleted] = useState(false);
-  const escapeStartTime = useRef<number | null>(null);
   const [showReset, setShowReset] = useState(false);
   const [couponInfo, setCouponInfo] = useState<{
     name: string;
@@ -486,23 +479,23 @@ export default function MyCrossword() {
     fetchCouponInfo();
   };
 
-  const onAnswerCorrect = (
-    direction: Direction,
-    number: string,
-    answer: string
-  ) => {
-    // console.log("Correct answer:", direction, number, answer);
-  };
+  // const onAnswerCorrect = (
+  //   direction: Direction,
+  //   number: string,
+  //   answer: string
+  // ) => {
+  //   // console.log("Correct answer:", direction, number, answer);
+  // };
 
-  const onAnswerIncorrect = (
-    direction: Direction,
-    number: string,
-    answer: string
-  ) => {
-    // console.log("Incorrect answer:", direction, number, answer);
-  };
+  // const onAnswerIncorrect = (
+  //   direction: Direction,
+  //   number: string,
+  //   answer: string
+  // ) => {
+  //   // console.log("Incorrect answer:", direction, number, answer);
+  // };
 
-  const onCellChange = (row: number, col: number, char: string) => {
+  const onCellChange = () => {
     setShowReset(true);
   };
 
@@ -548,8 +541,8 @@ export default function MyCrossword() {
           onCrosswordComplete={onCrosswordComplete}
           onCellChange={onCellChange}
           ref={crosswordRef}
-          onAnswerCorrect={onAnswerCorrect}
-          onAnswerIncorrect={onAnswerIncorrect}
+          // onAnswerCorrect={onAnswerCorrect}
+          // onAnswerIncorrect={onAnswerIncorrect}
           autoJumpFromClueEnd
         >
           <div
@@ -587,7 +580,7 @@ export default function MyCrossword() {
           )}
           {escapeHoldCompleted && (
             <div className="mt-2 p-4 bg-blue-100 text-blue-800 rounded-lg text-center">
-              Congratulations! Use coupon code "{couponInfo?.code}" for {couponInfo?.discount} off your
+              Congratulations! Use coupon code &quot;{couponInfo?.code}&quot; for {couponInfo?.discount} off your
               ticket price! 🎉
             </div>
           )}

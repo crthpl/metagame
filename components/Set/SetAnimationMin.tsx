@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import SetCard from "./SetCard";
 import { generateSetBoard } from "./SetSet";
 

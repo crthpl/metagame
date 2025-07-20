@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { TicketFormFields } from './TicketFormFields';
@@ -38,7 +38,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
   const [errors, setErrors] = useState<{ name?: string; email?: string; discordHandle?: string; couponCode?: string; volunteerRoles?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
-  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<{
@@ -98,7 +97,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
         try {
           errorData = JSON.parse(responseText);
         } catch (e) {
-          // Ignore parsing errors
+          console.error(e);
         }
         
         setErrors(prev => ({ 
@@ -170,6 +169,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
         try {
           errorData = JSON.parse(responseText);
         } catch (e) {
+          console.error(e);
           throw new Error(`API returned HTML instead of JSON. Status: ${paymentIntentResponse.status}. Response: ${responseText.substring(0, 200)}...`);
         }
         
@@ -182,11 +182,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
       try {
         responseData = JSON.parse(responseText);
       } catch (e) {
+        console.error(e);
         throw new Error(`API returned invalid JSON. Response: ${responseText.substring(0, 200)}...`);
       }
       
       const { clientSecret, paymentIntentId: intentId } = responseData;
-      setPaymentIntentId(intentId);
 
       // Step 2: Confirm payment with Stripe
       const cardElement = elements.getElement(CardElement);

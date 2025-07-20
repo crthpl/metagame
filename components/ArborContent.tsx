@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Arbor',
@@ -65,12 +66,12 @@ export default function ArborContent() {
                 <span className="text-secondary-200 mr-3">•</span>
                 <span>
                   A{' '}
-                  <a 
+                  <Link 
                     href="/?arbor-metagame=true" 
                     className="text-secondary-500 hover:text-fuchsia-500 hover:underline transition-colors"
                   >
                     game design conference
-                  </a>
+                  </Link>
                   {' '}in Berkeley, CA this September
                 </span>
               </li>

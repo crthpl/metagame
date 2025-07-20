@@ -2,10 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-interface Props {
-  numDots?: number;
-}
-
 export default function PacmanAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);

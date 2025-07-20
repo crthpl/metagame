@@ -22,7 +22,7 @@ export default function Tag({
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [textPosition, setTextPosition] = useState({ x: 0, y: 0 });
   const tagRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<number>();
+  const frameRef = useRef<number>(null);
 
   // Track mouse position
   useEffect(() => {
@@ -81,6 +81,7 @@ export default function Tag({
           window.addEventListener("mousemove", updateCursor);
 
           // Store the event listener for cleanup
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (tagRef.current as any).cursorCleanup = () => {
             window.removeEventListener("mousemove", updateCursor);
             styleSheet.remove();
@@ -140,7 +141,9 @@ export default function Tag({
   // Add cleanup effect
   useEffect(() => {
     return () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (tagRef.current && (tagRef.current as any).cursorCleanup) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (tagRef.current as any).cursorCleanup();
       }
     };

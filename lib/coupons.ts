@@ -27,7 +27,7 @@ export const validateCoupon = (code: string): Coupon | null => {
   const coupons = getAllCoupons();
   
   // Search through all coupons to find one with matching code
-  for (const [name, coupon] of Object.entries(coupons)) {
+  for (const coupon of Object.values(coupons)) {
     if (coupon.code === code.toUpperCase() && coupon.valid !== false) {
       return {
         code: coupon.code,

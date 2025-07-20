@@ -135,7 +135,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
             Volunteer Role Preferences
           </label>
           <p className="text-sm text-gray-400 mb-3">
-            We can't guarantee you'll be assigned to the role(s) of your choice, but we'll do our best to accommodate preferences
+            We can&apos;t guarantee you&apos;ll be assigned to the role(s) of your choice, but we&apos;ll do our best to accommodate preferences
           </p>
           <div className="space-y-2">
             {VOLUNTEER_ROLE_OPTIONS.map((role) => (

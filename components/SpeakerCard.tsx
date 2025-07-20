@@ -19,7 +19,6 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({
   gameUrl,
   gameName2,
   gameUrl2,
-  slug
 }) => {
   const ExternalLinkIcon = () => (
     <svg

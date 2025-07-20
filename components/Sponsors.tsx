@@ -1,4 +1,4 @@
-import { getSponsors, Partner } from '@/lib/content';
+import { getSponsors } from '@/lib/content';
 import PartnerCard from './PartnerCard';
 
 export default async function Sponsors() {
