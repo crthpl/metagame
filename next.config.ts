@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
     };
     return config;
   },
+  distDir: 'dist',
   // Environment variables
   env: {
     PUBLIC_INTEREST_FORM_URL: process.env.PUBLIC_INTEREST_FORM_URL,
