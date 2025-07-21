@@ -1,12 +1,4 @@
 {
   "buildCommand": "pnpm build",
-  "installCommand": "pnpm i",
-  "build": {
-    "env": {
-      "ROLLUP_SKIP_NATIVE": "true"
-    }
-  },
-  "env": {
-    "ROLLUP_SKIP_NATIVE": "true"
-  }
+  "installCommand": "pnpm i"
 } 

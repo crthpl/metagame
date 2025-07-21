@@ -1,0 +1,399 @@
+@import "tailwindcss";
+@import "@fontsource/jura/latin.css";
+@plugin "daisyui" {
+  themes: synthwave --default, dark --prefersdark;
+}
+@theme {
+  --color-dark-50: #D3D1FF;
+  --color-dark-100: #A19EFF;
+  --color-dark-200: #4942FF;
+  --color-dark-300: #0700E0;
+  --color-dark-400: #1f1d38;
+  --color-dark-500: #010020;
+  --color-dark-600: #010019;
+  --color-dark-700: #010014;
+  --color-dark-800: #01000F;
+  --color-dark-900: #000005;
+  --color-dark-950: #000005;
+
+  --color-secondary-50: #fdfde9;
+  --color-secondary-100: #fdfbc4;
+  --color-secondary-200: #fbf38d;
+  --color-secondary-300: #f9e54b;
+  --color-secondary-400: #f5d31a;
+  --color-secondary-500: #f1c40f;
+  --color-secondary-600: #c59009;
+  --color-secondary-700: #9d670b;
+  --color-secondary-800: #825211;
+  --color-secondary-900: #6f4314;
+  --color-secondary-950: #412307;
+
+  --color-primary-50: #fff4fd;
+  --color-primary-100: #fee9fb;
+  --color-primary-200: #fcd2f5;
+  --color-primary-300: #f9aeea;
+  --color-primary-400: #f47eda;
+  --color-primary-500: #e637bf;
+  --color-primary-600: #cd2ca6;
+  --color-primary-700: #a92285;
+  --color-primary-800: #8b1d6d;
+  --color-primary-900: #721d59;
+  --color-primary-950: #4b0736;
+
+  /* Font family - this sets Jura as the default sans-serif font */
+  --font-sans: Jura, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* Keyframes */
+  --animate-coin-pop: coin-pop 0.6s ease-out;
+  --animate-fade-in: fade-in 0.5s ease-in forwards;
+  --animate-fade-out: fade-out 0.5s linear forwards;
+}
+
+/* Keyframe definitions */
+@keyframes coin-pop {
+  0% {
+    transform: translateY(0) translateX(-50%) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-20px) translateX(-50%) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-40px) translateX(-50%) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  0% { 
+    opacity: 0; 
+  }
+  100% { 
+    opacity: 1; 
+  }
+}
+
+@keyframes fade-out {
+  0% { 
+    opacity: 1; 
+  }
+  100% { 
+    opacity: 0; 
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Typography styles for prose */
+.prose {
+  line-height: 1.75;
+}
+
+.prose h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  color: inherit;
+}
+
+.prose h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: inherit;
+}
+
+.prose h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: inherit;
+}
+
+.prose p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose a {
+  color: var(--color-secondary-500);
+  text-decoration: none;
+}
+
+.prose a:hover {
+  color: var(--color-primary-500);
+  text-decoration: underline;
+}
+
+/* Ensure Button components are not affected by prose link styles */
+.prose .btn-container a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.prose .btn-container a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* More comprehensive button styling to prevent any underlines */
+.btn-container,
+.btn-container:hover,
+.btn-container:focus,
+.btn-container:active {
+  text-decoration: none !important;
+}
+
+.btn-container *,
+.btn-container *:hover,
+.btn-container *:focus,
+.btn-container *:active {
+  text-decoration: none !important;
+}
+
+/* Ensure prose doesn't override button styling */
+.prose .btn-container,
+.prose .btn-container:hover,
+.prose .btn-container * {
+  text-decoration: none !important;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose li {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose li > p {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Large prose styles */
+.prose-xl h1 {
+  font-size: 2.875rem;
+  line-height: 1.1;
+  margin-bottom: 2.5rem;
+}
+
+.prose-xl h2 {
+  font-size: 2.25rem;
+  line-height: 1.2;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.prose-xl p {
+  font-size: 1.25rem;
+  line-height: 1.8;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.prose-xl ul {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.prose-xl li {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Button styles and hover effects - moved from Hero.css for global availability */
+.btn-blur {
+  transition: all 0.3s;
+  opacity: 0.3;
+  filter: blur(10px);
+  transform: translateY(5%);
+}
+
+.btn-container:hover .btn-blur {
+  transform: scale(1.1, 1.5) translateY(5%);
+  transition: all 0.3s;
+}
+
+.btn-blur, .tickets-btn {
+  background-size: 200% 200%;
+  background-position: -100% 0;
+}
+
+.btn-blur:hover, .tickets-btn:hover {
+  background-position: 100% 0;
+}
+
+/* Hero background animation - moved from component CSS to work in NextJS */
+:root {
+  --c1: hsl(219, 79%, 66%);
+  --c2: hsl(319, 100%, 60%);
+  --c3: hsl(266, 49%, 25%);
+  --c4: hsl(60, 82%, 58%);
+  --c5: hsl(0, 67%, 55%);
+  --c6: hsl(213, 96%, 11%);
+  --c2hsl: 319, 100%, 60%;
+}
+
+/* Only apply hero animation when body has hero-page class */
+html::before {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  filter: brightness(0.8);
+  --lgDepth: url('data:image/svg+xml;utf8,<svg width="1808" height="230" xmlns="http://www.w3.org/2000/svg"><path d="M904 -46 L-3616 230 M904 -46 L-3254.4 230 M904 -46 L-2892.8 230 M904 -46 L-2531.2000000000003 230 M904 -46 L-2169.6000000000004 230 M904 -46 L-1808 230 M904 -46 L-1446.4 230 M904 -46 L-1084.8000000000002 230 M904 -46 L-723.2 230 M904 -46 L-361.6 230 M904 -46 L0 230 M904 -46 L361.6 230 M904 -46 L723.2 230 M904 -46 L1084.8000000000002 230 M904 -46 L1446.4 230 M904 -46 L1808 230 M904 -46 L2169.6000000000004 230 M904 -46 L2531.2000000000003 230 M904 -46 L2892.8 230 M904 -46 L3254.4 230 M904 -46 L3616 230 M904 -46 L3977.6000000000004 230 M904 -46 L4339.200000000001 230 M904 -46 L4700.8 230 M904 -46 L5062.400000000001 230 M904 -46 L5424 230" stroke="cornflowerblue" stroke-width="2" vector-effect="non-scaling-stroke" /></svg>')
+    left bottom / 100% 40% no-repeat;
+  --pos: var(--outrun, 0);
+  --distance: 0.5%;
+  --hor: 60%;
+  --l0: var(--hor) + 0 * 0 * var(--distance) +
+    (
+      ((0 + 1) * (0 + 1) * var(--distance) - 0 * 0 * var(--distance)) *
+        var(--pos)
+    );
+  --l1: var(--hor) + 1 * 1 * var(--distance) +
+    (
+      ((1 + 1) * (1 + 1) * var(--distance) - 1 * 1 * var(--distance)) *
+        var(--pos)
+    );
+  --l2: var(--hor) + 2 * 2 * var(--distance) +
+    (
+      ((2 + 1) * (2 + 1) * var(--distance) - 2 * 2 * var(--distance)) *
+        var(--pos)
+    );
+  --l3: var(--hor) + 3 * 3 * var(--distance) +
+    (
+      ((3 + 1) * (3 + 1) * var(--distance) - 3 * 3 * var(--distance)) *
+        var(--pos)
+    );
+  --l4: var(--hor) + 4 * 4 * var(--distance) +
+    (
+      ((4 + 1) * (4 + 1) * var(--distance) - 4 * 4 * var(--distance)) *
+        var(--pos)
+    );
+  --l5: var(--hor) + 5 * 5 * var(--distance) +
+    (
+      ((5 + 1) * (5 + 1) * var(--distance) - 5 * 5 * var(--distance)) *
+        var(--pos)
+    );
+  --l6: var(--hor) + 6 * 6 * var(--distance) +
+    (
+      ((6 + 1) * (6 + 1) * var(--distance) - 6 * 6 * var(--distance)) *
+        var(--pos)
+    );
+  --l7: var(--hor) + 7 * 7 * var(--distance) +
+    (
+      ((7 + 1) * (7 + 1) * var(--distance) - 7 * 7 * var(--distance)) *
+        var(--pos)
+    );
+  --l8: var(--hor) + 8 * 8 * var(--distance) +
+    (
+      ((8 + 1) * (8 + 1) * var(--distance) - 8 * 8 * var(--distance)) *
+        var(--pos)
+    );
+  --l9: var(--hor) + 9 * 9 * var(--distance) +
+    (
+      ((9 + 1) * (9 + 1) * var(--distance) - 9 * 9 * var(--distance)) *
+        var(--pos)
+    );
+  --lgh: linear-gradient(
+    transparent 0px var(--hor),
+    var(--c1) var(--hor) calc(var(--hor) + 2px),
+    transparent calc(var(--hor) + 2px)
+  );
+  --lg0: linear-gradient(
+    transparent 0px calc(var(--l0)),
+    var(--c1) calc(var(--l0)) calc(var(--l0) + 2px),
+    transparent calc(var(--l0) + 2px)
+  );
+  --lg1: linear-gradient(
+    transparent 0px calc(var(--l1)),
+    var(--c1) calc(var(--l1)) calc(var(--l1) + 2px),
+    transparent calc(var(--l1) + 2px)
+  );
+  --lg2: linear-gradient(
+    transparent 0px calc(var(--l2)),
+    var(--c1) calc(var(--l2)) calc(var(--l2) + 2px),
+    transparent calc(var(--l2) + 2px)
+  );
+  --lg3: linear-gradient(
+    transparent 0px calc(var(--l3)),
+    var(--c1) calc(var(--l3)) calc(var(--l3) + 2px),
+    transparent calc(var(--l3) + 2px)
+  );
+  --lg4: linear-gradient(
+    transparent 0px calc(var(--l4)),
+    var(--c1) calc(var(--l4)) calc(var(--l4) + 2px),
+    transparent calc(var(--l4) + 2px)
+  );
+  --lg5: linear-gradient(
+    transparent 0px calc(var(--l5)),
+    var(--c1) calc(var(--l5)) calc(var(--l5) + 2px),
+    transparent calc(var(--l5) + 2px)
+  );
+  --lg6: linear-gradient(
+    transparent 0px calc(var(--l6)),
+    var(--c1) calc(var(--l6)) calc(var(--l6) + 2px),
+    transparent calc(var(--l6) + 2px)
+  );
+  --lg7: linear-gradient(
+    transparent 0px calc(var(--l7)),
+    var(--c1) calc(var(--l7)) calc(var(--l7) + 2px),
+    transparent calc(var(--l7) + 2px)
+  );
+  --lg8: linear-gradient(
+    transparent 0px calc(var(--l8)),
+    var(--c1) calc(var(--l8)) calc(var(--l8) + 2px),
+    transparent calc(var(--l8) + 2px)
+  );
+  --lg9: linear-gradient(
+    transparent 0px calc(var(--l9)),
+    var(--c1) calc(var(--l9)) calc(var(--l9) + 2px),
+    transparent calc(var(--l9) + 2px)
+  );
+  --darker: #010020;
+  --lighter: rgba(11, 11, 17, 0.4);
+  background: linear-gradient(
+      0deg,
+      var(--darker) 0%,
+      var(--darker) 10%,
+      var(--lighter) 100%
+    ),
+    var(--lgDepth), var(--lgh), var(--lg0), var(--lg1), var(--lg2), var(--lg3),
+    var(--lg4), var(--lg5), var(--lg6), var(--lg7), var(--lg8), var(--lg9),
+    repeating-linear-gradient(90deg, transparent 0px 2px, var(--c3) 1px 4px),
+    radial-gradient(
+      circle at center,
+      transparent min(45vh, 45vw),
+      hsla(var(--c2hsl), 0.75) min(65vh, 65vw),
+      var(--c3) 120%
+    ),
+    url("/kamen.svg") no-repeat 50% 30% / 90% 90%,
+    linear-gradient(var(--c5) 60%, var(--c3) 60%, var(--c2) 150%);
+}
