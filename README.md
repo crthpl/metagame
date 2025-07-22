@@ -26,7 +26,7 @@ Then run the site with:
 pnpm dev
 ```
 
-The site should now be running at `http://localhost:4321`
+The site should now be running at `http://localhost:3000`
 
 ### Requirements
 - Node.js 18 or later
