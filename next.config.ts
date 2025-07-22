@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   },
   distDir: 'dist',
   // Redirects configuration
+  // the proset-poster is hardcoded into QR code in the poster version but should also lead here
   async redirects() {
     return [
       {
