@@ -1,1 +1,11 @@
-* @briansmiley @RickiHeicklen @b0b3rt
+# This file sets users whose approval is required for approving Pull Requests that touch particular files.
+# If you write a file with sensitive behavior or esoteric context, you can add its path with your github username to be requested to review changes to it
+#
+# e.g.
+#
+# This assigns this specific route file to Brian
+# app/api/special-complicated-api-route/route.ts @briansmiley
+#
+# This assigns everything nested in the `special-page` directory to Ricki
+# app/special-page/* @rickiheicklen 
+
