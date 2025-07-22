@@ -13,6 +13,16 @@ const nextConfig: NextConfig = {
     return config;
   },
   distDir: 'dist',
+  // Redirects configuration
+  async redirects() {
+    return [
+      {
+        source: '/proset-poster',
+        destination: '/',
+        permanent: true, // This creates a 308 permanent redirect
+      },
+    ];
+  },
   // Environment variables
   env: {
     PUBLIC_INTEREST_FORM_URL: process.env.PUBLIC_INTEREST_FORM_URL,
