@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
     return config;
   },
   distDir: 'dist',
+  // Redirects configuration
+  // the proset-poster is hardcoded into QR code in the poster version but should also lead here
+  async redirects() {
+    return [
+      {
+        source: '/proset-poster',
+        destination: '/proset-puzzle',
+        permanent: true, // This creates a 308 permanent redirect
+      },
+    ];
+  },
   // Environment variables
   env: {
     PUBLIC_INTEREST_FORM_URL: process.env.PUBLIC_INTEREST_FORM_URL,
