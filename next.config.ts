@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/proset-poster',
-        destination: '/',
+        destination: '/proset-puzzle',
         permanent: true, // This creates a 308 permanent redirect
       },
     ];
