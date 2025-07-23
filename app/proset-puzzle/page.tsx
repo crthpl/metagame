@@ -28,16 +28,16 @@ export default function ProsetPuzzlePage() {
           </h1>
           
           {/* Subtitle */}
-          <h2 className="text-2xl md:text-3xl text-secondary-500 mb-0">
+          <h2 className="text-2xl md:text-3xl text-secondary-500">
             By Eric Neyman
           </h2>
           
           {/* Image */}
           <div className="flex justify-center mb-0">
             <Image
-              src="/proset-puzzle.png"
+              src="/images/proset-puzzle.png"
               alt="Projective Set Puzzle"
-              width={800}
+              width={600}
               height={600}
               className="rounded-lg shadow-lg max-w-full h-auto"
               priority
@@ -45,7 +45,7 @@ export default function ProsetPuzzlePage() {
           </div>
           
           {/* Text */}
-          <p className="text-lg md:text-xl text-gray-200 font-medium italic mb-12">
+          <p className="text-lg md:text-xl text-gray-200 font-medium italic mt-6 mb-12">
             Enter the 5-letter solution at checkout for $100 off your ticket price
           </p>
         </div>
