@@ -22,6 +22,11 @@ const nextConfig: NextConfig = {
         destination: '/proset-puzzle',
         permanent: true, // This creates a 308 permanent redirect
       },
+      {
+        source: '/recon', // for the RECON sponsorship QR code
+        destination: '/proset-puzzle',
+        permanent: true, // This creates a 308 permanent redirect
+      },
     ];
   },
   // Environment variables
