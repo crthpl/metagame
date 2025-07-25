@@ -1,7 +1,7 @@
 export interface TicketType {
   id: string;
   title: string;
-  price?: number;
+  price: number;
   regularPrice?: number;
   description: string;
   tooltipText?: string;
