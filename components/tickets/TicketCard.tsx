@@ -6,7 +6,8 @@ import { getTicketType } from '../../config/tickets';
 import {
   TICKET_EARLY_BIRD_URL,
   TICKET_REGULAR_URL,
-  TICKET_SUPPORTER_URL
+  TICKET_SUPPORTER_URL,
+  TICKET_VOLUNTEER_URL
 } from '../../config';
 
 interface TicketCardProps {
@@ -71,6 +72,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     ticketTypeId === 'early_bird' ? TICKET_EARLY_BIRD_URL :
     ticketTypeId === 'supporter' ? TICKET_SUPPORTER_URL :
     ticketTypeId === 'regular' ? TICKET_REGULAR_URL :
+    ticketTypeId === 'npc' ? TICKET_VOLUNTEER_URL :
     '';
 
   const handleBuyNow = () => {
@@ -96,6 +98,9 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     onPurchaseSuccess?.();
   };
 
+  // Check if this is a volunteer ticket
+  const isVolunteerTicket = ticketTypeId === 'npc';
+
   return (
     <div className={`relative group transition-all duration-300 ${
       isExpanded ? 'md:col-span-3' : ''
@@ -108,7 +113,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
               {ticketType.title}
             </h3>
             
-            <p className="mt-3 mb-6 text-cyan-300 font-bold">
+            <p className="mt-3 mb-3 text-cyan-300 font-bold">
               {ticketType.tooltipText ? (
                 <>
                   {ticketType.description.split('Volunteer')[0]}
@@ -143,13 +148,14 @@ export const TicketCard: React.FC<TicketCardProps> = ({
               <div className="text-4xl text-gray-400 h-0" />
             )}
             
-            <p className="my-4 text-6xl md:text-5xl lg:text-6xl font-black text-secondary-300">
-              ${ticketType.price}
-            </p>
+            {!isVolunteerTicket &&
+            (<p className="my-4 text-6xl md:text-5xl lg:text-6xl font-black text-secondary-300">
+              {isVolunteerTicket ? '$0+' : `$${ticketType.price}`}
+            </p>)}
           </div>
         </div>
 
-        {/* Purchase Form or Buy Button */}
+        {/* Purchase Form or Buy/Apply Button */}
         <div className="mt-auto pt-3">
           {showPurchaseForm ? (
             <div className="border-t border-gray-700 pt-4 mt-4 text-left">
@@ -168,7 +174,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                 className="bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 relative transition-all duration-300 rounded-md p-0.5 font-bold bg-[length:200%_200%] bg-[position:-100%_0] hover:bg-[position:100%_0]"
               >
                 <div className="bg-dark-500 text-white w-full h-full px-12 rounded-md py-3 uppercase transition-all duration-1000">
-                  Buy Now
+                  {isVolunteerTicket ? 'Apply' : 'Buy Now'}
                 </div>
               </button>
             </div>
