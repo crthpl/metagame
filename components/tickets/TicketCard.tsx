@@ -150,7 +150,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             
             {!isVolunteerTicket &&
             (<p className="my-4 text-6xl md:text-5xl lg:text-6xl font-black text-secondary-300">
-              {isVolunteerTicket ? '$0+' : `$${ticketType.price}`}
+              {`$${ticketType.price}`}
             </p>)}
           </div>
         </div>
