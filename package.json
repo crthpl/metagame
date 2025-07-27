@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@fontsource/jura": "^5.2.6",
-    "@jaredreisinger/react-crossword": "^5.2.0",
+    "@jaredreisinger/react-crossword": "github:briansmiley/react-crossword#dist",
     "@nanostores/react": "^1.0.0",
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.4.0",
