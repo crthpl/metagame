@@ -496,6 +496,8 @@ export default function MyCrossword() {
   // };
 
   const onCellChange = () => {
+    setIsCompleted(false)
+    setIsCorrect(false)
     setShowReset(true);
   };
 
@@ -572,17 +574,23 @@ export default function MyCrossword() {
             <OverlaysContainer gridRef={gridRef} />
           </div>
           <CurrentClue />
-          {isCompleted && isCorrect && (
-            <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg text-center">
-              You hold the key to unlock countless rewards... at least for
-              a few seconds
-            </div>
-          )}
-          {escapeHoldCompleted && (
-            <div className="mt-2 p-4 bg-blue-100 text-blue-800 rounded-lg text-center">
-              Congratulations! Use coupon code &quot;{couponInfo?.code}&quot; for {couponInfo?.discount} off your
-              ticket price! 🎉
-            </div>
+          {isCompleted && (
+            isCorrect ? (
+              <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg text-center">
+                You hold the key to unlock countless rewards... at least for
+                a few seconds
+                {escapeHoldCompleted && (
+                  <div className="mt-2 p-4 bg-blue-100 text-blue-800 rounded-lg text-center">
+                    Congratulations! Use coupon code &quot;{couponInfo?.code}&quot; for {couponInfo?.discount} off your
+                    ticket price! 🎉
+                  </div>
+              )}
+              </div>
+            ) : (
+              <div className="mt-4 p-4 bg-red-100 text-red-800 rounded-lg text-center">
+                Something&apos;s not quite right!
+              </div>
+            )
           )}
         </CrosswordProvider>
       </ThemeProvider>
