@@ -16,19 +16,31 @@ export type Database = {
     Tables: {
       locations: {
         Row: {
+          capacity: number | null
+          description: string | null
           id: string
+          image_url: string | null
           lh_name: string | null
           name: string
+          thumbnail_url: string | null
         }
         Insert: {
+          capacity?: number | null
+          description?: string | null
           id?: string
+          image_url?: string | null
           lh_name?: string | null
           name?: string
+          thumbnail_url?: string | null
         }
         Update: {
+          capacity?: number | null
+          description?: string | null
           id?: string
+          image_url?: string | null
           lh_name?: string | null
           name?: string
+          thumbnail_url?: string | null
         }
         Relationships: []
       }
@@ -133,6 +145,46 @@ export type Database = {
         }
         Relationships: []
       }
+<<<<<<< Updated upstream
+=======
+      sessions_view: {
+        Row: {
+          capacity: number | null
+          description: string | null
+          end_time: string | null
+          host_email: string | null
+<<<<<<< Updated upstream
+          host_id: string | null
+          id: string | null
+          location: string | null
+          location_id: string | null
+          start_time: string | null
+          title: string | null
+        }
+        Relationships: []
+=======
+          host_first_name: string | null
+          host_id: string | null
+          host_last_name: string | null
+          id: string | null
+          location: string | null
+          location_id: string | null
+          location_name: string | null
+          start_time: string | null
+          title: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+>>>>>>> Stashed changes
+      }
+>>>>>>> Stashed changes
       tickets_view: {
         Row: {
           created_at: string | null
