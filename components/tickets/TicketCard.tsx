@@ -138,10 +138,9 @@ export const TicketCard: React.FC<TicketCardProps> = ({
               <div className="text-4xl text-gray-400 h-0" />
             )}
             
-            {!isVolunteerTicket &&
-            (<p className="my-4 text-6xl md:text-5xl lg:text-6xl font-black text-secondary-300">
-              {`$${ticketType.price}`}
-            </p>)}
+            <p className="my-4 text-6xl md:text-5xl lg:text-6xl font-black text-secondary-300">
+              {`$${ticketType.price > 0 ?  ticketType.price : "?"}`}
+            </p>
           </div>
         </div>
 
