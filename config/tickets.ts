@@ -19,6 +19,7 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     price: 580,
     regularPrice: 580,
     description: 'Full access to the event, including participating in the megagame',
+    finePrint: 'Financial support options coming soon!',
     // features: [
     //   'Full access to all games and activities',
     //   'Event materials and swag',
