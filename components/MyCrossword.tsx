@@ -472,15 +472,14 @@ export default function MyCrossword() {
     };
   }, [isCompleted, isCorrect]);
 
-  const onCrosswordComplete = (correct: boolean) => {
-    if (!isCompleted) {
-      setIsCompleted(true);
-      setIsCorrect(correct);
-      if (correct) {
-        fetchCouponInfo();
-      }
+  const onCrosswordComplete = useCallback((correct: boolean) => {
+
+    setIsCompleted(true);
+    setIsCorrect(correct);
+    if (correct) {
+      fetchCouponInfo();
     }
-  };
+  }, [])
 
   // const onAnswerCorrect = (
   //   direction: Direction,
@@ -499,8 +498,6 @@ export default function MyCrossword() {
   // };
 
   const onCellChange = () => {
-    setIsCompleted(false)
-    setIsCorrect(false)
     setShowReset(true);
   };
 
@@ -546,8 +543,6 @@ export default function MyCrossword() {
           onCrosswordComplete={onCrosswordComplete}
           onCellChange={onCellChange}
           ref={crosswordRef}
-          // onAnswerCorrect={onAnswerCorrect}
-          // onAnswerIncorrect={onAnswerIncorrect}
           autoJumpFromClueEnd
         >
           <div
@@ -567,6 +562,8 @@ export default function MyCrossword() {
                   className="absolute right-1 bottom-1 "
                   onClick={() => {
                     crosswordRef.current?.reset();
+                    setIsCompleted(false)
+                    setIsCorrect(false)
                     setShowReset(false);
                   }}
                 >
