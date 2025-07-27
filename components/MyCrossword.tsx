@@ -443,7 +443,6 @@ export default function MyCrossword() {
     discount: string;
     description: string;
   } | null>(null);
-
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | null = null;
 
@@ -474,9 +473,13 @@ export default function MyCrossword() {
   }, [isCompleted, isCorrect]);
 
   const onCrosswordComplete = (correct: boolean) => {
-    setIsCompleted(true);
-    setIsCorrect(correct);
-    fetchCouponInfo();
+    if (!isCompleted) {
+      setIsCompleted(true);
+      setIsCorrect(correct);
+      if (correct) {
+        fetchCouponInfo();
+      }
+    }
   };
 
   // const onAnswerCorrect = (
