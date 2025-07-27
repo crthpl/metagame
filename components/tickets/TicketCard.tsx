@@ -162,7 +162,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                 onClick={handleBuyNow}
                 className="bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 relative transition-all duration-300 rounded-md p-0.5 font-bold bg-[length:200%_200%] bg-[position:-100%_0] hover:bg-[position:100%_0]"
               >
-                <div className="bg-dark-500 text-white w-full h-full px-12 rounded-md py-3 uppercase transition-all duration-1000">
+                <div className="bg-dark-500 text-white w-full h-full px-12 rounded-md py-3 uppercase transition-all duration-1000 whitespace-nowrap">
                   {isVolunteerTicket ? 'Apply' : 'Buy Now'}
                 </div>
               </button>
