@@ -12,8 +12,8 @@ importers:
         specifier: ^5.2.6
         version: 5.2.6
       '@jaredreisinger/react-crossword':
-        specifier: ^5.2.0
-        version: 5.2.0(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react-is@16.13.1)(react@19.1.0)
+        specifier: github:briansmiley/react-crossword#dist
+        version: https://codeload.github.com/briansmiley/react-crossword/tar.gz/c2955756b22b69b072c41e020568f433105bf6f9(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react-is@16.13.1)(react@19.1.0)
       '@nanostores/react':
         specifier: ^1.0.0
         version: 1.0.0(nanostores@1.0.1)(react@19.1.0)
@@ -411,8 +411,9 @@ packages:
     resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
     engines: {node: '>=18.0.0'}
 
-  '@jaredreisinger/react-crossword@5.2.0':
-    resolution: {integrity: sha512-X4BOZchHk2snjLVmbuxW8mohelStku05gi/SSIs8WqdKPhTkSowl2ccFgaPHWl7hy0QMq8SmXiMnzxC0Qu58Ig==}
+  '@jaredreisinger/react-crossword@https://codeload.github.com/briansmiley/react-crossword/tar.gz/c2955756b22b69b072c41e020568f433105bf6f9':
+    resolution: {tarball: https://codeload.github.com/briansmiley/react-crossword/tar.gz/c2955756b22b69b072c41e020568f433105bf6f9}
+    version: 5.2.0
     engines: {node: '>=18.7.0'}
     peerDependencies:
       react: ^18.2.0
@@ -2756,7 +2757,7 @@ snapshots:
     dependencies:
       minipass: 7.1.2
 
-  '@jaredreisinger/react-crossword@5.2.0(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react-is@16.13.1)(react@19.1.0)':
+  '@jaredreisinger/react-crossword@https://codeload.github.com/briansmiley/react-crossword/tar.gz/c2955756b22b69b072c41e020568f433105bf6f9(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react-is@16.13.1)(react@19.1.0)':
     dependencies:
       immer: 9.0.21
       prop-types: 15.8.1
