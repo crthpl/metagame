@@ -114,17 +114,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             </h3>
             
             <p className="mt-3 mb-3 text-cyan-300 font-bold">
-              {ticketType.tooltipText ? (
-                <>
-                  {ticketType.description.split('Volunteer')[0]}
-                  <Tooltip text={ticketType.tooltipText}>
-                    Volunteer
-                  </Tooltip>
-                  {ticketType.description.split('Volunteer')[1]}
-                </>
-              ) : (
-                ticketType.description
-              )}
+                {ticketType.description}
             </p>
 
             {/* Features List */}

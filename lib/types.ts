@@ -4,7 +4,7 @@ export interface TicketType {
   price: number;
   regularPrice?: number;
   description: string;
-  tooltipText?: string;
+  finePrint?: string;
   features?: string[];
 }
 
