@@ -5,8 +5,8 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     id: 'npc',
     title: 'NPC',
     price: 0,
-    description: 'Volunteer for 1-6 shifts during or leading up to the conference for a free or reduced price ticket. May exclude participation in the megagame.',
-    // tooltipText: 'You won\'t get to compete in the megagame, but you will get to help create and run it! Plus other fun stuff like staffing the registration desk and moving monitors from room A to room B and then back to room A again.',
+    description: 'Volunteer for 1-6 shifts for a free or reduced price ticket.',
+    finePrint: 'May exclude participation in the megagame.',
     // features: [
     //   'Volunteer for 6 shifts over the weekend',
     //   'Access to all event activities',
