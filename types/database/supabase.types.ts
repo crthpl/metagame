@@ -47,18 +47,21 @@ export type Database = {
       profiles: {
         Row: {
           discord_handle: string | null
+          email: string | null
           first_name: string | null
           id: string
           last_name: string | null
         }
         Insert: {
           discord_handle?: string | null
+          email?: string | null
           first_name?: string | null
           id: string
           last_name?: string | null
         }
         Update: {
           discord_handle?: string | null
+          email?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
@@ -135,34 +138,12 @@ export type Database = {
       }
     }
     Views: {
-      profiles_view: {
-        Row: {
-          discord_handle: string | null
-          email: string | null
-          first_name: string | null
-          id: string | null
-          last_name: string | null
-        }
-        Relationships: []
-      }
-<<<<<<< Updated upstream
-=======
       sessions_view: {
         Row: {
           capacity: number | null
           description: string | null
           end_time: string | null
           host_email: string | null
-<<<<<<< Updated upstream
-          host_id: string | null
-          id: string | null
-          location: string | null
-          location_id: string | null
-          start_time: string | null
-          title: string | null
-        }
-        Relationships: []
-=======
           host_first_name: string | null
           host_id: string | null
           host_last_name: string | null
@@ -182,9 +163,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
->>>>>>> Stashed changes
       }
->>>>>>> Stashed changes
       tickets_view: {
         Row: {
           created_at: string | null
