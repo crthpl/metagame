@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { TicketPurchaseForm } from './TicketPurchaseForm';
 import { getTicketType } from '../../config/tickets';
 import {
@@ -15,45 +15,6 @@ interface TicketCardProps {
   onPurchaseSuccess?: () => void;
 }
 
-const Tooltip: React.FC<{ text: string; children: React.ReactNode }> = ({ text, children }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
-        setIsVisible(false);
-      }
-    };
-
-    if (isVisible) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isVisible]);
-
-  return (
-    <div className="relative inline-block" ref={tooltipRef}>
-      <span
-        className="cursor-help underline decoration-dotted"
-        onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
-        onClick={() => setIsVisible(!isVisible)}
-      >
-        {children}
-      </span>
-      {isVisible && (
-        <div className="absolute z-50 top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md shadow-lg max-w-lg md:max-w-xl whitespace-normal min-w-[200px] md:min-w-[300px]">
-          {text}
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-800"></div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 export const TicketCard: React.FC<TicketCardProps> = ({ 
   ticketTypeId, 
