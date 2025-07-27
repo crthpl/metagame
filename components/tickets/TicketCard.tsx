@@ -116,7 +116,11 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             <p className="mt-3 mb-3 text-cyan-300 font-bold">
                 {ticketType.description}
             </p>
-
+            {ticketType.finePrint && (
+              <ul className="mt-3 mb-3 text-xs text-opacity-80 text-left text-cyan-300 list-disc list-outside pl-4">
+                <li>{ticketType.finePrint}</li>
+              </ul>
+            )}
             {/* Features List */}
             {ticketType.features && ticketType.features.length > 0 && (
               <ul className="my-16 text-lg">
