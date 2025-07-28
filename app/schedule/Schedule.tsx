@@ -216,7 +216,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
       {/* Mobile View */}
       <div className="md:hidden">
         {locations.map((venue) => (
-          <div key={venue.id} className="border-b border-dark-400 last:border-b-0">
+          <div key={venue.id} className="border-b border-dark-400">
             <div className="p-3 bg-dark-600 border-b border-dark-400">
               <h3 className="font-semibold text-secondary-200 text-sm">{venue.name}</h3>
             </div>
@@ -249,12 +249,12 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
       <div className="hidden md:block overflow-x-auto">
         <div className="min-w-full">
           {/* Header Row */}
-          <div className="grid gap-px bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(140px, 1fr))` }}>
-            <div className="bg-dark-600 p-3 left-0 shadow-lg border-b border-secondary-300">
+          <div className="grid bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(140px, 1fr))` }}>
+            <div className="bg-dark-600 p-3 left-0 shadow-lg border border-secondary-300">
               <div className="font-semibold text-secondary-200 text-sm ">Time</div>
             </div>
             {locations.map((venue) => (
-              <div key={venue.id} className="bg-dark-600 p-3 border-b border-secondary-300">
+              <div key={venue.id} className="bg-dark-600 p-3 border border-secondary-300">
                 <div className="font-semibold text-secondary-200 text-sm mb-1">
                   {venue.thumbnail_url ? 
                   <Image src={venue.thumbnail_url} alt={venue.name} width={100} height={100} className="object-cover w-full h-24"/>
@@ -267,11 +267,11 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
           </div>
 
           {/* Time Slots */}
-          <div className="grid gap-px bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(140px, 1fr))` }}>
+          <div className="grid bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(140px, 1fr))` }}>
             {timeSlots.map((time) => (
               <div key={time} className="contents">
                 {/* Time Cell */}
-                <div className="bg-dark-500 p-3 border-r border-dark-400 sticky left-0 z-sticky shadow-lg">
+                <div className="bg-dark-500 p-3 border border-r-secondary-300 border-dark-400 sticky left-0 z-sticky shadow-lg">
                   <div className="text-sm text-secondary-300 font-medium">{time}</div>
                 </div>
 
@@ -282,7 +282,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
                     session.location_id === venue.id && eventStartsInSlot(session, time)
                   );
                   return (
-                    <div key={venue.id} className="bg-dark-500 min-h-[60px]  border-r border-dark-400 last:border-r-0 relative overflow-visible ">
+                    <div key={venue.id} className="bg-dark-500 border-x-secondary-300 min-h-[60px]  border border-dark-400 relative overflow-visible ">
                       {eventsInSlot.map((session) => (
                         <div
                           key={session.id}
