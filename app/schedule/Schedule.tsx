@@ -34,6 +34,8 @@ const eventColors = [
 interface ScheduleProps {
   sessions: DbSessionView[];
   locations: DbLocation[];
+  sessionId?: string;
+  dayIndex?: number
 }
 
 // Add PST timezone constant
@@ -101,8 +103,9 @@ const getEventDurationMinutes = (session: DbSessionView, slotTime: string) => {
   return Math.max(5, cappedEndMinutes - startMinutes);
 };
 
-export default function Schedule({ sessions, locations }: ScheduleProps) {
-  
+
+export default function Schedule({ sessions, locations, sessionId, dayIndex }: ScheduleProps) {
+
   // Fixed conference days
   const CONFERENCE_DAYS = [
     { date: '2025-09-12', name: 'Friday' },
@@ -140,8 +143,8 @@ export default function Schedule({ sessions, locations }: ScheduleProps) {
     }));
   }, [sessions]);
 
-  const [currentDayIndex, setCurrentDayIndex] = useState(0);
-  const [openedSessionId, setOpenedSessionId] = useState<DbSessionView['id'] | null>(null);
+  const [currentDayIndex, setCurrentDayIndex] = useState(dayIndex ?? 0);
+  const [openedSessionId, setOpenedSessionId] = useState<DbSessionView['id'] | null>(sessionId ?? null);
   const currentDay = days[currentDayIndex] || { date: '', displayName: 'No Events', events: [] };
 
   const nextDay = () => {
