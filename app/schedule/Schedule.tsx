@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DbSessionView, DbLocation } from "@/types/database/dbTypeAliases";
 import Image from "next/image";
 import SessionModal from "./SessionModalCard";
+import { useRouter } from "next/navigation";
 
 const SCHEDULE_END_TIME = 22;
 const SCHEDULE_START_TIME = 9;
@@ -105,6 +106,7 @@ const getEventDurationMinutes = (session: DbSessionView, slotTime: string) => {
 
 
 export default function Schedule({ sessions, locations, sessionId, dayIndex }: ScheduleProps) {
+  const router = useRouter()
 
   // Fixed conference days
   const CONFERENCE_DAYS = [
@@ -146,15 +148,35 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
   const [currentDayIndex, setCurrentDayIndex] = useState(dayIndex ?? 0);
   const [openedSessionId, setOpenedSessionId] = useState<DbSessionView['id'] | null>(sessionId ?? null);
   const currentDay = days[currentDayIndex] || { date: '', displayName: 'No Events', events: [] };
-
+  const updateSearchParams = ({
+    dayIndex,
+    sessionId
+  }: { dayIndex?: number; sessionId?: string}) => {
+    const params = new URLSearchParams
+    if (dayIndex != undefined) params.set('day', dayIndex.toString())
+    if (sessionId) params.set('session', sessionId)
+    router.replace(`?${params.toString()}`, {scroll: false})
+  }
   const nextDay = () => {
-    setCurrentDayIndex((prev) => Math.min(days.length - 1, prev + 1));
+    setCurrentDayIndex((prev) => {
+      const newDay = Math.min(days.length - 1, prev + 1)
+      updateSearchParams({dayIndex: newDay})
+      return  (newDay)
+    });
   };
 
   const prevDay = () => {
-    setCurrentDayIndex((prev) => Math.max(0, prev - 1));
+    setCurrentDayIndex((prev) => {
+      const newDay = Math.max(0, prev - 1)
+      updateSearchParams({dayIndex:newDay})
+      return newDay
+    })
   };
 
+  const handleOpenSessionModal = (sessionId: string) => {
+    setOpenedSessionId(sessionId)
+    updateSearchParams({sessionId:sessionId})
+  }
   // Helper function to get event color
   const getEventColor = (sessionId: string) => {
     const index = sessions.findIndex(s => s.id === sessionId);
@@ -198,8 +220,8 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
                 .filter(session => session.location_id === venue.id)
                 .map((session) => (
                   <div
-                    key={session.id}
-                    onClick={() => setOpenedSessionId(session.id)}
+                    key={session.id!}
+                    onClick={()=>handleOpenSessionModal(session.id!)}
                     className={`p-3 rounded-md ${getEventColor(session.id!)} text-black text-sm`}
                   >
                     <div className="font-semibold">{session.title}</div>
@@ -259,7 +281,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
                       {eventsInSlot.map((session) => (
                         <div
                           key={session.id}
-                          onClick={() => setOpenedSessionId(session.id)}
+                          onClick={() => handleOpenSessionModal(session.id!)}
                           className={`absolute z-content p-2 m-1 rounded-md ${getEventColor(session.id!)} text-white text-sm`}
                           style={{
                             top: `${getEventOffsetMinutes(session, time) * 2}px`,     // 2px per minute
