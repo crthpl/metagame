@@ -1,19 +1,27 @@
-import { createServiceClient } from "@/utils/supabase/service";
 import Schedule from "./Schedule";
 import {z} from 'zod'
+import { getAllLocations } from "../actions/db/locations/queries";
+import { getAllSessions } from "../actions/db/sessions/queries";
+import { DbLocation, DbSessionView } from "@/types/database/dbTypeAliases";
+import { getCurrentUserRsvps } from "../actions/db/session_rsvps/queries";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 const sessionSchema = z.uuid()
 const dayIndexSchema = z.coerce.number()
+
 export default async function ScheduleDemo({searchParams}:{searchParams: SearchParams}) {
   const {session: sessionIdParam, day: dayIndexParam} = await searchParams
 
-  const supabase = createServiceClient();
-  const { data: sessions, error: sessionsError } = await supabase.from('sessions_view').select('*');
-  const { data: locations, error: locationsError } = await supabase.from('locations').select('*');
-  if (sessionsError || locationsError || !sessions || !locations) {
-    console.error(sessionsError, locationsError);
-    return <div>Error loading sessions or locations</div>;
+  let sessions: DbSessionView[] = []
+  let locations: DbLocation[] = []
+  let currentUserRsvps: string[] = []
+  try {
+    sessions = await getAllSessions()
+    locations = await getAllLocations()
+    currentUserRsvps = await getCurrentUserRsvps()
+  } catch (error) {
+    console.error(error)
+    return <div>Error loading sessions or locations: {error instanceof Error ? error.message : 'Unknown error'}</div>
   }
 
   const parsedSessionId = sessionSchema.safeParse(sessionIdParam)
@@ -29,6 +37,7 @@ export default async function ScheduleDemo({searchParams}:{searchParams: SearchP
           locations={locations || []}
           dayIndex={dayIndex}
           sessionId={sessionId}
+          currentUserRsvps={currentUserRsvps}
         />
       </div>
     </div>
