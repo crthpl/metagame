@@ -4,6 +4,7 @@ import { useState } from "react";
 import { LinkIcon, UserIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
+import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/session_rsvps/mutations";
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -29,7 +30,7 @@ const getDateString = (timestamp: string) => {
 };
 
 
-export default function SessionDetailsCard({ session }: {session: DbSessionView}) {
+export default function SessionDetailsCard({ session, currentUserIsRsvpd }: {session: DbSessionView, currentUserIsRsvpd: boolean}) {
   const [showCopiedMessage, setShowCopiedMessage] = useState(false)
   const [copyError, setCopyError] = useState(false)
 
@@ -48,7 +49,7 @@ export default function SessionDetailsCard({ session }: {session: DbSessionView}
   };
   
   return (
-      <div className="relative bg-dark-600 border border-secondary-300 rounded-xl p-6 max-w-lg w-full max-h-[calc(100vh-100px)] overflow-auto shadow-2xl">
+      <div className="relative lg:min-w-[480px] bg-dark-600 border p-4 lg:p-6 border-secondary-300 rounded-xl max-w-xl w-full max-h-[calc(100vh-100px)] overflow-auto shadow-2xl">
 
         {showCopiedMessage ?
           <span className="text-green-400 text-light absolute top-4 right-4 p-2">Copied!</span>
@@ -75,6 +76,11 @@ export default function SessionDetailsCard({ session }: {session: DbSessionView}
           {/* Time & Date */}
           {session.start_time && (
             <div className="space-y-1">
+              {currentUserIsRsvpd ? 
+                <button className="text-red-400 cursor-pointer" onClick={() => unrsvpCurrentUserFromSession(session.id!)}>Un-RSVP</button>
+                :
+                <button className="text-green-400 cursor-pointer" onClick={() => rsvpCurrentUserToSession(session.id!)}>RSVP</button>
+              }
               <div className="text-secondary-300 font-medium">
                 📅 {getDateString(session.start_time)}
               </div>
