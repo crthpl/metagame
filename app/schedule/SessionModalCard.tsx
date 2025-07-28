@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { LinkIcon, XIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
 
 interface SessionModalProps {
@@ -32,8 +32,10 @@ const getDateString = (timestamp: string) => {
   });
 };
 
+
 export default function SessionModal({ session, onClose }: SessionModalProps) {
-  console.log(session);
+  const [showCopiedMessage, setShowCopiedMessage] = useState(false)
+  const [copyError, setCopyError] = useState(false)
   // Handle ESC key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -51,7 +53,20 @@ export default function SessionModal({ session, onClose }: SessionModalProps) {
       document.body.style.overflow = 'unset';
     };
   }, []);
-
+  const copyLink = () => {
+    const base = window.location.origin
+    const fullUrl = `${base}/schedule?session=${session.id!}`
+    navigator.clipboard.writeText(fullUrl).then(() => {
+      console.log("Copied:", fullUrl);
+      setShowCopiedMessage(true)
+      setTimeout(()=> setShowCopiedMessage(false), 2000)
+    }).catch(err => {
+      console.error("Failed to copy:", err);
+      setCopyError(true)
+      setTimeout(() => setCopyError(false), 2000)
+    });
+  };
+  
   return (
     <div className="fixed inset-0 z-modal flex items-center justify-center p-4">
       {/* Backdrop */}
@@ -67,9 +82,18 @@ export default function SessionModal({ session, onClose }: SessionModalProps) {
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-md hover:bg-dark-500 transition-colors"
         >
-          <X className="w-5 h-5 text-secondary-300" />
+          <XIcon className="w-5 h-5 text-secondary-300" />
         </button>
-
+        {showCopiedMessage ?
+        <span className="text-green-400 text-light absolute bottom-4 right-4 p-2">Copied!</span>
+        :
+        <button
+          onClick={copyLink}
+          className="absolute bottom-4 right-4 p-2 rounded-md hover:bg-dark-400 transition-colors"
+          >
+            <LinkIcon className={`size-4 ${copyError ? "text-red-500" : "text-secondary-300"}`}/>
+          </button>
+}
         {/* Content */}
         <div className="space-y-4 pr-8">
           {/* Title */}
