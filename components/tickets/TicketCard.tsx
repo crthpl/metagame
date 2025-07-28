@@ -104,7 +104,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             )}
             
             <p className="my-4 text-6xl md:text-5xl lg:text-6xl font-black text-secondary-300">
-              {`$${ticketType.price > 0 ?  ticketType.price : "?"}`}
+              {`${ticketType.price > 0 ?  "$" + ticketType.price : ""}`}
             </p>
           </div>
         </div>
