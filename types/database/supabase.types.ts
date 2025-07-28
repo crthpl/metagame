@@ -50,6 +50,7 @@ export type Database = {
           email: string | null
           first_name: string | null
           id: string
+          is_admin: boolean
           last_name: string | null
           opted_in_to_homepage_display: boolean
         }
@@ -58,6 +59,7 @@ export type Database = {
           email?: string | null
           first_name?: string | null
           id: string
+          is_admin?: boolean
           last_name?: string | null
           opted_in_to_homepage_display?: boolean
         }
@@ -66,6 +68,7 @@ export type Database = {
           email?: string | null
           first_name?: string | null
           id?: string
+          is_admin?: boolean
           last_name?: string | null
           opted_in_to_homepage_display?: boolean
         }
