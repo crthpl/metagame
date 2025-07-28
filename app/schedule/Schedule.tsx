@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, UserIcon } from "lucide-react";
 import { DbSessionView, DbLocation } from "@/types/database/dbTypeAliases";
 import Image from "next/image";
 import SessionModal from "./SessionModalCard";
 import { useRouter } from "next/navigation";
+import { dbGetHostsFromSession } from "@/utils/dbUtils";
 
 const SCHEDULE_END_TIME = 22;
 const SCHEDULE_START_TIME = 9;
@@ -249,7 +250,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
       <div className="hidden md:block overflow-x-auto">
         <div className="min-w-full">
           {/* Header Row */}
-          <div className="grid bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(140px, 1fr))` }}>
+          <div className="grid bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
             <div className="bg-dark-600 p-3 left-0 shadow-lg border border-secondary-300">
               <div className="font-semibold text-secondary-200 text-sm ">Time</div>
             </div>
@@ -267,7 +268,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
           </div>
 
           {/* Time Slots */}
-          <div className="grid bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(140px, 1fr))` }}>
+          <div className="grid bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
             {timeSlots.map((time) => (
               <div key={time} className="contents">
                 {/* Time Cell */}
@@ -287,7 +288,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
                         <div
                           key={session.id}
                           onClick={() => handleOpenSessionModal(session.id!)}
-                          className={`absolute z-content p-2 m-1 rounded-md ${getEventColor(session.id!)} text-white text-sm`}
+                          className={`absolute z-content p-1 m-1 rounded-md ${getEventColor(session.id!)} text-black font-semibold`}
                           style={{
                             top: `${getEventOffsetMinutes(session, time) * 2}px`,     // 2px per minute
                             height: `${getEventDurationMinutes(session, time) * 2}px`, // 2px per minute  
@@ -295,16 +296,21 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
                             right: '4px',
                           }}
                         >
-                          <div className="font-semibold text-xs leading-tight mb-1">
-                            {session.title}
-                          </div>
-                          {/* {session.capacity && (
-                            <div className="text-xs opacity-80 mt-1">
-                              👥 max {session.capacity}
+                          <div className="flex flex-col size-full relative">
+                            <div className="font-bold text-sm leading-tight">
+                              {session.title}
                             </div>
-                          )} */}
-                        </div>
-                      ))}
+                            <div className="text-xs">
+                              {dbGetHostsFromSession(session).join(", ")}
+                            </div>
+
+                            <div className=" absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
+                            <UserIcon className="size-3"/> {session.rsvp_count ?? "0"} / {session.max_capacity}
+                            </div>
+
+                          </div>
+                      </div>
+                    ))}
                     </div>
                   );
                 })}

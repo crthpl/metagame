@@ -51,6 +51,7 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
+          opted_in_to_homepage_display: boolean
         }
         Insert: {
           discord_handle?: string | null
@@ -58,6 +59,7 @@ export type Database = {
           first_name?: string | null
           id: string
           last_name?: string | null
+          opted_in_to_homepage_display?: boolean
         }
         Update: {
           discord_handle?: string | null
@@ -65,40 +67,83 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          opted_in_to_homepage_display?: boolean
         }
         Relationships: []
       }
+      session_rsvps: {
+        Row: {
+          created_at: string
+          id: number
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_rsvps_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_rsvps_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sessions: {
         Row: {
-          capacity: number | null
           description: string | null
           end_time: string | null
-          host_id: string | null
+          host_1_id: string | null
+          host_2_id: string | null
+          host_3_id: string | null
           id: string
-          location: string | null
           location_id: string | null
+          max_capacity: number | null
+          min_capacity: number | null
           start_time: string | null
           title: string | null
         }
         Insert: {
-          capacity?: number | null
           description?: string | null
           end_time?: string | null
-          host_id?: string | null
+          host_1_id?: string | null
+          host_2_id?: string | null
+          host_3_id?: string | null
           id?: string
-          location?: string | null
           location_id?: string | null
+          max_capacity?: number | null
+          min_capacity?: number | null
           start_time?: string | null
           title?: string | null
         }
         Update: {
-          capacity?: number | null
           description?: string | null
           end_time?: string | null
-          host_id?: string | null
+          host_1_id?: string | null
+          host_2_id?: string | null
+          host_3_id?: string | null
           id?: string
-          location?: string | null
           location_id?: string | null
+          max_capacity?: number | null
+          min_capacity?: number | null
           start_time?: string | null
           title?: string | null
         }
@@ -114,23 +159,32 @@ export type Database = {
       }
       tickets: {
         Row: {
+          coupons_used: string[]
           created_at: string
+          discord_handl: string | null
           id: number
           owner_id: string | null
+          price_paid: number | null
           purchaser_email: string | null
           ticket_type: Database["public"]["Enums"]["ticket_type"]
         }
         Insert: {
+          coupons_used?: string[]
           created_at?: string
+          discord_handl?: string | null
           id?: number
           owner_id?: string | null
+          price_paid?: number | null
           purchaser_email?: string | null
           ticket_type: Database["public"]["Enums"]["ticket_type"]
         }
         Update: {
+          coupons_used?: string[]
           created_at?: string
+          discord_handl?: string | null
           id?: number
           owner_id?: string | null
+          price_paid?: number | null
           purchaser_email?: string | null
           ticket_type?: Database["public"]["Enums"]["ticket_type"]
         }
@@ -138,19 +192,54 @@ export type Database = {
       }
     }
     Views: {
+      session_rsvps_view: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: number | null
+          session_id: string | null
+          title: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_rsvps_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_rsvps_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sessions_view: {
         Row: {
-          capacity: number | null
           description: string | null
           end_time: string | null
-          host_email: string | null
-          host_first_name: string | null
-          host_id: string | null
-          host_last_name: string | null
+          host_1_email: string | null
+          host_1_first_name: string | null
+          host_1_id: string | null
+          host_1_last_name: string | null
+          host_2_email: string | null
+          host_2_first_name: string | null
+          host_2_id: string | null
+          host_2_last_name: string | null
+          host_3_email: string | null
+          host_3_first_name: string | null
+          host_3_id: string | null
+          host_3_last_name: string | null
           id: string | null
-          location: string | null
           location_id: string | null
           location_name: string | null
+          max_capacity: number | null
+          min_capacity: number | null
+          rsvp_count: number | null
           start_time: string | null
           title: string | null
         }
