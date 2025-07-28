@@ -157,6 +157,10 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
     if (sessionId) params.set('session', sessionId)
     router.replace(`?${params.toString()}`, {scroll: false})
   }
+  const setDayIndex = (dayIndex: number) => {
+    setCurrentDayIndex(dayIndex)
+    updateSearchParams({dayIndex:dayIndex})
+  }
   const nextDay = () => {
     setCurrentDayIndex((prev) => {
       const newDay = Math.min(days.length - 1, prev + 1)
@@ -177,6 +181,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
     setOpenedSessionId(sessionId)
     updateSearchParams({sessionId:sessionId})
   }
+
   // Helper function to get event color
   const getEventColor = (sessionId: string) => {
     const index = sessions.findIndex(s => s.id === sessionId);
@@ -327,7 +332,12 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
       {openedSessionId && 
         <SessionModal 
         session={sessions.find(s => s.id === openedSessionId)!} 
-        onClose={() => setOpenedSessionId(null)} />
+        onClose={() => {
+          const sessionDayIndex = days.findIndex(day => day.events.some(event => event.id === openedSessionId))
+          setOpenedSessionId(null)
+          setDayIndex(sessionDayIndex)
+          }
+        }/>
       }
     </div>
   );
