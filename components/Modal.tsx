@@ -1,12 +1,8 @@
 import { useEffect } from "react";
 
-type ModalProps = {
-  onClose: () => void,
-  children: React.ReactNode
-}
 
 
-export function Modal({onClose, children}: ModalProps) {
+export function Modal({onClose, children, className}: {onClose: () => void, children: React.ReactNode, className?: string}) {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -22,7 +18,7 @@ export function Modal({onClose, children}: ModalProps) {
       onClick={onClose}
     >
       {/* Prevent clicks on content from closing modal */}
-      <div onClick={(e) => e.stopPropagation()}>
+      <div onClick={(e) => e.stopPropagation()} className={className}>
         {children}
       </div>
     </div>
