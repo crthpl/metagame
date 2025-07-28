@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import { ChevronLeft, ChevronRight, UserIcon } from "lucide-react";
+import { CheckIcon, ChevronLeft, ChevronRight, UserIcon } from "lucide-react";
 import { DbSessionView, DbLocation } from "@/types/database/dbTypeAliases";
 import Image from "next/image";
 import SessionDetailsCard from "./SessionModalCard";
@@ -30,17 +30,11 @@ const timeSlots = generateTimeSlots();
 
 // Color options for events
 const eventColors = [
-  "bg-blue-400", "bg-green-400", "bg-purple-400", "bg-orange-400", 
+  "bg-blue-400", "bg-purple-400", "bg-orange-400", 
   "bg-cyan-400", "bg-pink-400", "bg-yellow-400", "bg-red-400", 
   "bg-indigo-400", "bg-teal-400"
 ];
 
-interface ScheduleProps {
-  sessions: DbSessionView[];
-  locations: DbLocation[];
-  sessionId?: string;
-  dayIndex?: number
-}
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -98,7 +92,15 @@ const getEventDurationMinutes = (session: DbSessionView, slotTime: string) => {
 };
 
 
-export default function Schedule({ sessions, locations, sessionId, dayIndex }: ScheduleProps) {
+export default function Schedule({ 
+  sessions, locations, currentUserRsvps, sessionId, dayIndex 
+}: {
+  sessions: DbSessionView[];
+  locations: DbLocation[];
+  currentUserRsvps: string[];
+  sessionId?: string;
+  dayIndex?: number;
+}) {
   const router = useRouter()
 
   // Fixed conference days
@@ -177,8 +179,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
 
   // Helper function to get event color
   const getEventColor = (sessionId: string) => {
-    const index = sessions.findIndex(s => s.id === sessionId);
-    return eventColors[index % eventColors.length];
+    return currentUserRsvps.includes(sessionId) ? 'bg-green-400' : eventColors[sessions.findIndex(s => s.id === sessionId) % eventColors.length]
   };
 
   return (
@@ -279,7 +280,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
                   return (
                     <div key={venue.id} className="bg-dark-500 border-x-secondary-300 min-h-[60px] border border-dark-400 relative overflow-visible">
                       {eventsInSlot.map((session) => (
-                        <SmartTooltip key={session.id} tooltip={<SessionDetailsCard session={session}/>}>
+                        <SmartTooltip key={session.id} tooltip={<SessionDetailsCard session={session} currentUserIsRsvpd={currentUserRsvps.includes(session.id!)}/>}>
                           <div
                             onClick={() => handleOpenSessionModal(session.id!)}
                             className={`absolute z-content p-1 m-1 rounded-md ${getEventColor(session.id!)} text-black font-semibold`}
@@ -299,7 +300,9 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
                               </div>
 
                               <div className=" absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
-                              <UserIcon className="size-3"/> {session.rsvp_count ?? "0"} / {session.max_capacity}
+                                {currentUserRsvps.includes(session.id!) && <CheckIcon className="size-3"/>}
+                                <UserIcon className="size-3"/> 
+                                {session.rsvp_count ?? "0"} / {session.max_capacity}
                               </div>
 
                             </div>
@@ -325,6 +328,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
         >
           <SessionDetailsCard 
             session={sessions.find(s => s.id === openedSessionId)!} 
+            currentUserIsRsvpd={currentUserRsvps.includes(openedSessionId!)}
           />
         </Modal>
       }

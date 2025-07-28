@@ -18,10 +18,15 @@ export default async function ScheduleDemo({searchParams}:{searchParams: SearchP
   try {
     sessions = await getAllSessions()
     locations = await getAllLocations()
-    currentUserRsvps = await getCurrentUserRsvps()
   } catch (error) {
     console.error(error)
     return <div>Error loading sessions or locations: {error instanceof Error ? error.message : 'Unknown error'}</div>
+  }
+  try {
+    currentUserRsvps = await getCurrentUserRsvps()
+  } catch (error) {
+    //If no one is logged in we can still show the schedule
+    console.error(error)
   }
 
   const parsedSessionId = sessionSchema.safeParse(sessionIdParam)
