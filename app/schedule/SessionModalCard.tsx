@@ -1,13 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { LinkIcon, XIcon } from "lucide-react";
+import { useState } from "react";
+import { LinkIcon, UserIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
-
-interface SessionModalProps {
-  session: DbSessionView;
-  onClose: () => void;
-}
+import { dbGetHostsFromSession } from "@/utils/dbUtils";
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -33,26 +29,10 @@ const getDateString = (timestamp: string) => {
 };
 
 
-export default function SessionModal({ session, onClose }: SessionModalProps) {
+export default function SessionDetailsCard({ session }: {session: DbSessionView}) {
   const [showCopiedMessage, setShowCopiedMessage] = useState(false)
   const [copyError, setCopyError] = useState(false)
-  // Handle ESC key
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    
-    document.addEventListener('keydown', handleEsc);
-    return () => document.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
 
-  // Prevent body scroll when modal is open
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, []);
   const copyLink = () => {
     const base = window.location.origin
     const fullUrl = `${base}/schedule?session=${session.id!}`
@@ -68,38 +48,29 @@ export default function SessionModal({ session, onClose }: SessionModalProps) {
   };
   
   return (
-    <div className="fixed inset-0 z-modal flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
-        onClick={onClose}
-      />
-      
-      {/* Modal Card */}
-      <div className="relative bg-dark-600 border border-secondary-300 rounded-xl p-6 max-w-lg w-full max-h-[80vh] overflow-auto shadow-2xl">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-md hover:bg-dark-500 transition-colors"
-        >
-          <XIcon className="w-5 h-5 text-secondary-300" />
-        </button>
+      <div className="relative bg-dark-600 border border-secondary-300 rounded-xl p-6 max-w-lg w-full max-h-[calc(100vh-100px)] overflow-auto shadow-2xl">
+
         {showCopiedMessage ?
-        <span className="text-green-400 text-light absolute bottom-4 right-4 p-2">Copied!</span>
-        :
-        <button
-          onClick={copyLink}
-          className="absolute bottom-4 right-4 p-2 rounded-md hover:bg-dark-400 transition-colors"
-          >
-            <LinkIcon className={`size-4 ${copyError ? "text-red-500" : "text-secondary-300"}`}/>
+          <span className="text-green-400 text-light absolute top-4 right-4 p-2">Copied!</span>
+          :
+          <button
+            onClick={copyLink}
+            className="absolute top-4 right-4 p-2 cursor-pointer rounded-md hover:bg-dark-400 transition-colors"
+            >
+              <LinkIcon className={`size-4 ${copyError ? "text-red-500" : "text-secondary-300"}`}/>
           </button>
-}
+        }
         {/* Content */}
-        <div className="space-y-4 pr-8">
-          {/* Title */}
-          <h2 className="text-xl font-bold text-secondary-200 leading-tight">
-            {session.title || 'Untitled Session'}
-          </h2>
+        <div className="flex flex-col gap-2">
+          {/* Title and Hosts*/}
+          <div className="flex flex-col gap-1">
+            <h2 className="text-xl font-bold text-secondary-200 leading-tight">
+              {session.title || 'Untitled Session'}
+            </h2>
+            <div className="text-sm text-secondary-400">
+              {dbGetHostsFromSession(session).join(", ")}
+            </div>
+          </div>
 
           {/* Time & Date */}
           {session.start_time && (
@@ -113,35 +84,30 @@ export default function SessionModal({ session, onClose }: SessionModalProps) {
               </div>
             </div>
           )}
-
-          {/* Location */}
-          <div className="text-secondary-300">
-            📍 {(session.location || 'TBD')}
-          </div>
-
-          {/* Capacity */}
-          {session.capacity && (
-            <div className="text-secondary-300">
-              👥 Max {session.capacity} participants
-            </div>
-          )}
-
           {/* Description */}
           {session.description && (
             <div className="space-y-2">
-              <h3 className="font-semibold text-secondary-200">Description</h3>
-              <div className="text-secondary-300 leading-relaxed whitespace-pre-wrap">
+              <div className="text-secondary-300 font-semibold text-base leading-relaxed whitespace-pre-wrap">
                 {session.description}
               </div>
             </div>
           )}
 
-          {/* Host Info */}
-          <div className="text-sm text-secondary-400">
-            Host: {session.host_first_name ?? "a"} {session.host_last_name ?? "b"}
+          {/* Location and Attendance */}
+          <div className="flex w-full justify-between gap-1">
+            <div className="text-secondary-300">
+              📍 {(session.location_name || 'TBD')}
+            </div>
+            {session.max_capacity && (
+              <div className="text-secondary-300">
+                <UserIcon className="size-4 inline-block mr-1" /> {session.rsvp_count} / {session.max_capacity}
+              </div>
+            )}
           </div>
+
+
+
         </div>
       </div>
-    </div>
   );
 }

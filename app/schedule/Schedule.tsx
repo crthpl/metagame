@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, UserIcon } from "lucide-react";
 import { DbSessionView, DbLocation } from "@/types/database/dbTypeAliases";
 import Image from "next/image";
-import SessionModal from "./SessionModalCard";
+import SessionDetailsCard from "./SessionModalCard";
 import { useRouter } from "next/navigation";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
+import { Modal } from "@/components/Modal";
+import { SmartTooltip } from '@/components/SmartTooltip';
 
 const SCHEDULE_END_TIME = 22;
 const SCHEDULE_START_TIME = 9;
@@ -231,8 +233,8 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
 
         <div className="min-w-fit h-fit">
           {/* Images Row - Scrollable on mobile, sticky on large */}
-          <div className="grid bg-dark-400 lg:sticky lg:top-0 lg:z-10" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
-            <div className="bg-dark-600 p-3 border sticky left-0 z-sticky-header border-secondary-300">
+          <div className="grid bg-dark-400 lg:sticky lg:top-0 lg:z-30" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
+            <div className="bg-dark-600 p-3 border left-0 sticky border-secondary-300">
               {/* Empty space above time column */}
             </div>
             {locations.map((venue) => (
@@ -247,8 +249,7 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
 
           {/* Names Row - Always sticky, with day nav on mobile */}
           <div className="grid bg-dark-400 sticky top-0 lg:top-[120px] z-20" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
-            <div className="bg-dark-600 p-3 sticky left-0 z-30 border border-secondary-300">
-              {/* Desktop: Just "Time" */}
+            <div className="bg-dark-600 p-3 sticky left-0 top-0 z-30 border border-secondary-300">
               <div className="hidden md:block text-sm text-secondary-300 font-medium">
               </div>
             </div>
@@ -278,31 +279,32 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
                   return (
                     <div key={venue.id} className="bg-dark-500 border-x-secondary-300 min-h-[60px] border border-dark-400 relative overflow-visible">
                       {eventsInSlot.map((session) => (
-                        <div
-                          key={session.id}
-                          onClick={() => handleOpenSessionModal(session.id!)}
-                          className={`absolute z-content p-1 m-1 rounded-md ${getEventColor(session.id!)} text-black font-semibold`}
-                          style={{
-                            top: `${getEventOffsetMinutes(session, time) * 2}px`,     // 2px per minute
-                            height: `${getEventDurationMinutes(session, time) * 2}px`, // 2px per minute  
-                            left: '4px',
-                            right: '4px',
-                          }}
-                        >
-                          <div className="flex flex-col size-full relative">
-                            <div className="font-bold text-sm leading-tight">
-                              {session.title}
-                            </div>
-                            <div className="text-xs">
-                              {dbGetHostsFromSession(session).join(", ")}
-                            </div>
+                        <SmartTooltip key={session.id} tooltip={<SessionDetailsCard session={session}/>}>
+                          <div
+                            onClick={() => handleOpenSessionModal(session.id!)}
+                            className={`absolute z-content p-1 m-1 rounded-md ${getEventColor(session.id!)} text-black font-semibold`}
+                            style={{
+                              top: `${getEventOffsetMinutes(session, time) * 2}px`,     // 2px per minute
+                              height: `${getEventDurationMinutes(session, time) * 2}px`, // 2px per minute  
+                              left: '4px',
+                              right: '4px',
+                            }}
+                          >
+                            <div className="flex flex-col size-full relative">
+                              <div className="font-bold text-sm leading-tight">
+                                {session.title}
+                              </div>
+                              <div className="text-xs">
+                                {dbGetHostsFromSession(session).join(", ")}
+                              </div>
 
-                            <div className=" absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
-                            <UserIcon className="size-3"/> {session.rsvp_count ?? "0"} / {session.max_capacity}
-                            </div>
+                              <div className=" absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
+                              <UserIcon className="size-3"/> {session.rsvp_count ?? "0"} / {session.max_capacity}
+                              </div>
 
+                            </div>
                           </div>
-                      </div>
+                        </SmartTooltip>
                     ))}
                     </div>
                   );
@@ -314,14 +316,17 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
       </div>
 
       {openedSessionId && 
-        <SessionModal 
-        session={sessions.find(s => s.id === openedSessionId)!} 
+        <Modal
         onClose={() => {
           const sessionDayIndex = days.findIndex(day => day.events.some(event => event.id === openedSessionId))
           setOpenedSessionId(null)
           setDayIndex(sessionDayIndex)
-          }
-        }/>
+          }}
+        >
+          <SessionDetailsCard 
+            session={sessions.find(s => s.id === openedSessionId)!} 
+          />
+        </Modal>
       }
     </div>
   );
