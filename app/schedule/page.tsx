@@ -22,11 +22,8 @@ export default async function ScheduleDemo({searchParams}:{searchParams: SearchP
   const parsedDayIndex = dayIndexSchema.safeParse(dayIndexParam)
   const dayIndex = parsedDayIndex.success && [0,1,2].includes(parsedDayIndex.data) ? parsedDayIndex.data : undefined
   return (
-    <div className="min-h-screen bg-dark-900 p-4">
-      <div className="container mx-auto max-w-7xl">
-        <h1 className="text-3xl font-bold text-secondary-200 mb-8 text-center">
-          Conference Schedule Demo
-        </h1>
+    <div className="h-[calc(100vh-80px)] bg-dark-900 p-4 overflow-hidden">
+      <div className="container mx-auto max-w-7xl h-full flex flex-col">
         <Schedule
           sessions={sessions || []}
           locations={locations || []}

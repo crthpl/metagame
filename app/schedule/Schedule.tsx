@@ -56,16 +56,6 @@ const getPSTMinutes = (timestamp: string) => {
   return pstDate.getHours() * 60 + pstDate.getMinutes();
 };
 
-// Updated time string function - PST only
-const getTimeString = (timestamp: string) => {
-  return new Date(timestamp).toLocaleTimeString('en-US', { 
-    hour12: false, 
-    hour: '2-digit', 
-    minute: '2-digit',
-    timeZone: CONFERENCE_TIMEZONE  // Force PST
-  });
-};
-
 // Updated slot checking - PST based
 const eventStartsInSlot = (session: DbSessionView, slotTime: string) => {
   if (!session.start_time) return false;
@@ -190,9 +180,9 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
   };
 
   return (
-    <div className="w-full max-w-full mx-auto bg-dark-500 border border-secondary-300 rounded-xl overflow-hidden">
-      {/* Day Navigator */}
-      <div className="flex items-center justify-between p-4 bg-dark-600 border-b border-secondary-300">
+    <div className="w-full h-full flex flex-col bg-dark-500 border border-secondary-300 rounded-xl overflow-hidden">
+      {/* Day Navigator - Fixed on desktop, scrollable on mobile */}
+      <div className="hidden lg:flex flex-shrink-0 items-center justify-between p-4 bg-dark-600 border-b border-secondary-300">
         <button
           onClick={prevDay}
           className="p-2 rounded-md hover:bg-dark-400 transition-colors"
@@ -214,76 +204,79 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
         </button>
       </div>
 
-      {/* Mobile View */}
-      <div className="md:hidden">
-        {locations.map((venue) => (
-          <div key={venue.id} className="border-b border-dark-400">
-            <div className="p-3 bg-dark-600 border-b border-dark-400">
-              <h3 className="font-semibold text-secondary-200 text-sm">{venue.name}</h3>
-            </div>
-            <div className="p-3 space-y-2">
-              {currentDay.events
-                .filter(session => session.location_id === venue.id)
-                .map((session) => (
-                  <div
-                    key={session.id!}
-                    onClick={()=>handleOpenSessionModal(session.id!)}
-                    className={`p-3 rounded-md ${getEventColor(session.id!)} text-black text-sm`}
-                  >
-                    <div className="font-semibold">{session.title}</div>
-                    {session.start_time && session.end_time && (
-                      <div className="text-xs opacity-80">
-                        {getTimeString(session.start_time)} - {getTimeString(session.end_time)}
-                      </div>
-                    )}
-                    {session.capacity && (
-                      <div className="text-xs opacity-80">👥 max {session.capacity}</div>
-                    )}
-                  </div>
-                ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Scrollable Schedule Content */}
+      <div className="flex-1 overflow-auto">
+        {/* Day Navigator - Mobile only, inside scrollable area, sticky left */}
+        <div className="lg:hidden flex items-center justify-between p-4 bg-dark-600 border-b border-secondary-300 sticky left-0 z-30">
+          <button
+            onClick={prevDay}
+            className="p-2 rounded-md hover:bg-dark-400 transition-colors"
+            disabled={currentDayIndex === 0}
+          >
+            <ChevronLeft className="w-5 h-5 text-secondary-300" />
+          </button>
+          
+          <h2 className="text-xl font-bold text-secondary-200 text-center">
+            {currentDay.displayName}
+          </h2>
+          
+          <button
+            onClick={nextDay}
+            className="p-2 rounded-md hover:bg-dark-400 transition-colors"
+            disabled={currentDayIndex === days.length - 1}
+          >
+            <ChevronRight className="w-5 h-5 text-secondary-300" />
+          </button>
+        </div>
 
-      {/* Desktop View */}
-      <div className="hidden md:block overflow-x-auto">
-        <div className="min-w-full">
-          {/* Header Row */}
-          <div className="grid bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
-            <div className="bg-dark-600 p-3 left-0 shadow-lg border border-secondary-300">
-              <div className="font-semibold text-secondary-200 text-sm ">Time</div>
+        <div className="min-w-fit h-fit">
+          {/* Images Row - Scrollable on mobile, sticky on large */}
+          <div className="grid bg-dark-400 lg:sticky lg:top-0 lg:z-10" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
+            <div className="bg-dark-600 p-3 border sticky left-0 z-sticky-header border-secondary-300">
+              {/* Empty space above time column */}
             </div>
             {locations.map((venue) => (
               <div key={venue.id} className="bg-dark-600 p-3 border border-secondary-300">
-                <div className="font-semibold text-secondary-200 text-sm mb-1">
-                  {venue.thumbnail_url ? 
+                {venue.thumbnail_url ? 
                   <Image src={venue.thumbnail_url} alt={venue.name} width={100} height={100} className="object-cover w-full h-24"/>
                   : <div className="w-full h-24 bg-dark-500"/>
-                  }
+                }
+              </div>
+            ))}
+          </div>
+
+          {/* Names Row - Always sticky, with day nav on mobile */}
+          <div className="grid bg-dark-400 sticky top-0 lg:top-[120px] z-20" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
+            <div className="bg-dark-600 p-3 sticky left-0 z-30 border border-secondary-300">
+              {/* Desktop: Just "Time" */}
+              <div className="hidden md:block text-sm text-secondary-300 font-medium">
+              </div>
+            </div>
+            {locations.map((venue) => (
+              <div key={venue.id} className="bg-dark-600 p-3 border border-secondary-300">
+                <div className="size-full flex items-center justify-center  text-center text-lg font-semibold text-secondary-200">
                   {venue.name}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Time Slots */}
+          {/* Time Slots Grid */}
           <div className="grid bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
             {timeSlots.map((time) => (
               <div key={time} className="contents">
-                {/* Time Cell */}
-                <div className="bg-dark-500 p-3 border border-r-secondary-300 border-dark-400 sticky left-0 z-sticky shadow-lg">
+                {/* Time Cell - Sticky Left */}
+                <div className="bg-dark-500 p-3 border border-r-secondary-300 border-dark-400 sticky left-0 top-0 z-sticky">
                   <div className="text-sm text-secondary-300 font-medium">{time}</div>
                 </div>
 
                 {/* Venue Cells */}
                 {locations.map((venue) => {
-                  // Find events that start in this time slot for this venue
                   const eventsInSlot = currentDay.events.filter(session => 
                     session.location_id === venue.id && eventStartsInSlot(session, time)
                   );
                   return (
-                    <div key={venue.id} className="bg-dark-500 border-x-secondary-300 min-h-[60px]  border border-dark-400 relative overflow-visible ">
+                    <div key={venue.id} className="bg-dark-500 border-x-secondary-300 min-h-[60px] border border-dark-400 relative overflow-visible">
                       {eventsInSlot.map((session) => (
                         <div
                           key={session.id}
@@ -318,21 +311,6 @@ export default function Schedule({ sessions, locations, sessionId, dayIndex }: S
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Day Dots Indicator */}
-      <div className="flex justify-center items-center gap-2 p-4 bg-dark-600 border-t border-secondary-300">
-        {days.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentDayIndex(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === currentDayIndex
-                ? "bg-secondary-300 scale-125"
-                : "bg-dark-400 hover:bg-dark-300"
-            }`}
-          />
-        ))}
       </div>
 
       {openedSessionId && 
