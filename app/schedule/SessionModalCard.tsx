@@ -4,7 +4,9 @@ import { useState } from "react";
 import { LinkIcon, UserIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
-import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/session_rsvps/mutations";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getCurrentUserRsvps } from "../actions/db/sessions/queries";
+import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions/mutations";
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -30,9 +32,38 @@ const getDateString = (timestamp: string) => {
 };
 
 
-export default function SessionDetailsCard({ session, currentUserIsRsvpd }: {session: DbSessionView, currentUserIsRsvpd: boolean}) {
+
+  export default function SessionDetailsCard({ session }: {session: DbSessionView}) {
   const [showCopiedMessage, setShowCopiedMessage] = useState(false)
   const [copyError, setCopyError] = useState(false)
+  const currentUserRsvps = useQuery({
+    queryKey: ['rsvps', 'current-user'],
+    queryFn: getCurrentUserRsvps
+  })
+  const currentUserIsRsvpd = currentUserRsvps.data?.includes(session.id!) ?? false
+  const queryClient = useQueryClient()
+  const unrsvpMutation = useMutation({
+    mutationFn: unrsvpCurrentUserFromSession,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['rsvps', 'current-user'] })
+      queryClient.invalidateQueries({ queryKey: ['sessions', session.id!] })
+    }
+  })
+  const rsvpMutation = useMutation({
+    mutationFn: rsvpCurrentUserToSession,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['rsvps', 'current-user'] })
+      queryClient.invalidateQueries({ queryKey: ['sessions'] })
+    }
+  })
+
+  const handleToggleRsvp = () => {
+    if (currentUserIsRsvpd) {
+      unrsvpMutation.mutate(session.id!)
+    } else {
+      rsvpMutation.mutate(session.id!)
+    }
+  }
 
   const copyLink = () => {
     const base = window.location.origin
@@ -77,9 +108,9 @@ export default function SessionDetailsCard({ session, currentUserIsRsvpd }: {ses
           {session.start_time && (
             <div className="space-y-1">
               {currentUserIsRsvpd ? 
-                <button className="text-red-400 cursor-pointer" onClick={() => unrsvpCurrentUserFromSession(session.id!)}>Un-RSVP</button>
+                <button className="text-red-400 cursor-pointer" onClick={handleToggleRsvp}>Un-RSVP</button>
                 :
-                <button className="text-green-400 cursor-pointer" onClick={() => rsvpCurrentUserToSession(session.id!)}>RSVP</button>
+                <button className="text-green-400 cursor-pointer" onClick={handleToggleRsvp}>RSVP</button>
               }
               <div className="text-secondary-300 font-medium">
                 📅 {getDateString(session.start_time)}
@@ -110,9 +141,6 @@ export default function SessionDetailsCard({ session, currentUserIsRsvpd }: {ses
               </div>
             )}
           </div>
-
-
-
         </div>
       </div>
   );
