@@ -6,6 +6,7 @@ import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { KbarApp } from "../components/Kbar/App";
 import QueryProvider from "./providers/QueryProvider";
+import { Toaster } from "sonner";
 
 const jura = Jura({
   subsets: ["latin"],
@@ -75,6 +76,7 @@ export default function RootLayout({
             <Footer />
           </KbarApp>
         </QueryProvider>
+        <Toaster />
         <Analytics />
       </body>
     </html>
