@@ -1,7 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-
-
+/** Paths that we want to redirect to login if there isn't a logged in user */
+const userGatedPaths = [
+  "/profile",
+]
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -37,17 +39,15 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
+  console.log(request.nextUrl.pathname)
   if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
+    !user && userGatedPaths.includes(request.nextUrl.pathname)
   ) {
     // no user, potentially respond by redirecting the user to the login page
-    // const url = request.nextUrl.clone()
+    const url = request.nextUrl.clone()
     // TODO: Add any auth redirection we want here
-    // url.pathname = '/login'
-    // return NextResponse.redirect(url)
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
