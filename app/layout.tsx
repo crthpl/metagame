@@ -5,6 +5,7 @@ import "./globals.css";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { KbarApp } from "../components/Kbar/App";
+import QueryProvider from "./providers/QueryProvider";
 
 // Configure Jura font
 const jura = Jura({
@@ -67,13 +68,15 @@ export default function RootLayout({
       <body
         className={`${jura.variable} font-sans antialiased relative overflow-x-hidden flex flex-col min-h-screen`}
       >
-        <KbarApp>
-          <Nav />
-          <div className="relative overflow-x-hidden flex-grow pt-20">
-            {children}
-          </div>
-          <Footer />
-        </KbarApp>
+        <QueryProvider>
+          <KbarApp>
+            <Nav />
+            <div className="relative overflow-x-hidden flex-grow pt-20">
+              {children}
+            </div>
+            <Footer />
+          </KbarApp>
+        </QueryProvider>
 
         {/* Analytics */}
         <Analytics />
