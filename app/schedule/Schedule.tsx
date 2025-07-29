@@ -116,7 +116,7 @@ export default function Schedule({
     queryKey: ['rsvps', 'current-user'],
     queryFn: getCurrentUserRsvps
   })
-  const {data: currentUser} = useCurrentUser()
+  const {currentUser} = useCurrentUser()
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
 
