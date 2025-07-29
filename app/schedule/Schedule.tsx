@@ -1,14 +1,19 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import { CheckIcon, ChevronLeft, ChevronRight, UserIcon } from "lucide-react";
-import { DbSessionView, DbLocation } from "@/types/database/dbTypeAliases";
+import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, UserIcon } from "lucide-react";
+import { DbSessionView } from "@/types/database/dbTypeAliases";
 import Image from "next/image";
 import SessionDetailsCard from "./SessionModalCard";
 import { useRouter } from "next/navigation";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { Modal } from "@/components/Modal";
 import { SmartTooltip } from '@/components/SmartTooltip';
+import { useQuery } from '@tanstack/react-query';
+import { getAllSessions, getCurrentUserRsvps } from '../actions/db/sessions/queries';
+import { getAllLocations } from '../actions/db/locations/queries';
+import { useCurrentUser } from '@/hooks/dbQueries';
+import { toast } from 'sonner';
 
 const SCHEDULE_END_TIME = 22;
 const SCHEDULE_START_TIME = 9;
@@ -93,15 +98,27 @@ const getEventDurationMinutes = (session: DbSessionView, slotTime: string) => {
 
 
 export default function Schedule({ 
-  sessions, locations, currentUserRsvps, sessionId, dayIndex 
+  sessionId, dayIndex 
 }: {
-  sessions: DbSessionView[];
-  locations: DbLocation[];
-  currentUserRsvps: string[];
   sessionId?: string;
   dayIndex?: number;
 }) {
   const router = useRouter()
+  const { data: sessions = [] , isLoading: sessionsLoading, isError: sessionsError} = useQuery({
+    queryKey: ['sessions'],
+    queryFn: getAllSessions
+  })
+  const { data: locations = [] , isLoading: locationsLoading, isError: locationsError} = useQuery({
+    queryKey: ['locations'],
+    queryFn: getAllLocations
+  })
+  const { data: currentUserRsvps = [] } = useQuery({
+    queryKey: ['rsvps', 'current-user'],
+    queryFn: getCurrentUserRsvps
+  })
+  const {data: currentUser} = useCurrentUser()
+  const [filterForUserEvents, setFilterForUserEvents] = useState(false)
+
 
   // Fixed conference days
   const CONFERENCE_DAYS = [
@@ -117,8 +134,15 @@ export default function Schedule({
       [], // Day 1: Saturday 9/13  
       []  // Day 2: Sunday 9/14
     ] as DbSessionView[][];
-    
-    sessions.forEach((session) => {
+    const filterSessionForUser = (session: DbSessionView) => {
+      if (currentUserRsvps.includes(session.id!)) {
+        return true
+      }
+      const sessionHostIds = [session.host_1_id, session.host_2_id, session.host_3_id].filter(Boolean)
+      return sessionHostIds.some(hostId => currentUser?.id === hostId)
+    }
+    const maybeFilteredSessions = filterForUserEvents ? sessions.filter(filterSessionForUser) : sessions
+    maybeFilteredSessions.forEach((session) => {
       if (!session.start_time || !session.end_time || !session.title) return;
       
       // Get date in PST and check which conference day it matches
@@ -138,8 +162,7 @@ export default function Schedule({
       displayName: `${confDay.name} (${confDay.date})`,
       events: dayEvents[index].sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''))
     }));
-  }, [sessions]);
-
+  }, [sessions, filterForUserEvents]);
   const [currentDayIndex, setCurrentDayIndex] = useState(dayIndex ?? 0);
   const [openedSessionId, setOpenedSessionId] = useState<DbSessionView['id'] | null>(sessionId ?? null);
   const currentDay = days[currentDayIndex] || { date: '', displayName: 'No Events', events: [] };
@@ -177,11 +200,23 @@ export default function Schedule({
     updateSearchParams({sessionId:sessionId})
   }
 
+  const handleToggleFilterForUserEvents = () => {
+    setFilterForUserEvents(!filterForUserEvents)
+    toast.info(`Now displaying ${filterForUserEvents ? 'only your hosted/rsvp\'d events' : 'all events'}`)
+  }
   // Helper function to get event color
   const getEventColor = (sessionId: string) => {
     return currentUserRsvps.includes(sessionId) ? 'bg-green-400' : eventColors[sessions.findIndex(s => s.id === sessionId) % eventColors.length]
   };
 
+  if (sessionsLoading || locationsLoading) {
+    return <div>Loading...</div>
+  }
+  if (sessionsError || locationsError) {
+    console.error(sessionsError, locationsError)
+
+    return <div className="text-red-200">Error loading sessions or locations</div>
+  }
   return (
     <div className="w-full h-full flex flex-col bg-dark-500 border border-secondary-300 rounded-xl overflow-hidden">
       {/* Day Navigator - Fixed on desktop, scrollable on mobile */}
@@ -251,7 +286,10 @@ export default function Schedule({
           {/* Names Row - Always sticky, with day nav on mobile */}
           <div className="grid bg-dark-400 sticky top-0 lg:top-[120px] z-20" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
             <div className="bg-dark-600 p-3 sticky left-0 top-0 z-30 border border-secondary-300">
-              <div className="hidden md:block text-sm text-secondary-300 font-medium">
+              <div className="flex text-sm text-secondary-300 font-medium size-full items-center justify-center">
+                {currentUser && <button className={`${filterForUserEvents ? 'opacity-100' : 'opacity-50'} cursor-pointer bg-dark-200 rounded-sm p-2`} title="Filter for events I am rsvp'd to or hosting"  onClick={handleToggleFilterForUserEvents}>
+                  <FilterIcon className={`size-4 text-secondary-300`} />
+                </button>}
               </div>
             </div>
             {locations.map((venue) => (
@@ -278,9 +316,9 @@ export default function Schedule({
                     session.location_id === venue.id && eventStartsInSlot(session, time)
                   );
                   return (
-                    <div key={venue.id} className="bg-dark-500 border-x-secondary-300 min-h-[60px] border border-dark-400 relative overflow-visible">
+                    <div key={venue.id} className="bg-dark-500 min-h-[60px] border border-dark-400 relative overflow-visible">
                       {eventsInSlot.map((session) => (
-                        <SmartTooltip key={session.id} tooltip={<SessionDetailsCard session={session} currentUserIsRsvpd={currentUserRsvps.includes(session.id!)}/>}>
+                        <SmartTooltip key={session.id} tooltip={<SessionDetailsCard session={session}/>}>
                           <div
                             onClick={() => handleOpenSessionModal(session.id!)}
                             className={`absolute z-content p-1 m-1 rounded-md ${getEventColor(session.id!)} text-black font-semibold`}
@@ -328,7 +366,6 @@ export default function Schedule({
         >
           <SessionDetailsCard 
             session={sessions.find(s => s.id === openedSessionId)!} 
-            currentUserIsRsvpd={currentUserRsvps.includes(openedSessionId!)}
           />
         </Modal>
       }
