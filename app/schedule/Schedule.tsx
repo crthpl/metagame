@@ -212,7 +212,7 @@ export default function Schedule({
     return <div className="text-red-200">Error loading sessions or locations</div>
   }
   return (
-    <div className="font-serif w-full h-full flex flex-col bg-dark-500 border border-secondary-300 rounded-xl overflow-hidden">
+    <div className="font-serif w-full h-full flex flex-col bg-dark-500 overflow-hidden">
       {/* Day Navigator - Fixed on desktop, scrollable on mobile */}
       <div className="hidden lg:flex flex-shrink-0 items-center justify-between p-4 bg-dark-600 border-b border-secondary-300">
         <button
