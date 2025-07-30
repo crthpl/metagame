@@ -5,7 +5,7 @@ test.describe('Homepage', () => {
   test('should load the homepage successfully', async ({ page }) => {
     await page.goto('/');
     // Check main heading is visible
-    const heroSection = page.getByText('METAGAME 2025');
+    const heroSection = page.getByRole('heading', { name: /METAGAME 2025/ });
     await expect(heroSection).toBeVisible();
   });
 
