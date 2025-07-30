@@ -16,7 +16,7 @@ export default function GetInvolved() {
             <div className="relative">
               <img
                 alt="Lighthaven"
-                className="glitch mb-2 rounded object-cover cursor-pointer"
+                className="glitch mb-2 rounded object-cover"
                 src="/images/lighthaven_chess.JPG"
               />
             </div>
