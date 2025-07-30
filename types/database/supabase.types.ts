@@ -18,28 +18,34 @@ export type Database = {
         Row: {
           campus_location: string | null
           capacity: number | null
+          display_in_schedule: boolean
           id: string
           image_url: string | null
           lh_name: string | null
           name: string
+          schedule_display_order: number
           thumbnail_url: string | null
         }
         Insert: {
           campus_location?: string | null
           capacity?: number | null
+          display_in_schedule?: boolean
           id?: string
           image_url?: string | null
           lh_name?: string | null
           name?: string
+          schedule_display_order?: number
           thumbnail_url?: string | null
         }
         Update: {
           campus_location?: string | null
           capacity?: number | null
+          display_in_schedule?: boolean
           id?: string
           image_url?: string | null
           lh_name?: string | null
           name?: string
+          schedule_display_order?: number
           thumbnail_url?: string | null
         }
         Relationships: []
