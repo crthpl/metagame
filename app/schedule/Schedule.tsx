@@ -34,10 +34,10 @@ const generateTimeSlots = () => {
 const timeSlots = generateTimeSlots();
 
 // Color options for events
-const eventColors = [
-  "bg-blue-300", "bg-purple-300", "bg-orange-300", 
-  "bg-cyan-300", "bg-pink-300", "bg-yellow-300", "bg-red-300", 
-  "bg-indigo-300", "bg-teal-300"
+const locationEventColors = [
+  "bg-blue-300 border-blue-400", "bg-purple-300 border-purple-400", "bg-orange-300 border-orange-400", 
+  "bg-cyan-200 border-cyan-300", "bg-pink-300 border-pink-400", "bg-yellow-300 border-yellow-400", "bg-red-300 border-red-400", 
+  "bg-indigo-300 border-indigo-400", "bg-teal-300 border-teal-400"
 ];
 
 
@@ -198,8 +198,9 @@ export default function Schedule({
     toast.info(`Now displaying ${filterForUserEvents ? 'only your hosted/rsvp\'d events' : 'all events'}`)
   }
   // Helper function to get event color
-  const getEventColor = (sessionId: string) => {
-    return currentUserRsvps.includes(sessionId) ? 'bg-green-400' : eventColors[sessions.findIndex(s => s.id === sessionId) % eventColors.length]
+  const getEventColor = (session:DbSessionView) => {
+    const locationIndex = locations.findIndex(l => l.id === session.location_id)
+    return currentUserRsvps.includes(session.id!) ? 'bg-green-400 border-green-500' : locationEventColors[locationIndex % locationEventColors.length]
   };
 
   if (sessionsLoading || locationsLoading) {
@@ -314,9 +315,10 @@ export default function Schedule({
                     <div key={venue.id} className="bg-dark-500 min-h-[60px] border border-dark-400 relative overflow-visible">
                       {eventsInSlot.map((session) => (
                         <SmartTooltip key={session.id} tooltip={<SessionDetailsCard session={session}/>}>
+                          
                           <div
                             onClick={() => handleOpenSessionModal(session.id!)}
-                            className={`absolute z-content p-1 m-0.5 rounded-md ${getEventColor(session.id!)} text-black font-semibold`}
+                            className={`absolute z-content p-1 m-0.5 border-2 rounded-md ${getEventColor(session)} text-black font-semibold`}
                             style={{
                               top: `${getEventOffsetMinutes(session, time) * 2}px`,     // 2px per minute
                               height: `${getEventDurationMinutes(session, time) * 2}px`, // 2px per minute  
