@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import Image from 'next/image';
 import { Button } from './Button';
 import { SOCIAL_LINKS } from '../config';
 
@@ -30,21 +31,15 @@ export default function ContributeContent() {
 
   return (
     <div className="">
-      <section
-        className="hero prose-xl h-[50vh] flex flex-col items-center justify-center py-24 px-6 md:px-12 bg-cover bg-center bg-no-repeat"
-        id="hero"
-        style={{
-          backgroundImage: `
-            linear-gradient(
-              0deg,
-              rgb(11, 11, 17) 0%,
-              rgba(11, 11, 17, 0.4) 40%,
-              transparent 100%
-            ),
-            url("/game_pieces_2_cropped.jpg")`
-        }}
-      >
-        <div className="flex flex-col items-center justify-center"></div>
+      <section className="relative h-[30vh] flex flex-col items-center justify-center" id="hero">
+        <Image
+          src="/game_pieces_2_cropped.jpg"
+          alt="Game pieces"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-dark-500 to-transparent" />
       </section>
 
       <div className="container mx-auto">
