@@ -278,15 +278,15 @@ export default function Schedule({
 
           {/* Names Row - Always sticky, with day nav on mobile */}
           <div className="grid bg-dark-400 sticky top-0 lg:top-[120px] z-20" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
-            <div className="bg-dark-600 p-3 sticky left-0 top-0 z-30 border border-secondary-300">
-              <div className="flex text-sm text-secondary-300 font-medium size-full items-center justify-center">
+            <div className="bg-dark-600 p-3 sticky border-b-2 left-0 top-0 z-30 border border-secondary-300">
+              <div className="flex text-sm text-secondary-300  font-medium size-full items-center justify-center">
                 {currentUser && <button className={`${filterForUserEvents ? 'opacity-100' : 'opacity-50'} cursor-pointer bg-dark-200 rounded-sm p-2`} title="Filter for events I am rsvp'd to or hosting"  onClick={handleToggleFilterForUserEvents}>
                   <FilterIcon className={`size-4 text-secondary-300`} />
                 </button>}
               </div>
             </div>
             {locations.map((venue) => (
-              <div key={venue.id} className="bg-dark-600 p-3 border border-secondary-300">
+              <div key={venue.id} className="bg-dark-600 p-3 border border-b-2 border-secondary-300">
                 <div className="size-full flex items-center justify-center  text-center text-lg font-semibold text-secondary-200">
                   {venue.name}
                 </div>
@@ -299,7 +299,7 @@ export default function Schedule({
             {timeSlots.map((time) => (
               <div key={time} className="contents">
                 {/* Time Cell - Sticky Left */}
-                <div className="bg-dark-500 p-3 border border-r-secondary-300 border-dark-400 sticky left-0 top-0 z-sticky">
+                <div className="flex justify-center w-full bg-dark-500 border border-r-secondary-300 border-dark-400 sticky left-0 top-0 z-sticky">
                   <div className="text-sm text-secondary-300 font-medium">{time}</div>
                 </div>
 
@@ -314,12 +314,12 @@ export default function Schedule({
                         <SmartTooltip key={session.id} tooltip={<SessionDetailsCard session={session}/>}>
                           <div
                             onClick={() => handleOpenSessionModal(session.id!)}
-                            className={`absolute z-content p-1 m-1 rounded-md ${getEventColor(session.id!)} text-black font-semibold`}
+                            className={`absolute z-content p-1 m-0.5 rounded-md ${getEventColor(session.id!)} text-black font-semibold`}
                             style={{
                               top: `${getEventOffsetMinutes(session, time) * 2}px`,     // 2px per minute
                               height: `${getEventDurationMinutes(session, time) * 2}px`, // 2px per minute  
-                              left: '4px',
-                              right: '4px',
+                              left: '0px',
+                              right: '0px',
                             }}
                           >
                             <div className="flex flex-col size-full relative">
