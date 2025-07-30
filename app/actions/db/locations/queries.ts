@@ -1,6 +1,5 @@
 'use server'
 import { createServiceClient } from "@/utils/supabase/service";
-import { getCurrentUserId, getUserAdminStatus } from "../users/queries";
 
 export const getAllLocations = async () => {
   console.log('getAllLocations')
