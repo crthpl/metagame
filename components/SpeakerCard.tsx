@@ -40,6 +40,19 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({
     </svg>
   );
 
+  // Handle different image URL formats
+  const getImageSrc = (imageUrl?: string) => {
+    if (!imageUrl) return "/images/incognito.svg";
+    
+    // If it's already a full URL (from Supabase), use it directly
+    if (imageUrl.startsWith('http')) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path, treat it as before (fallback for markdown data)
+    return `/images/${imageUrl.split('/').pop()}`;
+  };
+
   return (
     <Card className="w-24 sm:w-32 md:w-48 flex flex-col items-center py-1 sm:pt-2 bg-slate-700 bg-opacity-50" padless>
       <Image
@@ -48,7 +61,7 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({
           "glitch mb-2 rounded aspect-square w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40",
           image ? "object-cover" : "object-fill"
         )}
-        src={image ? `/images/${image.split('/').pop()}` : "/images/incognito.svg"}
+        src={getImageSrc(image)}
         height="160"
         width="160"
       />
