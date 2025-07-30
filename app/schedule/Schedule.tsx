@@ -15,23 +15,23 @@ import { getAllLocations } from '../actions/db/locations/queries';
 import { useCurrentUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
 
-const SCHEDULE_END_TIME = 22;
-const SCHEDULE_START_TIME = 9;
+const SCHEDULE_START_TIMES = [14, 9, 9];
+const SCHEDULE_END_TIMES = [22, 22, 22];
 
 
 // Generate time slots from 9:00 to 22:00 in 30-minute intervals
-const generateTimeSlots = () => {
+const generateTimeSlots = (dayIndex: number) => {
   const slots = [];
-  for (let hour = SCHEDULE_START_TIME; hour <= SCHEDULE_END_TIME; hour++) {
+  for (let hour = SCHEDULE_START_TIMES[dayIndex]; hour <= SCHEDULE_END_TIMES[dayIndex]; hour++) {
     slots.push(`${hour.toString().padStart(2, "0")}:00`);
-    if (hour < SCHEDULE_END_TIME) {
+    if (hour < SCHEDULE_END_TIMES[dayIndex]) {
       slots.push(`${hour.toString().padStart(2, "0")}:30`);
     }
   }
   return slots;
 };
 
-const timeSlots = generateTimeSlots();
+
 
 // Color options for events
 const locationEventColors = [
@@ -299,7 +299,7 @@ export default function Schedule({
 
           {/* Time Slots Grid */}
           <div className="grid bg-dark-400" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
-            {timeSlots.map((time) => (
+            {generateTimeSlots(currentDayIndex).map((time) => (
               <div key={time} className="contents">
                 {/* Time Cell - Sticky Left */}
                 <div className="flex justify-center w-full bg-dark-500 border border-r-secondary-300 border-dark-400 sticky left-0 top-0 z-sticky">
