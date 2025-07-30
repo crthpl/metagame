@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { getSpeakersFromProfiles, type ProfileSpeaker } from '@/app/actions/db/profiles/queries';
 
 export interface FAQItem {
   id: number;
@@ -115,56 +116,97 @@ export async function getSponsors(): Promise<Partner[]> {
 }
 
 export interface Speaker {
-  id: number;
+  id: string; // Changed from number to string to match Supabase UUID
   name: string;
   image: string;
   gameName: string;
   gameUrl: string;
   gameName2?: string;
   gameUrl2?: string;
-  title: string;
   website?: string;
   twitter?: string;
   linkedin?: string;
   github?: string;
-  content: string;
-  contentHtml: string;
   slug: string;
 }
 
+// Convert ProfileSpeaker from Supabase to Speaker interface expected by components
+function convertProfileToSpeaker(profile: ProfileSpeaker): Speaker {
+  const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+  
+  return {
+    id: profile.id,
+    name: fullName || 'Unknown Speaker',
+    image: profile.profile_pictures_url || '',
+    gameName: profile.site_name || '',
+    gameUrl: profile.site_url || '',
+    gameName2: profile.site_name_2 ?? undefined,
+    gameUrl2: profile.site_url_2 ?? undefined,
+    website: '',
+    twitter: '',
+    linkedin: '',
+    github: '',
+    slug: profile.id, // Use the UUID as slug
+  };
+}
+
 export async function getSpeakers(): Promise<Speaker[]> {
-  const speakersDirectory = path.join(process.cwd(), 'content', 'speakers');
-  const fileNames = fs.readdirSync(speakersDirectory);
-  
-  const speakers = fileNames
-    .filter(fileName => fileName.endsWith('.md'))
-    .map((fileName) => {
-      const slug = fileName.replace(/\.md$/, '');
-      const fullPath = path.join(speakersDirectory, fileName);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
-      const { data, content } = matter(fileContents);
-      
-      // Convert to simple HTML
-      const contentHtml = simpleMarkdownToHtml(content);
-      
-      return {
-        id: data.id,
-        name: data.name,
-        image: data.image,
-        gameName: data.gameName,
-        gameUrl: data.gameUrl,
-        gameName2: data.gameName2,
-        gameUrl2: data.gameUrl2,
-        title: data.title,
-        website: data.website,
-        twitter: data.twitter,
-        linkedin: data.linkedin,
-        github: data.github,
-        content,
-        contentHtml,
-        slug
-      };
+  try {
+    // Fetch from Supabase Profiles table
+    const profiles = await getSpeakersFromProfiles();
+    return profiles.map(convertProfileToSpeaker);
+  } catch (error) {
+    console.error('Error fetching speakers from Supabase, falling back to markdown files:', error);
+    
+    // Fallback to original markdown-based implementation
+    const speakersDirectory = path.join(process.cwd(), 'content', 'speakers');
+    
+    // Check if directory exists
+    if (!fs.existsSync(speakersDirectory)) {
+      console.error('Speakers directory does not exist, returning empty array');
+      return [];
+    }
+    
+    const fileNames = fs.readdirSync(speakersDirectory);
+    
+    const speakers = fileNames
+      .filter(fileName => fileName.endsWith('.md'))
+      .map((fileName) => {
+        const slug = fileName.replace(/\.md$/, '');
+        const fullPath = path.join(speakersDirectory, fileName);
+        const fileContents = fs.readFileSync(fullPath, 'utf8');
+        const { data, content } = matter(fileContents);
+        
+        // Convert to simple HTML
+        const contentHtml = simpleMarkdownToHtml(content);
+        
+        return {
+          id: data.id?.toString() || slug, // Convert to string
+          name: data.name,
+          image: data.image,
+          gameName: data.gameName,
+          gameUrl: data.gameUrl,
+          gameName2: data.gameName2,
+          gameUrl2: data.gameUrl2,
+          title: data.title,
+          website: data.website,
+          twitter: data.twitter,
+          linkedin: data.linkedin,
+          github: data.github,
+          content,
+          contentHtml,
+          slug
+        };
+      });
+    
+    return speakers.sort((a, b) => {
+      // For fallback, try to sort by numeric id if possible
+      const aId = parseInt(a.id);
+      const bId = parseInt(b.id);
+      if (!isNaN(aId) && !isNaN(bId)) {
+        return aId - bId;
+      }
+      return 0;
     });
-  
-  return speakers.sort((a, b) => a.id - b.id);
+  }
 }
