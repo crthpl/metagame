@@ -7,13 +7,11 @@ import Footer from "../components/Footer";
 import { KbarApp } from "../components/Kbar/App";
 import QueryProvider from "./providers/QueryProvider";
 
-// Configure Jura font
 const jura = Jura({
   subsets: ["latin"],
   variable: "--font-jura",
 });
 
-// SEO metadata configuration
 export const metadata: Metadata = {
   title: {
     default: "METAGAME 2025",
@@ -71,34 +69,13 @@ export default function RootLayout({
         <QueryProvider>
           <KbarApp>
             <Nav />
-            <div className="relative overflow-x-hidden flex-grow pt-20">
+            <div className="relative overflow-x-hidden flex-grow pt-[72px]">
               {children}
             </div>
             <Footer />
           </KbarApp>
         </QueryProvider>
-
-        {/* Analytics */}
         <Analytics />
-
-        {/* Metagame Modal */}
-        {/* <dialog id="metagame-modal" className="modal">
-          <div className="modal-box relative bg-dark-500 border-2 border-secondary-300 p-6 rounded-lg shadow-lg">
-            <h3 className="font-bold text-xl text-secondary-200 mb-4">
-              What did you think was going to happen?
-            </h3>
-            <div className="modal-action flex justify-center">
-              <form method="dialog">
-                <button 
-                  type="submit"
-                  className="btn bg-secondary-300 hover:bg-secondary-400 text-dark-800 font-bold py-2 px-4 rounded transition-all hover:scale-105"
-                >
-                  Okay fair
-                </button>
-              </form>
-            </div>
-          </div>
-        </dialog> */}
       </body>
     </html>
   );
