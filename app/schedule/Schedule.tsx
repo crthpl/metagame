@@ -267,10 +267,10 @@ export default function Schedule({
             <div className="bg-dark-600 p-3 border left-0 sticky border-secondary-300">
               {/* Empty space above time column */}
             </div>
-            {locations.map((venue) => (
-              <div key={venue.id} className="bg-dark-600 p-3 border border-secondary-300">
-                {venue.thumbnail_url ? 
-                  <Image src={venue.thumbnail_url} alt={venue.name} width={100} height={100} className="object-cover w-full h-24"/>
+            {locations.map((location) => (
+              <div key={location.id} className="bg-dark-600 p-3 border border-secondary-300">
+                {location.thumbnail_url ? 
+                  <Image src={location.thumbnail_url} alt={location.name} width={100} height={100} className="object-cover w-full h-24"/>
                   : <div className="w-full h-24 bg-dark-500"/>
                 }
               </div>
