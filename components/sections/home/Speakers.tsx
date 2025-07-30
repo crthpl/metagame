@@ -51,7 +51,7 @@ export default function Speakers({ speakers }: SpeakersProps) {
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 max-w-8xl mx-auto">
             {speakers.map((speaker) => (
               <SpeakerCard
-                key={speaker.id}
+                key={speaker.name}
                 name={speaker.name}
                 image={speaker.image}
                 gameName={speaker.gameName}
