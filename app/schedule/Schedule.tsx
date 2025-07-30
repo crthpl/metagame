@@ -86,14 +86,7 @@ const getEventDurationMinutes = (session: DbSessionView, slotTime: string) => {
   
   const startMinutes = getPSTMinutes(session.start_time);
   const endMinutes = getPSTMinutes(session.end_time);
-  
-  const [slotHour, slotMinute] = slotTime.split(':').map(Number);
-  const slotEndMinutes = (slotHour * 60 + slotMinute) + 30;
-  
-  // Cap at slot boundary
-  const cappedEndMinutes = Math.min(endMinutes, slotEndMinutes);
-  
-  return Math.max(5, cappedEndMinutes - startMinutes);
+  return endMinutes - startMinutes;
 };
 
 
