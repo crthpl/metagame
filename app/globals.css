@@ -26,6 +26,30 @@
   --color-dark-900: #000005;
   --color-dark-950: #000005;
 
+  /* Semantic Background Colors */
+  --color-bg-primary: var(--color-dark-500);     /* Main app background */
+  --color-bg-secondary: var(--color-dark-400);   /* Cards, modals, elevated surfaces */
+  --color-bg-tertiary: var(--color-dark-300);    /* Hover states, subtle highlights */
+  --color-bg-surface: var(--color-dark-600);     /* Alternative surface color */
+
+  /* Semantic Text Colors */
+  --color-text-primary: #ffffff;                 /* Main body text */
+  --color-text-secondary: var(--color-primary-100); /* Secondary text, captions */
+  --color-text-muted: var(--color-primary-200);  /* Placeholder text, disabled */
+  --color-text-inverse: var(--color-dark-900);   /* Text on light backgrounds */
+
+  /* Semantic Interactive Colors */
+  --color-interactive-primary: var(--color-secondary-500);   /* Primary buttons, links */
+  --color-interactive-hover: var(--color-secondary-400);     /* Hover states */
+  --color-interactive-accent: var(--color-primary-500);      /* Accent actions */
+  --color-interactive-muted: var(--color-secondary-600);     /* Muted interactive elements */
+
+  /* Semantic Border Colors */
+  --color-border-primary: var(--color-dark-300);    /* Main borders */
+  --color-border-secondary: var(--color-dark-200);  /* Secondary borders */
+  --color-border-accent: var(--color-secondary-500); /* Accent borders */
+  --color-border-muted: var(--color-dark-400);      /* Subtle borders */
+
   --color-secondary-50: #fdfde9;
   --color-secondary-100: #fdfbc4;
   --color-secondary-200: #fbf38d;
