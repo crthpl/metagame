@@ -22,7 +22,7 @@ export default async function Sponsors() {
                 .map((sponsor) => (
                   <PartnerCard
                     key={sponsor.id}
-                    imgClass="h-32 sm:h-40 lg:h-48 w-auto max-w-full object-contain"
+                    imgClass="h-32 sm:h-40 lg:h-48 w-auto max-w-full"
                     partner={sponsor}
                   />
                 ))}
@@ -43,7 +43,7 @@ export default async function Sponsors() {
                 .map((sponsor) => (
                   <PartnerCard
                     key={sponsor.id}
-                    imgClass="h-48 w-full lg:w-auto lg:h-64 max-w-full object-contain"
+                    imgClass="h-48 w-full lg:w-auto lg:h-64 max-w-full"
                     partner={sponsor}
                   />
                 ))}
@@ -66,7 +66,7 @@ export default async function Sponsors() {
                 .map((sponsor) => (
                   <PartnerCard
                     key={sponsor.id}
-                    imgClass="h-20 sm:h-24 md:h-28 lg:h-28 max-w-full object-contain"
+                    imgClass="h-24 sm:h-40 md:h-48 lg:h-48 w-full"
                     partner={sponsor}
                   />
                 ))}

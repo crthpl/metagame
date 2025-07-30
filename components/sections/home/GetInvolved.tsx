@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Button } from '../../Button';
+import Image from 'next/image';
 
 export default function GetInvolved() {
 
@@ -14,10 +15,12 @@ export default function GetInvolved() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-10">
           <div className="relative">
             <div className="relative">
-              <img
+              <Image
                 alt="Lighthaven"
                 className="glitch mb-2 rounded object-cover"
                 src="/images/lighthaven_chess.JPG"
+                width={600}
+                height={600}
               />
             </div>
           </div>
@@ -35,11 +38,9 @@ export default function GetInvolved() {
               Metagame is the conference for you.
               <br />
               <br />
-              <div>
                 <Button link="/contribute">
                   Dooooo it
                 </Button>
-              </div>
             </p>
           </div>
         </div>

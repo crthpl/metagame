@@ -1,4 +1,5 @@
 import { Partner } from '@/lib/content';
+import Image from 'next/image';
 
 interface PartnerCardProps {
   partner: Partner;
@@ -10,11 +11,12 @@ export default function PartnerCard({ partner, imgClass }: PartnerCardProps) {
 
   const cardContent = (
     <div className="rounded-md border-amber-400 transition-all text-center flex flex-col border-0 p-0 gap-4 items-center justify-center hover:underline">
-      <img
-        className={`${imgClass || ''} ${partner.wideLogo ? 'w-60' : ''}`}
+      <Image
         src={partner.logo}
         alt={`${partner.name} logo`}
-
+        width={partner.wideLogo ? 240 : 160}
+        height={80}
+        className={`${imgClass || 'h-20 w-40'} object-contain`}
         loading="lazy"
       />
     </div>

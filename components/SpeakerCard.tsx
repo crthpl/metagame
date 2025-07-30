@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from './Card';
 import { cn } from '@/utils/cn';
+import Image from 'next/image';
 
 interface SpeakerCardProps {
   name: string;
@@ -41,7 +42,7 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({
 
   return (
     <Card className="w-24 sm:w-32 md:w-48 flex flex-col items-center py-1 sm:pt-2 bg-slate-700 bg-opacity-50" padless>
-      <img
+      <Image
         alt={name || "YOU?"}
         className={cn(
           "glitch mb-2 rounded aspect-square w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40",
