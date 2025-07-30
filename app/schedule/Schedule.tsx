@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, UserIcon } from "lucide-react";
+import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, User2Icon, UserIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
 import Image from "next/image";
 import SessionDetailsCard from "./SessionModalCard";
@@ -287,8 +287,10 @@ export default function Schedule({
             </div>
             {locations.map((venue) => (
               <div key={venue.id} className="bg-dark-600 p-3 border border-b-2 border-secondary-300">
-                <div className="size-full flex items-center justify-center  text-center text-lg font-semibold text-secondary-200">
-                  {venue.name}
+                <div className="size-full flex flex-col items-start justify-start text-secondary-200">
+                  <span className="font-serif font-bold text-base">{venue.name}</span>
+                  {venue.campus_location && <span className="font-sans font-normal text-xs text-secondary-400">{venue.campus_location}</span>}
+                  {venue.capacity && <span className="font-sans font-normal text-xs text-secondary-400 flex items-center gap-1">Max {venue.capacity}<User2Icon className="size-3"/></span>}
                 </div>
               </div>
             ))}

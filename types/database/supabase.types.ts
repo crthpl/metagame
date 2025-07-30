@@ -16,8 +16,8 @@ export type Database = {
     Tables: {
       locations: {
         Row: {
+          campus_location: string | null
           capacity: number | null
-          description: string | null
           id: string
           image_url: string | null
           lh_name: string | null
@@ -25,8 +25,8 @@ export type Database = {
           thumbnail_url: string | null
         }
         Insert: {
+          campus_location?: string | null
           capacity?: number | null
-          description?: string | null
           id?: string
           image_url?: string | null
           lh_name?: string | null
@@ -34,8 +34,8 @@ export type Database = {
           thumbnail_url?: string | null
         }
         Update: {
+          campus_location?: string | null
           capacity?: number | null
-          description?: string | null
           id?: string
           image_url?: string | null
           lh_name?: string | null
@@ -49,47 +49,62 @@ export type Database = {
           discord_handle: string | null
           email: string | null
           first_name: string | null
+          homepage_order: number | null
           id: string
           is_admin: boolean
           last_name: string | null
           opted_in_to_homepage_display: boolean
+          profile_pictures_url: string | null
+          site_name: string | null
+          site_name_2: string | null
+          site_url: string | null
+          site_url_2: string | null
         }
         Insert: {
           discord_handle?: string | null
           email?: string | null
           first_name?: string | null
+          homepage_order?: number | null
           id: string
           is_admin?: boolean
           last_name?: string | null
           opted_in_to_homepage_display?: boolean
+          profile_pictures_url?: string | null
+          site_name?: string | null
+          site_name_2?: string | null
+          site_url?: string | null
+          site_url_2?: string | null
         }
         Update: {
           discord_handle?: string | null
           email?: string | null
           first_name?: string | null
+          homepage_order?: number | null
           id?: string
           is_admin?: boolean
           last_name?: string | null
           opted_in_to_homepage_display?: boolean
+          profile_pictures_url?: string | null
+          site_name?: string | null
+          site_name_2?: string | null
+          site_url?: string | null
+          site_url_2?: string | null
         }
         Relationships: []
       }
       session_rsvps: {
         Row: {
           created_at: string
-          id: number
           session_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          id?: number
           session_id: string
           user_id: string
         }
         Update: {
           created_at?: string
-          id?: number
           session_id?: string
           user_id?: string
         }
@@ -199,7 +214,6 @@ export type Database = {
         Row: {
           created_at: string | null
           email: string | null
-          id: number | null
           session_id: string | null
           title: string | null
           user_id: string | null
