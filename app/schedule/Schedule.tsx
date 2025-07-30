@@ -11,7 +11,7 @@ import { Modal } from "@/components/Modal";
 import { SmartTooltip } from '@/components/SmartTooltip';
 import { useQuery } from '@tanstack/react-query';
 import { getAllSessions, getCurrentUserRsvps } from '../actions/db/sessions/queries';
-import { getAllLocations } from '../actions/db/locations/queries';
+import { getOrderedScheduleLocations } from '../actions/db/locations/queries';
 import { useCurrentUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
 
@@ -81,7 +81,7 @@ const getEventOffsetMinutes = (session: DbSessionView, slotTime: string) => {
 };
 
 // Updated duration calculation - PST based
-const getEventDurationMinutes = (session: DbSessionView, slotTime: string) => {
+const getEventDurationMinutes = (session: DbSessionView) => {
   if (!session.start_time || !session.end_time) return 30;
   
   const startMinutes = getPSTMinutes(session.start_time);
@@ -103,7 +103,7 @@ export default function Schedule({
   })
   const { data: locations = [] , isLoading: locationsLoading, isError: locationsError} = useQuery({
     queryKey: ['locations'],
-    queryFn: getAllLocations
+    queryFn: getOrderedScheduleLocations
   })
   const { data: currentUserRsvps = [] } = useQuery({
     queryKey: ['rsvps', 'current-user'],
@@ -321,7 +321,7 @@ export default function Schedule({
                             className={`absolute z-content p-1 m-0.5 border-2 rounded-md ${getEventColor(session)} text-black font-semibold`}
                             style={{
                               top: `${getEventOffsetMinutes(session, time) * 2}px`,     // 2px per minute
-                              height: `${getEventDurationMinutes(session, time) * 2}px`, // 2px per minute  
+                              height: `${getEventDurationMinutes(session) * 2}px`, // 2px per minute  
                               left: '0px',
                               right: '0px',
                             }}
