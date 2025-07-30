@@ -44,7 +44,7 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({
       <img
         alt={name || "YOU?"}
         className={cn(
-          "glitch mb-2 rounded aspect-square w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40",
+          "paper glitch mb-2 rounded aspect-square w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40",
           image ? "object-cover" : "object-fill"
         )}
         src={image ? `/images/${image.split('/').pop()}` : "/images/incognito.svg"}

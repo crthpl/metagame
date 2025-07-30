@@ -255,6 +255,11 @@
   background-position: 100% 0;
 }
 
+.paper {
+  background-color: #f7eccb;
+  background-image: url("https://www.transparenttextures.com/patterns/cardboard.png");
+}
+
 /* Hero background animation - moved from component CSS to work in NextJS */
 :root {
   --c1: hsl(219, 79%, 66%);
