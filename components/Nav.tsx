@@ -74,6 +74,7 @@ export default function Nav() {
           <div className={`${isMenuOpen ? 'block' : 'hidden'} w-full lg:block lg:w-auto`} id="navbar-default">
             <ul className="font-medium flex flex-col items-end p-2 lg:p-0 mt-4 lg:flex-row lg:gap-x-5 rtl:space-x-reverse lg:mt-0">
               <CoinCounter />
+              <NavItem href="/schedule">Schedule</NavItem>
               <NavItem href="/#speakers">Speakers</NavItem>
               <NavItem href="/#tickets">Tickets</NavItem>
               <NavItem href="/contribute">Get Involved</NavItem>
