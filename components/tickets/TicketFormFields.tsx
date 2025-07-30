@@ -79,7 +79,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           disabled={disabled}
-          className={`w-full px-3 py-2 border rounded-md bg-gray-800 text-white border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
+          className={`w-full px-3 py-2 border rounded-md bg-bg-secondary  border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
             errors.name ? 'border-red-500' : ''
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           placeholder="Enter your full name"
@@ -99,7 +99,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
           disabled={disabled}
-          className={`w-full px-3 py-2 border rounded-md bg-gray-800 text-white border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
+          className={`w-full px-3 py-2 border rounded-md bg-bg-secondary border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
             errors.email ? 'border-red-500' : ''
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           placeholder="Enter your email address"
@@ -119,7 +119,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
           value={discordHandle}
           onChange={(e) => onDiscordHandleChange(e.target.value)}
           disabled={disabled}
-          className={`w-full px-3 py-2 border rounded-md bg-gray-800 text-white border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
+          className={`w-full px-3 py-2 border rounded-md bg-bg-secondary border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
             errors.discordHandle ? 'border-red-500' : ''
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           placeholder="Enter your Discord handle"
@@ -176,7 +176,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
               value={safeCouponCode}
               onChange={(e) => onCouponChange(e.target.value.toUpperCase())}
               disabled={disabled || isApplyingCoupon}
-              className={`flex-1 px-3 py-2 border rounded-md bg-gray-800 text-white border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
+              className={`flex-1 px-3 py-2 border rounded-md bg-gray-800  border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
                 errors.couponCode ? 'border-red-500' : ''
               } ${disabled || isApplyingCoupon ? 'opacity-50 cursor-not-allowed' : ''}`}
               placeholder="Enter coupon code"
@@ -185,7 +185,7 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
               type="button"
               onClick={onApplyCoupon}
               disabled={disabled || isApplyingCoupon || !safeCouponCode.trim()}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="px-4 py-2 bg-blue-600  rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {isApplyingCoupon ? 'Applying...' : 'Apply'}
             </button>

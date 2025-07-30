@@ -9,7 +9,7 @@ export default function GetInvolved() {
   return (
     <>
       <section
-        className="container rounded-xl mx-auto mb-8 bg-dark-500 border border-t border-b border-secondary-300"
+        className="container rounded-xl mx-auto mb-8 bg-bg-primary border border-t border-b border-secondary-300"
         id="get-involved"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-10">

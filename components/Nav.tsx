@@ -22,7 +22,7 @@ function NavItem({ href, children }: NavItemProps) {
     <li>
       <Link
         href={href}
-        className="block py-2 px-3 text-white font-bold text-lg rounded md:bg-transparent transition-all md:p-0 hover:text-secondary-200"
+        className="block py-2 px-3 font-bold text-lg rounded md:bg-transparent transition-all md:p-0 hover:text-secondary-200"
       >
         [{children}]
       </Link>
@@ -35,12 +35,12 @@ export default function Nav() {
 
   return (
     <div className="fixed w-full z-navbar shadow-[0px_4px_8px_0px_#8b1d6d]">
-      <nav className="bg-dark-500">
+      <nav className="bg-bg-primary">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <AnimatedCustomDie startingDieIdentifier={STARTING_DIE_IDENTIFIER} />
             <Link href="/">
-              <span className="nav-logo self-center text-2xl font-semibold whitespace-nowrap text-white">
+              <span className="nav-logo self-center text-2xl font-semibold whitespace-nowrap">
                 ME<Tag text="TAG" speed={0.005} catchDistance={50} />AME 2025
               </span>
             </Link>

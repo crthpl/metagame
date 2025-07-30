@@ -322,8 +322,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
 
           {/* Total Price */}
           <div className="flex justify-between items-center pt-2 border-t border-gray-700">
-            <span className="text-white font-semibold">Total:</span>
-            <span className="text-white font-semibold text-lg">
+            <span className=" font-semibold">Total:</span>
+            <span className=" font-semibold text-lg">
               ${finalPrice.toFixed(2)}
             </span>
           </div>
@@ -362,7 +362,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
               href={SOCIAL_LINKS.DISCORD}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors text-sm font-medium"
+              className="inline-block px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors text-sm font-medium"
             >
               Join Discord Server
             </a>
@@ -381,7 +381,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
         <button
           onClick={handlePurchase}
           disabled={isLoading || !stripe}
-          className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 px-4 py-2 bg-primary-600 rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Processing...' : `Purchase $${finalPrice.toFixed(2)}`}
         </button>

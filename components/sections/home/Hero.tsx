@@ -45,7 +45,7 @@ export const Hero: React.FC = () => {
       <div className="flex flex-col items-center justify-center max-w-prose">
         <h1 className="text-center w-full mb-10 text-4xl font-semibold tracking-wider md:text-6xl max-w-prose glitch">
           METAGAME 2025 <br />
-          <span className="text-white uppercase font-black outlines">
+          <span className="uppercase font-black outlines">
             <Typer
               blinkerClass="text-white"
               texts={gameNames} 
