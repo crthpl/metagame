@@ -1,43 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Button } from '../../Button';
 
 export default function GetInvolved() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleOverlayClick = (event: React.MouseEvent) => {
-    if (event.target === event.currentTarget) {
-      closeModal();
-    }
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        closeModal();
-      }
-    };
-
-    if (isModalOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-      // Prevent body scroll when modal is open
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
-    };
-  }, [isModalOpen]);
 
   return (
     <>
@@ -50,9 +16,8 @@ export default function GetInvolved() {
             <div className="relative">
               <img
                 alt="Lighthaven"
-                className="glitch mb-2 rounded object-cover cursor-pointer"
-                src="/images/proset_1.JPG"
-                onClick={openModal}
+                className="glitch mb-2 rounded object-cover"
+                src="/images/lighthaven_chess.JPG"
               />
             </div>
           </div>
@@ -79,29 +44,6 @@ export default function GetInvolved() {
           </div>
         </div>
       </section>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div 
-          className="fixed inset-0 bg-black/70 transition-opacity duration-300 z-40 flex items-center justify-center"
-          onClick={handleOverlayClick}
-        >
-          <div className="relative w-[85vw] max-w-4xl">
-            <button 
-              className="sm:hidden absolute -top-4 -right-4 w-8 h-8 bg-secondary-200 text-dark-500 rounded-full flex items-center justify-center z-50"
-              onClick={closeModal}
-              aria-label="Close modal"
-            >
-              ✕
-            </button>
-            <img
-              alt="Lighthaven Modal"
-              className="object-contain w-full h-auto max-h-[80vh]"
-              src="/images/proset_puzzle_tablet.png"
-            />
-          </div>
-        </div>
-      )}
     </>
   );
 } 
