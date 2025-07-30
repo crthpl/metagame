@@ -13,7 +13,7 @@ export default async function ScheduleDemo({searchParams}:{searchParams: SearchP
   const parsedDayIndex = dayIndexSchema.safeParse(dayIndexParam)
   const dayIndex = parsedDayIndex.success && [0,1,2].includes(parsedDayIndex.data) ? parsedDayIndex.data : undefined
   return (
-    <div className="h-[calc(100vh-80px)] bg-dark-900 p-4 overflow-hidden">
+    <div className="h-[calc(100vh-80px)] bg-dark-500  p-4 overflow-hidden">
       <div className="container mx-auto max-w-7xl h-full flex flex-col border border-secondary-300 rounded-xl overflow-y-auto">
         <Schedule
           dayIndex={dayIndex}
