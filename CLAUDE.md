@@ -1,4 +1,4 @@
-# Metagame 2025 - Project Context for Claude
+# Metagame 2025 - Project Context for Cursor
 
 ## Project Overview
 This is a Next.js website for the Metagame 2025 conference - a collaborative gaming and puzzle event. The site features speaker profiles, sponsors, interactive games, and ticket purchasing functionality.
@@ -68,6 +68,10 @@ Content is stored in markdown files in the `content/` directory:
 - Logo handling in PartnerCard with `wideLogo` flag support
 
 ## Development Guidelines
+
+### Theming
+- Tailwind 4 has no tailwind config and all its parameters live in globals.css
+- we have some utility classes like colors on bg-primary for consistent theming. Where possible don't overduplicate classes, e.g. text-primary is set at layout.tsx and doesn't need to be repeated unless a parent has overwritten it
 
 ### Code Style
 - Use TypeScript for type safety
