@@ -7,6 +7,7 @@ import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCurrentUserRsvps } from "../actions/db/sessions/queries";
 import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions/mutations";
+import { useCurrentUser } from "@/hooks/dbQueries";
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -56,6 +57,7 @@ const getDateString = (timestamp: string) => {
       queryClient.invalidateQueries({ queryKey: ['sessions'] })
     }
   })
+  const currentUser = useCurrentUser()
 
   const handleToggleRsvp = () => {
     if (currentUserIsRsvpd) {
@@ -107,10 +109,12 @@ const getDateString = (timestamp: string) => {
           {/* Time & Date */}
           {session.start_time && (
             <div className="space-y-1">
-              {currentUserIsRsvpd ? 
-                <button className="text-red-400 cursor-pointer" onClick={handleToggleRsvp}>Un-RSVP</button>
-                :
-                <button className="text-green-400 cursor-pointer" onClick={handleToggleRsvp}>RSVP</button>
+              {currentUser.currentUser && 
+                (currentUserIsRsvpd ? 
+                  <button className="text-red-400 cursor-pointer" onClick={handleToggleRsvp}>Un-RSVP</button>
+                  :
+                  <button className="text-green-400 cursor-pointer" onClick={handleToggleRsvp}>RSVP</button>)
+                
               }
               <div className="text-secondary-300 font-medium">
                 📅 {getDateString(session.start_time)}
