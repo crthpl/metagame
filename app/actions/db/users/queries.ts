@@ -6,7 +6,7 @@ import { createServiceClient } from "@/utils/supabase/service"
 export const getCurrentUserId = async () => {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  return user?.id
+  return user?.id ?? null
 }
 
 export const getCurrentUserEmail = async () => {
