@@ -211,7 +211,7 @@ export default function Schedule({
     return <div className="text-red-200">Error loading sessions or locations</div>
   }
   return (
-    <div className="w-full h-full flex flex-col bg-dark-500 border border-secondary-300 rounded-xl overflow-hidden">
+    <div className="font-serif w-full h-full flex flex-col bg-dark-500 border border-secondary-300 rounded-xl overflow-hidden">
       {/* Day Navigator - Fixed on desktop, scrollable on mobile */}
       <div className="hidden lg:flex flex-shrink-0 items-center justify-between p-4 bg-dark-600 border-b border-secondary-300">
         <button
@@ -328,11 +328,11 @@ export default function Schedule({
                               <div className="font-bold text-sm leading-tight">
                                 {session.title}
                               </div>
-                              <div className="text-xs">
+                              <div className="text-xs font-sans">
                                 {dbGetHostsFromSession(session).join(", ")}
                               </div>
 
-                              <div className=" absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
+                              <div className="font-sans absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
                                 {currentUserRsvps.includes(session.id!) && <CheckIcon className="size-3"/>}
                                 <UserIcon className="size-3"/> 
                                 {session.rsvp_count ?? "0"} / {session.max_capacity}
