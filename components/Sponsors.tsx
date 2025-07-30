@@ -9,7 +9,7 @@ export default async function Sponsors() {
   const silverSponsors = sponsors.filter((s) => s.tier === "silver");
 
   return (
-    <section className="mb-20 bg-dark-500 flex flex-col" id="sponsors">
+    <section className="mb-20 flex flex-col" id="sponsors">
       <div className="w-full flex flex-col items-center justify-center">
         <h2 className="mb-8 text-3xl font-bold">Sponsors</h2>
         

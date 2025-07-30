@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function ArborContent() {
   return (
-    <main className="dark:text-white">
+    <main >
       <div className="container mx-auto px-4 py-16">
         {/* Hero Section */}
         <section className="text-center mb-8">
@@ -17,7 +17,7 @@ export default function ArborContent() {
 
         {/* Projects Section */}
         <section className="max-w-3xl mx-auto mb-16">
-          <div className="bg-dark-500 p-8 text-xl">
+          <div className="p-8 text-xl">
             Arbor is a team of people curious about markets, pedagogy, and game design, run by{' '}
             <a 
               href="https://rickiheicklen.com" 

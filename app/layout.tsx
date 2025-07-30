@@ -63,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-dark-500 text-white" data-theme="synthwave">
+    <html lang="en" className="bg-bg-primary text-text-primary" data-theme="synthwave">
       <body
         className={`${jura.variable} font-sans antialiased relative overflow-x-hidden flex flex-col min-h-screen`}
       >

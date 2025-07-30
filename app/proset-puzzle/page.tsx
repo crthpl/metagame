@@ -20,7 +20,7 @@ export default function ProsetPuzzlePage() {
           }
         `
       }} />
-      <main className="flex flex-col items-center justify-center w-full p-6 dark:text-white">
+      <main className="flex flex-col items-center justify-center w-full p-6 ">
         <div className="max-w-4xl text-center space-y-6">
           {/* Title */}
           <h1 className="text-4xl md:text-5xl font-bold mt-12 mb-4">

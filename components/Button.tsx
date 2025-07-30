@@ -20,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({ link, target, children, classNam
       <div className={`btn-blur ${bg} absolute top-0 left-0 right-0 bottom-0 -z-10 rounded-md`}>
       </div>
       <div className={`tickets-btn ${bg} relative transition-all duration-300 rounded-md p-0.5 font-bold`}>
-        <div className="content uppercase transition-all duration-1000 bg-dark-500 text-white w-full h-full px-12 rounded-md py-3">
+        <div className="content uppercase transition-all duration-1000 w-full h-full px-12 rounded-md py-3">
           {children}
         </div>
       </div>

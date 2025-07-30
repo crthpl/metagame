@@ -13,8 +13,8 @@ import PacmanAnimation from "@/components/PacmanAnimation";
 export default function Home() {
   return (
     <HomePageWrapper>
-      <main className="dark:text-white">
-        <div className="container mx-auto px-4 flex flex-col items-center gap-8">
+      <main>
+        <div className="container mx-auto px-4">
           <Hero />
           <Calendar />
           <GetInvolved />
@@ -29,7 +29,7 @@ export default function Home() {
           <div id="set-animation">
             <SetAnimation />
           </div>
-          <section className="mb-8 bg-dark-500 mt-4" id="tickets">
+          <section className="mb-8 mt-4" id="tickets">
             <div className="container mx-auto flex flex-col items-center">
               <div className="mb-8">
                 <h2 className="text-3xl font-bold text-center">

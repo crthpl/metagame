@@ -108,7 +108,7 @@ export function KbarApp({ children }: { children: React.ReactNode }) {
     <KBarProvider actions={actions}>
       <KBarPortal>
         <KBarPositioner className="fixed inset-0 bg-black/60 z-50">
-          <KBarAnimator className="w-full max-w-xl bg-dark-500 rounded-lg overflow-hidden shadow-lg">
+          <KBarAnimator className="w-full max-w-xl bg-bg-secondary rounded-lg overflow-hidden shadow-lg">
             <KBarSearch 
               className="w-full px-4 py-3 text-lg bg-transparent border-b border-gray-700 text-white placeholder-gray-400 focus:outline-none"
               placeholder="Type a command or search..."
