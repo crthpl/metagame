@@ -28,7 +28,7 @@ export default function GetInvolved() {
             <h2 className="mb-8 text-2xl font-bold text-secondary-200">
               Run something
             </h2>
-            <p className="mb-4 font-semibold">
+            <div className="mb-4 font-semibold">
               We will provide the venue, the resources, and the very eager audience, and you can run whatever experimental game concept you&apos;ve been toying with.
               <br />  
               <br />
@@ -41,7 +41,7 @@ export default function GetInvolved() {
                 <Button link="/contribute">
                   Dooooo it
                 </Button>
-            </p>
+            </div>
           </div>
         </div>
       </section>
