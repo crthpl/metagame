@@ -51,6 +51,7 @@
     "daisyui": "^5.0.46",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "@eslint/plugin-kit": "^0.3.4",
     "supabase": "^2.31.8",
     "tailwindcss": "^4",
