@@ -8,7 +8,7 @@ import SpeakersWrapper from "@/components/sections/home/SpeakersWrapper";
 import { ContactUs } from "@/components/sections/home/ContactUs";
 import HomePageWrapper from "@/components/HomePageWrapper";
 import PacmanAnimation from "@/components/PacmanAnimation";
-import Schedule from "./schedule/Schedule";
+// import Schedule from "./schedule/Schedule";
 
 export default function Home() {
   return (
@@ -19,12 +19,12 @@ export default function Home() {
           <Calendar />
           <GetInvolved />
           <SpeakersWrapper />
-          <div className="h-[calc(100vh-150px)] w-fit max-w-full overflow-hidden">
+          {/* <div className="h-[calc(100vh-150px)] w-fit max-w-full overflow-hidden">
             <div className="container mx-auto max-w-7xl h-full flex flex-col border border-secondary-300 rounded-xl overflow-y-auto">
               <Schedule
               />
             </div>
-          </div>
+          </div> */}
           <Sponsors />
           <div id="set-animation">
             <SetAnimation />
