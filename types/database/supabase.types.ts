@@ -195,7 +195,7 @@ export type Database = {
         Insert: {
           coupons_used?: string[]
           created_at?: string
-          discord_handl?: string | null
+          discord_handle?: string | null
           id?: number
           owner_id?: string | null
           price_paid?: number | null
