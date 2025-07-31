@@ -2,25 +2,16 @@ import React from 'react';
 import { Card } from './Card';
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
+import { Tables } from '@/types/database/supabase.types';
 
-interface SpeakerCardProps {
-  name: string;
-  image?: string;
-  gameName: string;
-  gameUrl: string;
-  gameName2?: string;
-  gameUrl2?: string;
-  slug?: string;
+
+type SpeakerCardProps = {
+  profile: Tables<"profiles">;
 }
 
-export const SpeakerCard: React.FC<SpeakerCardProps> = ({
-  name,
-  image,
-  gameName,
-  gameUrl,
-  gameName2,
-  gameUrl2,
-}) => {
+export const SpeakerCard: React.FC<SpeakerCardProps> = ({profile}) => {
+  const { first_name, last_name, profile_pictures_url, site_name, site_url, site_name_2, site_url_2 } = profile;
+  
   const ExternalLinkIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +32,7 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({
   );
 
   // Handle different image URL formats
-  const getImageSrc = (imageUrl?: string) => {
+  const getImageSrc = (imageUrl: string | null) => {
     if (!imageUrl) return "/images/incognito.svg";
     
     // If it's already a full URL (from Supabase), use it directly
@@ -56,12 +47,12 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({
   return (
     <Card className="w-24 sm:w-32 md:w-48 flex flex-col items-center py-1 sm:pt-2 bg-slate-700 bg-opacity-50" padless>
       <Image
-        alt={name || "YOU?"}
+        alt={first_name + ' ' + last_name || "YOU?"}
         className={cn(
           "glitch mb-2 rounded aspect-square w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40",
-          image ? "object-cover" : "object-fill"
+          profile_pictures_url ? "object-cover" : "object-fill"
         )}
-        src={getImageSrc(image)}
+        src={getImageSrc(profile_pictures_url)}
         height="160"
         width="160"
       />
@@ -69,28 +60,28 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({
         <h3
           className={cn(
             "font-bold text-xs",
-            name.length > 20 ? "md:text-sm" : "md:text-base"
+            (first_name + ' ' + last_name).length > 20 ? "md:text-sm" : "md:text-base"
           )}
         >
-          {name}
+          {first_name + ' ' + last_name}
         </h3>
         <a
-          href={gameName === "METAGAME" ? `/?metagame=true#speakers` : gameUrl}
+          href={site_name === "METAGAME" ? `/?metagame=true#speakers` : site_url ?? ""  }
           target="_blank"
           rel="noopener noreferrer"
           className="text-secondary-200 text-[10px] sm:text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1 mt-1"
         >
-          {gameName}
+          {site_name}
           <ExternalLinkIcon />
         </a>
-        {gameName2 && gameUrl2 && (
+        {site_name_2 && site_url_2 && (
           <a
-            href={gameName2 === "METAGAME" ? `/?metagame=true#speakers` : gameUrl2}
+            href={site_name_2 === "METAGAME" ? `/?metagame=true#speakers` : site_url_2}
             target="_blank"
             rel="noopener noreferrer"
             className="text-secondary-200 text-[10px] sm:text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1"
           >
-            {gameName2}
+            {site_name_2}
             <ExternalLinkIcon />
           </a>
         )}

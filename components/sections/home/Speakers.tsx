@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { SpeakerCard } from '../../SpeakerCard';
 import { Button } from '../../Button';
 import { MetagamePopup } from '../../MetagamePopup';
-import type { Speaker } from '@/lib/content';
 import { CALL_FOR_SESSIONS } from '@/config';
+import { Tables } from '@/types/database/supabase.types';
 
-interface SpeakersProps {
-  speakers: Speaker[];
+type SpeakersProps = {
+  speakers: Tables<"profiles">[];
 }
 
 export default function Speakers({ speakers }: SpeakersProps) {
@@ -51,14 +51,8 @@ export default function Speakers({ speakers }: SpeakersProps) {
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 max-w-8xl mx-auto">
             {speakers.map((speaker) => (
               <SpeakerCard
-                key={speaker.name}
-                name={speaker.name}
-                image={speaker.image}
-                gameName={speaker.gameName}
-                gameUrl={speaker.gameUrl}
-                gameName2={speaker.gameName2}
-                gameUrl2={speaker.gameUrl2}
-                slug={speaker.slug}
+                key={speaker.id}
+                profile={speaker}
               />
             ))}
           </div>
