@@ -208,7 +208,7 @@ export default function Schedule({
       <div className="hidden lg:flex flex-shrink-0 items-center justify-between p-4 bg-dark-600 border-b border-secondary-300">
         <button
           onClick={prevDay}
-          className="p-2 rounded-md hover:bg-dark-400 transition-colors"
+          className="p-2 rounded-md transition-colors disabled:opacity-50"
           disabled={currentDayIndex === 0}
         >
           <ChevronLeft className="w-5 h-5 text-secondary-300" />
@@ -220,7 +220,7 @@ export default function Schedule({
         
         <button
           onClick={nextDay}
-          className="p-2 rounded-md hover:bg-dark-400 transition-colors"
+          className="p-2 rounded-md transition-colors disabled:opacity-50"
           disabled={currentDayIndex === days.length - 1}
         >
           <ChevronRight className="w-5 h-5 text-secondary-300" />
@@ -233,7 +233,7 @@ export default function Schedule({
         <div className="lg:hidden flex items-center justify-between p-4 bg-dark-600 border-b border-secondary-300 sticky left-0 z-30">
           <button
             onClick={prevDay}
-            className="p-2 rounded-md hover:bg-dark-400 transition-colors"
+            className="p-2 rounded-md transition-colors disabled:opacity-50"
             disabled={currentDayIndex === 0}
           >
             <ChevronLeft className="w-5 h-5 text-secondary-300" />
@@ -245,7 +245,7 @@ export default function Schedule({
           
           <button
             onClick={nextDay}
-            className="p-2 rounded-md hover:bg-dark-400 transition-colors"
+            className="p-2 rounded-md transition-colors disabled:opacity-50"
             disabled={currentDayIndex === days.length - 1}
           >
             <ChevronRight className="w-5 h-5 text-secondary-300" />
