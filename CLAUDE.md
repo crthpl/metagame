@@ -96,4 +96,4 @@ Storage of static assets should be done though supabase. Like other database que
 Much of this site was haphazardly put together in an inexperienced, ad-hod LLM-guided way. Some things are implemented inconsistently or with odd design considerations that no longer apply. Suggestions to refactor code that seems out of place or bizzare or overwrought are welcome.
 
 ## LLM Assistance
-When Claude code finishes implementing a feature thread, especially in bypass permission mode, it should place a log in the /claude/reports folder summarizing everything done especially mutating changes to database
+When Claude code finishes implementing a feature thread, especially in bypass permission mode, it should place a log in the /claude-code/reports folder summarizing everything done especially mutating changes to database
