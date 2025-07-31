@@ -128,7 +128,7 @@ export default function Schedule({
       []  // Day 2: Sunday 9/14
     ] as DbSessionView[][];
     const filterSessionForUser = (session: DbSessionView) => {
-      if (currentUserRsvps.includes(session.id!)) {
+      if (currentUserRsvps.some(rsvp => rsvp.session_id === session.id!)) {
         return true
       }
       const sessionHostIds = [session.host_1_id, session.host_2_id, session.host_3_id].filter(Boolean)
@@ -200,7 +200,7 @@ export default function Schedule({
   // Helper function to get event color
   const getEventColor = (session:DbSessionView) => {
     const locationIndex = locations.findIndex(l => l.id === session.location_id)
-    return currentUserRsvps.includes(session.id!) ? 'bg-green-400 border-green-500' : locationEventColors[locationIndex % locationEventColors.length]
+    return currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) ? 'bg-green-400 border-green-500' : locationEventColors[locationIndex % locationEventColors.length]
   };
 
   if (sessionsLoading || locationsLoading) {
@@ -335,7 +335,7 @@ export default function Schedule({
                               </div>
 
                               <div className="font-sans absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
-                                {currentUserRsvps.includes(session.id!) && <CheckIcon className="size-3"/>}
+                                {currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) && <CheckIcon className="size-3"/>}
                                 <UserIcon className="size-3"/> 
                                 {session.rsvp_count ?? "0"} / {session.max_capacity}
                               </div>

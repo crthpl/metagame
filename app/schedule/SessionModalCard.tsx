@@ -41,7 +41,13 @@ const getDateString = (timestamp: string) => {
     queryKey: ['rsvps', 'current-user'],
     queryFn: getCurrentUserRsvps
   })
-  const currentUserIsRsvpd = currentUserRsvps.data?.includes(session.id!) ?? false
+  const currentUserRsvp = currentUserRsvps.data?.find(rsvp => rsvp.session_id === session.id!)
+  const currentUserIsRsvpd = !!currentUserRsvp
+  const currentUserIsOnWaitlist = currentUserRsvp?.on_waitlist ?? false
+  
+  // Check if session is at capacity
+  const isSessionFull = session.max_capacity !== null && 
+                        (session.rsvp_count || 0) >= session.max_capacity
   const queryClient = useQueryClient()
   const unrsvpMutation = useMutation({
     mutationFn: unrsvpCurrentUserFromSession,
@@ -110,11 +116,22 @@ const getDateString = (timestamp: string) => {
           {session.start_time && (
             <div className="space-y-1">
               {currentUser.currentUser && 
-                (currentUserIsRsvpd ? 
-                  <button className="text-red-400 cursor-pointer" onClick={handleToggleRsvp}>Un-RSVP</button>
-                  :
-                  <button className="text-green-400 cursor-pointer" onClick={handleToggleRsvp}>RSVP</button>)
-                
+                <div className="flex items-center gap-3">
+                  {currentUserIsRsvpd ? (
+                    <>
+                      <span className={`font-semibold ${currentUserIsOnWaitlist ? 'text-yellow-400' : 'text-green-400'}`}>
+                        {currentUserIsOnWaitlist ? 'on Waitlist' : "RSVP'D"}
+                      </span>
+                      <button className="text-red-400 cursor-pointer" onClick={handleToggleRsvp}>
+                        Un-RSVP
+                      </button>
+                    </>
+                  ) : (
+                    <button className="text-green-400 cursor-pointer" onClick={handleToggleRsvp}>
+                      {isSessionFull ? 'Join Waitlist' : 'RSVP'}
+                    </button>
+                  )}
+                </div>
               }
               <div className="text-secondary-300 font-medium">
                 📅 {getDateString(session.start_time)}

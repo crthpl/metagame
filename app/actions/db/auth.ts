@@ -1,0 +1,34 @@
+import { getCurrentUserId, getUserAdminStatus } from "./users/queries"
+
+/** Wraps a function and returns a version that only runs if the current user is an admin
+ * 
+ * for exporting potentially sensitive server functions we don't want arbitrary users to be able to run*/
+
+export const adminExportWrapper = <Args extends unknown[], R>(
+  fn: (...args: Args) => Promise<R> | R
+) => {
+  return async (...args: Args): Promise<R> => {
+    const requesterId = await getCurrentUserId()
+    if (!requesterId || !(await getUserAdminStatus(requesterId))) {
+      throw new Error('Unauthorized')
+    }
+    return await fn(...args)
+  }
+}
+
+
+/** Wraps a function that takes a userId (in an object), and returns a function that takes all its other arguments and injects the current user's id from the supabase session. For wrapping functions to export in a way that only lets clients use on themselves */
+export const currentUserWrapper = <
+  P extends Record<string, unknown>,
+  R
+>(
+  fn: (params: P & { userId: string }) => Promise<R> | R
+) => {
+  return async (params: Omit<P, 'userId'>): Promise<R> => {
+    const userId = await getCurrentUserId()
+    if (!userId) throw new Error('No current user found')
+
+    // Spread caller-supplied props + our injected userId
+    return fn({ ...params, userId } as P & { userId: string })
+  }
+}
