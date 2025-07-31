@@ -142,10 +142,10 @@ function convertProfileToSpeaker(profile: ProfileSpeaker): Speaker {
     gameUrl: profile.site_url || '',
     gameName2: profile.site_name_2 ?? undefined,
     gameUrl2: profile.site_url_2 ?? undefined,
-    website: '',
-    twitter: '',
-    linkedin: '',
-    github: '',
+    website: undefined,
+    twitter: undefined,
+    linkedin: undefined,
+    github: undefined,
     slug: profile.id, // Use the UUID as slug
   };
 }
