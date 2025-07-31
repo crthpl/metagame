@@ -1,37 +1,12 @@
 import { createServiceClient } from '@/utils/supabase/service';
 
-export interface ProfileSpeaker {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  email: string | null;
-  opted_in_to_homepage_display: boolean | null;
-  homepage_order: number | null;
-  site_name: string | null;
-  site_url: string | null;
-  site_name_2: string | null;
-  site_url_2: string | null;
-  profile_pictures_url: string | null;
-}
 
-export async function getSpeakersFromProfiles(): Promise<ProfileSpeaker[]> {
+export async function getSpeakersFromProfiles() {
   const supabase = createServiceClient();
   
   const { data, error } = await supabase
     .from('profiles')
-    .select(`
-      id,
-      first_name,
-      last_name,
-      email,
-      opted_in_to_homepage_display,
-      homepage_order,
-      site_name,
-      site_url,
-      site_name_2,
-      site_url_2,
-      profile_pictures_url
-    `)
+    .select()
     .eq('opted_in_to_homepage_display', true)
     .order('homepage_order', { ascending: true, nullsFirst: false });
 
@@ -40,5 +15,17 @@ export async function getSpeakersFromProfiles(): Promise<ProfileSpeaker[]> {
     throw new Error(`Failed to fetch speakers: ${error.message}`);
   }
 
-  return data || [];
+  const dataToReturn = data.map((profile) => {
+    return {
+      id: profile.id,
+      name: profile.first_name + ' ' + profile.last_name,
+      image: profile.profile_pictures_url,
+      gameName: profile.site_name,
+      gameUrl: profile.site_url,
+      gameName2: profile.site_name_2,
+      gameUrl2: profile.site_url_2,
+    }
+  })
+
+  return dataToReturn;
 } 
