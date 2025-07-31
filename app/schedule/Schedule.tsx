@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, User2Icon, UserIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
 import Image from "next/image";
@@ -159,39 +159,29 @@ export default function Schedule({
   }, [sessions, filterForUserEvents]);
   const [currentDayIndex, setCurrentDayIndex] = useState(dayIndex ?? 0);
   const [openedSessionId, setOpenedSessionId] = useState<DbSessionView['id'] | null>(sessionId ?? null);
+  
+  // Sync URL parameters with state changes
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (currentDayIndex !== 0) params.set('day', currentDayIndex.toString());
+    if (openedSessionId) params.set('session', openedSessionId);
+    
+    const newUrl = params.toString() ? `?${params.toString()}` : '/schedule';
+    router.replace(newUrl, { scroll: false });
+  }, [currentDayIndex, openedSessionId, router]);
   const currentDay = days[currentDayIndex] || { date: '', displayName: 'No Events', events: [] };
-  const updateSearchParams = ({
-    dayIndex,
-    sessionId
-  }: { dayIndex?: number; sessionId?: string}) => {
-    const params = new URLSearchParams
-    if (dayIndex != undefined) params.set('day', dayIndex.toString())
-    if (sessionId) params.set('session', sessionId)
-    router.replace(`?${params.toString()}`, {scroll: false})
-  }
-  const setDayIndex = (dayIndex: number) => {
-    setCurrentDayIndex(dayIndex)
-    updateSearchParams({dayIndex:dayIndex})
-  }
   const nextDay = () => {
-    setCurrentDayIndex((prev) => {
-      const newDay = Math.min(days.length - 1, prev + 1)
-      updateSearchParams({dayIndex: newDay})
-      return  (newDay)
-    });
+    const newDay = Math.min(days.length - 1, currentDayIndex + 1)
+    setCurrentDayIndex(newDay)
   };
 
   const prevDay = () => {
-    setCurrentDayIndex((prev) => {
-      const newDay = Math.max(0, prev - 1)
-      updateSearchParams({dayIndex:newDay})
-      return newDay
-    })
+    const newDay = Math.max(0, currentDayIndex - 1)
+    setCurrentDayIndex(newDay)
   };
 
   const handleOpenSessionModal = (sessionId: string) => {
     setOpenedSessionId(sessionId)
-    updateSearchParams({sessionId:sessionId})
   }
 
   const handleToggleFilterForUserEvents = () => {
@@ -367,7 +357,9 @@ export default function Schedule({
         onClose={() => {
           const sessionDayIndex = days.findIndex(day => day.events.some(event => event.id === openedSessionId))
           setOpenedSessionId(null)
-          setDayIndex(sessionDayIndex)
+          if (sessionDayIndex >= 0) {
+            setCurrentDayIndex(sessionDayIndex)
+          }
           }}
         >
           <SessionDetailsCard 
