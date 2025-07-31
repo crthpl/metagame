@@ -83,17 +83,17 @@ Content is stored in markdown files in the `content/` directory:
 
 ### Common Issues
 - Next.js Image components need proper width/height or container sizing
-- Supabase types should be regenerated after schema changes
+- Rely on implicit typing from the supabase client over writing manual interfaces
 - Tailwind classes may need JIT compilation for dynamic classes
 
-## Contributing
-The project welcomes collaborative contributions! Anyone can add games or features via PRs. Contact ricki.heicklen@gmail.com for coupon integration requests.
-
 ## Querying
-Database interaction is to be handled through React Query and Server functions. Functions are organized roughly by table or dataconcern in app/actions/db/\[table\]/{mutations.ts | queries.ts}. It is important to pay attention to what functions are being exported from this file and whether they have Service Client level privileges. Design may be reworked here in the future to use more non-admin client calls once we make more database-mutating functions that we don't want users to have access to. For now the auth flow is to use getCurrentUser and userIsAdmin to gate the execution of anything sensitive. These server functions will typically be called by using a locally scoped useQuery with queryFn being the imported server function. If we have repeatedly used ones, we will put them in hooks/dbQueries for better centralization of cache keys and query/mutation logic.
+Database interaction is to be handled through React Query and Server functions. Functions are organized roughly by table or dataconcern in app/actions/db/\[table\]/{mutations.ts | queries.ts}. It is important to pay attention to what functions are being exported from this file and whether they have Service Client level privileges. Design may be reworked here in the future to use more non-admin client calls once we make more database-mutating functions that we don't want users to have access to. For now the auth flow is to use getCurrentUser and userIsAdmin to gate the execution of anything sensitive. These server functions will typically be called by using a locally scoped useQuery with queryFn being the imported server function. If we have repeatedly used ones, we will put them in hooks/dbQueries for better centralization of cache keys and query/mutation logic. 
 
 ## Storage
 Storage of static assets should be done though supabase. Like other database queries, server functions for interacting via the superbase client will live in app/actions/db/storage, and similar mindfulness about security of using a service role client should be adhered to. User profile images will be stored using their uuid as filename.
 
 ## Existing/legacy code
 Much of this site was haphazardly put together in an inexperienced, ad-hod LLM-guided way. Some things are implemented inconsistently or with odd design considerations that no longer apply. Suggestions to refactor code that seems out of place or bizzare or overwrought are welcome.
+
+## LLM Assistance
+When Claude code finishes implementing a feature thread, especially in bypass permission mode, it should place a log in the /claude/reports folder summarizing everything done especially mutating changes to database
