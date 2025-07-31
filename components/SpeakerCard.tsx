@@ -2,11 +2,12 @@ import React from 'react';
 import { Card } from './Card';
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
-import { Tables } from '@/types/database/supabase.types';
+import { DbProfile } from '@/types/database/dbTypeAliases';
+
 
 
 type SpeakerCardProps = {
-  profile: Tables<"profiles">;
+  profile: Partial<DbProfile>;
 }
 
 export const SpeakerCard: React.FC<SpeakerCardProps> = ({profile}) => {
@@ -52,7 +53,7 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({profile}) => {
           "glitch mb-2 rounded aspect-square w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40",
           profile_pictures_url ? "object-cover" : "object-fill"
         )}
-        src={getImageSrc(profile_pictures_url)}
+        src={getImageSrc(profile_pictures_url ?? null)}
         height="160"
         width="160"
       />

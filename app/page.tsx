@@ -4,7 +4,7 @@ import Sponsors from "@/components/Sponsors";
 import { Hero } from "@/components/sections/home/Hero";
 import Calendar from "@/components/sections/home/Calendar";
 import GetInvolved from "@/components/sections/home/GetInvolved";
-import SpeakersWrapper from "@/components/sections/home/SpeakersWrapper";
+import Speakers from "@/components/sections/home/Speakers";
 import { ContactUs } from "@/components/sections/home/ContactUs";
 import HomePageWrapper from "@/components/HomePageWrapper";
 import PacmanAnimation from "@/components/PacmanAnimation";
@@ -18,7 +18,7 @@ export default function Home() {
           <Hero />
           <Calendar />
           <GetInvolved />
-          <SpeakersWrapper />
+          <Speakers />
           {/* <div className="h-[calc(100vh-150px)] w-fit max-w-full overflow-hidden">
             <div className="container mx-auto max-w-7xl h-full flex flex-col border border-secondary-300 rounded-xl overflow-y-auto">
               <Schedule

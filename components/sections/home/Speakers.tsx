@@ -5,14 +5,17 @@ import { SpeakerCard } from '../../SpeakerCard';
 import { Button } from '../../Button';
 import { MetagamePopup } from '../../MetagamePopup';
 import { CALL_FOR_SESSIONS } from '@/config';
-import { Tables } from '@/types/database/supabase.types';
+import { getSpeakersFromProfiles } from '@/app/actions/db/profiles/queries';
+import { useQuery } from '@tanstack/react-query';
 
-type SpeakersProps = {
-  speakers: Tables<"profiles">[];
-}
 
-export default function Speakers({ speakers }: SpeakersProps) {
+
+export default function Speakers() {
   const [showMetagamePopup, setShowMetagamePopup] = useState(false);
+  const {data: speakers, isLoading: speakersLoading} = useQuery({
+    queryKey: ['speakers'],
+    queryFn: getSpeakersFromProfiles
+  })
 
   useEffect(() => {
     // Check for metagame URL parameter
@@ -49,12 +52,16 @@ export default function Speakers({ speakers }: SpeakersProps) {
           <h2 className="mb-8 text-3xl font-bold text-center">Speakers</h2>
 
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 max-w-8xl mx-auto">
-            {speakers.map((speaker) => (
-              <SpeakerCard
-                key={speaker.id}
-                profile={speaker}
-              />
-            ))}
+            {speakersLoading || !speakers ? (
+              <div>Loading Speakers...</div>
+            ) : (
+              speakers?.map((speaker) => (
+                <SpeakerCard
+                  key={speaker.id}
+                  profile={speaker}
+                />
+              ))
+            )}
           </div>
 
           <div className="mt-8">

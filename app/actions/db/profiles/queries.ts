@@ -1,9 +1,10 @@
+'use server'
 import { createServiceClient } from '@/utils/supabase/service';
 
 
 export async function getSpeakersFromProfiles() {
   const supabase = createServiceClient();
-  
+  console.log('Getting speakers from profiles');
   const { data, error } = await supabase
     .from('profiles')
     .select()
@@ -18,12 +19,13 @@ export async function getSpeakersFromProfiles() {
   const dataToReturn = data.map((profile) => {
     return {
       id: profile.id,
-      name: profile.first_name + ' ' + profile.last_name,
-      image: profile.profile_pictures_url,
-      gameName: profile.site_name,
-      gameUrl: profile.site_url,
-      gameName2: profile.site_name_2,
-      gameUrl2: profile.site_url_2,
+      first_name: profile.first_name,
+      last_name: profile.last_name,
+      profile_pictures_url: profile.profile_pictures_url,
+      site_name: profile.site_name,
+      site_url: profile.site_url,
+      site_name_2: profile.site_name_2,
+      site_url_2: profile.site_url_2,
     }
   })
 
