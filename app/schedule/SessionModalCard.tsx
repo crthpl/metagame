@@ -145,7 +145,7 @@ const getDateString = (timestamp: string) => {
           {/* Description */}
           {session.description && (
             <div className="space-y-2">
-              <div className="text-secondary-300 font-semibold text-base leading-relaxed whitespace-pre-wrap">
+              <div className="text-secondary-300 font-light text-base leading-relaxed whitespace-pre-wrap">
                 {session.description}
               </div>
             </div>
