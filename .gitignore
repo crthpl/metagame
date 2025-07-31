@@ -46,3 +46,7 @@ test-results/
 
 # dist
 /dist
+
+/claude*
+
+/scripts
