@@ -6,13 +6,15 @@ interface ButtonProps {
   children: React.ReactNode;
   className?: string;
   background?: string;
+  id?: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({ link, target, children, className = '', background }) => {
+export const Button: React.FC<ButtonProps> = ({ link, target, children, className = '', background, id }) => {
   const bg = background ?? 'bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500';
   
   return (
     <a 
+      id={id}
       href={link} 
       target={target} 
       className={`btn-container relative inline-block hover:scale-105 transition-all ${className}`}

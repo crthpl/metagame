@@ -46,7 +46,7 @@ export default function Speakers({ speakers }: SpeakersProps) {
     <>
       <section className="mb-[40px] pt-10 text-center" id="speakers">
         <div className="container mx-auto relative">
-          <h2 className="mb-8 text-3xl font-bold text-center">Speakers</h2>
+          <h2 id="speakers-title" className="mb-8 text-3xl font-bold text-center">Speakers</h2>
 
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 max-w-8xl mx-auto">
             {speakers.map((speaker) => (

@@ -43,7 +43,7 @@ export const Hero: React.FC = () => {
       id="hero"
     >
       <div className="flex flex-col items-center justify-center max-w-prose">
-        <h1 className="text-center w-full mb-10 text-4xl font-semibold tracking-wider md:text-6xl max-w-prose glitch">
+        <h1 id="hero-title" className="text-center w-full mb-10 text-4xl font-semibold tracking-wider md:text-6xl max-w-prose glitch">
           METAGAME 2025 <br />
           <span className="text-white uppercase font-black outlines">
             <Typer
@@ -57,7 +57,7 @@ export const Hero: React.FC = () => {
             A conference about game design, strategy, narrative, and play. Join us September 12-14 in Berkeley, California.
           </span>
         </p>
-        <Button background="bg-cyan-500" link="#tickets">GET YOUR TICKET</Button>
+        <Button id="hero-cta-button" background="bg-cyan-500" link="#tickets">GET YOUR TICKET</Button>
       </div>
     </section>
   );

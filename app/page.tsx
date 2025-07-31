@@ -32,7 +32,7 @@ export default function Home() {
           <section className="mb-8 bg-dark-500 mt-4" id="tickets">
             <div className="container mx-auto flex flex-col items-center">
               <div className="mb-8">
-                <h2 className="text-3xl font-bold text-center">
+                <h2 id="tickets-title" className="text-3xl font-bold text-center">
                   Grab a ticket!
                 </h2>
                 <span className="text-lg text-gray-500 text-center ">Info coming soon about scholarships and discount ticket availability!</span>

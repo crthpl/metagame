@@ -216,6 +216,7 @@ export default function Schedule({
       {/* Day Navigator - Fixed on desktop, scrollable on mobile */}
       <div className="hidden lg:flex flex-shrink-0 items-center justify-between p-4 bg-dark-600 border-b border-secondary-300">
         <button
+          id="schedule-prev-day-desktop"
           onClick={prevDay}
           className="p-2 rounded-md hover:bg-dark-400 transition-colors"
           disabled={currentDayIndex === 0}
@@ -223,11 +224,12 @@ export default function Schedule({
           <ChevronLeft className="w-5 h-5 text-secondary-300" />
         </button>
         
-        <h2 className="text-xl font-bold text-secondary-200 text-center">
+        <h2 id="schedule-day-desktop" className="text-xl font-bold text-secondary-200 text-center">
           {currentDay.displayName}
         </h2>
         
         <button
+          id="schedule-next-day-desktop"
           onClick={nextDay}
           className="p-2 rounded-md hover:bg-dark-400 transition-colors"
           disabled={currentDayIndex === days.length - 1}
@@ -241,6 +243,7 @@ export default function Schedule({
         {/* Day Navigator - Mobile only, inside scrollable area, sticky left */}
         <div className="lg:hidden flex items-center justify-between p-4 bg-dark-600 border-b border-secondary-300 sticky left-0 z-30">
           <button
+            id="schedule-prev-day-mobile"
             onClick={prevDay}
             className="p-2 rounded-md hover:bg-dark-400 transition-colors"
             disabled={currentDayIndex === 0}
@@ -248,11 +251,12 @@ export default function Schedule({
             <ChevronLeft className="w-5 h-5 text-secondary-300" />
           </button>
           
-          <h2 className="text-xl font-bold text-secondary-200 text-center">
+          <h2 id="schedule-day-mobile" className="text-xl font-bold text-secondary-200 text-center">
             {currentDay.displayName}
           </h2>
           
           <button
+            id="schedule-next-day-mobile"
             onClick={nextDay}
             className="p-2 rounded-md hover:bg-dark-400 transition-colors"
             disabled={currentDayIndex === days.length - 1}
