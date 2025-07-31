@@ -337,7 +337,15 @@ export default function Schedule({
                               <div className="font-sans absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
                                 {currentUserRsvps.includes(session.id!) && <CheckIcon className="size-3"/>}
                                 <UserIcon className="size-3"/> 
-                                {session.rsvp_count ?? "0"} / {session.max_capacity}
+                                {currentUser ? (
+                                  session.max_capacity ? 
+                                    `${session.rsvp_count ?? "0"} / ${session.max_capacity}` :
+                                    `${session.rsvp_count ?? "0"}`
+                                ) : (
+                                  session.min_capacity && session.max_capacity ?
+                                    `${session.min_capacity} - ${session.max_capacity}` :
+                                    null
+                                )}
                               </div>
 
                             </div>
