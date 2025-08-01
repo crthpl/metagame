@@ -1,7 +1,7 @@
-import { getCurrentUser } from "@/app/actions/db/users/queries";
+import { getCurrentUser } from "@/app/actions/db/users";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCurrentUser = () => {
+export const useUser = () => {
   const { data: currentUser, isLoading: currentUserLoading, isError: currentUserError } = useQuery({
     queryKey: ['users', 'current'],
     queryFn: getCurrentUser

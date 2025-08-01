@@ -10,9 +10,9 @@ import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { Modal } from "@/components/Modal";
 import { SmartTooltip } from '@/components/SmartTooltip';
 import { useQuery } from '@tanstack/react-query';
-import { getAllSessions, getCurrentUserRsvps } from '../actions/db/sessions/queries';
-import { getOrderedScheduleLocations } from '../actions/db/locations/queries';
-import { useCurrentUser } from '@/hooks/dbQueries';
+import { getAllSessions, getCurrentUserRsvps } from '@/app/actions/db/sessions'
+import { getOrderedScheduleLocations } from '../actions/db/locations';
+import { useUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
@@ -100,6 +100,7 @@ export default function Schedule({
   const { data: sessions = [] , isLoading: sessionsLoading, isError: sessionsError} = useQuery({
     queryKey: ['sessions'],
     queryFn: getAllSessions
+
   })
   const { data: locations = [] , isLoading: locationsLoading, isError: locationsError} = useQuery({
     queryKey: ['locations'],
@@ -109,7 +110,7 @@ export default function Schedule({
     queryKey: ['rsvps', 'current-user'],
     queryFn: getCurrentUserRsvps
   })
-  const {currentUser} = useCurrentUser()
+  const {currentUser} = useUser()
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
 
@@ -128,7 +129,7 @@ export default function Schedule({
       []  // Day 2: Sunday 9/14
     ] as DbSessionView[][];
     const filterSessionForUser = (session: DbSessionView) => {
-      if (currentUserRsvps.includes(session.id!)) {
+      if (currentUserRsvps.some(rsvp => rsvp.session_id === session.id!)) {
         return true
       }
       const sessionHostIds = [session.host_1_id, session.host_2_id, session.host_3_id].filter(Boolean)
@@ -200,7 +201,7 @@ export default function Schedule({
   // Helper function to get event color
   const getEventColor = (session:DbSessionView) => {
     const locationIndex = locations.findIndex(l => l.id === session.location_id)
-    return currentUserRsvps.includes(session.id!) ? 'bg-green-400 border-green-500' : locationEventColors[locationIndex % locationEventColors.length]
+    return currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) ? 'bg-green-400 border-green-500' : locationEventColors[locationIndex % locationEventColors.length]
   };
 
   if (sessionsLoading || locationsLoading) {
@@ -335,7 +336,7 @@ export default function Schedule({
                               </div>
 
                               <div className="font-sans absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
-                                {currentUserRsvps.includes(session.id!) && <CheckIcon className="size-3"/>}
+                                {currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) && <CheckIcon className="size-3"/>}
                                 <UserIcon className="size-3"/> 
                                 {session.rsvp_count ?? "0"} / {session.max_capacity}
                               </div>
