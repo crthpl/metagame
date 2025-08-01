@@ -5,6 +5,7 @@ import Link from "next/link";
 import AnimatedCustomDie from "./Die/AnimatedCustomDie";
 import Tag from "./Tag";
 import CoinCounter from "./CoinCounter";
+import AccountButton from "./AccountButton";
 
 const STARTING_DIE_IDENTIFIER = {
   left: 2,
@@ -17,7 +18,7 @@ interface NavItemProps {
   children: React.ReactNode;
 }
 
-function NavItem({ href, children }: NavItemProps) {
+export function NavItem({ href, children }: NavItemProps) {
   return (
     <li>
       <Link
@@ -72,7 +73,7 @@ export default function Nav() {
           </button>
           
           <div className={`${isMenuOpen ? 'block' : 'hidden'} w-full lg:block lg:w-auto`} id="navbar-default">
-            <ul className="font-medium flex flex-col items-end p-2 lg:p-0 mt-4 lg:flex-row lg:gap-x-5 rtl:space-x-reverse lg:mt-0">
+            <ul className="font-medium flex flex-col items-center p-2 lg:p-0 mt-4 lg:flex-row lg:gap-x-5 rtl:space-x-reverse lg:mt-0">
               <CoinCounter />
               {/* <NavItem href="/schedule">Schedule</NavItem> */}
               <NavItem href="/#speakers">Speakers</NavItem>
@@ -80,6 +81,7 @@ export default function Nav() {
               <NavItem href="/contribute">Get Involved</NavItem>
               <NavItem href="/#sponsors">Sponsors</NavItem>
               <NavItem href="/faq">FAQ</NavItem>
+              <AccountButton />
             </ul>
           </div>
         </div>
