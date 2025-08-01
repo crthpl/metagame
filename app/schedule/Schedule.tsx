@@ -170,14 +170,13 @@ export default function Schedule({
     router.replace(newUrl, { scroll: false });
   }, [currentDayIndex, openedSessionId, router]);
   const currentDay = days[currentDayIndex] || { date: '', displayName: 'No Events', events: [] };
+
   const nextDay = () => {
-    const newDay = Math.min(days.length - 1, currentDayIndex + 1)
-    setCurrentDayIndex(newDay)
+    setCurrentDayIndex(prev => Math.min(days.length - 1, prev + 1))
   };
 
   const prevDay = () => {
-    const newDay = Math.max(0, currentDayIndex - 1)
-    setCurrentDayIndex(newDay)
+    setCurrentDayIndex(prev => Math.max(0, prev - 1))
   };
 
   const handleOpenSessionModal = (sessionId: string) => {
