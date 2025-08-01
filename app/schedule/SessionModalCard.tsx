@@ -41,7 +41,8 @@ const getDateString = (timestamp: string) => {
     queryKey: ['rsvps', 'current-user'],
     queryFn: getCurrentUserRsvps
   })
-  const currentUserIsRsvpd = currentUserRsvps.data?.includes(session.id!) ?? false
+  const currentUserRsvp = currentUserRsvps.data?.find(rsvp => rsvp.session_id === session.id!)
+  const currentUserIsRsvpd = !!currentUserRsvp
   const queryClient = useQueryClient()
   const unrsvpMutation = useMutation({
     mutationFn: unrsvpCurrentUserFromSession,
@@ -57,13 +58,13 @@ const getDateString = (timestamp: string) => {
       queryClient.invalidateQueries({ queryKey: ['sessions'] })
     }
   })
-  const currentUser = useCurrentUser()
+  const currentUser = useUser()
 
   const handleToggleRsvp = () => {
     if (currentUserIsRsvpd) {
-      unrsvpMutation.mutate(session.id!)
+      unrsvpMutation.mutate({sessionId:session.id!})
     } else {
-      rsvpMutation.mutate(session.id!)
+      rsvpMutation.mutate({sessionId:session.id!})
     }
   }
 
