@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { z } from 'zod'
+import { useUser } from '@/hooks/dbQueries'
 
 const loginSchema = z.object({
   email: z.email('Please enter a valid email'),
@@ -23,7 +24,10 @@ export default function LoginPage() {
   })
   const [errors, setErrors] = useState<LoginErrors>({})
   const [isLoading, setIsLoading] = useState(false)
-
+  const {currentUser} = useUser()
+  if (currentUser) {
+    redirect("/")
+  }
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
