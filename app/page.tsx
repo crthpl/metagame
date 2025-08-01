@@ -29,18 +29,21 @@ export default function Home() {
           <div id="set-animation">
             <SetAnimation />
           </div>
-          <section className="mb-8 mt-4" id="tickets">
+          <section className="mt-4 mb-8" id="tickets">
             <div className="container mx-auto flex flex-col items-center">
               <div className="mb-8">
-                <h2 className="text-3xl font-bold text-center">
+                <h2 className="text-center text-3xl font-bold">
                   Grab a ticket!
                 </h2>
-                <span className="text-lg text-gray-500 text-center ">Info coming soon about scholarships and discount ticket availability!</span>
+                <span className="text-center text-lg text-gray-500">
+                  Info coming soon about scholarships and discount ticket
+                  availability!
+                </span>
               </div>
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-3 pb-20">
-                <TicketCard ticketTypeId="npc"/>
-                <TicketCard ticketTypeId="player"/>
-                <TicketCard ticketTypeId="supporter"/>
+              <div className="grid grid-cols-1 gap-8 pb-20 md:grid-cols-3">
+                <TicketCard ticketTypeId="npc" />
+                <TicketCard ticketTypeId="player" />
+                <TicketCard ticketTypeId="supporter" />
               </div>
             </div>
           </section>

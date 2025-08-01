@@ -19,7 +19,15 @@ export const metadata: Metadata = {
     template: "%s | METAGAME 2025",
   },
   description: "A conference for game design, strategy, narrative, and play",
-  keywords: ["game design", "conference", "strategy", "narrative", "play", "metagame", "2025"],
+  keywords: [
+    "game design",
+    "conference",
+    "strategy",
+    "narrative",
+    "play",
+    "metagame",
+    "2025",
+  ],
   authors: [{ name: "Arbor Team" }],
   creator: "Arbor",
   publisher: "Arbor",
@@ -63,14 +71,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-bg-primary text-text-primary" data-theme="synthwave">
+    <html
+      lang="en"
+      className="bg-bg-primary text-text-primary"
+      data-theme="synthwave"
+    >
       <body
-        className={`${jura.variable} font-sans antialiased relative overflow-x-hidden flex flex-col min-h-screen`}
+        className={`${jura.variable} relative flex min-h-screen flex-col overflow-x-hidden font-sans antialiased`}
       >
         <QueryProvider>
           <KbarApp>
             <Nav />
-            <div className="relative overflow-x-hidden flex-grow pt-[72px]">
+            <div className="relative flex-grow overflow-x-hidden pt-[72px]">
               {children}
             </div>
             <Footer />
