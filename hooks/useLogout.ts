@@ -14,24 +14,22 @@ export function useLogout() {
     try {
       setIsLoggingOut(true)
       
-      // Invalidate current user query
-      await queryClient.invalidateQueries({ queryKey: ['users', 'current'] })
-      
-      // Also invalidate any profile-related queries for the current user
-      await queryClient.invalidateQueries({ 
-        queryKey: ['users', 'profile-picture'],
-        predicate: (query) => query.queryKey[0] === 'users' && query.queryKey[1] === 'profile-picture'
-      })
+      // Clear all user-related queries immediately
+      queryClient.removeQueries({ queryKey: ['users'] })
       
       // Call server action to logout
       await logout(redirectTo)
+      
+      // After logout, invalidate all queries to ensure fresh data
+      await queryClient.invalidateQueries()
     } catch (error) {
       console.error('Logout failed:', error)
-      // If logout fails, still try to clear current user cache and redirect
-      queryClient.removeQueries({ queryKey: ['users', 'current'] })
+      // If logout fails, still clear cache and redirect
+      queryClient.clear()
       router.push(redirectTo)
     } finally {
-      setIsLoggingOut(false)
+      // Reset the logging out state after a small delay to ensure UI updates
+      setTimeout(() => setIsLoggingOut(false), 100)
     }
   }
 
