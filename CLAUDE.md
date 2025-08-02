@@ -24,9 +24,10 @@ This is a Next.js website for the Metagame 2025 conference - a collaborative gam
 
 ### Key Directories
 - `app/` - Next.js App Router pages and API routes
+- `app/actions/db` - Database server functions available on client
 - `components/` - React components (reusable UI elements)
 - `content/` - Markdown content (speakers, sponsors, FAQ, sessions)
-- `lib/` - Utility functions and data fetching
+- `lib/` - Utility functions and data fetching and raw databse serverside service functions
 - `config/` - Configuration files
 - `public/` - Static assets (images, logos, sounds)
 
@@ -90,9 +91,6 @@ Content is stored in markdown files in the `content/` directory:
 - Rely on implicit typing from the supabase client over writing manual interfaces
 - Tailwind classes may need JIT compilation for dynamic classes
 
-## Querying
-Database interaction is to be handled through React Query and Server functions. Functions are organized roughly by table or dataconcern in app/actions/db/\[table\]/{mutations.ts | queries.ts}. It is important to pay attention to what functions are being exported from this file and whether they have Service Client level privileges. Design may be reworked here in the future to use more non-admin client calls once we make more database-mutating functions that we don't want users to have access to. For now the auth flow is to use getCurrentUser and userIsAdmin to gate the execution of anything sensitive. These server functions will typically be called by using a locally scoped useQuery with queryFn being the imported server function. If we have repeatedly used ones, we will put them in hooks/dbQueries for better centralization of cache keys and query/mutation logic. 
-
 ## Storage
 Storage of static assets should be done though supabase. Like other database queries, server functions for interacting via the superbase client will live in app/actions/db/storage, and similar mindfulness about security of using a service role client should be adhered to. User profile images will be stored using their uuid as filename.
 
@@ -100,4 +98,7 @@ Storage of static assets should be done though supabase. Like other database que
 Much of this site was haphazardly put together in an inexperienced, ad-hod LLM-guided way. Some things are implemented inconsistently or with odd design considerations that no longer apply. Suggestions to refactor code that seems out of place or bizzare or overwrought are welcome.
 
 ## LLM Assistance
-When Claude code finishes implementing a feature thread, especially in bypass permission mode, it should place a log in the /claude/reports folder summarizing everything done especially mutating changes to database
+When Claude code finishes implementing a feature thread, especially in bypass permission mode, it should place a log in the /claude/reports folder summarizing everything done especially mutating changes to database. Don't try to run pnpm build after making features, the humans can handle that level of checking.
+
+## Database particulars
+Private server methods live in /lib/db/[table]/service.ts. Then we have server actions in app/actions/db/... which wrap those functions for export in wrappers that check the current user and use their id, or check admin status before running aribtrary functions. For standardization and not messing up id orders, all db funcs should take object arguments, even if just a single arg is passed like {userId}. 

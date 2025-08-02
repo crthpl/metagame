@@ -5,9 +5,9 @@ import { LinkIcon, UserIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getCurrentUserRsvps } from "../actions/db/sessions/queries";
-import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions/mutations";
-import { useCurrentUser } from "@/hooks/dbQueries";
+import { getCurrentUserRsvps } from "../actions/db/sessions";
+import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions";
+import { useUser } from "@/hooks/dbQueries";
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -41,7 +41,13 @@ const getDateString = (timestamp: string) => {
     queryKey: ['rsvps', 'current-user'],
     queryFn: getCurrentUserRsvps
   })
-  const currentUserIsRsvpd = currentUserRsvps.data?.includes(session.id!) ?? false
+  const currentUserRsvp = currentUserRsvps.data?.find(rsvp => rsvp.session_id === session.id!)
+  const currentUserIsRsvpd = !!currentUserRsvp
+  const currentUserIsOnWaitlist = currentUserRsvp?.on_waitlist ?? false
+  
+  // Check if session is at capacity
+  const isSessionFull = session.max_capacity !== null && 
+                        (session.rsvp_count || 0) >= session.max_capacity
   const queryClient = useQueryClient()
   const unrsvpMutation = useMutation({
     mutationFn: unrsvpCurrentUserFromSession,
@@ -57,13 +63,13 @@ const getDateString = (timestamp: string) => {
       queryClient.invalidateQueries({ queryKey: ['sessions'] })
     }
   })
-  const currentUser = useCurrentUser()
+  const currentUser = useUser()
 
   const handleToggleRsvp = () => {
     if (currentUserIsRsvpd) {
-      unrsvpMutation.mutate(session.id!)
+      unrsvpMutation.mutate({sessionId:session.id!})
     } else {
-      rsvpMutation.mutate(session.id!)
+      rsvpMutation.mutate({sessionId:session.id!})
     }
   }
 
@@ -110,11 +116,22 @@ const getDateString = (timestamp: string) => {
           {session.start_time && (
             <div className="space-y-1">
               {currentUser.currentUser && 
-                (currentUserIsRsvpd ? 
-                  <button className="text-red-400 cursor-pointer" onClick={handleToggleRsvp}>Un-RSVP</button>
-                  :
-                  <button className="text-green-400 cursor-pointer" onClick={handleToggleRsvp}>RSVP</button>)
-                
+                <div className="flex items-center gap-3">
+                  {currentUserIsRsvpd ? (
+                    <>
+                      <span className={`font-semibold ${currentUserIsOnWaitlist ? 'text-yellow-400' : 'text-green-400'}`}>
+                        {currentUserIsOnWaitlist ? 'on Waitlist' : "RSVP'D"}
+                      </span>
+                      <button className="text-red-400 cursor-pointer" onClick={handleToggleRsvp}>
+                        Un-RSVP
+                      </button>
+                    </>
+                  ) : (
+                    <button className="text-green-400 cursor-pointer" onClick={handleToggleRsvp}>
+                      {isSessionFull ? 'Join Waitlist' : 'RSVP'}
+                    </button>
+                  )}
+                </div>
               }
               <div className="text-secondary-300 font-medium">
                 📅 {getDateString(session.start_time)}

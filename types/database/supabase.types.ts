@@ -101,16 +101,19 @@ export type Database = {
       session_rsvps: {
         Row: {
           created_at: string
+          on_waitlist: boolean
           session_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          on_waitlist?: boolean
           session_id: string
           user_id: string
         }
         Update: {
           created_at?: string
+          on_waitlist?: boolean
           session_id?: string
           user_id?: string
         }
