@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useUser } from "@/hooks/dbQueries";
+import { useQueryClient } from "@tanstack/react-query";
 
 const loginSchema = z.object({
   email: z.email("Please enter a valid email"),
@@ -20,6 +21,7 @@ type LoginErrors = Partial<
 
 export default function LoginPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,9 +29,12 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<LoginErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const { currentUser } = useUser();
-  if (currentUser) {
-    redirect("/");
-  }
+  
+  useEffect(() => {
+    if (currentUser) {
+      router.push("/");
+    }
+  }, [currentUser, router]);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -61,6 +66,8 @@ export default function LoginPage() {
       if (error) {
         setErrors({ submit: error.message });
       } else {
+        // Invalidate user queries to refresh authentication state
+        await queryClient.invalidateQueries({ queryKey: ['users'] });
         router.push("/");
       }
     } catch (error) {
