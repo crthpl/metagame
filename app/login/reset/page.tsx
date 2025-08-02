@@ -3,37 +3,31 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
-import { redirect, useRouter } from 'next/navigation'
 import { z } from 'zod'
-import { useUser } from '@/hooks/dbQueries'
+import { MailIcon } from 'lucide-react'
 
-const loginSchema = z.object({
+const resetSchema = z.object({
   email: z.email('Please enter a valid email'),
-  password: z.string().min(8, 'Please enter a password'),
 })
 
-type LoginErrors = Partial<Record<keyof z.infer<typeof loginSchema>, string>> & {
+type ResetErrors = Partial<Record<keyof z.infer<typeof resetSchema>, string>> & {
   submit?: string
 }
 
-export default function LoginPage() {
-  const router = useRouter()
+export default function ResetPasswordRequestPage() {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
   })
-  const [errors, setErrors] = useState<LoginErrors>({})
+  const [errors, setErrors] = useState<ResetErrors>({})
   const [isLoading, setIsLoading] = useState(false)
-  const {currentUser} = useUser()
-  if (currentUser) {
-    redirect("/")
-  }
+  const [isSuccess, setIsSuccess] = useState(false)
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
     
     // Clear errors when user starts typing
-    if (errors[name as keyof LoginErrors]) {
+    if (errors[name as keyof ResetErrors]) {
       setErrors(prev => ({ ...prev, [name]: '' }))
     }
   }
@@ -44,22 +38,25 @@ export default function LoginPage() {
     setErrors({})
 
     try {
-      const validatedData = loginSchema.safeParse(formData)
+      const validatedData = resetSchema.safeParse(formData)
       if (!validatedData.success) {
-        setErrors({ submit: 'Invalid email or password' })
+        setErrors({ submit: 'Please enter a valid email' })
         return
       }
+      
       const supabase = createClient()
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email: validatedData.data.email,
-        password: validatedData.data.password,
-      })
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        validatedData.data.email,
+        {
+          redirectTo: `${window.location.origin}/auth/confirm?type=recovery`,
+        }
+      )
 
       if (error) {
         setErrors({ submit: error.message })
       } else {
-        router.push('/')
+        setIsSuccess(true)
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -76,13 +73,38 @@ export default function LoginPage() {
     }
   }
 
+  if (isSuccess) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md text-center">
+          <h1 className="text-2xl font-bold mb-4">Check Your Email</h1>
+          <p className="text-gray-300 mb-6">
+            We've sent a password reset link to {formData.email}. 
+            Please check your email and click the link to reset your password.
+          </p>
+          <Link
+            href="/login"
+            className="text-blue-400 hover:text-blue-300 underline"
+          >
+            Back to login
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-[80vh] flex items-center justify-center">
       <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Log In</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Reset Password</h1>
+        <p className="text-gray-300 mb-6 text-center">
+          Enter your email address and we'll send you a link to reset your password.
+        </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col">
-            <label htmlFor="email" className="mb-1 font-medium">Email: <span className="text-red-500">*</span></label>
+            <label htmlFor="email" className="mb-1 font-medium flex gap-1 items-center">
+              <MailIcon className="size-4" />Email: <span className="text-red-500">*</span>
+            </label>
             <input 
               id="email" 
               name="email" 
@@ -98,37 +120,10 @@ export default function LoginPage() {
               <span className="text-red-500 text-xs mt-1">{errors.email}</span>
             )}
           </div>
-          
-          <div className="flex flex-col">
-            <label htmlFor="password" className="mb-1 font-medium">Password: <span className="text-red-500">*</span></label>
-            <input 
-              id="password" 
-              name="password" 
-              type="password" 
-              value={formData.password}
-              onChange={handleInputChange}
-              required
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 ${
-                errors.password ? 'border-red-500' : ''
-              }`}
-            />
-            {errors.password && (
-              <span className="text-red-500 text-xs mt-1">{errors.password}</span>
-            )}
-          </div>
 
           {errors.submit && (
             <div className="text-red-500 text-sm text-center">{errors.submit}</div>
           )}
-
-          <div className="text-center mt-4">
-            <Link
-              href="/login/reset"
-              className="text-sm text-blue-400 hover:text-blue-300 underline"
-            >
-              Forgot/reset password
-            </Link>
-          </div>
           
           <div className="flex gap-4 pt-4">
             <button 
@@ -136,13 +131,13 @@ export default function LoginPage() {
               disabled={isLoading}
               className="flex-1 bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Logging in...' : 'Log in'}
+              {isLoading ? 'Sending...' : 'Send Reset Link'}
             </button>
             <Link
-              href="/signup"
-              className="flex-1 text-center bg-green-500 text-white rounded py-2 px-4 hover:bg-green-600 transition-colors"
+              href="/login"
+              className="flex-1 text-center bg-gray-600 text-white rounded py-2 px-4 hover:bg-gray-700 transition-colors"
             >
-              Sign up
+              Cancel
             </Link>
           </div>
         </form>
