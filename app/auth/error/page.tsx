@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { AlertCircle } from 'lucide-react'
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { AlertCircle } from "lucide-react";
 
 export default function AuthErrorPage() {
-  const searchParams = useSearchParams()
-  const error = searchParams.get('error')
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center">
@@ -16,7 +16,8 @@ export default function AuthErrorPage() {
         </div>
         <h1 className="text-2xl font-bold mb-4">Authentication Error</h1>
         <p className="text-gray-300 mb-6">
-          {error || 'An error occurred during authentication. Please try again.'}
+          {error ||
+            "An error occurred during authentication. Please try again."}
         </p>
         <div className="space-y-3">
           <Link
@@ -34,5 +35,5 @@ export default function AuthErrorPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
