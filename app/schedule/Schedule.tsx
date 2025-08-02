@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, User2Icon, UserIcon } from "lucide-react";
+import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, User2Icon, UserIcon, PlusIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
 import Image from "next/image";
 import SessionDetailsCard from "./SessionModalCard";
@@ -14,6 +14,7 @@ import { getAllSessions, getCurrentUserRsvps } from '@/app/actions/db/sessions'
 import { getOrderedScheduleLocations } from '../actions/db/locations';
 import { useUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
+import { AddEventModal } from './AddEventModal';
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
 const SCHEDULE_END_TIMES = [22, 22, 22];
@@ -110,7 +111,7 @@ export default function Schedule({
     queryKey: ['rsvps', 'current-user'],
     queryFn: getCurrentUserRsvps
   })
-  const {currentUser} = useUser()
+  const {currentUser, is_admin} = useUser()
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
 
@@ -159,6 +160,7 @@ export default function Schedule({
   }, [sessions, filterForUserEvents]);
   const [currentDayIndex, setCurrentDayIndex] = useState(dayIndex ?? 0);
   const [openedSessionId, setOpenedSessionId] = useState<DbSessionView['id'] | null>(sessionId ?? null);
+  const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
   
   // Sync URL parameters with state changes
   useEffect(() => {
@@ -202,7 +204,7 @@ export default function Schedule({
     return <div className="text-red-200">Error loading sessions or locations</div>
   }
   return (
-    <div className="font-serif w-full h-full flex flex-col bg-dark-500 overflow-hidden">
+    <div className="relative font-serif w-full h-full flex flex-col bg-dark-500 overflow-hidden">
       {/* Day Navigator - Fixed on desktop, scrollable on mobile */}
       <div className="hidden lg:flex flex-shrink-0 items-center justify-between p-4 bg-dark-600 border-b border-secondary-300">
         <button
@@ -270,10 +272,16 @@ export default function Schedule({
           {/* Names Row - Always sticky, with day nav on mobile */}
           <div className="grid bg-dark-400 sticky top-0 lg:top-[120px] z-20" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
             <div className="bg-dark-600 p-3 sticky border-b-2 left-0 top-0 z-30 border border-secondary-300">
-              <div className="flex text-sm text-secondary-300  font-medium size-full items-center justify-center">
-                {currentUser && <button className={`${filterForUserEvents ? 'opacity-100' : 'opacity-50'} cursor-pointer bg-dark-200 rounded-sm p-2`} title="Filter for events I am rsvp'd to or hosting"  onClick={handleToggleFilterForUserEvents}>
-                  <FilterIcon className={`size-4 text-secondary-300`} />
-                </button>}
+              <div className="flex text-sm text-secondary-300 font-medium size-full items-center justify-center gap-1">
+                {currentUser && (
+                  <button 
+                    className={`${filterForUserEvents ? 'opacity-100' : 'opacity-50'} cursor-pointer bg-dark-200 rounded-sm p-2 hover:bg-dark-300 transition-colors`} 
+                    title="Filter for events I am rsvp'd to or hosting"  
+                    onClick={handleToggleFilterForUserEvents}
+                  >
+                    <FilterIcon className="size-4 text-secondary-300" />
+                  </button>
+                )}
               </div>
             </div>
             {locations.map((venue) => (
@@ -366,6 +374,24 @@ export default function Schedule({
           />
         </Modal>
       }
+      
+      <AddEventModal
+        isOpen={isAddEventModalOpen}
+        onClose={() => setIsAddEventModalOpen(false)}
+        locations={locations}
+        defaultDay={CONFERENCE_DAYS[currentDayIndex]?.date}
+      />
+
+      {/* Floating Action Button - Admin Only */}
+      {is_admin && (
+        <button
+          className="absolute bottom-6 right-6 z-40 bg-primary-500 hover:bg-primary-600 text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200"
+          title="Add new event"
+          onClick={() => setIsAddEventModalOpen(true)}
+        >
+          <PlusIcon className="size-5" />
+        </button>
+      )}
     </div>
   );
 } 
