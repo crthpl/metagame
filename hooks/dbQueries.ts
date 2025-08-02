@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/app/actions/db/users";
+import { getCurrentUser, getCurrentUserProfile } from "@/app/actions/db/users";
 import { useQuery } from "@tanstack/react-query";
 
 export const useUser = () => {
@@ -11,5 +11,19 @@ export const useUser = () => {
     retry: 1
   })
 
-  return { currentUser, currentUserLoading, currentUserError }
+  const { data: currentUserProfile } = useQuery({
+    queryKey: ['users', 'profile', currentUser?.id],
+    queryFn: () => getCurrentUserProfile({userId: currentUser!.id}),
+    enabled: !!currentUser?.id,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+  })
+
+  return { 
+    currentUser, 
+    currentUserLoading, 
+    currentUserError,
+    is_admin: currentUserProfile?.is_admin ?? false,
+    currentUserProfile
+  }
 };
