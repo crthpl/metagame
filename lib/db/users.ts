@@ -73,4 +73,31 @@ export const usersService = {
     }
     return data
   },
+
+  /** Get all user profiles */
+  getAllProfiles: async () => {
+    const supabase = createServiceClient()
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .order('first_name', { ascending: true })
+    if (error) {
+      throw new Error(error.message)
+    }
+    return data
+  },
+
+  /** Get a user profile by email */
+  getUserProfileByEmail: async ({email}: {email: string}) => {
+    const supabase = createServiceClient()
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('email', email)
+      .single()
+    if (error) {
+      throw new Error(error.message)
+    }
+    return data
+  },
 }
