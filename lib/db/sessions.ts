@@ -1,4 +1,5 @@
 import { createServiceClient } from "@/utils/supabase/service"
+import { DbSessionInsert } from "@/types/database/dbTypeAliases"
 
 export const sessionsService = {
   /** Check if a session is full */
@@ -167,6 +168,21 @@ export const sessionsService = {
       .from('session_rsvps')
       .select('*')
       .eq('session_id', sessionId)
+    if (error) {
+      throw new Error(error.message)
+    }
+    return data
+  },
+
+  /** Add a new event/session */
+  addSession: async (payload: DbSessionInsert) => {
+    const supabase = createServiceClient()
+    const { data, error } = await supabase
+      .from('sessions')
+      .insert(payload)
+      .select()
+      .single()
+    
     if (error) {
       throw new Error(error.message)
     }

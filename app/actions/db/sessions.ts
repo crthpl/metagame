@@ -1,6 +1,6 @@
 'use server'
 import { sessionsService } from "@/lib/db/sessions"
-import { currentUserWrapper } from "./auth"
+import { adminExportWrapper, currentUserWrapper } from "./auth"
 
 /* Mutations */
 export const rsvpCurrentUserToSession = currentUserWrapper(sessionsService.rsvpUserToSession)
@@ -14,3 +14,4 @@ export const getAllSessionRsvpCounts = sessionsService.getAllSessionRsvpCounts
 export const getSingleSessionRsvps = sessionsService.getSingleSessionRsvps
 export const getCurrentUserRsvps = currentUserWrapper(sessionsService.getUserRsvps)
 export const getCurrentUserHostedSessions = currentUserWrapper(sessionsService.getUsersHostedSessions)
+export const adminAddSession = adminExportWrapper(sessionsService.addSession)
