@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { redirect, useRouter } from "next/navigation";
 import { z } from "zod";
 import { useUser } from "@/hooks/dbQueries";
+import { useQueryClient } from "@tanstack/react-query";
 
 const loginSchema = z.object({
   email: z.email("Please enter a valid email"),
@@ -20,6 +21,7 @@ type LoginErrors = Partial<
 
 export default function LoginPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -61,6 +63,8 @@ export default function LoginPage() {
       if (error) {
         setErrors({ submit: error.message });
       } else {
+        // Invalidate user queries to refresh authentication state
+        await queryClient.invalidateQueries({ queryKey: ['users'] });
         router.push("/");
       }
     } catch (error) {

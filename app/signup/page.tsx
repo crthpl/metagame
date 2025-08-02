@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { z } from 'zod'
 import { SiDiscord } from "react-icons/si"
 import { LockIcon, MailIcon } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 const signupSchema = z.object({
   email: z.email('Please enter a valid email'),
   password: z
@@ -29,6 +30,7 @@ type SignupErrors = Partial<Record<keyof z.infer<typeof signupSchema>, string | 
 
 export default function SignupPage() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -73,6 +75,8 @@ export default function SignupPage() {
       if (error) {
         setErrors({ submit: error.message })
       } else {
+        // Invalidate user queries to refresh authentication state
+        await queryClient.invalidateQueries({ queryKey: ['users'] })
         router.push('/')
       }
     } catch (error) {
