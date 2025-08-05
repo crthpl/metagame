@@ -43,6 +43,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
     couponCode: '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof TicketPurchaseFormData, string>>>({});
+  const [formData, setFormData] = useState<TicketPurchaseFormData>({
+    name: '',
+    email: '',
+    discordHandle: '',
+    couponCode: '',
+  });
+  const [errors, setErrors] = useState<Partial<Record<keyof TicketPurchaseFormData, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [message, setMessage] = useState('');
