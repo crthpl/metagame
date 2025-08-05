@@ -59,9 +59,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     onPurchaseSuccess?.();
   };
 
-  // Check if this is a volunteer ticket
-  const isVolunteerTicket = ticketTypeId === 'npc';
-
   return (
     <div className={`relative group transition-all duration-300 ${
       isExpanded ? 'md:col-span-3' : ''
