@@ -2,36 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createPaymentIntent } from '../../../lib/stripe';
 import { getTicketType } from '../../../config/tickets';
 import { validateCoupon, applyCouponDiscount } from '../../../lib/coupons';
+import { paymentIntentSchema } from '../../../lib/schemas/ticket';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { ticketTypeId, name, email, discordHandle, volunteerRoles, couponCode } = body;
-
-    // Validate required fields
-    if (!ticketTypeId || !name || !email) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      );
-    }
-
-    // Validate Discord Handle format if provided
-    if (discordHandle && !/^[a-zA-Z0-9_#]+$/.test(discordHandle.trim())) {
-      return NextResponse.json(
-        { error: 'Invalid Discord handle format' },
-        { status: 400 }
-      );
-    }
+    
+    // Validate input using Zod schema
+    const validatedData = paymentIntentSchema.parse(body);
+    const { ticketTypeId, name, email, discordHandle, couponCode } = validatedData;
 
     // Get ticket type and validate
     const ticketType = getTicketType(ticketTypeId);
@@ -64,18 +43,27 @@ export async function POST(request: NextRequest) {
       ticketType: ticketType.title,
       customerName: name,
       customerEmail: email,
-      customerDiscordHandle: discordHandle,
-      volunteerRoles: volunteerRoles ? JSON.stringify(volunteerRoles) : '',
+      customerDiscordHandle: discordHandle || '',
       originalPrice: originalPriceInCents.toString(),
       couponCode: coupon?.code || '',
       discountAmount: coupon ? coupon.discountAmount.toString() : '0',
     };
-
-    const { clientSecret, paymentIntentId } = await createPaymentIntent(
+    let clientSecret: string;
+    let paymentIntentId: string;
+    try {
+      const { clientSecret: secret, paymentIntentId: intentId } = await createPaymentIntent(
       finalPriceInCents,
       metadata
     );
-
+    clientSecret = secret;
+    paymentIntentId = intentId;
+    } catch (error) {
+      console.error('Error creating payment intent:', error);
+      return NextResponse.json(
+        { error: `Failed to create payment intent: ${error}` },
+        { status: 500 }
+      );
+    }
     return NextResponse.json({
       clientSecret,
       paymentIntentId,
@@ -88,6 +76,19 @@ export async function POST(request: NextRequest) {
       } : null,
     });
   } catch (error) {
+    console.error('Error in create-payment-intent:', error);
+    
+    // Handle Zod validation errors
+    if (error instanceof Error && 'errors' in error) {
+      const zodError = error as any;
+      return NextResponse.json(
+        { 
+          error: zodError.errors?.[0]?.message || 'Invalid input data'
+        },
+        { status: 400 }
+      );
+    }
+    
     return NextResponse.json(
       { 
         error: 'Internal server error',
