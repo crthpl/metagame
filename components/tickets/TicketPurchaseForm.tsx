@@ -24,16 +24,14 @@ const stripePromise = loadStripe(stripeKey);
 interface TicketPurchaseFormProps {
   ticketType: TicketType;
   onClose: () => void;
-  onSuccess: (email: string) => void;
 }
 
 interface PaymentFormProps {
   ticketType: TicketType;
   onClose: () => void;
-  onSuccess: (email: string) => void;
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSuccess }) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
   const stripe = useStripe();
   const elements = useElements();
   
@@ -280,7 +278,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
   const handleCloseSuccess = () => {
     setShowSuccess(false);
     setMessage('');
-    onSuccess(formData.email);
   };
 
   const cardElementOptions = {
@@ -413,14 +410,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
 export const TicketPurchaseForm: React.FC<TicketPurchaseFormProps> = ({
   ticketType,
   onClose,
-  onSuccess,
 }) => {
   return (
     <Elements stripe={stripePromise}>
       <PaymentForm
         ticketType={ticketType}
         onClose={onClose}
-        onSuccess={onSuccess}
       />
     </Elements>
   );
