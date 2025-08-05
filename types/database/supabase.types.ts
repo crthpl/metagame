@@ -188,31 +188,34 @@ export type Database = {
         Row: {
           coupons_used: string[]
           created_at: string
-          discord_handle: string | null
-          id: number
+          id: string
           owner_id: string | null
           price_paid: number | null
           purchaser_email: string | null
+          stripe_payment_id: string | null
+          ticket_code: string
           ticket_type: Database["public"]["Enums"]["ticket_type"]
         }
         Insert: {
           coupons_used?: string[]
           created_at?: string
-          discord_handle?: string | null
-          id?: number
+          id?: string
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
+          stripe_payment_id?: string | null
+          ticket_code: string
           ticket_type: Database["public"]["Enums"]["ticket_type"]
         }
         Update: {
           coupons_used?: string[]
           created_at?: string
-          discord_handle?: string | null
-          id?: number
+          id?: string
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
+          stripe_payment_id?: string | null
+          ticket_code?: string
           ticket_type?: Database["public"]["Enums"]["ticket_type"]
         }
         Relationships: []
@@ -279,23 +282,12 @@ export type Database = {
           },
         ]
       }
-      tickets_view: {
-        Row: {
-          created_at: string | null
-          id: number | null
-          owner_email: string | null
-          owner_id: string | null
-          purchaser_email: string | null
-          ticket_type: Database["public"]["Enums"]["ticket_type"] | null
-        }
-        Relationships: []
-      }
     }
     Functions: {
       [_ in never]: never
     }
     Enums: {
-      ticket_type: "npc" | "player"
+      ticket_type: "npc" | "player" | "supporter"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -423,7 +415,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      ticket_type: ["npc", "player"],
+      ticket_type: ["npc", "player", "supporter"],
     },
   },
 } as const

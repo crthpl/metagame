@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { TicketPurchaseForm } from './TicketPurchaseForm';
 import { getTicketType, DAY_PASS_OPTIONS } from '../../config/tickets';
+import { Modal } from '../Modal';
 import {
   Select,
   SelectContent,
@@ -13,16 +14,15 @@ import {
 
 interface TicketCardProps {
   ticketTypeId: string;
-  onPurchaseSuccess?: () => void;
 }
 
 export const TicketCard: React.FC<TicketCardProps> = ({ 
-  ticketTypeId, 
-  onPurchaseSuccess 
+  ticketTypeId
 }) => {
-  const [showPurchaseForm, setShowPurchaseForm] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedDayPass, setSelectedDayPass] = useState<typeof DAY_PASS_OPTIONS[0] | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [purchaseEmail, setPurchaseEmail] = useState<string>('');
+  const [isPurchaseSuccess, setIsPurchaseSuccess] = useState(false);
 
   const ticketType = getTicketType(ticketTypeId);
   if (!ticketType) {
@@ -81,20 +81,21 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       return;
     }
     
-    // Otherwise, show the purchase form
-    setIsExpanded(true);
-    setShowPurchaseForm(true);
+    // Otherwise, show the purchase modal
+    setShowModal(true);
+    setIsPurchaseSuccess(false);
+    setPurchaseEmail('');
   };
 
-  const handleClose = () => {
-    setShowPurchaseForm(false);
-    setIsExpanded(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setIsPurchaseSuccess(false);
+    setPurchaseEmail('');
   };
 
-  const handleSuccess = () => {
-    setShowPurchaseForm(false);
-    setIsExpanded(false);
-    onPurchaseSuccess?.();
+  const handlePurchaseSuccess = (email: string) => {
+    setIsPurchaseSuccess(true);
+    setPurchaseEmail(email);
   };
 
   const handleDayPassChange = (value: string) => {
@@ -107,9 +108,8 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     return <div>Invalid ticket type</div>;
   }
   return (
-    <div className={`relative group transition-all duration-300 ${
-      isExpanded ? 'md:col-span-3' : ''
-    }`}>
+    <>
+    <div className="relative group transition-all duration-300">
       <div className="card rounded-md border-amber-400 border-2 transition-all text-center flex flex-col p-6 h-full">
         {/* Ticket Header */}
         <div className="flex-grow flex flex-col">
@@ -174,26 +174,9 @@ export const TicketCard: React.FC<TicketCardProps> = ({
           </div>
         </div>
 
-        {/* Purchase Form or Buy/Apply Button */}
-        <div className="mt-auto pt-3">
-          {showPurchaseForm ? (
-            <div className="border-t border-gray-700 pt-4 mt-4 text-left">
-              <TicketPurchaseForm
-                ticketType={isDayPass ? {
-                  ...ticketType,
-                  id: selectedDayPass!.id,
-                  price: selectedDayPass!.price,
-                  title: `Day Pass: ${selectedDayPass!.title}`,
-                  description: selectedDayPass!.description
-                } : ticketType}
-                onClose={handleClose}
-                onSuccess={handleSuccess}
-              />
-            </div>
-          ) : (
-            <div className={`relative inline-block hover:scale-105 transition-all ${
-              displayTicketType.live && (!isDayPass || selectedDayPass) ? "opacity-100" : "opacity-50 pointer-events-none"
-            }`}>
+          {/* Buy/Apply Button */}
+          <div className="mt-auto pt-3">
+            <div className="relative inline-block hover:scale-105 transition-all">
               <div className="bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 absolute top-0 left-0 right-0 bottom-0 -z-10 opacity-30 blur-lg transform translate-y-1 rounded-md transition-all duration-300 hover:scale-110 hover:scale-y-150">
               </div>
               <button
@@ -210,9 +193,45 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                 </div>
               </button>
             </div>
-          )}
+          </div>
         </div>
-      </div>
     </div>
+
+      {/* Purchase Modal */}
+      {showModal && (
+        <Modal onClose={handleCloseModal} className="w-full max-w-2xl">
+          <div className="bg-dark-500 border border-gray-700 rounded-lg p-6 max-h-[90vh] overflow-y-auto">
+            {isPurchaseSuccess ? (
+              <div className="text-center space-y-6">
+                <div className="text-6xl mb-4">🎉</div>
+                <h2 className="text-3xl font-bold text-green-300 mb-4">
+                  Congratulations!
+                </h2>
+                <p className="text-xl text-gray-300 mb-6">
+                  You've successfully purchased a ticket!
+                </p>
+                <p className="text-lg text-cyan-300">
+                  Details have been emailed to <span className="font-semibold text-white">{purchaseEmail}</span>
+                </p>
+                <div className="pt-6">
+                  <button
+                    onClick={handleCloseModal}
+                    className="px-6 py-3 bg-primary-600 rounded-md hover:bg-primary-700 transition-colors font-semibold"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <TicketPurchaseForm
+                ticketType={ticketType}
+                onClose={handleCloseModal}
+                onSuccess={(email: string) => handlePurchaseSuccess(email)}
+              />
+            )}
+          </div>
+        </Modal>
+      )}
+    </>
   );
 }; 

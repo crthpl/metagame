@@ -1,24 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '../../../lib/stripe';
 import { createTicketRecord, formatAirtableRecord } from '../../../lib/airtable';
+import { paymentConfirmationSchema } from '../../../lib/schemas/ticket';
+import { DbTicketInsert } from '@/types/database/dbTypeAliases';
+import { ticketsService } from '@/lib/db/tickets';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { paymentIntentId, name, email, discordHandle, ticketType, price, volunteerRoles } = body;
-
-    // Validate required fields
-    if (!paymentIntentId || !name || !email || !ticketType || !price) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+    
+    // Validate input using Zod schema
+    const validatedData = paymentConfirmationSchema.parse(body);
+    console.log("VALIDATEDDATA", validatedData);
+    const { paymentIntentId, name, email, discordHandle, ticketType } = validatedData;
 
     // Retrieve payment intent from Stripe to check its status
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId, {
       expand: ['charges']
     });
+    const price = paymentIntent.amount / 100;
     const success = paymentIntent.status === 'succeeded';
 
     if (!success) {
@@ -87,11 +87,21 @@ export async function POST(request: NextRequest) {
       paymentIntentId,
       success,
       discordHandle,
-      stripeFee,
-      volunteerRoles
+      stripeFee
     );
 
     const airtableResult = await createTicketRecord(airtableRecord);
+
+
+    const supabaseTicketRecord = {
+        stripe_payment_id: paymentIntentId,
+        purchaser_email: email,
+        ticket_type: ticketType,
+        price_paid: price,
+        coupons_used: [paymentIntent.metadata.couponCode]
+    }
+
+    await ticketsService.createTicket({ticket: supabaseTicketRecord});
 
     return NextResponse.json({
       success: true,
@@ -100,6 +110,20 @@ export async function POST(request: NextRequest) {
       message: 'Payment successful! Your ticket has been purchased.',
     });
   } catch (error) {
+    console.error('Error in confirm-payment:', error);
+    
+    // Handle Zod validation errors
+    if (error instanceof Error && 'errors' in error) {
+      const zodError = error as any;
+      return NextResponse.json(
+        { 
+          success: false,
+          error: zodError.errors?.[0]?.message || 'Invalid input data'
+        },
+        { status: 400 }
+      );
+    }
+    
     return NextResponse.json(
       { 
         success: false,
