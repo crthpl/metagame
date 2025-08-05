@@ -98,7 +98,8 @@ export async function POST(request: NextRequest) {
         purchaser_email: email,
         ticket_type: ticketType,
         price_paid: price,
-        coupons_used: [paymentIntent.metadata.couponCode]
+        coupons_used: [paymentIntent.metadata.couponCode],
+        is_test: process.env.STRIPE_SECRET_KEY?.startsWith('sk_test') ?? false
     }
 
     await ticketsService.createTicket({ticket: supabaseTicketRecord});
