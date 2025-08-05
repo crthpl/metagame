@@ -265,7 +265,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
           throw new Error(confirmResponseData.error || 'Payment confirmation failed');
         }
 
-        setMessage('Payment successful! Your ticket has been purchased. Join our Discord, where all future communication will take place!');
+        setMessage(`Payment successful! Your ticket has been purchased. Ticket confirmation details and information for making your account on Metagame will be emailed to ${formData.email}. Join our Discord, where all future communication will take place!`);
         setShowSuccess(true);
       } else {
         throw new Error(`Payment was not successful. Status: ${paymentIntent?.status}`);
@@ -360,7 +360,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
       </div>
 
       {message && (
-        <div className={`p-3 rounded-md relative ${
+        <div className={`p-3 rounded-md relative flex flex-col items-center ${
           message.includes('successful') 
             ? 'bg-green-900 text-green-200 border border-green-700' 
             : 'bg-red-900 text-red-200 border border-red-700'
@@ -382,7 +382,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
               href={SOCIAL_LINKS.DISCORD}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors text-sm font-medium"
+              className="inline-block px-4 py-2 w-fit bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors text-sm font-medium"
             >
               Join Discord Server
             </a>
