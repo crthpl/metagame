@@ -189,6 +189,7 @@ export type Database = {
           coupons_used: string[]
           created_at: string
           id: string
+          is_test: boolean
           owner_id: string | null
           price_paid: number | null
           purchaser_email: string | null
@@ -200,6 +201,7 @@ export type Database = {
           coupons_used?: string[]
           created_at?: string
           id?: string
+          is_test: boolean
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
@@ -211,6 +213,7 @@ export type Database = {
           coupons_used?: string[]
           created_at?: string
           id?: string
+          is_test?: boolean
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
