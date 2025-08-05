@@ -120,13 +120,19 @@ export const TicketCard: React.FC<TicketCardProps> = ({
               />
             </div>
           ) : (
-            <div className="relative inline-block hover:scale-105 transition-all">
+            <div className={`relative inline-block hover:scale-105 transition-all ${
+              ticketType.live ? "opacity-100" : "opacity-50 pointer-events-none"
+            }`}>
               <div className="bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 absolute top-0 left-0 right-0 bottom-0 -z-10 opacity-30 blur-lg transform translate-y-1 rounded-md transition-all duration-300 hover:scale-110 hover:scale-y-150">
               </div>
               <button
-                onClick={handleBuyNow}
+                onClick={ticketType.live ? handleBuyNow : undefined}
                 disabled={!ticketType.live}
-                className="bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 relative transition-all duration-300 rounded-md p-0.5 font-bold bg-[length:200%_200%] bg-[position:-100%_0] hover:bg-[position:100%_0]"
+                className={`bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 relative rounded-md p-0.5 font-bold ${
+                  ticketType.live
+                    ? "transition-all duration-300 bg-[length:200%_200%] bg-[position:-100%_0] hover:bg-[position:100%_0]"
+                    : ""
+                }`}
               >
                 <div className="bg-dark-500 text-white w-full h-full px-12 rounded-md py-3 uppercase transition-all duration-1000 whitespace-nowrap">
                   {ticketType.applicationBased ? 'Apply' : 'Buy Now'}
