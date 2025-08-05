@@ -93,7 +93,7 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     live: true,
     regularPrice: 0,
     applicationBased: true,
-    description: 'Financial assistance ticket application coming soon',
+    description: 'Financial assistance',
   }
 };
 
