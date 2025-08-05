@@ -41,8 +41,8 @@ export async function sendTicketConfirmationEmail({
             <h3 style="margin-top: 0;">🎮 Next Steps</h3>
             <p>To claim your Metagame account and complete your registration:</p>
             <ol>
-              <li>Go to the <a href="${process.env.NEXT_PUBLIC_SITE_URL}/signup">signup page</a></li>
-              <li>Enter your ticket code: <strong>${ticketCode}</strong></li>
+              <li>Go to the <a href="${process.env.NEXT_PUBLIC_SITE_URL}/signup?email=${encodeURIComponent(to)}&ticketCode=${ticketCode}">signup page</a></li>
+              <li>Your email and ticket code will be pre-filled</li>
               <li>Create your account and join the Metagame community!</li>
             </ol>
           </div>
@@ -71,8 +71,8 @@ Ticket Details:
 - Your Ticket Code: ${ticketCode}
 
 Next Steps:
-1. Go to ${process.env.NEXT_PUBLIC_SITE_URL}/signup
-2. Enter your ticket code: ${ticketCode}
+1. Go to ${process.env.NEXT_PUBLIC_SITE_URL}/signup?email=${encodeURIComponent(to)}&ticketCode=${ticketCode}
+2. Your email and ticket code will be pre-filled
 3. Create your account and join the Metagame community!
 
 If you have any questions, please don't hesitate to reach out to us.
