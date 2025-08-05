@@ -98,8 +98,12 @@ export async function POST(request: NextRequest) {
         purchaser_email: email,
         ticket_type: ticketType,
         price_paid: price,
+<<<<<<< HEAD
         coupons_used: [paymentIntent.metadata.couponCode],
         is_test: process.env.STRIPE_SECRET_KEY?.startsWith('sk_test') ?? false
+=======
+        coupons_used: [paymentIntent.metadata.couponCode]
+>>>>>>> e198b67 (makes ticket form a modal and better schema checking on inputs and adds ticket to supabase on confirmation)
     }
 
     await ticketsService.createTicket({ticket: supabaseTicketRecord});
@@ -114,11 +118,20 @@ export async function POST(request: NextRequest) {
     console.error('Error in confirm-payment:', error);
     
     // Handle Zod validation errors
+<<<<<<< HEAD
     if (error instanceof ZodError) {
       return NextResponse.json(
         { 
           success: false,
           error: error.issues?.[0]?.message || 'Invalid input data'
+=======
+    if (error instanceof Error && 'errors' in error) {
+      const zodError = error as any;
+      return NextResponse.json(
+        { 
+          success: false,
+          error: zodError.errors?.[0]?.message || 'Invalid input data'
+>>>>>>> e198b67 (makes ticket form a modal and better schema checking on inputs and adds ticket to supabase on confirmation)
         },
         { status: 400 }
       );
