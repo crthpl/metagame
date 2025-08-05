@@ -15,7 +15,7 @@ import Link from "next/link"
 import { useLogout } from "@/hooks/useLogout"
 import { NavItem } from "./Nav"
 
-export default function AccountButton() {
+export default function AccountButton( {closeMenu}: {closeMenu: () => void} ) {
     const {currentUser: user, currentUserLoading: userLoading} = useUser()
     const { handleLogout, isLoggingOut } = useLogout()
 
@@ -25,7 +25,7 @@ export default function AccountButton() {
         enabled: !!user?.id
     })
     if (!userLoading && !user) {
-        return <NavItem href="/login">Log In</NavItem>
+        return <NavItem href="/login" closeMenu={closeMenu}>Log In</NavItem>
     }
     
     const dropdownTriggerElement = () => {

@@ -16,13 +16,15 @@ const STARTING_DIE_IDENTIFIER = {
 interface NavItemProps {
   href: string;
   children: React.ReactNode;
+  closeMenu: () => void;
 }
 
-export function NavItem({ href, children }: NavItemProps) {
+export function NavItem({ href, children, closeMenu }: NavItemProps) {
   return (
     <li>
       <Link
         href={href}
+        onClick={closeMenu}
         className="block py-2 px-3 font-bold text-lg rounded md:bg-transparent transition-all md:p-0 hover:text-secondary-200"
       >
         [{children}]
@@ -33,7 +35,7 @@ export function NavItem({ href, children }: NavItemProps) {
 
 export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const closeMenu = () => setIsMenuOpen(false);
   return (
     <div className="fixed w-full z-navbar shadow-[0px_4px_8px_0px_#8b1d6d]">
       <nav className="bg-bg-primary">
@@ -76,12 +78,12 @@ export default function Nav() {
             <ul className="font-medium flex flex-col items-center p-2 lg:p-0 mt-4 lg:flex-row lg:gap-x-5 rtl:space-x-reverse lg:mt-0">
               <CoinCounter />
               {/* <NavItem href="/schedule">Schedule</NavItem> */}
-              <NavItem href="/#speakers">Speakers</NavItem>
-              <NavItem href="/#tickets">Tickets</NavItem>
-              <NavItem href="/contribute">Get Involved</NavItem>
-              <NavItem href="/#sponsors">Sponsors</NavItem>
-              <NavItem href="/faq">FAQ</NavItem>
-              <AccountButton />
+              <NavItem href="/#speakers" closeMenu={closeMenu}>Speakers</NavItem>
+              <NavItem href="/#tickets" closeMenu={closeMenu}>Tickets</NavItem>
+              <NavItem href="/contribute" closeMenu={closeMenu}>Get Involved</NavItem>
+              <NavItem href="/#sponsors" closeMenu={closeMenu}>Sponsors</NavItem>
+              <NavItem href="/faq" closeMenu={closeMenu}>FAQ</NavItem>
+              <AccountButton closeMenu={closeMenu} />
             </ul>
           </div>
         </div>
