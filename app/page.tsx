@@ -37,12 +37,12 @@ export default function Home() {
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-8 pb-20 md:grid-cols-3">
-                <TicketCard ticketTypeId="volunteer" />
                 <TicketCard ticketTypeId="player" />
-                <TicketCard ticketTypeId="supporter" />
-                <TicketCard ticketTypeId="student" />
                 <TicketCard ticketTypeId="dayPass" />
+                <TicketCard ticketTypeId="volunteer" />
+                <TicketCard ticketTypeId="student" />
                 <TicketCard ticketTypeId="financialAid" />
+                <TicketCard ticketTypeId="supporter" />
               </div>
             </div>
           </section>
