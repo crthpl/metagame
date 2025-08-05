@@ -3,6 +3,7 @@ import { stripe } from '../../../lib/stripe';
 import { createTicketRecord, formatAirtableRecord } from '../../../lib/airtable';
 import { paymentConfirmationSchema } from '../../../lib/schemas/ticket';
 import { ticketsService } from '@/lib/db/tickets';
+import { sendTicketConfirmationEmail } from '@/lib/email';
 import { ZodError } from 'zod';
 
 export async function POST(request: NextRequest) {
@@ -106,13 +107,28 @@ export async function POST(request: NextRequest) {
 >>>>>>> e198b67 (makes ticket form a modal and better schema checking on inputs and adds ticket to supabase on confirmation)
     }
 
-    await ticketsService.createTicket({ticket: supabaseTicketRecord});
+    const createdTicket = await ticketsService.createTicket({ticket: supabaseTicketRecord});
+
+    // Send confirmation email
+    try {
+      await sendTicketConfirmationEmail({
+        to: email,
+        purchaserName: name,
+        ticketType: ticketType,
+        ticketCode: createdTicket.ticket_code,
+        price: price
+      });
+    } catch (emailError) {
+      // Log email error but don't fail the purchase
+      console.error('Failed to send confirmation email:', emailError);
+      // You might want to track this in your error monitoring service
+    }
 
     return NextResponse.json({
       success: true,
       paymentIntentId,
       airtableRecordId: airtableResult.recordId,
-      message: 'Payment successful! Your ticket has been purchased.',
+      message: 'Payment successful! Your ticket has been purchased. Check your email for confirmation.',
     });
   } catch (error) {
     console.error('Error in confirm-payment:', error);
