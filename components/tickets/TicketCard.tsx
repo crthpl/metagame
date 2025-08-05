@@ -203,34 +203,11 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       {showModal && (
         <Modal onClose={handleCloseModal} className="w-full max-w-2xl">
           <div className="bg-dark-500 border border-gray-700 rounded-lg p-6 max-h-[90vh] overflow-y-auto">
-            {isPurchaseSuccess ? (
-              <div className="text-center space-y-6">
-                <div className="text-6xl mb-4">🎉</div>
-                <h2 className="text-3xl font-bold text-green-300 mb-4">
-                  Congratulations!
-                </h2>
-                <p className="text-xl text-gray-300 mb-6">
-                  You&apos;ve successfully purchased a ticket!
-                </p>
-                <p className="text-lg text-cyan-300">
-                  Details have been emailed to <span className="font-semibold text-white">{purchaseEmail}</span>
-                </p>
-                <div className="pt-6">
-                  <button
-                    onClick={handleCloseModal}
-                    className="px-6 py-3 bg-primary-600 rounded-md hover:bg-primary-700 transition-colors font-semibold"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <TicketPurchaseForm
-                ticketType={ticketType}
-                onClose={handleCloseModal}
-                onSuccess={(email: string) => handlePurchaseSuccess(email)}
-              />
-            )}
+            <TicketPurchaseForm
+              ticketType={ticketType}
+              onClose={handleCloseModal}
+              onSuccess={(email: string) => handlePurchaseSuccess(email)}
+            />
           </div>
         </Modal>
       )}
