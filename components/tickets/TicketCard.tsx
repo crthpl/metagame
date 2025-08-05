@@ -36,13 +36,38 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   const maxPrice = Math.max(...dayPassPrices);
   const priceRange = minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-$${maxPrice}`;
   
-  const displayTicketType = isDayPass ? {
-    ...ticketType,
-    price: selectedDayPass ? selectedDayPass.price : minPrice,
-    regularPrice: selectedDayPass ? selectedDayPass.price : minPrice,
-    description: selectedDayPass ? selectedDayPass.description : 'Single day pass - choose a day',
-    title: selectedDayPass ? `Day Pass: ${selectedDayPass.title}` : 'Day Pass'
-  } : ticketType;
+  function getDisplayTicketType(ticketTypeId: string, selectedDayPass: typeof DAY_PASS_OPTIONS[0] | null) {
+    const ticketType = getTicketType(ticketTypeId);
+    if (!ticketType) return null;
+  
+    if (ticketTypeId === 'dayPass') {
+      const price = selectedDayPass?.price ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.price));
+      return {
+        ...ticketType,
+        price,
+        regularPrice: price,
+        description: selectedDayPass?.description ?? 'Single day pass - choose a day',
+        title: selectedDayPass ? `Day Pass: ${selectedDayPass.title}` : 'Day Pass'
+      };
+    }
+  
+    if (ticketTypeId === 'volunteer') {
+      return {
+        ...ticketType,
+        price: '0+',
+        regularPrice: null
+      };
+    }
+    if (ticketTypeId === 'financialAid') {
+      return {
+        ...ticketType,
+        price: '0-290',
+        regularPrice: null
+      };
+    }
+  
+    return ticketType;
+  }
 
   const handleBuyNow = () => {
     // If there's a specific URL for this ticket type, redirect to it
@@ -77,6 +102,10 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     setSelectedDayPass(selected || null);
   };
 
+  const displayTicketType = getDisplayTicketType(ticketTypeId, selectedDayPass);
+  if (!displayTicketType) {
+    return <div>Invalid ticket type</div>;
+  }
   return (
     <div className={`relative group transition-all duration-300 ${
       isExpanded ? 'md:col-span-3' : ''
