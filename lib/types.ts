@@ -4,6 +4,7 @@ export interface TicketType {
   price: number;
   applicationBased: boolean;
   live: boolean; //whether the apply/purchase button for this ticket should be disabled
+  ticketUrl?: string;
   regularPrice?: number;
   description: string;
   finePrint?: string;

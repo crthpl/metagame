@@ -3,12 +3,6 @@
 import React, { useState } from 'react';
 import { TicketPurchaseForm } from './TicketPurchaseForm';
 import { getTicketType } from '../../config/tickets';
-import {
-  TICKET_EARLY_BIRD_URL,
-  TICKET_REGULAR_URL,
-  TICKET_SUPPORTER_URL,
-  TICKET_VOLUNTEER_URL
-} from '../../config';
 
 interface TicketCardProps {
   ticketTypeId: string;
@@ -28,18 +22,10 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     return <div>Invalid ticket type</div>;
   }
 
-  // Map ticketTypeId to Stripe URL - only for specific ticket types that should redirect
-  const ticketUrl =
-    ticketTypeId === 'early_bird' ? TICKET_EARLY_BIRD_URL :
-    ticketTypeId === 'supporter' ? TICKET_SUPPORTER_URL :
-    ticketTypeId === 'regular' ? TICKET_REGULAR_URL :
-    ticketTypeId === 'npc' ? TICKET_VOLUNTEER_URL :
-    '';
-
   const handleBuyNow = () => {
     // If there's a specific URL for this ticket type, redirect to it
-    if (ticketUrl) {
-      window.open(ticketUrl, '_blank');
+    if (ticketType.ticketUrl) {
+      window.open(ticketType.ticketUrl, '_blank');
       return;
     }
     
