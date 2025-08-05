@@ -44,7 +44,7 @@ export default function AccountButton( {closeMenu}: {closeMenu: () => void} ) {
                 alt="User Profile Picture" 
                 width={32} 
                 height={32} 
-                className="rounded-full object-cover"
+                className="rounded-full aspect-square object-cover"
               />
             : <div className="size-[32px] bg-dark-300 rounded-full flex items-center justify-center text-white text-sm font-bold">
                 {initial}
