@@ -4,6 +4,13 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 import { TicketFormFields } from './TicketFormFields';
 import type { TicketType } from '../../lib/types';
 import { SOCIAL_LINKS } from '../../config';
+import { 
+  ticketPurchaseSchema,
+  type TicketPurchaseFormData, 
+  paymentIntentSchema,
+  paymentConfirmationSchema
+} from '../../lib/schemas/ticket';
+import { ZodError } from 'zod';
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -17,25 +24,26 @@ const stripePromise = loadStripe(stripeKey);
 interface TicketPurchaseFormProps {
   ticketType: TicketType;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (email: string) => void;
 }
 
 interface PaymentFormProps {
   ticketType: TicketType;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (email: string) => void;
 }
 
 const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
   
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [discordHandle, setDiscordHandle] = useState('');
-  const [volunteerRoles, setVolunteerRoles] = useState<string[]>([]);
-  const [couponCode, setCouponCode] = useState('');
-  const [errors, setErrors] = useState<{ name?: string; email?: string; discordHandle?: string; couponCode?: string; volunteerRoles?: string }>({});
+  const [formData, setFormData] = useState<TicketPurchaseFormData>({
+    name: '',
+    email: '',
+    discordHandle: '',
+    couponCode: '',
+  });
+  const [errors, setErrors] = useState<Partial<Record<keyof TicketPurchaseFormData, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [message, setMessage] = useState('');
@@ -47,47 +55,58 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
   } | null>(null);
   const [finalPrice, setFinalPrice] = useState(ticketType.price);
 
-  const validateForm = () => {
-    const newErrors: { name?: string; email?: string; discordHandle?: string; couponCode?: string; volunteerRoles?: string } = {};
-
-    if (!name.trim()) {
-      newErrors.name = 'Name is required';
+  const validateForm = (): boolean => {
+    try {
+      // Validate the form data using the schema (with ticketTypeId added)
+      ticketPurchaseSchema.parse({
+        ...formData,
+        ticketTypeId: ticketType.id,
+      });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.issues.forEach((err) => {
+          const fieldName = String(err.path[0]);
+          // Skip ticketTypeId errors since it's not a form field
+          if (fieldName !== 'ticketTypeId') {
+            newErrors[fieldName] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return false;
     }
-
-    if (!email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Discord Handle validation (optional field, but if provided, should have basic format)
-    if (discordHandle.trim() && !/^[a-zA-Z0-9_#]+$/.test(discordHandle.trim())) {
-      newErrors.discordHandle = 'Discord handle can only contain letters, numbers, underscores, and #';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) {
+    if (!formData.couponCode?.trim()) {
       setErrors(prev => ({ ...prev, couponCode: 'Please enter a coupon code' }));
       return;
     }
 
     setIsApplyingCoupon(true);
-    setErrors(prev => ({ ...prev, couponCode: undefined }));
+    setErrors(prev => {
+      return {
+        ...prev,
+        couponCode: ''
+      };
+    });
 
     try {
+      // Prepare coupon data
+      const couponData = {
+        couponCode: formData.couponCode.trim(),
+        ticketTypeId: ticketType.id,
+      };
+
       const response = await fetch('/api/validate-coupon', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          couponCode: couponCode.trim(),
-          ticketTypeId: ticketType.id,
-        }),
+        body: JSON.stringify(couponData),
       });
 
       if (!response.ok) {
@@ -121,8 +140,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
       // Apply the coupon
       setAppliedCoupon(data.coupon);
       setFinalPrice(data.discountedPrice / 100);
-      setCouponCode(''); // Clear the input field
-      setErrors(prev => ({ ...prev, couponCode: undefined }));
+      setErrors(prev => ({
+        ...prev,
+        couponCode: ''
+      }));
     } catch (error) {
       console.error('Error applying coupon:', error);
       setErrors(prev => ({ ...prev, couponCode: 'Failed to validate coupon' }));
@@ -134,10 +155,14 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null);
     setFinalPrice(ticketType.price);
-    setErrors(prev => ({ ...prev, couponCode: undefined }));
+    setErrors(prev => ({
+      ...prev,
+      couponCode: ''
+    }));
   };
 
   const handlePurchase = async () => {
+    console.log("handlePurchase");
     if (!stripe || !elements || !validateForm()) {
       return;
     }
@@ -146,22 +171,25 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
     setMessage('');
 
     try {
+      console.log("creating payment intent");
+      // Prepare payment intent data using schema
+      const paymentIntentData = paymentIntentSchema.parse({
+        ticketTypeId: ticketType.id,
+        name: formData.name,
+        email: formData.email,
+        discordHandle: formData.discordHandle,
+        couponCode: appliedCoupon?.code || '',
+      });
+
       // Step 1: Create payment intent
+
       const paymentIntentResponse = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ticketTypeId: ticketType.id,
-          name,
-          email,
-          discordHandle: discordHandle.trim() || undefined,
-          volunteerRoles: ticketType.id === 'npc' ? volunteerRoles : undefined,
-          couponCode: appliedCoupon?.code || '',
-        }),
+        body: JSON.stringify(paymentIntentData),
       });
-
       if (!paymentIntentResponse.ok) {
         const responseText = await paymentIntentResponse.text();
         
@@ -198,8 +226,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
         payment_method: {
           card: cardElement,
           billing_details: {
-            name,
-            email,
+            name: formData.name,
+            email: formData.email,
           },
         },
       });
@@ -210,30 +238,31 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
 
       if (paymentIntent?.status === 'succeeded') {
         // Step 3: Confirm payment and create Airtable record
+        const confirmData = paymentConfirmationSchema.parse({
+          paymentIntentId: intentId,
+          name: formData.name,
+          email: formData.email,
+          discordHandle: formData.discordHandle,
+          ticketType: ticketType.id,
+          price: finalPrice,
+        });
+
         const confirmResponse = await fetch('/api/confirm-payment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            paymentIntentId: intentId,
-            name,
-            email,
-            discordHandle: discordHandle.trim() || undefined,
-            ticketType: ticketType.title,
-            price: finalPrice,
-            volunteerRoles: ticketType.id === 'npc' ? volunteerRoles : undefined,
-          }),
+          body: JSON.stringify(confirmData),
         });
 
-        const confirmData = await confirmResponse.json();
+        const confirmResponseData = await confirmResponse.json();
 
         if (!confirmResponse.ok) {
-          throw new Error(`Failed to confirm payment: ${confirmData.error || 'Unknown error'}`);
+          throw new Error(`Failed to confirm payment: ${confirmResponseData.error || 'Unknown error'}`);
         }
 
-        if (!confirmData.success) {
-          throw new Error(confirmData.error || 'Payment confirmation failed');
+        if (!confirmResponseData.success) {
+          throw new Error(confirmResponseData.error || 'Payment confirmation failed');
         }
 
         setMessage('Payment successful! Your ticket has been purchased. Join our Discord, where all future communication will take place!');
@@ -251,7 +280,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
   const handleCloseSuccess = () => {
     setShowSuccess(false);
     setMessage('');
-    onSuccess();
+    onSuccess(formData.email);
   };
 
   const cardElementOptions = {
@@ -274,17 +303,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, onSucces
   return (
     <div className="space-y-6">
       <TicketFormFields
-        name={name}
-        email={email}
-        discordHandle={discordHandle}
-        couponCode={couponCode}
-        volunteerRoles={volunteerRoles}
-        isNpcTicket={ticketType.id === 'npc'}
-        onNameChange={setName}
-        onEmailChange={setEmail}
-        onDiscordHandleChange={setDiscordHandle}
-        onVolunteerRolesChange={setVolunteerRoles}
-        onCouponChange={setCouponCode}
+        formData={formData}
+        onFormDataChange={(field, value) => setFormData(prev => ({ ...prev, [field]: value }))}
         onApplyCoupon={handleApplyCoupon}
         errors={errors}
         disabled={isLoading}
