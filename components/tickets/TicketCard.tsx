@@ -3,6 +3,13 @@
 import React, { useState } from 'react';
 import { TicketPurchaseForm } from './TicketPurchaseForm';
 import { getTicketType, DAY_PASS_OPTIONS } from '../../config/tickets';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface TicketCardProps {
   ticketTypeId: string;
@@ -33,7 +40,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     ...ticketType,
     price: selectedDayPass ? selectedDayPass.price : minPrice,
     regularPrice: selectedDayPass ? selectedDayPass.price : minPrice,
-    description: selectedDayPass ? selectedDayPass.description : 'Single day pass - choose your day',
+    description: selectedDayPass ? selectedDayPass.description : 'Single day pass - choose a day',
     title: selectedDayPass ? `Day Pass: ${selectedDayPass.title}` : 'Day Pass'
   } : ticketType;
 
@@ -65,8 +72,8 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     onPurchaseSuccess?.();
   };
 
-  const handleDayPassChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = DAY_PASS_OPTIONS.find(option => option.id === event.target.value);
+  const handleDayPassChange = (value: string) => {
+    const selected = DAY_PASS_OPTIONS.find(option => option.id === value);
     setSelectedDayPass(selected || null);
   };
 
@@ -84,19 +91,22 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             
             {/* Day Pass Dropdown */}
             {isDayPass && (
-              <div className="mt-3 mb-3">
-                <select
-                  value={selectedDayPass?.id || ''}
-                  onChange={handleDayPassChange}
-                  className="select select-bordered w-full max-w-xs bg-dark-500 text-cyan-300 border-cyan-300"
-                >
-                  <option value="">Choose your day...</option>
-                  {DAY_PASS_OPTIONS.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.title} - ${option.price}
-                    </option>
-                  ))}
-                </select>
+              <div className="mt-3 mb-3 flex justify-center">
+                <Select value={selectedDayPass?.id || ""} onValueChange={handleDayPassChange}>
+                  <SelectTrigger className="w-fit max-w-xs">
+                    <SelectValue placeholder="Choose a day..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DAY_PASS_OPTIONS.map((option) => (
+                      <SelectItem 
+                        key={option.id} 
+                        value={option.id}
+                      >
+                        {option.title} - ${option.price}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
             
