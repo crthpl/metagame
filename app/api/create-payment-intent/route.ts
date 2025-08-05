@@ -3,6 +3,7 @@ import { createPaymentIntent } from '../../../lib/stripe';
 import { getTicketType } from '../../../config/tickets';
 import { validateCoupon, applyCouponDiscount } from '../../../lib/coupons';
 import { paymentIntentSchema } from '../../../lib/schemas/ticket';
+import { ZodError } from 'zod';
 
 export async function POST(request: NextRequest) {
   try {
@@ -79,11 +80,10 @@ export async function POST(request: NextRequest) {
     console.error('Error in create-payment-intent:', error);
     
     // Handle Zod validation errors
-    if (error instanceof Error && 'errors' in error) {
-      const zodError = error as any;
+    if (error instanceof ZodError) {
       return NextResponse.json(
         { 
-          error: zodError.errors?.[0]?.message || 'Invalid input data'
+          error: error.issues?.[0]?.message || 'Invalid input data'
         },
         { status: 400 }
       );
