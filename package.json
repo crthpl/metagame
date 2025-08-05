@@ -19,6 +19,7 @@
     "@jaredreisinger/react-crossword": "github:briansmiley/react-crossword#dist",
     "@nanostores/react": "^1.0.0",
     "@radix-ui/react-dropdown-menu": "^2.1.15",
+    "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-switch": "^1.2.5",
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.4.0",
