@@ -35,10 +35,6 @@ export default function Home() {
                 <h2 className="text-center text-3xl font-bold">
                   Grab a ticket!
                 </h2>
-                <span className="text-center text-lg text-gray-500">
-                  Info coming soon about scholarships and discount ticket
-                  availability!
-                </span>
               </div>
               <div className="grid grid-cols-1 gap-8 pb-20 md:grid-cols-3">
                 <TicketCard ticketTypeId="volunteer" />
