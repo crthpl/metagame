@@ -36,6 +36,41 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     //   'Special recognition at the event',
     //   'VIP access to exclusive areas'
     // ]
+  },
+  student: {
+    id: 'student',
+    title: 'Student',
+    price: 275,
+    regularPrice: 275,
+    description: 'Student ticket',
+  },
+  dayPassFriday: {
+    id: 'dayPassFriday',
+    title: 'Day Pass: Friday',
+    price: 150,
+    regularPrice: 150,
+    description: 'Single day pass for Friday 9/12',
+  },
+  dayPassSaturday: {
+    id: 'dayPassSaturday',
+    title: 'Day Pass: Saturday',
+    price: 250,
+    regularPrice: 250,
+    description: 'Single day pass for Saturday 9/13',
+  },
+  dayPassSunday: {
+    id: 'dayPassSunday',
+    title: 'Day Pass: Sunday',
+    price: 250,
+    regularPrice: 250,
+    description: 'Single day pass for Sunday 9/14',
+  },
+  financialAid: {
+    id: 'financialAid',
+    title: 'Financial Aid',
+    price: 0,
+    regularPrice: 0,
+    description: 'Financial assistance ticket application coming soon',
   }
 };
 
