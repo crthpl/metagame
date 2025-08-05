@@ -1,3 +1,4 @@
+import { TICKET_FINANCIAL_AID_URL, TICKET_VOLUNTEER_URL } from '@/config';
 import type { TicketType } from '../lib/types';
 
 export const TICKET_TYPES: Record<string, TicketType> = {
@@ -7,6 +8,7 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     price: 0,
     live: true,
     applicationBased: true,
+    ticketUrl: TICKET_VOLUNTEER_URL,
     description: 'Volunteer for 1-6 shifts for a free or reduced price ticket. May preclude participation in the megagame.',
     // features: [
     //   'Volunteer for 6 shifts over the weekend',
@@ -82,8 +84,9 @@ export const TICKET_TYPES: Record<string, TicketType> = {
   financialAid: {
     id: 'financialAid',
     title: 'Financial Aid',
+    ticketUrl: TICKET_FINANCIAL_AID_URL,
     price: 0,
-    live: false,
+    live: true,
     regularPrice: 0,
     applicationBased: true,
     description: 'Financial assistance ticket application coming soon',
