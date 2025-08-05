@@ -21,8 +21,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 }) => {
   const [selectedDayPass, setSelectedDayPass] = useState<typeof DAY_PASS_OPTIONS[0] | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [purchaseEmail, setPurchaseEmail] = useState<string>('');
-  const [isPurchaseSuccess, setIsPurchaseSuccess] = useState(false);
 
   const ticketType = getTicketType(ticketTypeId);
   if (!ticketType) {
@@ -83,19 +81,10 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     
     // Otherwise, show the purchase modal
     setShowModal(true);
-    setIsPurchaseSuccess(false);
-    setPurchaseEmail('');
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setIsPurchaseSuccess(false);
-    setPurchaseEmail('');
-  };
-
-  const handlePurchaseSuccess = (email: string) => {
-    setIsPurchaseSuccess(true);
-    setPurchaseEmail(email);
   };
 
   const handleDayPassChange = (value: string) => {
@@ -206,7 +195,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             <TicketPurchaseForm
               ticketType={ticketType}
               onClose={handleCloseModal}
-              onSuccess={(email: string) => handlePurchaseSuccess(email)}
             />
           </div>
         </Modal>

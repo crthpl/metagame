@@ -12,7 +12,6 @@ export type DbLocationUpdate = TablesUpdate<"locations">;
 export type DbTicket = Tables<"tickets">;
 export type DbTicketInsert = TablesInsert<"tickets">;
 export type DbTicketUpdate = TablesUpdate<"tickets">;
-export type DbTicketView = Tables<"tickets_view">;
 
 export type DbProfile = Tables<"profiles">;
 export type DbProfileInsert = TablesInsert<"profiles">;
