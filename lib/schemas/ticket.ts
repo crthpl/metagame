@@ -1,0 +1,38 @@
+import { z } from 'zod';
+
+// Base ticket purchase schema with required fields
+export const ticketPurchaseSchema = z.object({
+  name: z.string().min(1, 'Name is required').trim(),
+  email: z.email('Please enter a valid email address').trim(),
+  discordHandle: z.string().optional(),
+  couponCode: z.string().optional().transform(val => val?.trim().toUpperCase() || null),
+  ticketTypeId: z.string(),
+});
+
+const ticketTypeEnum = z.enum(["player", "npc", "supporter"])
+
+// Schema for payment confirmation
+export const paymentConfirmationSchema = z.object({
+  paymentIntentId: z.string(),
+  name: z.string().min(1),
+  email: z.email(),
+  discordHandle: z.string().optional(),
+  ticketType: ticketTypeEnum,
+});
+
+// Schema for payment intent creation
+export const paymentIntentSchema = z.object({
+  ticketTypeId: z.string(),
+  name: z.string().min(1),
+  email: z.email(),
+  discordHandle: z.string().optional(),
+  couponCode: z.string().optional(),
+});
+
+
+
+// Type exports
+export type TicketPurchaseFormData = Omit<z.infer<typeof ticketPurchaseSchema>, 'ticketTypeId'>;
+export type TicketPurchaseData = z.infer<typeof ticketPurchaseSchema>;
+export type PaymentConfirmationData = z.infer<typeof paymentConfirmationSchema>;
+export type PaymentIntentData = z.infer<typeof paymentIntentSchema>;
