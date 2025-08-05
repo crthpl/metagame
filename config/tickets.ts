@@ -1,6 +1,28 @@
 import { TICKET_FINANCIAL_AID_URL, TICKET_VOLUNTEER_URL } from '@/config';
 import type { TicketType } from '../lib/types';
 
+// Day pass options for the dropdown
+export const DAY_PASS_OPTIONS = [
+  {
+    id: 'dayPassFriday',
+    title: 'Friday 9/12',
+    price: 150,
+    description: 'Single day pass for Friday 9/12'
+  },
+  {
+    id: 'dayPassSaturday', 
+    title: 'Saturday 9/13',
+    price: 250,
+    description: 'Single day pass for Saturday 9/13'
+  },
+  {
+    id: 'dayPassSunday',
+    title: 'Sunday 9/14', 
+    price: 250,
+    description: 'Single day pass for Sunday 9/14'
+  }
+];
+
 export const TICKET_TYPES: Record<string, TicketType> = {
   volunteer: {
     id: 'volunteer',
@@ -54,32 +76,14 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     applicationBased: false,
     description: 'Student ticket',
   },
-  dayPassFriday: {
-    id: 'dayPassFriday',
-    title: 'Day Pass: Friday',
-    price: 150,
+  dayPass: {
+    id: 'dayPass',
+    title: 'Day Pass',
+    price: 150, // Default to Friday price, will be updated based on selection
     live: true,
     regularPrice: 150,
     applicationBased: false,
-    description: 'Single day pass for Friday 9/12',
-  },
-  dayPassSaturday: {
-    id: 'dayPassSaturday',
-    title: 'Day Pass: Saturday',
-    price: 250,
-    live: true,
-    regularPrice: 250,
-    applicationBased: false,
-    description: 'Single day pass for Saturday 9/13',
-  },
-  dayPassSunday: {
-    id: 'dayPassSunday',
-    title: 'Day Pass: Sunday',
-    price: 250,
-    live: true,
-    regularPrice: 250,
-    applicationBased: false,
-    description: 'Single day pass for Sunday 9/14',
+    description: 'Single day pass - choose your day',
   },
   financialAid: {
     id: 'financialAid',

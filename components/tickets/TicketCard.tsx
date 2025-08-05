@@ -2,13 +2,12 @@
 
 import React, { useState } from 'react';
 import { TicketPurchaseForm } from './TicketPurchaseForm';
-import { getTicketType } from '../../config/tickets';
+import { getTicketType, DAY_PASS_OPTIONS } from '../../config/tickets';
 
 interface TicketCardProps {
   ticketTypeId: string;
   onPurchaseSuccess?: () => void;
 }
-
 
 export const TicketCard: React.FC<TicketCardProps> = ({ 
   ticketTypeId, 
@@ -16,16 +15,37 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 }) => {
   const [showPurchaseForm, setShowPurchaseForm] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedDayPass, setSelectedDayPass] = useState<typeof DAY_PASS_OPTIONS[0] | null>(null);
 
   const ticketType = getTicketType(ticketTypeId);
   if (!ticketType) {
     return <div>Invalid ticket type</div>;
   }
 
+  // For day pass tickets, calculate price range and use selected day's details
+  const isDayPass = ticketTypeId === 'dayPass';
+  const dayPassPrices = DAY_PASS_OPTIONS.map(option => option.price);
+  const minPrice = Math.min(...dayPassPrices);
+  const maxPrice = Math.max(...dayPassPrices);
+  const priceRange = minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-$${maxPrice}`;
+  
+  const displayTicketType = isDayPass ? {
+    ...ticketType,
+    price: selectedDayPass ? selectedDayPass.price : minPrice,
+    regularPrice: selectedDayPass ? selectedDayPass.price : minPrice,
+    description: selectedDayPass ? selectedDayPass.description : 'Single day pass - choose your day',
+    title: selectedDayPass ? `Day Pass: ${selectedDayPass.title}` : 'Day Pass'
+  } : ticketType;
+
   const handleBuyNow = () => {
     // If there's a specific URL for this ticket type, redirect to it
     if (ticketType.ticketUrl) {
       window.open(ticketType.ticketUrl, '_blank');
+      return;
+    }
+    
+    // For day pass, require selection before proceeding
+    if (isDayPass && !selectedDayPass) {
       return;
     }
     
@@ -45,6 +65,11 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     onPurchaseSuccess?.();
   };
 
+  const handleDayPassChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = DAY_PASS_OPTIONS.find(option => option.id === event.target.value);
+    setSelectedDayPass(selected || null);
+  };
+
   return (
     <div className={`relative group transition-all duration-300 ${
       isExpanded ? 'md:col-span-3' : ''
@@ -54,21 +79,39 @@ export const TicketCard: React.FC<TicketCardProps> = ({
         <div className="flex-grow flex flex-col">
           <div>
             <h3 className="uppercase text-5xl md:text-3xl font-black text-primary-300">
-              {ticketType.title}
+              {displayTicketType.title}
             </h3>
             
+            {/* Day Pass Dropdown */}
+            {isDayPass && (
+              <div className="mt-3 mb-3">
+                <select
+                  value={selectedDayPass?.id || ''}
+                  onChange={handleDayPassChange}
+                  className="select select-bordered w-full max-w-xs bg-dark-500 text-cyan-300 border-cyan-300"
+                >
+                  <option value="">Choose your day...</option>
+                  {DAY_PASS_OPTIONS.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.title} - ${option.price}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            
             <p className="mt-3 mb-3 text-cyan-300 font-bold">
-                {ticketType.description}
+                {displayTicketType.description}
             </p>
-            {ticketType.finePrint && (
+            {displayTicketType.finePrint && (
               <ul className="mt-3 mb-3 text-xs text-opacity-80 text-left text-cyan-300 list-disc list-outside pl-4">
-                <li>{ticketType.finePrint}</li>
+                <li>{displayTicketType.finePrint}</li>
               </ul>
             )}
             {/* Features List */}
-            {ticketType.features && ticketType.features.length > 0 && (
+            {displayTicketType.features && displayTicketType.features.length > 0 && (
               <ul className="my-16 text-lg">
-                {ticketType.features.map((feature, index) => (
+                {displayTicketType.features.map((feature, index) => (
                   <li key={index}>{feature}</li>
                 ))}
               </ul>
@@ -77,9 +120,9 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 
           {/* Price Display - pushed to bottom of flex-grow container */}
           <div className="mt-auto">
-            {ticketType.regularPrice && ticketType.price !== ticketType.regularPrice ? (
+            {displayTicketType.regularPrice && displayTicketType.price !== displayTicketType.regularPrice ? (
               <div className="text-4xl text-gray-400 relative">
-                ${ticketType.regularPrice}
+                ${displayTicketType.regularPrice}
                 <div className="absolute left-7 right-0 mx-auto w-[65px] top-5 border-b-2 -rotate-[33deg] border-secondary-300" />
               </div>
             ) : (
@@ -87,7 +130,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             )}
             
             <p className="my-4 text-6xl md:text-5xl lg:text-6xl font-black text-secondary-300">
-              {`${ticketType.price > 0 ?  "$" + ticketType.price : ""}`}
+              {isDayPass && !selectedDayPass ? priceRange : `$${displayTicketType.price}`}
             </p>
           </div>
         </div>
@@ -97,28 +140,34 @@ export const TicketCard: React.FC<TicketCardProps> = ({
           {showPurchaseForm ? (
             <div className="border-t border-gray-700 pt-4 mt-4 text-left">
               <TicketPurchaseForm
-                ticketType={ticketType}
+                ticketType={isDayPass ? {
+                  ...ticketType,
+                  id: selectedDayPass!.id,
+                  price: selectedDayPass!.price,
+                  title: `Day Pass: ${selectedDayPass!.title}`,
+                  description: selectedDayPass!.description
+                } : ticketType}
                 onClose={handleClose}
                 onSuccess={handleSuccess}
               />
             </div>
           ) : (
             <div className={`relative inline-block hover:scale-105 transition-all ${
-              ticketType.live ? "opacity-100" : "opacity-50 pointer-events-none"
+              displayTicketType.live && (!isDayPass || selectedDayPass) ? "opacity-100" : "opacity-50 pointer-events-none"
             }`}>
               <div className="bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 absolute top-0 left-0 right-0 bottom-0 -z-10 opacity-30 blur-lg transform translate-y-1 rounded-md transition-all duration-300 hover:scale-110 hover:scale-y-150">
               </div>
               <button
-                onClick={ticketType.live ? handleBuyNow : undefined}
-                disabled={!ticketType.live}
+                onClick={displayTicketType.live && (!isDayPass || selectedDayPass) ? handleBuyNow : undefined}
+                disabled={!displayTicketType.live || (isDayPass && !selectedDayPass)}
                 className={`bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 relative rounded-md p-0.5 font-bold ${
-                  ticketType.live
+                  displayTicketType.live && (!isDayPass || selectedDayPass)
                     ? "transition-all duration-300 bg-[length:200%_200%] bg-[position:-100%_0] hover:bg-[position:100%_0]"
                     : ""
                 }`}
               >
                 <div className="bg-dark-500 text-white w-full h-full px-12 rounded-md py-3 uppercase transition-all duration-1000 whitespace-nowrap">
-                  {ticketType.applicationBased ? 'Apply' : 'Buy Now'}
+                  {displayTicketType.applicationBased ? 'Apply' : 'Buy Now'}
                 </div>
               </button>
             </div>
