@@ -1,9 +1,9 @@
 import type { TicketType } from '../lib/types';
 
 export const TICKET_TYPES: Record<string, TicketType> = {
-  npc: {
-    id: 'npc',
-    title: 'NPC',
+  volunteer: {
+    id: 'volunteer',
+    title: 'Volunteer',
     price: 0,
     live: true,
     applicationBased: true,
