@@ -5,28 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { LockIcon } from "lucide-react";
-
-const passwordResetSchema = z
-  .object({
-    password: z
-      .string()
-      .min(10, "Password must be at least 10 characters")
-      .regex(/[A-Z]/, "Must include an uppercase letter")
-      .regex(/[a-z]/, "Must include a lowercase letter")
-      .regex(/[0-9]/, "Must include a number")
-      .regex(/[^a-zA-Z0-9]/, "Must include a symbol"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type PasswordResetErrors = Partial<
-  Record<keyof z.infer<typeof passwordResetSchema>, string | string[]>
-> & {
-  submit?: string;
-};
+import { passwordSchema, type PasswordErrors } from "@/lib/schemas/password";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -34,7 +13,7 @@ export default function ResetPasswordPage() {
     password: "",
     confirmPassword: "",
   });
-  const [errors, setErrors] = useState<PasswordResetErrors>({});
+  const [errors, setErrors] = useState<PasswordErrors>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +21,7 @@ export default function ResetPasswordPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     // Clear errors when user starts typing
-    if (errors[name as keyof PasswordResetErrors]) {
+    if (errors[name as keyof PasswordErrors]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
@@ -53,7 +32,7 @@ export default function ResetPasswordPage() {
     setErrors({});
 
     try {
-      const validatedData = passwordResetSchema.parse(formData);
+      const validatedData = passwordSchema.parse(formData);
       const supabase = createClient();
 
       const { error } = await supabase.auth.updateUser({
