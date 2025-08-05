@@ -107,6 +107,10 @@ export const TicketCard: React.FC<TicketCardProps> = ({
               {displayTicketType.title}
             </h3>
             
+            
+            <p className="mt-3 mb-3 text-cyan-300 font-bold">
+                {displayTicketType.description}
+            </p>
             {/* Day Pass Dropdown */}
             {isDayPass && (
               <div className="mt-3 mb-3 flex justify-center">
@@ -127,10 +131,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                 </Select>
               </div>
             )}
-            
-            <p className="mt-3 mb-3 text-cyan-300 font-bold">
-                {displayTicketType.description}
-            </p>
             {displayTicketType.finePrint && (
               <ul className="mt-3 mb-3 text-xs text-opacity-80 text-left text-cyan-300 list-disc list-outside pl-4">
                 <li>{displayTicketType.finePrint}</li>
