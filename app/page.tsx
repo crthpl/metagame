@@ -41,9 +41,7 @@ export default function Home() {
                 <TicketCard ticketTypeId="player" />
                 <TicketCard ticketTypeId="supporter" />
                 <TicketCard ticketTypeId="student" />
-                <TicketCard ticketTypeId="dayPassFriday" />
-                <TicketCard ticketTypeId="dayPassSaturday" />
-                <TicketCard ticketTypeId="dayPassSunday" />
+                <TicketCard ticketTypeId="dayPass" />
                 <TicketCard ticketTypeId="financialAid" />
               </div>
             </div>
