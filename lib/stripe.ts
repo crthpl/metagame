@@ -26,7 +26,7 @@ export const createPaymentIntent = async (
     };
   } catch (error) {
     console.error('Error creating payment intent:', error);
-    throw new Error('Failed to create payment intent');
+    throw new Error(`Failed to create payment intent: ${error}`);
   }
 };
 
