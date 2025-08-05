@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '../../../lib/stripe';
 import { createTicketRecord, formatAirtableRecord } from '../../../lib/airtable';
 import { paymentConfirmationSchema } from '../../../lib/schemas/ticket';
-import { DbTicketInsert } from '@/types/database/dbTypeAliases';
 import { ticketsService } from '@/lib/db/tickets';
+import { ZodError } from 'zod';
 
 export async function POST(request: NextRequest) {
   try {
@@ -114,12 +114,11 @@ export async function POST(request: NextRequest) {
     console.error('Error in confirm-payment:', error);
     
     // Handle Zod validation errors
-    if (error instanceof Error && 'errors' in error) {
-      const zodError = error as any;
+    if (error instanceof ZodError) {
       return NextResponse.json(
         { 
           success: false,
-          error: zodError.errors?.[0]?.message || 'Invalid input data'
+          error: error.issues?.[0]?.message || 'Invalid input data'
         },
         { status: 400 }
       );

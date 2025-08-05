@@ -210,7 +210,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                   Congratulations!
                 </h2>
                 <p className="text-xl text-gray-300 mb-6">
-                  You've successfully purchased a ticket!
+                  You&apos;ve successfully purchased a ticket!
                 </p>
                 <p className="text-lg text-cyan-300">
                   Details have been emailed to <span className="font-semibold text-white">{purchaseEmail}</span>
