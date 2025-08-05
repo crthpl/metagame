@@ -41,7 +41,7 @@ export default function Home() {
                 </span>
               </div>
               <div className="grid grid-cols-1 gap-8 pb-20 md:grid-cols-3">
-                <TicketCard ticketTypeId="npc" />
+                <TicketCard ticketTypeId="volunteer" />
                 <TicketCard ticketTypeId="player" />
                 <TicketCard ticketTypeId="supporter" />
                 <TicketCard ticketTypeId="student" />
