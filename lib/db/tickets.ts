@@ -42,5 +42,18 @@ export const ticketsService = {
             throw new Error(error.message)
         }
         return data
+    },
+    updateTicketOwner: async ({ticketCode, ownerId}: {ticketCode: string, ownerId: string}) => {
+        const supabase = createServiceClient()
+        const { data, error } = await supabase
+            .from('tickets')
+            .update({owner_id: ownerId})
+            .eq('ticket_code', ticketCode)
+            .select()
+            .single()
+        if (error) {
+            throw new Error(error.message)
+        }
+        return data
     }
 }
