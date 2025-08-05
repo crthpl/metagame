@@ -180,7 +180,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                 }`}
               >
                 <div className="bg-dark-500 text-white w-full h-full px-12 rounded-md py-3 uppercase transition-all duration-1000 whitespace-nowrap">
-                  {ticketType.applicationBased ? 'Apply' : 'Buy Now'}
+                  {ticketType.live ? ticketType.applicationBased ? 'Apply' : 'Buy Now' : 'Coming Soon'}
                 </div>
               </button>
             </div>
