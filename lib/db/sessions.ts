@@ -1,7 +1,19 @@
 import { createServiceClient } from "@/utils/supabase/service"
-import { DbSessionInsert } from "@/types/database/dbTypeAliases"
+import { DbSessionInsert, DbSessionUpdate } from "@/types/database/dbTypeAliases"
 
 export const sessionsService = {
+  getSessionById: async ({sessionId}: {sessionId: string}) => {
+    const supabase = createServiceClient()
+    const { data, error } = await supabase
+      .from('sessions_view')
+      .select('*')
+      .eq('id', sessionId)
+      .single()
+    if (error) {
+      throw new Error(error.message)
+    }
+    return data
+  },
   /** Check if a session is full */
   sessionIsFull: async ({sessionId}: {sessionId: string}) => {
     const supabase = createServiceClient()
@@ -187,5 +199,35 @@ export const sessionsService = {
       throw new Error(error.message)
     }
     return data
+  },
+
+  /** Update an existing event/session */
+  updateSession: async ({sessionId, payload}: {sessionId: string, payload: DbSessionUpdate}) => {
+    const supabase = createServiceClient()
+    const { data, error } = await supabase
+      .from('sessions')
+      .update(payload)
+      .eq('id', sessionId)
+      .select()
+      .single()
+    
+    if (error) {
+      throw new Error(error.message)
+    }
+    return data
+  },
+
+  /** Delete an event/session */
+  deleteSession: async ({sessionId}: {sessionId: string}) => {
+    const supabase = createServiceClient()
+    const { error } = await supabase
+      .from('sessions')
+      .delete()
+      .eq('id', sessionId)
+    
+    if (error) {
+      throw new Error(error.message)
+    }
+    return { success: true }
   },
 }

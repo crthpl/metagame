@@ -14,7 +14,7 @@ import { getAllSessions, getCurrentUserRsvps } from '@/app/actions/db/sessions'
 import { getOrderedScheduleLocations } from '../actions/db/locations';
 import { useUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
-import { AddEventModal } from './AddEventModal';
+import { AddEventModal } from './EditEventModal';
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
 const SCHEDULE_END_TIMES = [22, 22, 22];
@@ -378,7 +378,6 @@ export default function Schedule({
       <AddEventModal
         isOpen={isAddEventModalOpen}
         onClose={() => setIsAddEventModalOpen(false)}
-        locations={locations}
         defaultDay={CONFERENCE_DAYS[currentDayIndex]?.date}
       />
 
