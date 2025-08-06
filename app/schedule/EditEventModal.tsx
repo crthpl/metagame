@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useEffect } from 'react';
 import { Modal } from '@/components/Modal';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminAddSession, adminUpdateSession, adminDeleteSession, getSessionById } from '../actions/db/sessions';
