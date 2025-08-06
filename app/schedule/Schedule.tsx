@@ -161,6 +161,10 @@ export default function Schedule({
   const [currentDayIndex, setCurrentDayIndex] = useState(dayIndex ?? 0);
   const [openedSessionId, setOpenedSessionId] = useState<DbSessionView['id'] | null>(sessionId ?? null);
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
+  const [addEventPrefill, setAddEventPrefill] = useState<{
+    startTime: string;
+    locationId: string;
+  } | null>(null);
   
   // Sync URL parameters with state changes
   useEffect(() => {
@@ -183,6 +187,16 @@ export default function Schedule({
 
   const handleOpenSessionModal = (sessionId: string) => {
     setOpenedSessionId(sessionId)
+  }
+
+  const handleEmptySlotClick = (time: string, locationId: string) => {
+    if (!is_admin) return;
+    
+    setAddEventPrefill({
+      startTime: time,
+      locationId: locationId
+    });
+    setIsAddEventModalOpen(true);
   }
 
   const handleToggleFilterForUserEvents = () => {
@@ -349,7 +363,20 @@ export default function Schedule({
                             </div>
                           </div>
                         </SmartTooltip>
-                    ))}
+                      ))}
+                      
+                      {/* Clickable empty slot for admins */}
+                      {is_admin && eventsInSlot.length === 0 && (
+                        <div
+                          onClick={() => handleEmptySlotClick(time, venue.id)}
+                          className="absolute inset-0 cursor-pointer hover:bg-dark-400 hover:bg-opacity-20 transition-colors duration-200 group"
+                          title={`Add event at ${time} in ${venue.name}`}
+                        >
+                          <div className="hidden group-hover:flex items-center justify-center h-full text-xs text-secondary-400">
+                            <PlusIcon className="size-6"/>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -377,8 +404,12 @@ export default function Schedule({
       
       <AddEventModal
         isOpen={isAddEventModalOpen}
-        onClose={() => setIsAddEventModalOpen(false)}
+        onClose={() => {
+          setIsAddEventModalOpen(false);
+          setAddEventPrefill(null);
+        }}
         defaultDay={CONFERENCE_DAYS[currentDayIndex]?.date}
+        prefillData={addEventPrefill}
       />
 
       {/* Floating Action Button - Admin Only */}
