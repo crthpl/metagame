@@ -136,6 +136,7 @@ export type Database = {
       }
       sessions: {
         Row: {
+          ages: Database["public"]["Enums"]["AGES"] | null
           description: string | null
           end_time: string | null
           host_1_id: string | null
@@ -149,6 +150,7 @@ export type Database = {
           title: string | null
         }
         Insert: {
+          ages?: Database["public"]["Enums"]["AGES"] | null
           description?: string | null
           end_time?: string | null
           host_1_id?: string | null
@@ -162,6 +164,7 @@ export type Database = {
           title?: string | null
         }
         Update: {
+          ages?: Database["public"]["Enums"]["AGES"] | null
           description?: string | null
           end_time?: string | null
           host_1_id?: string | null
@@ -290,6 +293,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      AGES: "ADULTS" | "KIDS" | "ALL"
       ticket_type: "npc" | "player" | "supporter"
     }
     CompositeTypes: {
@@ -418,6 +422,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      AGES: ["ADULTS", "KIDS", "ALL"],
       ticket_type: ["npc", "player", "supporter"],
     },
   },
