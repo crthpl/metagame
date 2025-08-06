@@ -9,6 +9,7 @@ export async function getSpeakersFromProfiles() {
     .from('profiles')
     .select()
     .eq('opted_in_to_homepage_display', true)
+    .not('homepage_order', 'is', null)
     .order('homepage_order', { ascending: true, nullsFirst: false });
 
   if (error) {
