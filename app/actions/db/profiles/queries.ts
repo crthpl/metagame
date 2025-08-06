@@ -10,7 +10,7 @@ export async function getSpeakersFromProfiles() {
     .select()
     .eq('opted_in_to_homepage_display', true)
     .not('homepage_order', 'is', null)
-    .order('homepage_order', { ascending: true, nullsFirst: false });
+    .order('homepage_order', { ascending: true });
 
   if (error) {
     console.error('Error fetching speakers from profiles:', error);
