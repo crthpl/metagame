@@ -1,9 +1,10 @@
-import { Tables, TablesInsert, TablesUpdate } from "@/types/database/supabase.types";
+import { Tables, TablesInsert, TablesUpdate, Enums } from "@/types/database/supabase.types";
 
 export type DbSession = Tables<"sessions">;
 export type DbSessionInsert = TablesInsert<"sessions">;
 export type DbSessionUpdate = TablesUpdate<"sessions">;
 export type DbSessionView = Tables<"sessions_view">;
+export type DbSessionAges = Enums<"AGES">;
 
 export type DbLocation = Tables<"locations">;
 export type DbLocationInsert = TablesInsert<"locations">;
