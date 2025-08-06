@@ -20,10 +20,14 @@ interface AddEventModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultDay?: string;
+  prefillData?: {
+    startTime: string;
+    locationId: string;
+  } | null;
   existingSessionId?: string | null;
 }
 
-export function AddEventModal({ isOpen, onClose, defaultDay, existingSessionId }: AddEventModalProps) {
+export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existingSessionId }: AddEventModalProps) {
   const queryClient = useQueryClient();
   const { is_admin } = useUser();
   const isEditMode = !!existingSessionId;
@@ -83,21 +87,47 @@ export function AddEventModal({ isOpen, onClose, defaultDay, existingSessionId }
         locationId: existingSession.location_id || '',
         hostId: existingSession.host_1_id || ''
       });
-    } else if (!isEditMode) {
-      // Reset to defaults for create mode
+    } else if (prefillData) {
+      // The prefillData.startTime is already the exact time of the slot (e.g., "14:30")
+      // End time should be 30 minutes later (next half-hour slot)
+      const [startHour, startMinute] = prefillData.startTime.split(':').map(Number);
+      let endHour = startHour;
+      let endMinute = startMinute + 30;
+      
+      // Handle hour rollover
+      if (endMinute >= 60) {
+        endHour += 1;
+        endMinute = 0;
+      }
+      
+      const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+      
+      setFormData({
+        title: '',
+        description: '',
+        day: defaultDay || CONFERENCE_DAYS[0].date,
+        startTime: prefillData.startTime,
+        endTime: endTime,
+        minCapacity: '',
+        maxCapacity: '',
+        locationId: prefillData.locationId,
+        hostId: ''
+      });
+    } else {
+      // Reset to defaults
       setFormData({
         title: '',
         description: '',
         day: defaultDay || CONFERENCE_DAYS[0].date,
         startTime: '09:00',
-        endTime: '10:00',
+        endTime: '09:30',
         minCapacity: '',
         maxCapacity: '',
         locationId: '',
         hostId: ''
       });
     }
-  }, [existingSession, sessionLoading, isEditMode, defaultDay]);
+  }, [existingSession, sessionLoading, isEditMode, defaultDay, prefillData]);
 
   const addEventMutation = useMutation({
     mutationFn: adminAddSession,
