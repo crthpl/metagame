@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { LinkIcon, UserIcon } from "lucide-react";
+import { LinkIcon, UserIcon, EditIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCurrentUserRsvps } from "../actions/db/sessions";
 import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions";
 import { useUser } from "@/hooks/dbQueries";
+import { AddEventModal } from "./EditEventModal";
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -34,9 +35,14 @@ const getDateString = (timestamp: string) => {
 
 
 
-  export default function SessionDetailsCard({ session }: {session: DbSessionView}) {
+  export default function SessionDetailsCard({ 
+    session
+  }: {
+    session: DbSessionView;
+  }) {
   const [showCopiedMessage, setShowCopiedMessage] = useState(false)
   const [copyError, setCopyError] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const currentUserRsvps = useQuery({
     queryKey: ['rsvps', 'current-user'],
     queryFn: getCurrentUserRsvps
@@ -100,6 +106,18 @@ const getDateString = (timestamp: string) => {
               <LinkIcon className={`size-4 ${copyError ? "text-red-500" : "text-secondary-300"}`}/>
           </button>
         }
+
+        {/* Edit button for admins */}
+        {currentUser.is_admin && (
+          <button
+            onClick={() => setShowEditModal(true)}
+            className="absolute top-4 right-12 p-2 cursor-pointer rounded-md hover:bg-dark-400 transition-colors"
+            title="Edit Event"
+          >
+            <EditIcon className="size-4 text-secondary-300" />
+          </button>
+        )}
+
         {/* Content */}
         <div className="flex flex-col gap-2">
           {/* Title and Hosts*/}
@@ -163,6 +181,13 @@ const getDateString = (timestamp: string) => {
             )}
           </div>
         </div>
+
+        {/* Edit Modal */}
+        <AddEventModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          existingSessionId={session.id}
+        />
       </div>
   );
 }
