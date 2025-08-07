@@ -250,7 +250,7 @@ export function AddEventModal({
       end_time: endDateTime,
       min_capacity: minCap,
       max_capacity: maxCap,
-      location_id: formData.locationId || null,
+      location_id: formData.locationId === "none" ? null : formData.locationId,
       host_1_id: formData.hostId,
       ages: formData.ages,
     };
@@ -390,7 +390,7 @@ export function AddEventModal({
                   <SelectValue placeholder="Select a location" />
                 </SelectTrigger>
                 <SelectContent className="z-[70]">
-                  <SelectItem value="">No specific location</SelectItem>
+                  <SelectItem value="none">No specific location</SelectItem>
                   {locationsLoading && (
                     <SelectItem value="loading" disabled>
                       Loading locations...
