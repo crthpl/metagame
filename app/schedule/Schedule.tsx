@@ -407,6 +407,7 @@ export default function Schedule({
         onClose={() => {
           setIsAddEventModalOpen(false);
           setAddEventPrefill(null);
+          console.log('AddEventModal closed')
         }}
         defaultDay={CONFERENCE_DAYS[currentDayIndex]?.date}
         prefillData={addEventPrefill}
