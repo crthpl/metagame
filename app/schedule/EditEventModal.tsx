@@ -55,7 +55,9 @@ type FormData = {
   maxCapacity: string;
   locationId: string;
   ages: DbSessionAges;
-  hostId: string;
+  host_1_id: string;
+  host_2_id: string;
+  host_3_id: string;
 };
 export function AddEventModal({
   isOpen,
@@ -77,7 +79,9 @@ export function AddEventModal({
     maxCapacity: "",
     locationId: "",
     ages: SessionAges.ALL,
-    hostId: "",
+    host_1_id: "",
+    host_2_id: "none",
+    host_3_id: "none",
   };
   const {
     data: profiles,
@@ -137,7 +141,9 @@ export function AddEventModal({
         maxCapacity: existingSession.max_capacity?.toString() || "",
         locationId: existingSession.location_id || "",
         ages: existingSession.ages || SessionAges.ALL,
-        hostId: existingSession.host_1_id || "",
+        host_1_id: existingSession.host_1_id || "",
+        host_2_id: existingSession.host_2_id || "none",
+        host_3_id: existingSession.host_3_id || "none",
       });
     } else if (prefillData) {
       // The prefillData.startTime is already the exact time of the slot (e.g., "14:30")
@@ -229,7 +235,7 @@ export function AddEventModal({
     }
 
     // Validate host selection
-    if (!formData.hostId) {
+    if (!formData.host_1_id) {
       toast.error("Please select a host for the event");
       return;
     }
@@ -251,7 +257,9 @@ export function AddEventModal({
       min_capacity: minCap,
       max_capacity: maxCap,
       location_id: formData.locationId === "none" ? null : formData.locationId,
-      host_1_id: formData.hostId,
+      host_1_id: formData.host_1_id || null,
+      host_2_id: formData.host_2_id === "none" ? null : formData.host_2_id,
+      host_3_id: formData.host_3_id === "none" ? null : formData.host_3_id,
       ages: formData.ages,
     };
 
@@ -442,15 +450,16 @@ export function AddEventModal({
             </div>
           </div>
 
+          {/* Host 1 - Required */}
           <div>
-            <label htmlFor="hostId" className="mb-1 block text-sm font-medium">
-              Host <span className="text-red-500">*</span>
+            <label htmlFor="host_1_id" className="mb-1 block text-sm font-medium">
+              Host 1 <span className="text-red-500">*</span>
             </label>
             <Select
-              name="hostId"
-              value={formData.hostId}
+              name="host_1_id"
+              value={formData.host_1_id}
               onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, hostId: value }))
+                setFormData((prev) => ({ ...prev, host_1_id: value }))
               }
             >
               <SelectTrigger>
@@ -493,6 +502,82 @@ export function AddEventModal({
               </p>
             )}
           </div>
+
+          {/* Host 2 - Optional, only show if Host 1 is selected */}
+          {formData.host_1_id && (
+            <div>
+              <label htmlFor="host_2_id" className="mb-1 block text-sm font-medium">
+                Host 2 <span className="text-gray-400">(Optional)</span>
+              </label>
+              <Select
+                name="host_2_id"
+                value={formData.host_2_id}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, host_2_id: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="z-[70]">
+                  <SelectItem value="none">No second host</SelectItem>
+                  {profiles?.map((profile) => {
+                    // Don't show the same profile as host 1
+                    if (profile.id === formData.host_1_id) return null;
+                    const display = () => {
+                      if (profile.first_name) {
+                        return `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}`;
+                      }
+                      return profile.email || profile.id;
+                    };
+                    return (
+                      <SelectItem key={profile.id} value={profile.id}>
+                        {display()}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* Host 3 - Optional, only show if Host 2 is selected */}
+          {formData.host_1_id && formData.host_2_id && formData.host_2_id !== "none" && (
+            <div>
+              <label htmlFor="host_3_id" className="mb-1 block text-sm font-medium">
+                Host 3 <span className="text-gray-400">(Optional)</span>
+              </label>
+              <Select
+                name="host_3_id"
+                value={formData.host_3_id}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, host_3_id: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="z-[70]">
+                  <SelectItem value="none">No third host</SelectItem>
+                  {profiles?.map((profile) => {
+                    // Don't show the same profiles as host 1 or 2
+                    if (profile.id === formData.host_1_id || profile.id === formData.host_2_id) return null;
+                    const display = () => {
+                      if (profile.first_name) {
+                        return `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}`;
+                      }
+                      return profile.email || profile.id;
+                    };
+                    return (
+                      <SelectItem key={profile.id} value={profile.id}>
+                        {display()}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="grid grid-cols-3 gap-4">
             <div>
