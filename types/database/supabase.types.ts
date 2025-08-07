@@ -255,6 +255,7 @@ export type Database = {
       }
       sessions_view: {
         Row: {
+          ages: Database["public"]["Enums"]["AGES"] | null
           description: string | null
           end_time: string | null
           host_1_email: string | null
