@@ -239,10 +239,6 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleAgesChange = (value: DbSessionAges) => {
-    setFormData(prev => ({ ...prev, ages: value }));
-  };
-
   if (!isOpen || !is_admin) return null;
 
   // Show loading state while fetching session data in edit mode
@@ -261,7 +257,7 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
 
   return (
     <Modal onClose={onClose}>
-      <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md">
+      <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-6">
           {isEditMode ? 'Edit Event' : 'Add New Event'}
         </h2>
@@ -294,30 +290,52 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
             className="w-full rounded border p-2 dark:bg-gray-700 dark:border-gray-600"
           />
         </div>
-
-        <div>
-          <label htmlFor="day" className="block text-sm font-medium mb-1">
-            Day <span className="text-red-500">*</span>
-          </label>
-          <Select
-            name="day"
-            required
-            value={formData.day}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, day: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a day" />
-            </SelectTrigger>
-            <SelectContent className="z-[70]">
-            {CONFERENCE_DAYS.map((day) => (
-              <SelectItem key={day.date} value={day.date}>
-                {day.name} ({day.date})
-              </SelectItem>
-            ))}
-            </SelectContent>
-          </Select>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="day" className="block text-sm font-medium mb-1">
+              Day <span className="text-red-500">*</span>
+            </label>
+            <Select
+              name="day"
+              required
+              value={formData.day}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, day: value }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a day" />
+              </SelectTrigger>
+              <SelectContent className="z-[70]">
+              {CONFERENCE_DAYS.map((day) => (
+                <SelectItem key={day.date} value={day.date}>
+                  {day.name} ({day.date})
+                </SelectItem>
+              ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label htmlFor="locationId" className="block text-sm font-medium mb-1">
+              Location
+            </label>
+            <Select
+              name="locationId"
+              value={formData.locationId}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, locationId: value }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a location" />
+              </SelectTrigger>
+              <SelectContent className="z-[70]">
+                {locationsLoading && <SelectItem value="loading" disabled>Loading locations...</SelectItem>}
+                {locations.map((location) => (
+                  <SelectItem key={location.id} value={location.id}>
+                  {location.name}
+                </SelectItem>
+              ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="startTime" className="block text-sm font-medium mb-1">
@@ -348,48 +366,9 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
             />
           </div>
         </div>
+        
 
-        <div>
-          <label htmlFor="locationId" className="block text-sm font-medium mb-1">
-            Location
-          </label>
-          <Select
-            name="locationId"
-            value={formData.locationId}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, locationId: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a location" />
-            </SelectTrigger>
-            <SelectContent className="z-[70]">
-              {locationsLoading && <SelectItem value="loading" disabled>Loading locations...</SelectItem>}
-              {locations.map((location) => (
-                <SelectItem key={location.id} value={location.id}>
-                {location.name}
-              </SelectItem>
-            ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <label htmlFor="ages" className="block text-sm font-medium mb-1">
-            Ages
-          </label>
-          <Select
-            value={formData.ages}
-            onValueChange={handleAgesChange}
-            name="ages"
-          >
-            <SelectTrigger id="ages" className="w-full">
-              <SelectValue placeholder="Select an age" />
-            </SelectTrigger>
-            <SelectContent className="z-[70]">
-              {SessionAgesEnum.map((age) => (
-                <SelectItem key={age} value={age}>{getAgesDisplayText(age)}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        
         <div>
           <label htmlFor="hostId" className="block text-sm font-medium mb-1">
             Host <span className="text-red-500">*</span>
@@ -426,7 +405,7 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label htmlFor="minCapacity" className="block text-sm font-medium mb-1">
               Min Capacity
@@ -455,6 +434,25 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
               className="w-full rounded border p-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
+          <div>
+          <label htmlFor="ages" className="block text-sm font-medium mb-1">
+            Ages
+          </label>
+          <Select
+            value={formData.ages}
+            onValueChange={(value: DbSessionAges) => setFormData(prev => ({ ...prev, ages: value}))}
+            name="ages"
+          >
+            <SelectTrigger id="ages" className="w-full">
+              <SelectValue placeholder="Select an age" />
+            </SelectTrigger>
+            <SelectContent className="z-[70]">
+              {SessionAgesEnum.map((age) => (
+                <SelectItem key={age} value={age}>{getAgesDisplayText(age)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         </div>
 
         <div className="flex gap-4 pt-4">
