@@ -52,13 +52,13 @@ type FormData = {
   day: string;
   startTime: string;
   endTime: string;
-  minCapacity: string;
-  maxCapacity: string;
-  locationId: string;
+  minCapacity: number | null;
+  maxCapacity: number | null;
+  locationId: string | null;
   ages: DbSessionAges;
-  host_1_id: string;
-  host_2_id: string;
-  host_3_id: string;
+  host_1_id: string | null;
+  host_2_id: string | null;
+  host_3_id: string | null;
 };
 export function AddEventModal({
   isOpen,
@@ -76,13 +76,13 @@ export function AddEventModal({
     day: defaultDay || CONFERENCE_DAYS[0].date,
     startTime: "09:00",
     endTime: "09:30",
-    minCapacity: "",
-    maxCapacity: "",
-    locationId: "",
+    minCapacity: null,
+    maxCapacity: null,
+    locationId: null,
     ages: SessionAges.ALL,
-    host_1_id: "",
-    host_2_id: "none",
-    host_3_id: "none",
+    host_1_id: null,
+    host_2_id: null,
+    host_3_id: null,
   };
   const {
     data: profiles,
@@ -138,13 +138,13 @@ export function AddEventModal({
         day: pstStartDate.toISOString().split("T")[0],
         startTime: pstStartDate.toTimeString().slice(0, 5),
         endTime: pstEndDate ? pstEndDate.toTimeString().slice(0, 5) : "10:00",
-        minCapacity: existingSession.min_capacity?.toString() || "",
-        maxCapacity: existingSession.max_capacity?.toString() || "",
-        locationId: existingSession.location_id || "",
+        minCapacity: existingSession.min_capacity,
+        maxCapacity: existingSession.max_capacity,
+        locationId: existingSession.location_id || null,
         ages: existingSession.ages || SessionAges.ALL,
-        host_1_id: existingSession.host_1_id || "",
-        host_2_id: existingSession.host_2_id || "none",
-        host_3_id: existingSession.host_3_id || "none",
+        host_1_id: existingSession.host_1_id || null,
+        host_2_id: existingSession.host_2_id || null,
+        host_3_id: existingSession.host_3_id || null,
       });
     } else if (prefillData) {
       // The prefillData.startTime is already the exact time of the slot (e.g., "14:30")
@@ -182,19 +182,19 @@ export function AddEventModal({
     if (!formData.host_1_id) {
       setFormData(prev => ({ 
         ...prev, 
-        host_1_id: prev.host_2_id !== "none" ? prev.host_2_id : "",
-        host_2_id: prev.host_3_id !== "none" ? prev.host_3_id : "none",
-        host_3_id: "none"
+        host_1_id: prev.host_2_id,
+        host_2_id: prev.host_3_id,
+        host_3_id: null
       }));
     }
   }, [formData.host_1_id]);
 
   useEffect(() => {
-    if (!formData.host_2_id || formData.host_2_id === "none") {
+    if (!formData.host_2_id) {
       setFormData(prev => ({ 
         ...prev, 
-        host_2_id: prev.host_3_id !== "none" ? prev.host_3_id : "none",
-        host_3_id: "none"
+        host_2_id: prev.host_3_id,
+        host_3_id: null
       }));
     }
   }, [formData.host_2_id]);
@@ -248,11 +248,9 @@ export function AddEventModal({
       return;
     }
 
-    // Validate capacities
-    const minCap = formData.minCapacity ? parseInt(formData.minCapacity) : null;
-    const maxCap = formData.maxCapacity ? parseInt(formData.maxCapacity) : null;
 
-    if (minCap && maxCap && minCap > maxCap) {
+
+    if (formData.minCapacity && formData.maxCapacity && formData.minCapacity > formData.maxCapacity) {
       toast.error("Minimum capacity cannot be greater than maximum capacity");
       return;
     }
@@ -277,12 +275,12 @@ export function AddEventModal({
       description: formData.description || null,
       start_time: startDateTime,
       end_time: endDateTime,
-      min_capacity: minCap,
-      max_capacity: maxCap,
-      location_id: formData.locationId === "none" ? null : formData.locationId,
-      host_1_id: formData.host_1_id || null,
-      host_2_id: formData.host_2_id === "none" ? null : formData.host_2_id,
-      host_3_id: formData.host_3_id === "none" ? null : formData.host_3_id,
+      min_capacity: formData.minCapacity,
+      max_capacity: formData.maxCapacity,
+      location_id: formData.locationId,
+      host_1_id: formData.host_1_id,
+      host_2_id: formData.host_2_id,
+      host_3_id: formData.host_3_id,
       ages: formData.ages,
     };
 
@@ -314,7 +312,14 @@ export function AddEventModal({
     >,
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Handle number fields
+    if (name === "minCapacity" || name === "maxCapacity") {
+      const numValue = value === "" ? null : parseInt(value);
+      setFormData((prev) => ({ ...prev, [name]: numValue }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   if (!isOpen || !is_admin) return null;
@@ -409,12 +414,12 @@ export function AddEventModal({
               </label>
               <Select
                 name="locationId"
-                value={formData.locationId}
+                value={formData.locationId || undefined}
                 onValueChange={(value) => {
                   if (!value) {
                     return
                   }
-                  setFormData((prev) => ({ ...prev, locationId: value }))
+                  setFormData((prev) => ({ ...prev, locationId: value === "none" ? null : value }))
                 }}
               >
                 <SelectTrigger>
@@ -480,7 +485,7 @@ export function AddEventModal({
             </label>
             <Select
               name="host_1_id"
-              value={formData.host_1_id}
+              value={formData.host_1_id || undefined}
               onValueChange={(value) =>
                 setFormData((prev) => ({ ...prev, host_1_id: value }))
               }
@@ -533,15 +538,15 @@ export function AddEventModal({
                 <label htmlFor="host_2_id" className="mb-1 block text-sm font-medium">
                   Host 2 <span className="text-gray-400">(Optional)</span> 
                 </label>
-                {formData.host_2_id !== "none" && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_2_id: "none" }))} />}
+                                 {formData.host_2_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_2_id: null }))} />}
               </div>
-              <Select
-                name="host_2_id"
-                value={formData.host_2_id}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, host_2_id: value }))
-                }
-              >
+                              <Select
+                  name="host_2_id"
+                  value={formData.host_2_id || undefined}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, host_2_id: value === "none" ? null : value }))
+                  }
+                >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -568,21 +573,21 @@ export function AddEventModal({
           )}
 
           {/* Host 3 - Optional, only show if Host 2 is selected */}
-          {formData.host_1_id && formData.host_2_id && formData.host_2_id !== "none" && (
+          {formData.host_1_id && formData.host_2_id && (
             <div>
               <div className="flex gap-2">
                 <label htmlFor="host_3_id" className="mb-1 block text-sm font-medium">
                   Host 3 <span className="text-gray-400">(Optional)</span>
                 </label>
-                {formData.host_3_id !== "none" && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_3_id: "none" }))} />}
+                                 {formData.host_3_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_3_id: null }))} />}
               </div>
-              <Select
-                name="host_3_id"
-                value={formData.host_3_id}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, host_3_id: value }))
-                }
-              >
+                              <Select
+                  name="host_3_id"
+                  value={formData.host_3_id || undefined}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, host_3_id: value === "none" ? null : value }))
+                  }
+                >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -621,7 +626,7 @@ export function AddEventModal({
                 name="minCapacity"
                 type="number"
                 min="0"
-                value={formData.minCapacity}
+                value={formData.minCapacity || ""}
                 onChange={handleInputChange}
                 className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
               />
@@ -638,7 +643,7 @@ export function AddEventModal({
                 name="maxCapacity"
                 type="number"
                 min="0"
-                value={formData.maxCapacity}
+                value={formData.maxCapacity || ""}
                 onChange={handleInputChange}
                 className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
               />
