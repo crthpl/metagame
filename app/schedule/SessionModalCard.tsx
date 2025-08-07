@@ -96,35 +96,42 @@ const getDateString = (timestamp: string) => {
   return (
       <div className="relative lg:min-w-[480px] bg-dark-600 border p-4 lg:p-6 border-secondary-300 rounded-xl max-w-xl w-full max-h-[calc(100vh-100px)] overflow-auto shadow-2xl">
 
-        {showCopiedMessage ?
-          <span className="text-green-400 text-light absolute top-4 right-4 p-2">Copied!</span>
-          :
-          <button
-            onClick={copyLink}
-            className="absolute top-4 right-4 p-2 cursor-pointer rounded-md hover:bg-dark-400 transition-colors"
-            >
-              <LinkIcon className={`size-4 ${copyError ? "text-red-500" : "text-secondary-300"}`}/>
-          </button>
-        }
-
-        {/* Edit button for admins */}
-        {currentUser.is_admin && (
-          <button
-            onClick={() => setShowEditModal(true)}
-            className="absolute top-4 right-12 p-2 cursor-pointer rounded-md hover:bg-dark-400 transition-colors"
-            title="Edit Event"
-          >
-            <EditIcon className="size-4 text-secondary-300" />
-          </button>
-        )}
+       
 
         {/* Content */}
         <div className="flex flex-col gap-2">
           {/* Title and Hosts*/}
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold text-secondary-200 leading-tight">
-              {session.title || 'Untitled Session'}
-            </h2>
+            <div className="flex gap-2">
+              <h2 className="text-xl font-bold text-secondary-200 leading-tight">
+                {session.title || 'Untitled Session'}
+              </h2>
+              <div className="w-fit flex gap-1 self-start">
+                {showCopiedMessage ?
+                  <span className="text-green-400 text-light p-1">✓</span>
+                  :
+                  <button
+                    onClick={copyLink}
+                    className=" p-1 cursor-pointer rounded-md hover:bg-dark-400 transition-colors"
+                    >
+                      <LinkIcon className={`size-4 ${copyError ? "text-red-500" : "text-secondary-300"}`}/>
+                  </button>
+                }
+
+                {/* Edit button for admins */}
+                {currentUser.is_admin && (
+                  <button
+                    onClick={() => setShowEditModal(true)}
+                    className=" p-1 cursor-pointer rounded-md hover:bg-dark-400 transition-colors"
+                    title="Edit Event"
+                  >
+                    <EditIcon className="size-4 text-secondary-300" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Hosts */}
             <div className="text-sm text-secondary-400">
               {dbGetHostsFromSession(session).join(", ")}
             </div>
