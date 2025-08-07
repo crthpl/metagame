@@ -26,6 +26,7 @@ import {
   SessionAges,
   SessionAgesEnum,
 } from "@/utils/dbUtils";
+import { XIcon } from "lucide-react";
 
 // Conference days configuration
 const CONFERENCE_DAYS = [
@@ -175,6 +176,28 @@ export function AddEventModal({
       });
     }
   }, [existingSession, sessionLoading, isEditMode, defaultDay, prefillData]);
+
+  // Bump up hosts when an earlier host is cleared
+  useEffect(() => {
+    if (!formData.host_1_id) {
+      setFormData(prev => ({ 
+        ...prev, 
+        host_1_id: prev.host_2_id !== "none" ? prev.host_2_id : "",
+        host_2_id: prev.host_3_id !== "none" ? prev.host_3_id : "none",
+        host_3_id: "none"
+      }));
+    }
+  }, [formData.host_1_id]);
+
+  useEffect(() => {
+    if (!formData.host_2_id || formData.host_2_id === "none") {
+      setFormData(prev => ({ 
+        ...prev, 
+        host_2_id: prev.host_3_id !== "none" ? prev.host_3_id : "none",
+        host_3_id: "none"
+      }));
+    }
+  }, [formData.host_2_id]);
 
   const addEventMutation = useMutation({
     mutationFn: adminAddSession,
@@ -506,9 +529,12 @@ export function AddEventModal({
           {/* Host 2 - Optional, only show if Host 1 is selected */}
           {formData.host_1_id && (
             <div>
-              <label htmlFor="host_2_id" className="mb-1 block text-sm font-medium">
-                Host 2 <span className="text-gray-400">(Optional)</span>
-              </label>
+              <div className="flex gap-2">
+                <label htmlFor="host_2_id" className="mb-1 block text-sm font-medium">
+                  Host 2 <span className="text-gray-400">(Optional)</span> 
+                </label>
+                {formData.host_2_id !== "none" && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_2_id: "none" }))} />}
+              </div>
               <Select
                 name="host_2_id"
                 value={formData.host_2_id}
@@ -544,9 +570,12 @@ export function AddEventModal({
           {/* Host 3 - Optional, only show if Host 2 is selected */}
           {formData.host_1_id && formData.host_2_id && formData.host_2_id !== "none" && (
             <div>
-              <label htmlFor="host_3_id" className="mb-1 block text-sm font-medium">
-                Host 3 <span className="text-gray-400">(Optional)</span>
-              </label>
+              <div className="flex gap-2">
+                <label htmlFor="host_3_id" className="mb-1 block text-sm font-medium">
+                  Host 3 <span className="text-gray-400">(Optional)</span>
+                </label>
+                {formData.host_3_id !== "none" && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_3_id: "none" }))} />}
+              </div>
               <Select
                 name="host_3_id"
                 value={formData.host_3_id}
