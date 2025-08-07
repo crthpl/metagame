@@ -299,20 +299,23 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
           <label htmlFor="day" className="block text-sm font-medium mb-1">
             Day <span className="text-red-500">*</span>
           </label>
-          <select
-            id="day"
+          <Select
             name="day"
             required
             value={formData.day}
-            onChange={handleInputChange}
-            className="w-full rounded border p-2 dark:bg-gray-700 dark:border-gray-600"
+            onValueChange={(value) => setFormData(prev => ({ ...prev, day: value }))}
           >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a day" />
+            </SelectTrigger>
+            <SelectContent className="z-[70]">
             {CONFERENCE_DAYS.map((day) => (
-              <option key={day.date} value={day.date}>
+              <SelectItem key={day.date} value={day.date}>
                 {day.name} ({day.date})
-              </option>
+              </SelectItem>
             ))}
-          </select>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -350,21 +353,23 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
           <label htmlFor="locationId" className="block text-sm font-medium mb-1">
             Location
           </label>
-          <select
-            id="locationId"
+          <Select
             name="locationId"
             value={formData.locationId}
-            onChange={handleInputChange}
-            className="w-full rounded border p-2 dark:bg-gray-700 dark:border-gray-600"
+            onValueChange={(value) => setFormData(prev => ({ ...prev, locationId: value }))}
           >
-            <option value="">No specific location</option>
-            {locationsLoading && <option disabled>Loading locations...</option>}
-            {locations.map((location) => (
-              <option key={location.id} value={location.id}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a location" />
+            </SelectTrigger>
+            <SelectContent className="z-[70]">
+              {locationsLoading && <SelectItem value="loading" disabled>Loading locations...</SelectItem>}
+              {locations.map((location) => (
+                <SelectItem key={location.id} value={location.id}>
                 {location.name}
-              </option>
+              </SelectItem>
             ))}
-          </select>
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label htmlFor="ages" className="block text-sm font-medium mb-1">
@@ -389,19 +394,19 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
           <label htmlFor="hostId" className="block text-sm font-medium mb-1">
             Host <span className="text-red-500">*</span>
           </label>
-          <select
-            id="hostId"
+          <Select
             name="hostId"
             value={formData.hostId}
-            onChange={handleInputChange}
-            required
-            className="w-full rounded border p-2 dark:bg-gray-700 dark:border-gray-600"
+            onValueChange={(value) => setFormData(prev => ({ ...prev, hostId: value }))}
           >
-            <option value="">Select a host</option>
-            {profilesLoading && <option disabled>Loading profiles...</option>}
-            {profilesError && <option disabled>Error loading profiles: {profilesError.message}</option>}
-            {profiles && profiles.length === 0 && <option disabled>No profiles found</option>}
-            {profiles?.map((profile) => {
+            <SelectTrigger>
+              <SelectValue placeholder="Select a host" />
+            </SelectTrigger>
+            <SelectContent className="z-[70]">
+              {profilesLoading && <SelectItem value="loading" disabled>Loading profiles...</SelectItem>}
+              {profilesError && <SelectItem value="error" disabled>Error loading profiles: {profilesError.message}</SelectItem>}
+              {profiles && profiles.length === 0 && <SelectItem value="empty" disabled>No profiles found</SelectItem>}
+              {profiles?.map((profile) => {
               const display = () => {
                 if (profile.first_name) {
                   return `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}`
@@ -409,12 +414,13 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
                 return profile.email || profile.id
               }
               return (
-                <option key={profile.id} value={profile.id}>
+                <SelectItem key={profile.id} value={profile.id}>
                   {display()}
-                </option>
+                </SelectItem>
               )
             })}
-          </select>
+            </SelectContent>
+          </Select>
           {profilesError && (
             <p className="text-xs text-red-400 mt-1">Error: {profilesError.message}</p>
           )}
