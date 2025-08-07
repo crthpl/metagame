@@ -379,9 +379,12 @@ export function AddEventModal({
               <Select
                 name="locationId"
                 value={formData.locationId}
-                onValueChange={(value) =>
+                onValueChange={(value) => {
+                  if (!value) {
+                    return
+                  }
                   setFormData((prev) => ({ ...prev, locationId: value }))
-                }
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a location" />
