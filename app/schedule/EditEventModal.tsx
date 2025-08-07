@@ -394,7 +394,7 @@ export function AddEventModal({
                 <SelectContent className="z-[70]">
                   {CONFERENCE_DAYS.map((day) => (
                     <SelectItem key={day.date} value={day.date}>
-                      {day.name} ({day.date})
+                      {day.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
