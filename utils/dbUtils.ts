@@ -20,3 +20,11 @@ export const getAgesDisplayText = (ages: DbSessionAges | null): string => {
   }
 }
 
+export const SessionAges = {
+  ALL: 'ALL' as const,
+  ADULTS: 'ADULTS' as const,
+  KIDS: 'KIDS' as const,
+} as const;
+
+export const SessionAgesEnum = Object.values(SessionAges);
+
