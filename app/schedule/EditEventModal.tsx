@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal } from '@/components/Modal';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminAddSession, adminUpdateSession, adminDeleteSession, getSessionById } from '../actions/db/sessions';
@@ -8,6 +8,9 @@ import { adminGetAllProfiles } from '../actions/db/users';
 import { getOrderedScheduleLocations } from '../actions/db/locations';
 import { useUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DbSessionAges } from '@/types/database/dbTypeAliases';
+import { getAgesDisplayText, SessionAges, SessionAgesEnum } from '@/utils/dbUtils';
 
 // Conference days configuration
 const CONFERENCE_DAYS = [
@@ -15,6 +18,7 @@ const CONFERENCE_DAYS = [
   { date: '2025-09-13', name: 'Saturday' }, 
   { date: '2025-09-14', name: 'Sunday' }
 ];
+
 
 interface AddEventModalProps {
   isOpen: boolean;
@@ -27,11 +31,34 @@ interface AddEventModalProps {
   existingSessionId?: string | null;
 }
 
+type FormData = {
+  title: string;
+  description: string;
+  day: string;
+  startTime: string;
+  endTime: string;
+  minCapacity: string;
+  maxCapacity: string;
+  locationId: string;
+  ages: DbSessionAges;
+  hostId: string;
+}
 export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existingSessionId }: AddEventModalProps) {
   const queryClient = useQueryClient();
   const { is_admin } = useUser();
   const isEditMode = !!existingSessionId;
-  
+  const defaultFormData = {
+    title: '',
+    description: '',
+    day: defaultDay || CONFERENCE_DAYS[0].date,
+    startTime: '09:00',
+    endTime: '09:30',
+    minCapacity: '',
+    maxCapacity: '',
+    locationId: '',
+    ages: SessionAges.ALL,
+    hostId: ''
+  }
   const { data: profiles, isLoading: profilesLoading, error: profilesError } = useQuery({
     queryKey: ['profiles', 'all'],
     queryFn: adminGetAllProfiles,
@@ -54,17 +81,7 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
     staleTime: 1000 * 60 * 5,
   });
 
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    day: defaultDay || CONFERENCE_DAYS[0].date,
-    startTime: '09:00',
-    endTime: '10:00',
-    minCapacity: '',
-    maxCapacity: '',
-    locationId: '',
-    hostId: ''
-  });
+  const [formData, setFormData] = useState<FormData>(defaultFormData);
 
   // Initialize form data when existingSession changes
   useEffect(() => {
@@ -85,6 +102,7 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
         minCapacity: existingSession.min_capacity?.toString() || '',
         maxCapacity: existingSession.max_capacity?.toString() || '',
         locationId: existingSession.location_id || '',
+        ages: existingSession.ages || SessionAges.ALL,
         hostId: existingSession.host_1_id || ''
       });
     } else if (prefillData) {
@@ -103,28 +121,16 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
       const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
       
       setFormData({
-        title: '',
-        description: '',
-        day: defaultDay || CONFERENCE_DAYS[0].date,
+        ...defaultFormData,
         startTime: prefillData.startTime,
         endTime: endTime,
-        minCapacity: '',
-        maxCapacity: '',
         locationId: prefillData.locationId,
-        hostId: ''
+      
       });
     } else {
       // Reset to defaults
       setFormData({
-        title: '',
-        description: '',
-        day: defaultDay || CONFERENCE_DAYS[0].date,
-        startTime: '09:00',
-        endTime: '09:30',
-        minCapacity: '',
-        maxCapacity: '',
-        locationId: '',
-        hostId: ''
+        ...defaultFormData,
       });
     }
   }, [existingSession, sessionLoading, isEditMode, defaultDay, prefillData]);
@@ -137,15 +143,7 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
       onClose();
       // Reset form
       setFormData({
-        title: '',
-        description: '',
-        day: defaultDay || CONFERENCE_DAYS[0].date,
-        startTime: '09:00',
-        endTime: '10:00',
-        minCapacity: '',
-        maxCapacity: '',
-        locationId: '',
-        hostId: ''
+        ...defaultFormData,
       });
     },
     onError: (error) => {
@@ -214,7 +212,8 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
       min_capacity: minCap,
       max_capacity: maxCap,
       location_id: formData.locationId || null,
-      host_1_id: formData.hostId
+      host_1_id: formData.hostId,
+      ages: formData.ages
     };
 
     if (isEditMode && existingSessionId) {
@@ -238,6 +237,10 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAgesChange = (value: DbSessionAges) => {
+    setFormData(prev => ({ ...prev, ages: value }));
   };
 
   if (!isOpen || !is_admin) return null;
@@ -363,7 +366,25 @@ export function AddEventModal({ isOpen, onClose, defaultDay, prefillData, existi
             ))}
           </select>
         </div>
-
+        <div>
+          <label htmlFor="ages" className="block text-sm font-medium mb-1">
+            Ages
+          </label>
+          <Select
+            value={formData.ages}
+            onValueChange={handleAgesChange}
+            name="ages"
+          >
+            <SelectTrigger id="ages" className="w-full">
+              <SelectValue placeholder="Select an age" />
+            </SelectTrigger>
+            <SelectContent className="z-[70]">
+              {SessionAgesEnum.map((age) => (
+                <SelectItem key={age} value={age}>{getAgesDisplayText(age)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div>
           <label htmlFor="hostId" className="block text-sm font-medium mb-1">
             Host <span className="text-red-500">*</span>
