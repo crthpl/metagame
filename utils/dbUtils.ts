@@ -26,5 +26,5 @@ export const SessionAges = {
   KIDS: 'KIDS' as const,
 } as const;
 
-export const SessionAgesEnum = Object.values(SessionAges);
+export const SessionAgesEnum = Object.values(SessionAges) as DbSessionAges[];
 
