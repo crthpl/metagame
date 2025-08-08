@@ -414,7 +414,7 @@ export function AddEventModal({
               </label>
               <Select
                 name="locationId"
-                value={formData.locationId || undefined}
+                value={formData.locationId || ""}
                 onValueChange={(value) => {
                   if (!value) {
                     return
@@ -480,12 +480,15 @@ export function AddEventModal({
 
           {/* Host 1 - Required */}
           <div>
-            <label htmlFor="host_1_id" className="mb-1 block text-sm font-medium">
-              Host 1 <span className="text-red-500">*</span>
-            </label>
+            <div className="flex gap-2">
+              <label htmlFor="host_1_id" className="mb-1 block text-sm font-medium">
+                Host 1 <span className="text-red-500">*</span>
+              </label>
+              {formData.host_1_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_1_id: null }))} />}
+            </div>
             <Select
               name="host_1_id"
-              value={formData.host_1_id || undefined}
+              value={formData.host_1_id || ""}
               onValueChange={(value) =>
                 setFormData((prev) => ({ ...prev, host_1_id: value }))
               }
@@ -538,17 +541,17 @@ export function AddEventModal({
                 <label htmlFor="host_2_id" className="mb-1 block text-sm font-medium">
                   Host 2 <span className="text-gray-400">(Optional)</span> 
                 </label>
-                                 {formData.host_2_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_2_id: null }))} />}
+                {formData.host_2_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_2_id: null }))} />}
               </div>
-                              <Select
-                  name="host_2_id"
-                  value={formData.host_2_id || undefined}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, host_2_id: value === "none" ? null : value }))
-                  }
+                                            <Select
+                name="host_2_id"
+                value={formData.host_2_id || ""}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, host_2_id: value === "none" ? null : value }))
+                }
                 >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Select a second host" />
                 </SelectTrigger>
                 <SelectContent className="z-[70]">
                   <SelectItem value="none">No second host</SelectItem>
@@ -581,15 +584,15 @@ export function AddEventModal({
                 </label>
                                  {formData.host_3_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_3_id: null }))} />}
               </div>
-                              <Select
-                  name="host_3_id"
-                  value={formData.host_3_id || undefined}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, host_3_id: value === "none" ? null : value }))
-                  }
+                                            <Select
+                name="host_3_id"
+                value={formData.host_3_id || ""}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, host_3_id: value === "none" ? null : value }))
+                }
                 >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Select a third host" />
                 </SelectTrigger>
                 <SelectContent className="z-[70]">
                   <SelectItem value="none">No third host</SelectItem>
