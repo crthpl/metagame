@@ -50,6 +50,42 @@ export type Database = {
         }
         Relationships: []
       }
+      opennode_orders: {
+        Row: {
+          btc_amount: number
+          created_at: string
+          id: string
+          is_test: boolean
+          opennode_charge_id: string
+          purchaser_email: string | null
+          status: string
+          ticket_type: Database["public"]["Enums"]["ticket_type"] | null
+          updated_at: string
+        }
+        Insert: {
+          btc_amount: number
+          created_at?: string
+          id?: string
+          is_test: boolean
+          opennode_charge_id: string
+          purchaser_email?: string | null
+          status: string
+          ticket_type?: Database["public"]["Enums"]["ticket_type"] | null
+          updated_at?: string
+        }
+        Update: {
+          btc_amount?: number
+          created_at?: string
+          id?: string
+          is_test?: boolean
+          opennode_charge_id?: string
+          purchaser_email?: string | null
+          status?: string
+          ticket_type?: Database["public"]["Enums"]["ticket_type"] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           discord_handle: string | null
@@ -193,6 +229,7 @@ export type Database = {
           created_at: string
           id: string
           is_test: boolean
+          opennode_order: string | null
           owner_id: string | null
           price_paid: number | null
           purchaser_email: string | null
@@ -205,6 +242,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_test: boolean
+          opennode_order?: string | null
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
@@ -217,6 +255,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_test?: boolean
+          opennode_order?: string | null
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
@@ -224,7 +263,15 @@ export type Database = {
           ticket_code?: string
           ticket_type?: Database["public"]["Enums"]["ticket_type"]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tickets_opennode_order_fkey"
+            columns: ["opennode_order"]
+            isOneToOne: false
+            referencedRelation: "opennode_orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -295,6 +342,12 @@ export type Database = {
     }
     Enums: {
       AGES: "ADULTS" | "KIDS" | "ALL"
+      OPENNODE_CHARGE_STATUS:
+        | "underpaid"
+        | "refunded"
+        | "processing"
+        | "paid"
+        | "expired"
       ticket_type: "npc" | "player" | "supporter"
     }
     CompositeTypes: {
@@ -424,6 +477,13 @@ export const Constants = {
   public: {
     Enums: {
       AGES: ["ADULTS", "KIDS", "ALL"],
+      OPENNODE_CHARGE_STATUS: [
+        "underpaid",
+        "refunded",
+        "processing",
+        "paid",
+        "expired",
+      ],
       ticket_type: ["npc", "player", "supporter"],
     },
   },
