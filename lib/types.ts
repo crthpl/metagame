@@ -2,6 +2,7 @@ export interface TicketType {
   id: string;
   title: string;
   price: number;
+  priceBtc: number;
   applicationBased: boolean;
   live: boolean; //whether the apply/purchase button for this ticket should be disabled
   ticketUrl?: string;
