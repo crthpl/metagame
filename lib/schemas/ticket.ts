@@ -9,7 +9,7 @@ export const ticketPurchaseSchema = z.object({
   ticketTypeId: z.string(),
 });
 
-const ticketTypeEnum = z.enum(["player", "npc", "supporter"])
+const ticketTypeEnum = z.enum(["player", "npc", "supporter", "friday", "saturday", "sunday"])
 
 // Schema for payment confirmation
 export const paymentConfirmationSchema = z.object({
