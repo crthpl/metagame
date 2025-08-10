@@ -1,4 +1,4 @@
-import { DbSessionView, DbSessionAges } from "@/types/database/dbTypeAliases";
+import { DbSessionView, DbSessionAges, DbTicketType } from "@/types/database/dbTypeAliases";
 
 export const dbGetHostsFromSession = (session: DbSessionView) => {
   const host1Name = (session.host_1_first_name ?? "") + " " + (session.host_1_last_name  ?? "")
@@ -20,11 +20,13 @@ export const getAgesDisplayText = (ages: DbSessionAges | null): string => {
   }
 }
 
-export const SessionAges = {
+export const SESSION_AGES = {
   ALL: 'ALL' as const,
   ADULTS: 'ADULTS' as const,
   KIDS: 'KIDS' as const,
 } as const;
+
+export const SessionAgesEnum = Object.values(SESSION_AGES) as DbSessionAges[];
 
 export const TICKET_TYPES: Record<Uppercase<DbTicketType>, DbTicketType> = {
   NPC: 'npc' as const,
