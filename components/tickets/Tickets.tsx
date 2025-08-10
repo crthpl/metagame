@@ -21,18 +21,18 @@ export const Tickets: React.FC = () => {
 
         <div className="flex flex-col items-center mb-6">
           <div className=" flex items-center gap-3">
-            <span className={`text-sm ${paymentMethod === 'usd' ? 'font-semibold' : 'opacity-70'}`}>USD</span>
+            <span className={`text-xl ${paymentMethod === 'usd' ? 'font-semibold text-green-500' : 'opacity-50'}`}>$</span>
             <button
               type="button"
               onClick={togglePaymentMethod}
-              className="relative inline-flex h-8 w-16 items-center rounded-full bg-gray-700 transition-colors"
+              className="relative inline-flex h-8 w-14 items-center rounded-full bg-gray-700 transition-colors"
               aria-label="Toggle payment method"
             >
               <span
-                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ml-1 ${paymentMethod === 'btc' ? 'translate-x-8' : ''}`}
+                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ml-1 ${paymentMethod === 'btc' ? 'translate-x-6' : ''}`}
               />
             </button>
-            <span className={`text-sm ${paymentMethod === 'btc' ? 'font-semibold' : 'opacity-70'}`}>BTC</span>
+            <span className={`text-xl ${paymentMethod === 'btc' ? 'font-semibold text-yellow-500' : 'opacity-50'}`}>₿</span>
           </div>
           {paymentMethod === 'btc' && (
             <span className="">
