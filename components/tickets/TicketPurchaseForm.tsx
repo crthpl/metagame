@@ -415,12 +415,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
       )}
 
       {isBtc && (
-        <div className="bg-gray-800 p-4 rounded-lg space-y-2">
-          <div className="flex justify-between items-center">
+        <div className="space-y-2">
+          <div className="flex justify-between items-center bg-gray-800 p-2 rounded-lg">
             <span className="text-gray-300">Amount:</span>
             <span className="font-semibold">{btcAmount?.toFixed(6) ?? "?"} BTC</span>
           </div>
-          <p className="text-gray-400 text-sm">You will be redirected to OpenNode to complete your Bitcoin payment.</p>
+          <p className="text-gray-400 text-sm bg-gray-800 p-2 rounded-lg">Clicking <span className="font-semibold">Continue</span> will create a pending OpenNode transaction and redirect you to a checkout page to complete your payment. Your ticket will be emailed to you after payment is confirmed.</p>
         </div>
       )}
 
@@ -469,7 +469,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
             disabled={isLoading}
             className="flex-1 px-4 py-2 bg-primary-600 rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Processing...' : `Continue to Bitcoin (${btcAmount?.toFixed(6) ?? "?"} BTC)`}
+            {isLoading ? 'Processing...' : `Continue`}
           </button>
         ) : (
           <button
