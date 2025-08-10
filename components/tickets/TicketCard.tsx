@@ -193,7 +193,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
         <Modal onClose={handleCloseModal} className="w-full max-w-2xl">
           <div className="bg-dark-500 border border-gray-700 rounded-lg p-6 max-h-[90vh] overflow-y-auto">
             <TicketPurchaseForm
-              ticketType={ticketType}
+              ticketType={ticketType.id && selectedDayPass ? selectedDayPass : ticketType}
               onClose={handleCloseModal}
             />
           </div>

@@ -2,23 +2,29 @@ import { TICKET_FINANCIAL_AID_URL, TICKET_VOLUNTEER_URL } from '@/config';
 import type { TicketType } from '../lib/types';
 
 // Day pass options for the dropdown
-export const DAY_PASS_OPTIONS = [
+export const DAY_PASS_OPTIONS: TicketType[] = [
   {
-    id: 'dayPassFriday',
+    id: 'friday',
     title: 'Friday 9/12',
     price: 150,
+    live: true,
+    applicationBased: false,
     description: 'Single day pass for Friday 9/12'
   },
   {
-    id: 'dayPassSaturday', 
+    id: 'saturday', 
     title: 'Saturday 9/13',
     price: 250,
+    live: true,
+    applicationBased: false,
     description: 'Single day pass for Saturday 9/13'
   },
   {
-    id: 'dayPassSunday',
+    id: 'sunday',
     title: 'Sunday 9/14', 
     price: 250,
+    live: true,
+    applicationBased: false,
     description: 'Single day pass for Sunday 9/14'
   }
 ];
@@ -98,9 +104,13 @@ export const TICKET_TYPES: Record<string, TicketType> = {
 };
 
 export const getTicketType = (id: string): TicketType | null => {
-  return TICKET_TYPES[id] || null;
+  return ['friday', 'saturday', 'sunday'].includes(id) ? getDayPassTicketType(id) : TICKET_TYPES[id] || null;
 };
 
 export const getAllTicketTypes = (): TicketType[] => {
   return Object.values(TICKET_TYPES);
 }; 
+
+export const getDayPassTicketType = (id: string): TicketType | null => {
+  return DAY_PASS_OPTIONS.find(option => option.id === id) || null;
+};
