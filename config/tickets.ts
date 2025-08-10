@@ -9,6 +9,7 @@ export const DAY_PASS_OPTIONS: TicketType[] = [
     price: 150,
     live: true,
     applicationBased: false,
+    priceBtc: 0.0011,
     description: 'Single day pass for Friday 9/12'
   },
   {
@@ -20,13 +21,14 @@ export const DAY_PASS_OPTIONS: TicketType[] = [
     description: 'Single day pass for Saturday 9/13'
   },
   {
-    id: 'sunday',
+    id: 'sunday', 
     title: 'Sunday 9/14', 
     price: 250,
     live: true,
     applicationBased: false,
+    priceBtc: 0.0018,
     description: 'Single day pass for Sunday 9/14'
-  }
+  },
 ];
 
 export const TICKET_TYPES: Record<string, TicketType> = {
@@ -34,7 +36,6 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     id: 'volunteer',
     title: 'Volunteer',
     price: 0,
-    priceBtc: 0,
     live: true,
     applicationBased: true,
     ticketUrl: TICKET_VOLUNTEER_URL,
@@ -101,7 +102,6 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     title: 'Financial Aid',
     ticketUrl: TICKET_FINANCIAL_AID_URL,
     price: 0,
-    priceBtc: 0,
     live: true,
     regularPrice: 0,
     applicationBased: true,
