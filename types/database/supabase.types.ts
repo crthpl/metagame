@@ -55,7 +55,7 @@ export type Database = {
           created_at: string
           id: string
           is_test: boolean
-          opennode_charge_id: string
+          opennode_order_id: string
           purchaser_email: string | null
           satoshis: number
           status: string
@@ -66,7 +66,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_test: boolean
-          opennode_charge_id: string
+          opennode_order_id: string
           purchaser_email?: string | null
           satoshis: number
           status: string
@@ -77,7 +77,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_test?: boolean
-          opennode_charge_id?: string
+          opennode_order_id?: string
           purchaser_email?: string | null
           satoshis?: number
           status?: string
@@ -233,6 +233,7 @@ export type Database = {
           owner_id: string | null
           price_paid: number | null
           purchaser_email: string | null
+          satoshis_paid: number | null
           stripe_payment_id: string | null
           ticket_code: string
           ticket_type: Database["public"]["Enums"]["ticket_type"]
@@ -246,6 +247,7 @@ export type Database = {
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
+          satoshis_paid?: number | null
           stripe_payment_id?: string | null
           ticket_code: string
           ticket_type: Database["public"]["Enums"]["ticket_type"]
@@ -259,6 +261,7 @@ export type Database = {
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
+          satoshis_paid?: number | null
           stripe_payment_id?: string | null
           ticket_code?: string
           ticket_type?: Database["public"]["Enums"]["ticket_type"]

@@ -7,7 +7,7 @@ import { opennodeDbService } from '@/lib/db/opennode';
 export async function POST(req: NextRequest) {
   const { amountBtc, ticketDetails } = opennodeChargeSchema.parse(await req.json());
   const callback = `${process.env.NEXT_PUBLIC_BASE_URL}/api/checkout/opennode/webhook`;
-  const orderId = uuidv4();
+  const metagameOrderId = uuidv4();
 
   const amountSatoshis = Math.round(amountBtc * 100000000);
 
@@ -16,9 +16,9 @@ export async function POST(req: NextRequest) {
     description: `Metagame ${ticketDetails.ticketType} Ticket for ${ticketDetails.purchaserEmail}`,
     customer_email: ticketDetails.purchaserEmail,
     auto_settle: true,
-    order_id: orderId,
+    order_id: metagameOrderId,
     callback_url: callback,
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?order=${orderId}`,
+    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?order=${metagameOrderId}`,
   });
 
 
