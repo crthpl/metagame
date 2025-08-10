@@ -32,7 +32,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   const dayPassPrices = DAY_PASS_OPTIONS.map(option => option.price);
   const minPrice = Math.min(...dayPassPrices);
   const maxPrice = Math.max(...dayPassPrices);
-  const priceRange = minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-$${maxPrice}`;
+  const priceRange = minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-${maxPrice}`;
   
   function getDisplayTicketType(ticketTypeId: string, selectedDayPass: typeof DAY_PASS_OPTIONS[0] | null) {
     const ticketType = getTicketType(ticketTypeId);
