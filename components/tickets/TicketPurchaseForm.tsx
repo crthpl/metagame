@@ -14,7 +14,7 @@ import {
 } from '../../lib/schemas/ticket';
 import { ZodError } from 'zod';
 import { PaymentCurrency } from './Tickets';
-import { getHostedCheckoutUrl } from '@/lib/opennode';
+import { getHostedCheckoutUrl } from '@/utils/opennode';
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
