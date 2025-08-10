@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     auto_settle: true,
     order_id: metagameOrderId,
     callback_url: callback,
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?order=${metagameOrderId}`,
+    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/status/${metagameOrderId}`,
   });
 
 
