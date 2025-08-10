@@ -14,6 +14,7 @@ import {
 } from '../../lib/schemas/ticket';
 import { ZodError } from 'zod';
 import { PaymentCurrency } from './Tickets';
+import { getHostedCheckoutUrl } from '@/lib/opennode';
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -313,10 +314,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
       const data = await response.json();
       const charge = data.charge || data?.data || data; // defensive
 
-      const hostedUrl = charge?.hosted_checkout_url
-        || charge?.checkout_url
-        || charge?.url
-        || (charge?.id ? `https://checkout${process.env.NEXT_PUBLIC_OPENNODE_ENV === 'dev' ? '' : '.dev'}.opennode.com/${charge.id}` : null);
+      const hostedUrl = getHostedCheckoutUrl(charge.id);
 
       if (!hostedUrl) {
         throw new Error('Failed to get OpenNode checkout URL');
