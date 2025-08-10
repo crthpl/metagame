@@ -7,7 +7,8 @@ import { OpenNodeChargeWebhook } from 'opennode/dist/types/v1';
 export async function POST(req: NextRequest) {
   const body: OpenNodeChargeWebhook = await req.json();
 
-  const ok = opennode.signatureIsValid(body);  // HMAC check
+  //Skip the hash check when testing webhooks locally
+  const ok = process.env.OPENNODE_ENV === 'dev' ? true : opennode.signatureIsValid(body);  // HMAC check
   if (!ok) {
     console.error('invalid sig on opennode webhook', body);
     return new NextResponse('invalid sig', { status: 400 });
