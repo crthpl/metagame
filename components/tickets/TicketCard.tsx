@@ -58,6 +58,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       return {
         ...ticketType,
         price: '0+',
+        priceBtc: '0+',
         regularPrice: null
       };
     }
@@ -65,6 +66,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       return {
         ...ticketType,
         price: '0-290',
+        priceBtc: '0-0.002',
         regularPrice: null
       };
     }
