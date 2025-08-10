@@ -104,3 +104,6 @@ When Claude code finishes implementing a feature thread, especially in bypass pe
 
 ## Database particulars
 Private server methods live in /lib/db/[table]/service.ts. Then we have server actions in app/actions/db/... which wrap those functions for export in wrappers that check the current user and use their id, or check admin status before running aribtrary functions. For standardization and not messing up id orders, all db funcs should take object arguments, even if just a single arg is passed like {userId}. 
+
+## Misc
+You don't need to try to run build or lint scripts after completing changes; the humans will handle that.
