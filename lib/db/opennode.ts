@@ -11,7 +11,7 @@ export const opennodeDbService = {
       .insert({
         id: charge.order_id,
         opennode_charge_id: charge.id,
-        btc_amount: charge.amount,
+        satoshis: charge.amount,
         status: charge.status,
         purchaser_email: ticketDetails.purchaserEmail,
         ticket_type: ticketDetails.ticketType,

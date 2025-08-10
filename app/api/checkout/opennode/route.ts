@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { opennode } from '@/lib/opennode';
+import { createChargeRaw } from '@/lib/opennode';
 import { opennodeChargeSchema } from '@/lib/schemas/opennode';
 import { v4 as uuidv4 } from 'uuid';
 import { opennodeDbService } from '@/lib/db/opennode';
@@ -9,8 +9,9 @@ export async function POST(req: NextRequest) {
   const callback = `${process.env.NEXT_PUBLIC_BASE_URL}/api/checkout/opennode/webhook`;
   const orderId = uuidv4();
 
-  const amountSatoshis = amountBtc * 100000000;
-  const charge = await opennode.createCharge({
+  const amountSatoshis = Math.round(amountBtc * 100000000);
+
+  const charge = await createChargeRaw({
     amount: amountSatoshis,
     description: `Metagame ${ticketDetails.ticketType} Ticket for ${ticketDetails.purchaserEmail}`,
     customer_email: ticketDetails.purchaserEmail,
@@ -25,4 +26,6 @@ export async function POST(req: NextRequest) {
   console.log('charge created', charge);
   return NextResponse.json({ charge });
 }
+
+
 
