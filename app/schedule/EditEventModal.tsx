@@ -23,7 +23,7 @@ import {
 import { DbSessionAges } from "@/types/database/dbTypeAliases";
 import {
   getAgesDisplayText,
-  SessionAges,
+  SESSION_AGES,
   SessionAgesEnum,
 } from "@/utils/dbUtils";
 import { XIcon } from "lucide-react";
@@ -79,7 +79,7 @@ export function AddEventModal({
     minCapacity: null,
     maxCapacity: null,
     locationId: null,
-    ages: SessionAges.ALL,
+    ages: SESSION_AGES.ALL,
     host_1_id: null,
     host_2_id: null,
     host_3_id: null,
@@ -141,7 +141,7 @@ export function AddEventModal({
         minCapacity: existingSession.min_capacity,
         maxCapacity: existingSession.max_capacity,
         locationId: existingSession.location_id || null,
-        ages: existingSession.ages || SessionAges.ALL,
+        ages: existingSession.ages || SESSION_AGES.ALL,
         host_1_id: existingSession.host_1_id || null,
         host_2_id: existingSession.host_2_id || null,
         host_3_id: existingSession.host_3_id || null,
