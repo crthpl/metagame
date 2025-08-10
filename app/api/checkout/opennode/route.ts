@@ -23,7 +23,9 @@ export async function POST(req: NextRequest) {
 
 
   await opennodeDbService.createCharge({charge, ticketDetails});
-  console.log('charge created', charge);
+
+  //TODO: RESEND email to purchaser linking to the status page in case they lose the link
+
   return NextResponse.json({ charge });
 }
 
