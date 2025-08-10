@@ -6,7 +6,7 @@ import { OpenNodeChargeWebhook } from 'opennode/dist/types/v1';
 
 export async function POST(req: NextRequest) {
   const body: OpenNodeChargeWebhook = await req.json();
-
+  console.log('opennode webhook', body);
   //Skip the hash check when testing webhooks locally
   const ok = process.env.OPENNODE_ENV === 'dev' ? true : opennode.signatureIsValid(body);  // HMAC check
   if (!ok) {
