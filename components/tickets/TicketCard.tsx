@@ -11,13 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PaymentCurrency } from './Tickets';
 
 interface TicketCardProps {
   ticketTypeId: string;
+  paymentMethod?: PaymentCurrency;
 }
 
 export const TicketCard: React.FC<TicketCardProps> = ({ 
-  ticketTypeId
+  ticketTypeId,
+  paymentMethod = 'usd',
 }) => {
   const [selectedDayPass, setSelectedDayPass] = useState<typeof DAY_PASS_OPTIONS[0] | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -40,12 +43,14 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   
     if (ticketTypeId === 'dayPass') {
       const price = selectedDayPass?.price ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.price));
+      const priceBtc = selectedDayPass?.priceBtc ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceBtc));
       return {
         ...ticketType,
         price,
         regularPrice: price,
         description: selectedDayPass?.description ?? 'Single day pass - choose a day',
-        title: selectedDayPass ? `Day Pass: ${selectedDayPass.title}` : 'Day Pass'
+        title: selectedDayPass ? `Day Pass: ${selectedDayPass.title}` : 'Day Pass',
+        priceBtc,
       };
     }
   
@@ -96,12 +101,13 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   if (!displayTicketType) {
     return <div>Invalid ticket type</div>;
   }
+  const isBtc = paymentMethod === 'btc';
   return (
     <>
     <div className="relative group transition-all duration-300">
       <div className="card rounded-md border-amber-400 border-2 transition-all text-center flex flex-col p-6 h-full">
         {/* Ticket Header */}
-        <div className="flex-grow flex flex-col">
+        <div className="flex-grow flex flex-col justify-between">
           <div>
             <h3 className="uppercase text-5xl md:text-3xl font-black text-primary-300">
               {displayTicketType.title}
@@ -146,9 +152,9 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             )}
           </div>
 
-          {/* Price Display - pushed to bottom of flex-grow container */}
-          <div className="mt-auto">
-            {displayTicketType.regularPrice && displayTicketType.price !== displayTicketType.regularPrice ? (
+          {/* Price Display  */}
+          <div className="">
+            {!isBtc && displayTicketType.regularPrice && displayTicketType.price !== displayTicketType.regularPrice ? (
               <div className="text-4xl text-gray-400 relative">
                 ${displayTicketType.regularPrice}
                 <div className="absolute left-7 right-0 mx-auto w-[65px] top-5 border-b-2 -rotate-[33deg] border-secondary-300" />
@@ -157,8 +163,19 @@ export const TicketCard: React.FC<TicketCardProps> = ({
               <div className="text-4xl text-gray-400 h-0" />
             )}
             
-            <p className="my-4 text-6xl md:text-5xl lg:text-6xl font-black text-secondary-300">
-              {isDayPass && !selectedDayPass ? priceRange : `$${displayTicketType.price}`}
+            <p className="my-4 text-6xl md:text-3xl lg:text-6xl font-black text-secondary-300">
+              {isBtc
+                ? (
+                  isDayPass && !selectedDayPass
+                    ? <span className="">
+                        {`₿${Number((Math.min(...DAY_PASS_OPTIONS.map(o => o.priceBtc))).toFixed(4))} - ₿${Number((Math.max(...DAY_PASS_OPTIONS.map(o => o.priceBtc))).toFixed(4))}`}
+                      </span>
+                    : <span className="">
+                        ₿{displayTicketType.priceBtc}
+                      </span>
+                )
+                : (isDayPass && !selectedDayPass ? priceRange : `$${displayTicketType.price}`)
+              }
             </p>
           </div>
         </div>
@@ -180,7 +197,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                 }`}
               >
                 <div className="bg-dark-500 text-white w-full h-full px-12 rounded-md py-3 uppercase transition-all duration-1000 whitespace-nowrap">
-                  {ticketType.live ? ticketType.applicationBased ? 'Apply' : 'Buy Now' : 'Coming Soon'}
+                  {ticketType.live ? ticketType.applicationBased ? 'Apply' : isBtc ? '₿uy Now' : 'Buy Now' : 'Coming Soon'}
                 </div>
               </button>
             </div>
@@ -193,7 +210,18 @@ export const TicketCard: React.FC<TicketCardProps> = ({
         <Modal onClose={handleCloseModal} className="w-full max-w-2xl">
           <div className="bg-dark-500 border border-gray-700 rounded-lg p-6 max-h-[90vh] overflow-y-auto">
             <TicketPurchaseForm
-              ticketType={ticketType.id && selectedDayPass ? selectedDayPass : ticketType}
+              ticketType={ticketType}
+              paymentMethod={paymentMethod}
+              selectedUsdPrice={isDayPass ? (selectedDayPass?.price ?? undefined) : undefined}
+              selectedBtcPrice={isDayPass ? (
+                (() => {
+                  const base = getTicketType('dayPass');
+                  const baseUsd = base?.price || 150;
+                  const baseBtc = base?.priceBtc || 0.0011;
+                  const price = selectedDayPass?.price ?? baseUsd;
+                  return Number((baseBtc * (price / baseUsd)).toFixed(6));
+                })()
+              ) : undefined}
               onClose={handleCloseModal}
             />
           </div>

@@ -2,7 +2,7 @@ import { TICKET_TYPES_ENUM } from '@/utils/dbUtils';
 import { z } from 'zod';
 
 export const opennodeChargeSchema = z.object({
-  amountBtc: z.number().int().positive(),
+  amountBtc: z.number().positive(),
   ticketDetails: z.object({
     ticketType: z.enum(TICKET_TYPES_ENUM),
     isTest: z.boolean(),
