@@ -14,14 +14,15 @@ export async function POST(req: NextRequest) {
     return new NextResponse('invalid sig', { status: 400 });
   }
 
-  const dbCharge = await opennodeDbService.updateChargeStatus({orderId: body.order_id, status: body.status});
+  const dbCharge = await opennodeDbService.updateChargeStatus({metagameOrderId: body.order_id, status: body.status, charge: body});
   
   if (body.status === 'paid') {
     const newTicket = {
       opennode_order: dbCharge.id,
       ticket_type: dbCharge.ticket_type!,
-      owner_id: dbCharge.purchaser_email,
+      purchaser_email: dbCharge.purchaser_email,
       is_test: dbCharge.is_test,
+      satoshis_paid: body.amount
     }
     await ticketsService.createTicket({ticket: newTicket});
   }
