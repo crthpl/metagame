@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { opennodeDbService } from '@/lib/db/opennode';
-import { getHostedCheckoutUrl, opennode } from '@/lib/opennode';
+import { opennode } from '@/lib/opennode';
+import { getHostedCheckoutUrl } from '@/utils/opennode';
 import Image from 'next/image';
 
 type PageProps = {
