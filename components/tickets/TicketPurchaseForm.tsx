@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -11,6 +13,7 @@ import {
   paymentConfirmationSchema
 } from '../../lib/schemas/ticket';
 import { ZodError } from 'zod';
+import { PaymentCurrency } from './Tickets';
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -21,17 +24,16 @@ if (!stripeKey) {
 
 const stripePromise = loadStripe(stripeKey);
 
-interface TicketPurchaseFormProps {
-  ticketType: TicketType;
-  onClose: () => void;
-}
 
 interface PaymentFormProps {
   ticketType: TicketType;
   onClose: () => void;
+  paymentMethod: PaymentCurrency;
+  selectedUsdPrice?: number;
+  selectedBtcPrice?: number;
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentMethod, selectedUsdPrice, selectedBtcPrice }) => {
   const stripe = useStripe();
   const elements = useElements();
   
@@ -51,7 +53,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
     discountAmount: number;
     description: string;
   } | null>(null);
-  const [finalPrice, setFinalPrice] = useState(ticketType.price);
+  const [finalPrice, setFinalPrice] = useState(selectedUsdPrice ?? ticketType.price);
+  const isBtc = paymentMethod === 'btc';
+  const btcAmount = selectedBtcPrice ?? ticketType.priceBtc;
 
   const validateForm = (): boolean => {
     try {
@@ -159,7 +163,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
     }));
   };
 
-  const handlePurchase = async () => {
+  const handlePurchaseFiat = async () => {
     console.log("handlePurchase");
     if (!stripe || !elements || !validateForm()) {
       return;
@@ -275,6 +279,57 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
     }
   };
 
+  const handlePurchaseBtc = async () => {
+    if (!validateForm()) {
+      return;
+    }
+    setIsLoading(true);
+    setMessage('');
+
+    try {
+      if (!btcAmount) {
+        throw new Error('No BTC amount found for ticket type: ' + ticketType.id);
+      }
+      const amountBtc = Number(btcAmount.toFixed(6));
+      // const isTest = (process.env.NEXT_PUBLIC_OPENNODE_ENV || 'dev') !== 'live';
+      const response = await fetch('/api/checkout/opennode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amountBtc,
+          ticketDetails: {
+            ticketType: ticketType.id,
+            isTest: true,
+            purchaserEmail: formData.email,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to create Bitcoin charge');
+      }
+
+      const data = await response.json();
+      const charge = data.charge || data?.data || data; // defensive
+
+      const hostedUrl = charge?.hosted_checkout_url
+        || charge?.checkout_url
+        || charge?.url
+        || (charge?.id ? `https://checkout${process.env.NEXT_PUBLIC_OPENNODE_ENV === 'dev' ? '' : '.dev'}.opennode.com/${charge.id}` : null);
+
+      if (!hostedUrl) {
+        throw new Error('Failed to get OpenNode checkout URL');
+      }
+
+      window.location.href = hostedUrl;
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleCloseSuccess = () => {
     setShowSuccess(false);
     setMessage('');
@@ -306,10 +361,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
         errors={errors}
         disabled={isLoading}
         isApplyingCoupon={isApplyingCoupon}
+        showCoupon={!isBtc}
       />
 
-      {/* Only show price breakdown when coupon is applied */}
-      {appliedCoupon && (
+      {/* Only show price breakdown when coupon is applied (fiat only) */}
+      {!isBtc && appliedCoupon && (
         <div className="bg-gray-800 p-4 rounded-lg space-y-3">
           {/* Original Price */}
           <div className="flex justify-between items-center">
@@ -347,14 +403,26 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
         </div>
       )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">
-          Payment Information *
-        </label>
-        <div className="border border-gray-600 rounded-md p-3 bg-gray-800">
-          <CardElement options={cardElementOptions} />
+      {!isBtc && (
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Payment Information *
+          </label>
+          <div className="border border-gray-600 rounded-md p-3 bg-gray-800">
+            <CardElement options={cardElementOptions} />
+          </div>
         </div>
-      </div>
+      )}
+
+      {isBtc && (
+        <div className="bg-gray-800 p-4 rounded-lg space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-300">Amount:</span>
+            <span className="font-semibold">{btcAmount?.toFixed(6) ?? "?"} BTC</span>
+          </div>
+          <p className="text-gray-400 text-sm">You will be redirected to OpenNode to complete your Bitcoin payment.</p>
+        </div>
+      )}
 
       {message && (
         <div className={`p-3 rounded-md relative flex flex-col items-center ${
@@ -395,27 +463,43 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
         >
           Cancel
         </button>
-        <button
-          onClick={handlePurchase}
-          disabled={isLoading || !stripe}
-          className="flex-1 px-4 py-2 bg-primary-600 rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isLoading ? 'Processing...' : `Purchase $${finalPrice.toFixed(2)}`}
-        </button>
+        {isBtc ? (
+          <button
+            onClick={handlePurchaseBtc}
+            disabled={isLoading}
+            className="flex-1 px-4 py-2 bg-primary-600 rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Processing...' : `Continue to Bitcoin (${btcAmount?.toFixed(6) ?? "?"} BTC)`}
+          </button>
+        ) : (
+          <button
+            onClick={handlePurchaseFiat}
+            disabled={isLoading || !stripe}
+            className="flex-1 px-4 py-2 bg-primary-600 rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Processing...' : `Purchase $${finalPrice.toFixed(2)}`}
+          </button>
+        )}
       </div>
     </div>
   );
 };
 
-export const TicketPurchaseForm: React.FC<TicketPurchaseFormProps> = ({
+export const TicketPurchaseForm: React.FC<PaymentFormProps> = ({
   ticketType,
   onClose,
+  paymentMethod = 'usd',
+  selectedUsdPrice,
+  selectedBtcPrice,
 }) => {
   return (
     <Elements stripe={stripePromise}>
       <PaymentForm
         ticketType={ticketType}
         onClose={onClose}
+        paymentMethod={paymentMethod}
+        selectedUsdPrice={selectedUsdPrice}
+        selectedBtcPrice={selectedBtcPrice}
       />
     </Elements>
   );

@@ -52,34 +52,34 @@ export type Database = {
       }
       opennode_orders: {
         Row: {
-          btc_amount: number
           created_at: string
           id: string
           is_test: boolean
           opennode_charge_id: string
           purchaser_email: string | null
+          satoshis: number
           status: string
           ticket_type: Database["public"]["Enums"]["ticket_type"] | null
           updated_at: string
         }
         Insert: {
-          btc_amount: number
           created_at?: string
           id?: string
           is_test: boolean
           opennode_charge_id: string
           purchaser_email?: string | null
+          satoshis: number
           status: string
           ticket_type?: Database["public"]["Enums"]["ticket_type"] | null
           updated_at?: string
         }
         Update: {
-          btc_amount?: number
           created_at?: string
           id?: string
           is_test?: boolean
           opennode_charge_id?: string
           purchaser_email?: string | null
+          satoshis?: number
           status?: string
           ticket_type?: Database["public"]["Enums"]["ticket_type"] | null
           updated_at?: string
