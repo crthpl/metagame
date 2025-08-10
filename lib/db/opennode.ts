@@ -1,5 +1,5 @@
 import { createServiceClient } from "@/utils/supabase/service";
-import { OpenNodeCharge } from "opennode/dist/types/v1";
+import { OpenNodeCharge, OpenNodeChargeWebhook } from "opennode/dist/types/v1";
 import { OpennodeChargeInput } from "../schemas/opennode";
 import { DbOpendnodeOrder } from "@/types/database/dbTypeAliases";
 
@@ -9,8 +9,8 @@ export const opennodeDbService = {
     const { data, error } = await supabase
       .from('opennode_orders')
       .insert({
-        id: charge.order_id,
-        opennode_charge_id: charge.id,
+        id: charge.order_id, //internal metagame order id
+        opennode_order_id: charge.id,
         satoshis: charge.amount,
         status: charge.status,
         purchaser_email: ticketDetails.purchaserEmail,
@@ -22,16 +22,21 @@ export const opennodeDbService = {
     }
     return data;
   },
-  updateChargeStatus: async ({orderId, status}: {orderId: string, status: DbOpendnodeOrder['status']}) => {
+  updateChargeStatus: async ({metagameOrderId, status, charge}: {metagameOrderId: string, status: DbOpendnodeOrder['status'], charge?: OpenNodeChargeWebhook}) => {
     const supabase = createServiceClient();
     const { data, error } = await supabase
       .from('opennode_orders')
       .update({ status })
-      .eq('id', orderId)
+      .eq('id', metagameOrderId)
       .select('*')
       .single()
     if (error) {
       throw new Error(`Error updating opennode order status: ${error.message}`);
+    }
+    if (data && charge) {
+      if (data.opennode_order_id !== charge.id) {
+        console.error("Charge's OpenNode charge id didn't match db charge id", data.opennode_order_id, charge.id);
+      }
     }
     return data;
   },
