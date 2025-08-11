@@ -112,7 +112,8 @@ export async function POST(request: NextRequest) {
         purchaserName: name,
         ticketType: ticketType,
         ticketCode: createdTicket.ticket_code,
-        price: price
+        price: price,
+        paymentIntentId: paymentIntentId
       });
     } catch (emailError) {
       // Log email error but don't fail the purchase
