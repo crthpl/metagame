@@ -15,6 +15,7 @@ import { getOrderedScheduleLocations } from '../actions/db/locations';
 import { useUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
 import { AddEventModal } from './EditEventModal';
+import { BloodDrippingFrame } from '@/components/BloodDrippingFrame';
 import { dateUtils } from '@/utils/dateUtils';
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
@@ -262,10 +263,18 @@ export default function Schedule({
             </div>
             {locations.map((location) => (
               <div key={location.id} className="bg-dark-600 p-3 border border-secondary-300">
-                {location.thumbnail_url ? 
-                  <Image src={location.thumbnail_url} alt={location.name} width={100} height={100} className="object-cover w-full h-24"/>
-                  : <div className="w-full h-24 bg-dark-500"/>
-                }
+                {location.name === "The Clocktower" ? (
+                  <BloodDrippingFrame className="w-full h-24">
+                    {location.thumbnail_url ? 
+                      <Image src={location.thumbnail_url} alt={location.name} width={100} height={100} className="object-cover w-full h-24"/>
+                      : <div className="w-full h-24 bg-dark-500"/>
+                    }
+                  </BloodDrippingFrame>
+                ) : (
+                  location.thumbnail_url ? 
+                    <Image src={location.thumbnail_url} alt={location.name} width={100} height={100} className="object-cover w-full h-24"/>
+                    : <div className="w-full h-24 bg-dark-500"/>
+                )}
               </div>
             ))}
           </div>
