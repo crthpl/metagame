@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { LockIcon, MailIcon, TicketIcon } from "lucide-react";
@@ -20,7 +20,7 @@ type SignupErrors = Partial<
   submit?: string;
 };
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -246,5 +246,21 @@ export default function SignupPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[80vh] flex items-center justify-center">
+          <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h1 className="text-2xl font-bold mb-6 text-center">Create Your Account</h1>
+          </div>
+        </div>
+      }
+    >
+      <SignupForm />
+    </Suspense>
   );
 }
