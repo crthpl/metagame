@@ -11,6 +11,7 @@ import {
   paymentConfirmationSchema
 } from '../../lib/schemas/ticket';
 import { ZodError } from 'zod';
+import { isTicketTypeEligibleForCoupons } from '../../lib/ticket-eligibility';
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -52,6 +53,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
     description: string;
   } | null>(null);
   const [finalPrice, setFinalPrice] = useState(ticketType.price);
+  const couponsEnabled = isTicketTypeEligibleForCoupons(ticketType.id);
 
   const validateForm = (): boolean => {
     try {
@@ -79,6 +81,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
   };
 
   const handleApplyCoupon = async () => {
+    if (!couponsEnabled) {
+      setErrors(prev => ({ ...prev, couponCode: 'Coupons are not available for this ticket type' }));
+      return;
+    }
+
     if (!formData.couponCode?.trim()) {
       setErrors(prev => ({ ...prev, couponCode: 'Please enter a coupon code' }));
       return;
@@ -306,6 +313,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
         errors={errors}
         disabled={isLoading}
         isApplyingCoupon={isApplyingCoupon}
+        couponsEnabled={couponsEnabled}
       />
 
       {/* Only show price breakdown when coupon is applied */}

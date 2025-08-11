@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateCoupon, applyCouponDiscount } from '../../../lib/coupons';
+import { isTicketTypeEligibleForCoupons } from '../../../lib/ticket-eligibility';
 import { getTicketType } from '../../../config/tickets';
 
 // Simple in-memory rate limiting (for production, use Redis or similar)
@@ -55,6 +56,14 @@ export async function POST(request: NextRequest) {
         { error: 'Invalid ticket type' },
         { status: 400 }
       );
+    }
+
+    // Check if this ticket type is eligible for coupons
+    if (!isTicketTypeEligibleForCoupons(ticketTypeId)) {
+      return NextResponse.json({
+        valid: false,
+        error: 'Coupons are not available for this ticket type'
+      });
     }
 
     // Convert ticket price from dollars to cents for Stripe
