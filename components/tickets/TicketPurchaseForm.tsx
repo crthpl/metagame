@@ -11,13 +11,6 @@ import {
   paymentConfirmationSchema
 } from '../../lib/schemas/ticket';
 import { ZodError } from 'zod';
-import { 
-  ticketPurchaseSchema,
-  type TicketPurchaseFormData, 
-  paymentIntentSchema,
-  paymentConfirmationSchema
-} from '../../lib/schemas/ticket';
-import { ZodError } from 'zod';
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -42,13 +35,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose }) => {
   const stripe = useStripe();
   const elements = useElements();
   
-  const [formData, setFormData] = useState<TicketPurchaseFormData>({
-    name: '',
-    email: '',
-    discordHandle: '',
-    couponCode: '',
-  });
-  const [errors, setErrors] = useState<Partial<Record<keyof TicketPurchaseFormData, string>>>({});
   const [formData, setFormData] = useState<TicketPurchaseFormData>({
     name: '',
     email: '',
