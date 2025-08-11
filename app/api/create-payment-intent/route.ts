@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createPaymentIntent } from '../../../lib/stripe';
 import { getTicketType } from '../../../config/tickets';
 import { validateCoupon, applyCouponDiscount } from '../../../lib/coupons';
+import { isTicketTypeEligibleForCoupons } from '../../../lib/ticket-eligibility';
 import { paymentIntentSchema } from '../../../lib/schemas/ticket';
 import { ZodError } from 'zod';
 
@@ -29,6 +30,14 @@ export async function POST(request: NextRequest) {
     let coupon = null;
     let finalPriceInCents = originalPriceInCents;
     if (couponCode && couponCode.trim()) {
+      // Check if this ticket type is eligible for coupons
+      if (!isTicketTypeEligibleForCoupons(ticketTypeId)) {
+        return NextResponse.json(
+          { error: 'Coupons are not available for this ticket type' },
+          { status: 400 }
+        );
+      }
+      
       coupon = validateCoupon(couponCode.trim());
       if (!coupon) {
         return NextResponse.json(
