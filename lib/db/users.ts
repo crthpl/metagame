@@ -47,6 +47,14 @@ export const usersService = {
     }
     return updatedData
   },
+  getUserProfileByEmail: async ({email}: {email: string}) => {
+    const supabase = createServiceClient()
+    const {data, error} = await supabase.from('profiles').select('*').eq('email', email).maybeSingle()
+    if (error) {
+      throw new Error(error.message)
+    }
+    return data
+  },
 
   /** Set a user's profile picture */
   setUserProfilePicture: async ({image, userId}: {image: File, userId: string}) => {
