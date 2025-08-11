@@ -29,11 +29,11 @@ export async function GET(request: NextRequest) {
   // Route based on the type parameter
   console.log(type);
   switch (type) {
-    case "invite":
+    case "invite": 
     case "recovery":
-    case "signup":
       // These require password setup
       redirect("/profile/reset-password");
+    case "signup":
     case "magiclink":
     case "email_change":
     case "email":
