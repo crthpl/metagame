@@ -156,7 +156,7 @@ export default function Schedule({
     if (currentDayIndex !== 0) params.set('day', currentDayIndex.toString());
     if (openedSessionId) params.set('session', openedSessionId);
     
-    const newUrl = params.toString() ? `?${params.toString()}` : '/schedule';
+    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
     router.replace(newUrl, { scroll: false });
   }, [currentDayIndex, openedSessionId, router]);
   const currentDay = days[currentDayIndex] || { date: '', displayName: 'No Events', events: [] };
