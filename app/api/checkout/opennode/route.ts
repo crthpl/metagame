@@ -6,7 +6,7 @@ import { opennodeDbService } from '@/lib/db/opennode';
 
 export async function POST(req: NextRequest) {
   const { amountBtc, ticketDetails } = opennodeChargeSchema.parse(await req.json());
-  const callback = `${process.env.NEXT_PUBLIC_BASE_URL}/api/checkout/opennode/webhook`;
+  const callback = `${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout/opennode/webhook`;
   const metagameOrderId = uuidv4();
 
   const amountSatoshis = Math.round(amountBtc * 100000000);
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     auto_settle: true,
     order_id: metagameOrderId,
     callback_url: callback,
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/status/${metagameOrderId}`,
+    success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/status/${metagameOrderId}`,
   });
 
 
