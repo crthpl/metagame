@@ -1,3 +1,4 @@
+import { TICKET_TYPES_ENUM } from '@/utils/dbUtils';
 import { z } from 'zod';
 
 // Base ticket purchase schema with required fields
@@ -9,7 +10,6 @@ export const ticketPurchaseSchema = z.object({
   ticketTypeId: z.string(),
 });
 
-const ticketTypeEnum = z.enum(["player", "npc", "supporter", "friday", "saturday", "sunday"])
 
 // Schema for payment confirmation
 export const paymentConfirmationSchema = z.object({
@@ -17,7 +17,7 @@ export const paymentConfirmationSchema = z.object({
   name: z.string().min(1),
   email: z.email(),
   discordHandle: z.string().optional(),
-  ticketType: ticketTypeEnum,
+  ticketType: z.enum(TICKET_TYPES_ENUM),
 });
 
 // Schema for payment intent creation
