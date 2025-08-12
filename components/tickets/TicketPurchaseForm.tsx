@@ -358,7 +358,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2 items-center mb-2">
+        <span className="text-3xl font-bold text-primary-300">{ticketType.title}</span>
+        <span className="text-center text-sm text-gray-400">
+          {ticketType.description}
+        </span>
+      </div>
       <TicketFormFields
         formData={formData}
         onFormDataChange={(field, value) => setFormData(prev => ({ ...prev, [field]: value }))}
