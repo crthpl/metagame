@@ -2,9 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SpeakerCard } from '../../SpeakerCard';
-import { Button } from '../../Button';
 import { MetagamePopup } from '../../MetagamePopup';
-import { CALL_FOR_SESSIONS } from '@/config';
 import { getSpeakersFromProfiles } from '@/app/actions/db/profiles/queries';
 import { useQuery } from '@tanstack/react-query';
 
