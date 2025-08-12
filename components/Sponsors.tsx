@@ -1,5 +1,6 @@
 import { getSponsors } from '@/lib/content';
 import PartnerCard from './PartnerCard';
+import Image from 'next/image';
 
 export default async function Sponsors() {
   const sponsors = await getSponsors();
@@ -12,7 +13,8 @@ export default async function Sponsors() {
     <section className="mb-20 flex flex-col" id="sponsors">
       <div className="w-full flex flex-col items-center justify-center">
         <h2 className="mb-8 text-3xl font-bold">Sponsors</h2>
-        
+        <h3 className="text-xl text-center font-bold mb-2 text-gray-400">Headline</h3>
+        <Image src="/logos/bitcoin.png" alt="Bitcoin" width={400} height={100}  />
         {platinumSponsors.length > 0 && (
           <div className="w-full mb-16 flex flex-col items-center">
             <h3 className="text-2xl text-center font-bold mb-8 text-secondary-300">Platinum</h3>
