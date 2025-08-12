@@ -5,7 +5,7 @@ import type { TicketType } from '../lib/types';
 export const DAY_PASS_OPTIONS: TicketType[] = [
   {
     id: 'friday',
-    title: 'Friday 9/12',
+    title: 'Friday',
     price: 150,
     live: true,
     applicationBased: false,
@@ -14,7 +14,7 @@ export const DAY_PASS_OPTIONS: TicketType[] = [
   },
   {
     id: 'saturday', 
-    title: 'Saturday 9/13',
+    title: 'Saturday',
     price: 250,
     priceBtc: 0.0018,
     live: true,
@@ -23,7 +23,7 @@ export const DAY_PASS_OPTIONS: TicketType[] = [
   },
   {
     id: 'sunday', 
-    title: 'Sunday 9/14', 
+    title: 'Sunday', 
     price: 250,
     live: true,
     applicationBased: false,
