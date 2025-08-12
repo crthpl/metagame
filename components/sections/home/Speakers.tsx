@@ -63,12 +63,6 @@ export default function Speakers() {
               ))
             )}
           </div>
-
-          <div className="mt-8">
-            <Button background="bg-cyan-500" link={CALL_FOR_SESSIONS} target="_blank">
-              Submit a session proposal
-            </Button>
-          </div>
         </div>
       </section>
 
