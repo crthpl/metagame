@@ -32,6 +32,9 @@ export const TICKET_TYPES: Record<Uppercase<DbTicketType>, DbTicketType> = {
   NPC: 'npc' as const,
   PLAYER: 'player' as const,
   SUPPORTER: 'supporter' as const,
+  FRIDAY: 'friday' as const,
+  SATURDAY: 'saturday' as const,
+  SUNDAY: 'sunday' as const,
 } as const;
 
 export const TICKET_TYPES_ENUM = Object.values(TICKET_TYPES) as DbTicketType[];
