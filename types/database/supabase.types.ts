@@ -358,6 +358,7 @@ export type Database = {
         | "friday"
         | "saturday"
         | "sunday"
+        | "student"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -500,6 +501,7 @@ export const Constants = {
         "friday",
         "saturday",
         "sunday",
+        "student",
       ],
     },
   },
