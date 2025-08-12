@@ -32,6 +32,7 @@ export const TICKET_TYPES: Record<Uppercase<DbTicketType>, DbTicketType> = {
   NPC: 'npc' as const,
   PLAYER: 'player' as const,
   SUPPORTER: 'supporter' as const,
+  STUDENT: 'student' as const,
   FRIDAY: 'friday' as const,
   SATURDAY: 'saturday' as const,
   SUNDAY: 'sunday' as const,
