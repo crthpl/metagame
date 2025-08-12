@@ -16,6 +16,7 @@ export const DAY_PASS_OPTIONS: TicketType[] = [
     id: 'saturday', 
     title: 'Saturday 9/13',
     price: 250,
+    priceBtc: 0.0018,
     live: true,
     applicationBased: false,
     description: 'Single day pass for Saturday 9/13'
