@@ -1,4 +1,5 @@
 import { SOCIAL_LINKS } from '@/config';
+import { getTicketType } from '@/config/tickets';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -9,7 +10,8 @@ export interface TicketConfirmationEmailData {
   ticketType: string;
   ticketCode: string;
   price: number;
-  paymentIntentId: string;
+  paymentIntentId?: string;
+  opennodeChargeId?: string
 }
 
 export async function sendTicketConfirmationEmail({
@@ -18,11 +20,13 @@ export async function sendTicketConfirmationEmail({
   ticketType,
   ticketCode,
   price,
-  paymentIntentId
+  paymentIntentId,
+  opennodeChargeId
 }: TicketConfirmationEmailData) {
   try {
     const discordUrl = SOCIAL_LINKS.DISCORD;
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://metagame.games';
+    const isBtc = opennodeChargeId !== undefined;
     const { data, error } = await resend.emails.send({
       from: 'Metagame 2025 <tickets@mail.metagame.games>',
       to,
@@ -39,10 +43,10 @@ export async function sendTicketConfirmationEmail({
           
           <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h2 style="margin-top: 0;">Ticket Details</h2>
-            <p><strong>Ticket Type:</strong> ${ticketType}</p>
-            <p><strong>Price Paid:</strong> $${price.toFixed(2)}</p>
-            <p><strong>Your Ticket Code:</strong> <span style="font-size: 20px; font-weight: bold; color: #007bff;">${ticketCode}</span> (you will need this to create your account and associate the ticket)</p>
-            <p><strong>Stripe Payment ID:</strong> ${paymentIntentId}</p>
+            <p><strong>Ticket Type:</strong> ${getTicketType(ticketType)?.title}</p>
+            <p><strong>Price Paid:</strong> ${isBtc ? `₿${price.toFixed(6)}` : `$${price.toFixed(2)}`}</p>
+            <p><strong>Your Ticket Code:</strong> <span style="font-size: 20px; font-weight: bold; color: #007bff;">${ticketCode}</span></p>
+            ${isBtc ? `<p><strong>OpenNode Charge ID:</strong> ${opennodeChargeId}</p>` : `<p><strong>Stripe Payment ID:</strong> ${paymentIntentId}</p>`}
           </div>
           
           <div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -52,33 +56,29 @@ export async function sendTicketConfirmationEmail({
               <li>Go to the <a href="${siteUrl}/signup?email=${encodeURIComponent(to)}&ticketCode=${ticketCode}">signup page</a></li>
               <li>Your email and ticket code will be pre-filled</li>
               <li>Create your account and set up your profile (badge name, Discord, etc.)</li>
-              <li>Confirm your account by clicking the verification link sent to your email (required so ticket codes can be used with a different email if needed)</li>
+              <li>Confirm your account by clicking the verification link sent to your email</li>
             </ol>
-            <p> Note: The Ticket Code above allows you to create an account/register for the event. It can be used with <b>any</b> email address and name. To sign up with a different email address than this one, or to transfer this ticket to someone else, go to the <a href="${siteUrl}/signup?ticketCode=${ticketCode}">signup page</a> and enter the appropriate details with your ticket code.</p> 
-          </div>
-
-          <div style="padding: 16px 0;">
-            <p>Please join the Discord, where all future communication will take place: <a href="${discordUrl}">Join Discord</a></p>
-            <p>Housing at and near the venue can be booked via this link: <a href="https://www.havenbookings.space/events/metagame">View housing options</a>. You can coordinate with others in the <a href="https://discord.gg/GsT3yRrxR9">#housing</a> Discord channel.</p>
+            <p> Note: The Ticket Code above allows you to create an account/register for the event. It can be used with <b>any</b> email address and name. To sign up with a different email address than this one, go to the <a href="${siteUrl}/signup?ticketCode=${ticketCode}">signup page</a> and enter the appropriate details with your ticket code. You can also effectively transfer this ticket to someone else by giving them the ticket code to sign up with.</p> 
           </div>
 
           <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0;">Event Information</h3>
-            <p><strong>Name:</strong> Metagame 2025</p>
             <p><strong>Dates:</strong> Friday, September 12 – Sunday, September 14, 2025</p>
             <p><strong>Location:</strong> Lighthaven Campus, 2740 Telegraph Avenue, Berkeley, CA</p>
-            <p><strong>Contact:</strong> reply to this email</p>
+            <p><strong>Lodging:</strong> Rooms at and near the venue can be booked via <a href="https://www.havenbookings.space/events/metagame">Haven Bookings</a>. You can also coordinate with others in the <a href="https://discord.gg/GsT3yRrxR9">#housing</a> Discord channel.</p>
+            <p><strong>Food:</strong> Meals are <strong>not</strong> included with tickets, but there will be food trucks to be on site.</p>
+            <p><strong>Schedule:</strong> A preliminary schedule is available<a href="https://metagame.games/schedule">here</a> but highly subject to chage.</p>
+            <p><strong>Speaking of which:</strong> If you want to speak or run something, submit a proposal <a href="https://airtable.com/appTvPARUssZp4qiB/pagVuzTEXODlUwoi0/form">here</a> by <strong>August 25th</strong>.</p>
+            <p><strong>Children:</strong> Metagame is free for children under 13, and free childcare for kids ages 5-12 is available for much of the weekend! If you are planning to bring children of any age or are a child yourself, please fill out <a href="https://airtable.com/appTvPARUssZp4qiB/pagZ9WbXLji0eBqDU/form">this form</a> as soon as possible, and no later than <strong>Monday, September 1st</strong> to help us plan accordingly.</p>
+            <p><strong>Contact:</strong> <a href="${discordUrl}">Join our Discord!</a></p>
           </div>
           
-          <p>If you believe there has been a mistake, want a 94% refund on your ticket (available until September 1), or have any other questions, just reply to this email.</p>
+          ${isBtc ? `<p>If you believe there has been a mistake, want a 94% refund on your ticket (available until September 1), reply to this email.</p>` : ''}
           
           <p>See you at Metagame 2025!</p>
           
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #ccc;">
           
-          <p style="font-size: 12px; color: #666;">
-            This is an automated email from Metagame 2025.
-          </p>
           <p style="font-size: 12px; color: #666;">This is not a puzzle.</p>
         </div>
       `,
