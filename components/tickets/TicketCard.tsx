@@ -33,17 +33,20 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   // For day pass tickets, calculate price range and use selected day's details
   const isDayPass = ticketTypeId === 'dayPass';
   const dayPassPrices = DAY_PASS_OPTIONS.map(option => option.price);
+  const dayPassPricesBtc = DAY_PASS_OPTIONS.map(option => option.priceBtc!);
   const minPrice = Math.min(...dayPassPrices);
   const maxPrice = Math.max(...dayPassPrices);
   const priceRange = minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-${maxPrice}`;
-  
+  const minPriceBtc = Math.min(...dayPassPricesBtc);
+  const maxPriceBtc = Math.max(...dayPassPricesBtc);
+  const priceRangeBtc = minPriceBtc === maxPriceBtc ? `₿${minPriceBtc}` : `₿${minPriceBtc}-${maxPriceBtc}`;
   function getDisplayTicketType(ticketTypeId: string, selectedDayPass: typeof DAY_PASS_OPTIONS[0] | null) {
     const ticketType = getTicketType(ticketTypeId);
     if (!ticketType) return null;
   
     if (ticketTypeId === 'dayPass') {
       const price = selectedDayPass?.price ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.price));
-      const priceBtc = selectedDayPass?.priceBtc ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceBtc));
+      const priceBtc = selectedDayPass?.priceBtc ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceBtc!));
       return {
         ...ticketType,
         price,
@@ -170,7 +173,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                 ? (
                   isDayPass && !selectedDayPass
                     ? <span className="">
-                        {`₿${Number((Math.min(...DAY_PASS_OPTIONS.map(o => o.priceBtc))).toFixed(4))} - ₿${Number((Math.max(...DAY_PASS_OPTIONS.map(o => o.priceBtc))).toFixed(4))}`}
+                        {priceRangeBtc}
                       </span>
                     : <span className="">
                         ₿{displayTicketType.priceBtc}
