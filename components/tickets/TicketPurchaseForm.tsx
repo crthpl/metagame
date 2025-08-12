@@ -58,7 +58,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
   const [finalPrice, setFinalPrice] = useState(selectedUsdPrice ?? ticketType.price);
   const isBtc = paymentMethod === 'btc';
   const btcAmount = selectedBtcPrice ?? ticketType.priceBtc;
-  const couponsEnabled = isTicketTypeEligibleForCoupons(ticketType.id);
+  const couponsEnabled = isTicketTypeEligibleForCoupons(ticketType.id) && !isBtc;
 
   const validateForm = (): boolean => {
     try {
