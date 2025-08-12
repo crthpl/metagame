@@ -16,6 +16,7 @@ import { ZodError } from 'zod';
 import { PaymentCurrency } from './Tickets';
 import { isTicketTypeEligibleForCoupons } from '../../lib/ticket-eligibility';
 import { getHostedCheckoutUrl } from '@/utils/opennode';
+import { getDayPassTicketType } from '@/config/tickets';
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -59,7 +60,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
   const isBtc = paymentMethod === 'btc';
   const btcAmount = selectedBtcPrice ?? ticketType.priceBtc;
   const couponsEnabled = isTicketTypeEligibleForCoupons(ticketType.id) && !isBtc;
-
+  
   const validateForm = (): boolean => {
     try {
       // Validate the form data using the schema (with ticketTypeId added)
@@ -356,13 +357,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
       },
     },
   };
-
+  const headerTicketType = ticketType.id === 'dayPass' ? getDayPassTicketType(ticketType.id) ?? ticketType : ticketType;
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 items-center mb-2">
-        <span className="text-3xl font-bold text-primary-300">{ticketType.title}</span>
+        <span className="text-3xl font-bold text-primary-300 text-center">{headerTicketType.title}</span>
         <span className="text-center text-sm text-gray-400">
-          {ticketType.description}
+          {headerTicketType.description}
         </span>
       </div>
       <TicketFormFields

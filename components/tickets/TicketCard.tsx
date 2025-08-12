@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { TicketPurchaseForm } from './TicketPurchaseForm';
-import { getTicketType, DAY_PASS_OPTIONS } from '../../config/tickets';
+import { getTicketType, DAY_PASS_OPTIONS, getDayPassTicketType } from '../../config/tickets';
 import { Modal } from '../Modal';
 import {
   Select,
@@ -215,7 +215,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
         <Modal onClose={handleCloseModal} className="w-full max-w-2xl">
           <div className="bg-dark-500 border border-gray-700 rounded-lg p-6 max-h-[90vh] overflow-y-auto">
             <TicketPurchaseForm
-              ticketType={ticketType}
+              ticketType={selectedDayPass ? getDayPassTicketType(selectedDayPass.id) ?? ticketType : ticketType}
               paymentMethod={paymentMethod}
               selectedUsdPrice={isDayPass ? (selectedDayPass?.price ?? undefined) : undefined}
               selectedBtcPrice={isDayPass ? (
