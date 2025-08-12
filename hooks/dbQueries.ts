@@ -13,7 +13,7 @@ export const useUser = () => {
 
   const { data: currentUserProfile } = useQuery({
     queryKey: ['users', 'profile', currentUser?.id],
-    queryFn: () => getCurrentUserProfile({userId: currentUser!.id}),
+    queryFn: () => getCurrentUserProfile({}),
     enabled: !!currentUser?.id,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
