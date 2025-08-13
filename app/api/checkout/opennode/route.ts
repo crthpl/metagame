@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createChargeRaw } from '@/lib/opennode';
-import { opennodeChargeSchema } from '@/lib/schemas/opennode';
+import { opennodeChargeSchema, TicketPurchaseDetails } from '@/lib/schemas/opennode';
 import { v4 as uuidv4 } from 'uuid';
 import { opennodeDbService } from '@/lib/db/opennode';
 import { getTicketType } from '@/config/tickets';
+import { OpenNodeCharge } from 'opennode/dist/types/v1';
+import { Resend } from 'resend';
+import { getHostedCheckoutUrl } from '@/utils/opennode';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   const { amountBtc, ticketDetails } = opennodeChargeSchema.parse(await req.json());
@@ -26,10 +31,80 @@ export async function POST(req: NextRequest) {
 
   await opennodeDbService.createCharge({charge, ticketDetails});
 
-  //TODO: RESEND email to purchaser linking to the status page in case they lose the link
+  // Send email to purchaser with payment link
+  try {
+    await sendChargeCreationEmail(charge, ticketDetails);
+  } catch (error) {
+    console.error('Failed to send charge creation email:', error);
+    // Don't fail the request if email fails
+  }
 
   return NextResponse.json({ charge });
 }
 
 
+function sendChargeCreationEmail(charge: OpenNodeCharge, ticketDetails: TicketPurchaseDetails) {
+  const ticketTitle = getTicketType(ticketDetails.ticketType)?.title;
+  const amountBtc = (charge.amount / 100000000).toFixed(6);
+  const hostedUrl = getHostedCheckoutUrl(charge.id);
+  
+  return resend.emails.send({
+    from: 'Metagame 2025 <tickets@mail.metagame.games>',
+    to: ticketDetails.purchaserEmail,
+    bcc: ['ricki.heicklen+metagame@gmail.com', 'briantsmiley42+metagame@gmail.com'],
+    replyTo: ['ricki.heicklen+metagame@gmail.com', 'briantsmiley42+metagame@gmail.com'],
+    subject: 'Complete your Metagame 2025 ticket payment',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #333;">Complete your Metagame 2025 ticket payment</h1>
+        
+        <p>Hi there,</p>
+        
+        <p>Your Metagame 2025 ticket order has been created as an open Bitcoin transaction on OpenNode. Please complete your payment to get your ticket!</p>
+        
+        <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h2 style="margin-top: 0;">Order Details</h2>
+          <p><strong>Ticket Type:</strong> ${ticketTitle}</p>
+          <p><strong>Amount:</strong> ₿${amountBtc}</p>
+          <p><strong>Order ID:</strong> ${charge.order_id}</p>
+        </div>
+        
+        <div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0;">Complete Payment</h3>
+          <p>Click the button below to complete your Bitcoin payment:</p>
+          <a href="${hostedUrl}" style="display: inline-block; background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Complete Payment</a>
+          <p style="margin-top: 10px; font-size: 14px;">Or copy this link: <a href="${hostedUrl}">${hostedUrl}</a></p>
+        </div>
+        
+        <p>After payment is complete, you'll receive a confirmation email with your ticket code and next steps.</p>
+        
+        <p>See you at Metagame 2025!</p>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #ccc;">
+        
+        <p style="font-size: 12px; color: #666;">This is not a puzzle.</p>
+      </div>
+    `,
+    text: `
+Complete your Metagame 2025 ticket payment
 
+Hi there,
+
+Your Metagame 2025 ticket order has been created. Please complete your payment to secure your spot!
+
+Order Details:
+- Ticket Type: ${ticketTitle}
+- Amount: ₿${amountBtc}
+- Order ID: ${charge.order_id}
+
+Complete Payment:
+Click this link to complete your Bitcoin payment: ${hostedUrl}
+
+After payment is complete, you'll receive a confirmation email with your ticket code and next steps.
+
+See you at Metagame 2025!
+
+This is not a puzzle.
+    `.trim()
+  });
+}
