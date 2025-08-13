@@ -66,7 +66,7 @@ function sendChargeCreationEmail(charge: OpenNodeCharge, ticketDetails: TicketPu
           <h2 style="margin-top: 0;">Order Details</h2>
           <p><strong>Ticket Type:</strong> ${ticketTitle}</p>
           <p><strong>Amount:</strong> ₿${amountBtc}</p>
-          <p><strong>Order ID:</strong> ${charge.order_id}</p>
+          <p><strong>Order ID:</strong> <a href="${process.env.NEXT_PUBLIC_SITE_URL}/checkout/status/${charge.order_id}">${charge.order_id}</a></p>
         </div>
         
         <div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin: 20px 0;">
