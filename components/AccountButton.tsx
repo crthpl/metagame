@@ -56,12 +56,15 @@ export default function AccountButton( {closeMenu}: {closeMenu: () => void} ) {
                 {dropdownTriggerElement()}
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem asChild onClick={closeMenu}>
                     <Link href="/profile">Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                    onClick={() => handleLogout('/')}
+                    onClick={() => {
+                        handleLogout('/')
+                        closeMenu()
+                    }}
                     disabled={isLoggingOut}
                 >
                     {isLoggingOut ? 'Logging out...' : 'Log Out'}
