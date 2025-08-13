@@ -20,7 +20,7 @@ export default function AccountButton( {closeMenu}: {closeMenu: () => void} ) {
     const { handleLogout, isLoggingOut } = useLogout()
 
     const {data: profile} = useQuery({
-        queryKey: ["users", "profile-picture", user?.id],
+        queryKey: ["users", "profiles", user?.id],
         queryFn: () => getCurrentUserProfile({userId: user?.id}),
         enabled: !!user?.id
     })
