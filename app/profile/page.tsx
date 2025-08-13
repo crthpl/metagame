@@ -3,12 +3,13 @@
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { useUser } from '@/hooks/dbQueries'
-import { updateCurrentUserProfile, setCurrentUserProfilePicture, deleteCurrentUserProfilePicture } from '@/app/actions/db/users'
+import { updateCurrentUserProfile, deleteCurrentUserProfilePicture } from '@/app/actions/db/users'
+import { getCurrentUserProfilePictureUploadUrl } from '@/app/actions/db/storage'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { LinkIcon } from 'lucide-react'
-import { toExternalLink } from '@/lib/utils'
+import { canonicalUserProfilePictureUrl, toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export default function Profile() {
@@ -55,7 +56,21 @@ export default function Profile() {
 
   // Profile picture upload mutation
   const uploadPictureMutation = useMutation({
-    mutationFn: setCurrentUserProfilePicture,
+    mutationFn: async (file: File) => {
+      // Get signed URL from server
+      if (!currentUser?.id) {
+        throw new Error('User not found')
+      }
+      const signedUrl = await getCurrentUserProfilePictureUploadUrl({})
+      // Upload file directly to storage using signed URL
+      await uploadFileWithSignedUrl(signedUrl.signedUrl, file)
+      updateProfileMutation.mutate({
+        data: {
+          profile_pictures_url: canonicalUserProfilePictureUrl({userId: currentUser!.id})
+        }
+      })
+      return { success: true }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users', 'profile', currentUser?.id] })
       toast.success('Profile picture updated successfully!')
@@ -135,11 +150,11 @@ export default function Profile() {
     const file = event.target.files?.[0]
     if (!file) return
 
-    uploadPictureMutation.mutate({ image: file })
+    uploadPictureMutation.mutate(file)
   }
 
   const handleRemoveImage = async () => {
-    deletePictureMutation.mutate({})
+    deletePictureMutation.mutate()
   }
 
   const fullName = `${currentUserProfile?.first_name || ''} ${currentUserProfile?.last_name || ''}`.trim() || 'No name set'
