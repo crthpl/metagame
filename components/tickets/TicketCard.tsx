@@ -135,7 +135,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                         key={option.id} 
                         value={option.id}
                       >
-                        {option.title} - ${option.price}
+                        {option.title} - {isBtc ? `₿${option.priceBtc}` : `$${option.price}`}
                       </SelectItem>
                     ))}
                   </SelectContent>
