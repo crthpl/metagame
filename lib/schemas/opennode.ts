@@ -1,13 +1,17 @@
 import { TICKET_TYPES_ENUM } from '@/utils/dbUtils';
 import { z } from 'zod';
 
+export const ticketPurchaseDetailsSchema = z.object({
+  ticketType: z.enum(TICKET_TYPES_ENUM),
+  isTest: z.boolean(),
+  purchaserEmail: z.email(),
+});
+
+export type TicketPurchaseDetails = z.infer<typeof ticketPurchaseDetailsSchema>;
+
 export const opennodeChargeSchema = z.object({
   amountBtc: z.number().positive(),
-  ticketDetails: z.object({
-    ticketType: z.enum(TICKET_TYPES_ENUM),
-    isTest: z.boolean(),
-    purchaserEmail: z.email(),
-  }),
+  ticketDetails: ticketPurchaseDetailsSchema,
 });
 
 export type OpennodeChargeInput = z.infer<typeof opennodeChargeSchema>;
