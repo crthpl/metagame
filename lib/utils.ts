@@ -29,6 +29,12 @@ export async function uploadFileWithSignedUrl(signedUrl: string, file: File): Pr
   }
 }
 
-export function canonicalUserProfilePictureUrl({userId}: {userId: string}) {
-  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/public-assets/profile_pictures/${userId}`
+export function canonicalUserProfilePictureUrl({ userId }: { userId: string }): string {
+  const bucket = 'public-assets'
+  const path = `profile_pictures/${userId}`
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  if (!supabaseUrl) {
+    throw new Error('NEXT_PUBLIC_SUPABASE_URL environment variable is not set')
+  }
+  return `${supabaseUrl}/storage/v1/object/public/${bucket}/${path}`
 }

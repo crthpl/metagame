@@ -11,5 +11,12 @@ export const adminGetUserProfileByEmail = adminExportWrapper(usersService.getUse
 
 /* Mutations */
 export const updateCurrentUserProfile = currentUserWrapper(usersService.updateUserProfile)
-export const deleteCurrentUserProfilePicture = async () => currentUserWrapper(usersService.deleteUserProfilePicture)({})
+export const deleteCurrentUserProfilePicture = async () => {
+    await currentUserWrapper(usersService.deleteUserProfilePicture)({})
+    await currentUserWrapper(usersService.updateUserProfile)({
+        data: {
+            profile_pictures_url: null
+        }
+    })
+}
 export const fullDeleteCurrentUser = async () => currentUserWrapper(usersService.fullDeleteUser)({})

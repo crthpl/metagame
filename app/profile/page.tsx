@@ -61,12 +61,17 @@ export default function Profile() {
       if (!currentUser?.id) {
         throw new Error('User not found')
       }
-      const signedUrl = await getCurrentUserProfilePictureUploadUrl({})
+      
+      // Extract file extension from the uploaded file
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() || null
+      
+      const {signedUrl, storageUrl} = await getCurrentUserProfilePictureUploadUrl({ fileExtension })
       // Upload file directly to storage using signed URL
-      await uploadFileWithSignedUrl(signedUrl.signedUrl, file)
+      await uploadFileWithSignedUrl(signedUrl, file)
+      
       updateProfileMutation.mutate({
         data: {
-          profile_pictures_url: canonicalUserProfilePictureUrl({userId: currentUser!.id})
+          profile_pictures_url: storageUrl + '?v=' + Date.now()
         }
       })
       return { success: true }
@@ -83,7 +88,9 @@ export default function Profile() {
 
   // Profile picture delete mutation
   const deletePictureMutation = useMutation({
-    mutationFn: deleteCurrentUserProfilePicture,
+    mutationFn: async () => {
+      await deleteCurrentUserProfilePicture()
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users', 'profile', currentUser?.id] })
       toast.success('Profile picture removed successfully!')
@@ -258,7 +265,9 @@ export default function Profile() {
 
             {/* Discord Handle */}
             <div>
-              <label className="block text-sm font-medium mb-2">Discord Handle</label>
+              <label className="label">
+                <span className="label-text">Discord Handle</span>
+              </label>
               {isEditMode ? (
                 <Input
                   placeholder="Your Discord handle"
@@ -274,7 +283,9 @@ export default function Profile() {
 
             {/* Website */}
             <div>
-              <label className="block text-sm font-medium mb-2">Website</label>
+              <label className="label">
+                <span className="label-text">Website</span>
+              </label>
               {isEditMode ? (
                 <div className="space-y-2">
                   <Input
@@ -310,7 +321,9 @@ export default function Profile() {
 
             {/* Email (read-only) */}
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <label className="label">
+                <span className="label-text">Email</span>
+              </label>
               <p className="text-lg">{currentUserProfile?.email || currentUser.email}</p>
             </div>
           </div>
