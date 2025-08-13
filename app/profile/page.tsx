@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { LinkIcon } from 'lucide-react'
+import { toExternalLink } from '@/lib/utils'
 
 export default function Profile() {
   const { currentUser, currentUserProfile, currentUserLoading } = useUser()
@@ -262,7 +263,7 @@ export default function Profile() {
                 <div>
                   {currentUserProfile?.site_name && currentUserProfile?.site_url ? (
                     <a
-                      href={currentUserProfile.site_url}
+                      href={toExternalLink(currentUserProfile.site_url)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:underline flex items-center gap-2"
