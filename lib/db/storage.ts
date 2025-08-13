@@ -7,7 +7,8 @@ export const storageService = {
     const supabase = createServiceClient()
     const { data, error } = await supabase.storage
       .from(bucket)
-      .createSignedUploadUrl(path)
+      .createSignedUploadUrl(path, {upsert: true})
+
     
     if (error) {
       throw new Error(error.message)
