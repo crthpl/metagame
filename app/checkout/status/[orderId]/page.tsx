@@ -3,6 +3,7 @@ import { opennodeDbService } from '@/lib/db/opennode';
 import { opennode } from '@/lib/opennode';
 import { getHostedCheckoutUrl } from '@/utils/opennode';
 import Image from 'next/image';
+import { ExternalLinkIcon } from 'lucide-react';
 
 type PageProps = {
   params: Promise<{ orderId: string }>;
@@ -29,7 +30,42 @@ export default async function CheckoutStatusPage({ params }: PageProps) {
   const hostedUrl = getHostedCheckoutUrl(openNodeId);
 
   const status = remote.status || dbCharge.status;
-
+  const messageButtonThing = () => {
+    switch (status) {
+      case 'unpaid':
+        return <a className="btn btn-primary flex items-center gap-2 w-fit" href={hostedUrl}>
+            Complete payment <ExternalLinkIcon className="w-4 h-4" />
+          </a>
+      case 'expired':
+        return <div className="alert alert-error mt-4 w-fit">
+            <span>Payment expired. Please start a new ticket purchase and try again.</span>
+          </div>
+      case 'processing':
+        return <div className="alert alert-info mt-4 w-fit">
+            <span>Payment sent and being processed!</span>
+          </div>
+      case 'paid':
+        return <div className="alert alert-success mt-4 w-fit">
+            <span>Payment received! Check your email for your ticket!</span>
+          </div>
+      default:
+        return null
+    }
+  }
+  const badgeClass = () => {
+    switch (status) {
+      case 'unpaid':
+        return 'badge-primary'
+      case 'expired':
+        return 'badge-error'
+      case 'processing':
+        return 'badge-info'
+      case 'paid':
+        return 'badge-success'
+      default:
+        return 'badge-neutral'
+    }
+  }
   return (
     <div className="mx-auto max-w-2xl p-6">
       <div className="rounded-xl border border-base-300 bg-base-200 p-6">
@@ -40,28 +76,18 @@ export default async function CheckoutStatusPage({ params }: PageProps) {
 
         <div className="mb-4">
           <div className="text-lg">
-            Status: <span className="badge badge-lg">{status}</span>
+            Status: <span className={`badge badge-lg px-3 ${badgeClass()}`}>{status}</span>
           </div>
           <div className="mt-2 opacity-80">
             Amount: ₿ <span className="font-mono">{remote.amount / 100000000}</span>
           </div>
         </div>
 
-        {status !== 'paid' && hostedUrl && (
-          <a className="btn btn-primary" href={hostedUrl}>
-            Complete payment
-          </a>
-        )}
-
-        {status === 'paid' && (
-          <div className="alert alert-success mt-4">
-            <span>Payment received! Your ticket is being issued.</span>
-          </div>
-        )}
+        {messageButtonThing()}
 
         <div className="divider" />
         <div className="text-sm opacity-70">
-          <div className="flex items-center gap-1 mb-1"><Image src="/logos/opennode.png" alt="OpenNode" width={12} height={12} /> OpenNode Charge ID: {remote.id}</div>
+          <div className="flex items-center gap-1 mb-1"><Image src="/logos/opennode.png" alt="OpenNode" width={12} height={12} /> OpenNode Charge ID: <a href={getHostedCheckoutUrl(remote.id)} className="underline" target="_blank" rel="noopener noreferrer">{remote.id}</a></div>
           <div>Purchaser Email: {dbCharge.purchaser_email}</div>
           <div>Ticket Type: {dbCharge.ticket_type}</div>
         </div>

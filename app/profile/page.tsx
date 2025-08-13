@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { LinkIcon } from 'lucide-react'
-import { canonicalUserProfilePictureUrl, toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
+import { toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export default function Profile() {
