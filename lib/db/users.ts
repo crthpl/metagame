@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server"
 import { createServiceClient } from "@/utils/supabase/service"
 import { DbProfileUpdate } from "@/types/database/dbTypeAliases"
-import { deleteFile, upsertToStorage } from "@/app/actions/db/storage"
+import { storageService } from "@/lib/db/storage"
 
 export const usersService = {
   /** Get the current authenticated user */
@@ -56,19 +56,19 @@ export const usersService = {
     return data
   },
 
-  /** Set a user's profile picture */
-  setUserProfilePicture: async ({image, userId}: {image: File, userId: string}) => {
-    const bucket = 'public_assets'
+  /** Get a signed URL for uploading a user's profile picture */
+  getProfilePictureUploadUrl: async ({userId}: {userId: string}) => {
+    const bucket = 'public-assets'
     const path = `profile_pictures/${userId}`
-    const { id, path: fullPath } = await upsertToStorage(image, bucket, path)
-    return { id, path: fullPath }
+    const signedUrl = await storageService.getSignedUploadUrl(bucket, path, 'image/*')
+    return signedUrl
   },
 
   /** Delete a user's profile picture */
   deleteUserProfilePicture: async ({userId}: {userId: string}) => {
     const bucket = 'public_assets'
     const path = `profile_pictures/${userId}`
-    await deleteFile(bucket, path)
+    await storageService.deleteFile(bucket, path)
   },
 
   /** Fully delete a user from the system */
