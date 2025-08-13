@@ -1,39 +1,61 @@
+'use client';
+
 import { notFound } from 'next/navigation';
-import { opennodeDbService } from '@/lib/db/opennode';
-import { opennode } from '@/lib/opennode';
-import { getHostedCheckoutUrl } from '@/utils/opennode';
+import { getOrderStatus } from '@/app/actions/db/opennode';
 import Image from 'next/image';
 import { ExternalLinkIcon } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 
-type PageProps = {
-  params: Promise<{ orderId: string }>;
-};
+export default function CheckoutStatusPage() {
+  const params = useParams();
+  const orderId = params.orderId as string;
 
-export default async function CheckoutStatusPage({ params }: PageProps) {
+  // Use React Query with polling
+  const { data: orderStatus, isLoading, error } = useQuery({
+    queryKey: ['order-status', orderId],
+    queryFn: () => getOrderStatus({ orderId }),
+    enabled: !!orderId,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: true,
+    retry: 3,
+    retryDelay: 5000,
+  });
 
-  const { orderId } = await params;
   if (!orderId) {
     notFound();
   }
 
-  // Get our internal DB record for this order
-  const dbCharge = await opennodeDbService.getChargeByOrderId({ orderId }).catch(() => null);
-  if (!dbCharge) {
-    console.error('No dbCharge found for orderId', orderId);
-    notFound();
+  if (error) {
+    return (
+      <div className="mx-auto max-w-2xl p-6">
+        <div className="rounded-xl border border-base-300 bg-base-200 p-6">
+          <div className="alert alert-error">
+            <span>Failed to load order: {error.message}</span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  // Fetch current status from OpenNode
-  const openNodeId = dbCharge.opennode_order_id;
-  const remote = await opennode.chargeInfo(openNodeId);
+  if (isLoading || !orderStatus) {
+    return (
+      <div className="mx-auto max-w-2xl p-6">
+        <div className="rounded-xl border border-base-300 bg-base-200 p-6">
+          <div className="animate-pulse">
+            <div className="h-8 bg-base-300 rounded mb-4"></div>
+            <div className="h-4 bg-base-300 rounded mb-2"></div>
+            <div className="h-6 bg-base-300 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  const hostedUrl = getHostedCheckoutUrl(openNodeId);
-
-  const status = remote.status || dbCharge.status;
   const messageButtonThing = () => {
-    switch (status) {
+    switch (orderStatus.status) {
       case 'unpaid':
-        return <a className="btn btn-primary flex items-center gap-2 w-fit" href={hostedUrl}>
+        return <a className="btn btn-primary flex items-center gap-2 w-fit" href={orderStatus.hostedUrl}>
             Complete payment <ExternalLinkIcon className="w-4 h-4" />
           </a>
       case 'expired':
@@ -52,8 +74,9 @@ export default async function CheckoutStatusPage({ params }: PageProps) {
         return null
     }
   }
+
   const badgeClass = () => {
-    switch (status) {
+    switch (orderStatus.status) {
       case 'unpaid':
         return 'badge-primary'
       case 'expired':
@@ -66,20 +89,30 @@ export default async function CheckoutStatusPage({ params }: PageProps) {
         return 'badge-neutral'
     }
   }
+
   return (
     <div className="mx-auto max-w-2xl p-6">
       <div className="rounded-xl border border-base-300 bg-base-200 p-6">
-        <h1 className="mb-2 text-2xl font-bold">Bitcoin Checkout Status</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-2xl font-bold">Bitcoin Checkout Status</h1>
+          {orderStatus.status !== 'paid' && orderStatus.status !== 'expired' && (
+            <div className="text-sm opacity-70 flex items-center gap-2">
+              <div className="loading loading-spinner loading-xs"></div>
+              Auto-refreshing...
+            </div>
+          )}
+        </div>
+
         <p className="mb-4 text-sm opacity-80">
           Order: <span className="font-mono">{orderId}</span>
         </p>
 
         <div className="mb-4">
           <div className="text-lg">
-            Status: <span className={`badge badge-lg px-3 ${badgeClass()}`}>{status}</span>
+            Status: <span className={`badge badge-lg px-3 ${badgeClass()}`}>{orderStatus.status}</span>
           </div>
           <div className="mt-2 opacity-80">
-            Amount: ₿ <span className="font-mono">{remote.amount / 100000000}</span>
+            Amount: ₿ <span className="font-mono">{orderStatus.amount / 100000000}</span>
           </div>
         </div>
 
@@ -87,9 +120,12 @@ export default async function CheckoutStatusPage({ params }: PageProps) {
 
         <div className="divider" />
         <div className="text-sm opacity-70">
-          <div className="flex items-center gap-1 mb-1"><Image src="/logos/opennode.png" alt="OpenNode" width={12} height={12} /> OpenNode Charge ID: <a href={getHostedCheckoutUrl(remote.id)} className="underline" target="_blank" rel="noopener noreferrer">{remote.id}</a></div>
-          <div>Purchaser Email: {dbCharge.purchaser_email}</div>
-          <div>Ticket Type: {dbCharge.ticket_type}</div>
+          <div className="flex items-center gap-1 mb-1">
+            <Image src="/logos/opennode.png" alt="OpenNode" width={12} height={12} /> 
+            OpenNode Charge ID: <a href={orderStatus.hostedUrl} className="underline" target="_blank" rel="noopener noreferrer">{orderStatus.opennodeId}</a>
+          </div>
+          <div>Purchaser Email: {orderStatus.purchaserEmail}</div>
+          <div>Ticket Type: {orderStatus.ticketType}</div>
         </div>
       </div>
     </div>
