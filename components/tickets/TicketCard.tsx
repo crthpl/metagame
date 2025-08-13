@@ -217,16 +217,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             <TicketPurchaseForm
               ticketType={selectedDayPass ? getDayPassTicketType(selectedDayPass.id) ?? ticketType : ticketType}
               paymentMethod={paymentMethod}
-              selectedUsdPrice={isDayPass ? (selectedDayPass?.price ?? undefined) : undefined}
-              selectedBtcPrice={isDayPass ? (
-                (() => {
-                  const base = getTicketType('dayPass');
-                  const baseUsd = base?.price || 150;
-                  const baseBtc = base?.priceBtc || 0.0011;
-                  const price = selectedDayPass?.price ?? baseUsd;
-                  return Number((baseBtc * (price / baseUsd)).toFixed(6));
-                })()
-              ) : undefined}
               onClose={handleCloseModal}
             />
           </div>
