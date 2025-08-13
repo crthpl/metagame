@@ -1,27 +1,25 @@
-import { createServiceClient } from "@/utils/supabase/service"
+'use server'
 
-export const upsertToStorage = async (file: File, bucket: string, path: string) => {
-  const supabase = createServiceClient()
-  const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
-    upsert: true,
-  })
-  if (error) {
-    throw new Error(error.message)
-  }
-  return data
-}
+import { storageService } from "@/lib/db/storage"
+import { currentUserWrapper } from "./auth"
 
-export const deleteFile = async (bucket: string, path: string) => {
-  const supabase = createServiceClient()
-  const { data, error } = await supabase.storage.from(bucket).remove([path])
-  if (error) {
-    throw new Error(error.message)
-  }
-  return data
-}
+/* Queries */
+export const getCurrentUserProfilePictureUploadUrl = currentUserWrapper(async ({ userId }: { userId: string }) => {
+  const bucket = 'public-assets'
+  const path = `profile_pictures/${userId}`
+  const url = await storageService.getSignedUploadUrl(bucket, path, 'image/*')
+  return url
+})
 
-export const getFileUrl = async (bucket: string, path: string) => {
-  const supabase = createServiceClient()
-  const { data } = supabase.storage.from(bucket).getPublicUrl(path)
-  return data.publicUrl
-}
+export const getCurrentUserProfilePictureUrl = currentUserWrapper(async ({ userId }: { userId: string }) => {
+  const bucket = 'public_assets'
+  const path = `profile_pictures/${userId}`
+  return await storageService.getFileUrl(bucket, path)
+})
+
+/* Mutations */
+export const deleteCurrentUserProfilePicture = currentUserWrapper(async ({ userId }: { userId: string }) => {
+  const bucket = 'public_assets'
+  const path = `profile_pictures/${userId}`
+  return await storageService.deleteFile(bucket, path)
+})
