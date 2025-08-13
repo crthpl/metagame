@@ -150,7 +150,7 @@ export default function Profile() {
         )}
       </div>
 
-      <div className="bg-card rounded-lg border p-6">
+      <div className="bg-card rounded-lg border border-border-primary p-6">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Profile Picture Section */}
           <div className="flex flex-col items-center space-y-4">
