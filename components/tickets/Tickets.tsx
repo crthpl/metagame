@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useState } from 'react';
+import React from 'react';
 import { TicketCard } from './TicketCard';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 export type PaymentCurrency = 'usd' | 'btc';
 
 export const Tickets: React.FC = () => {
-  const [paymentMethod, setPaymentMethod] = useState<PaymentCurrency>('usd');
+  const [paymentMethod, setPaymentMethod] = useLocalStorage<PaymentCurrency>('payment-method', 'usd');
 
   const togglePaymentMethod = () => {
     setPaymentMethod(prev => (prev === 'usd' ? 'btc' : 'usd'));
