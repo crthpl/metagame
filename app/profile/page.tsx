@@ -9,12 +9,13 @@ import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { LinkIcon } from 'lucide-react'
 import { toExternalLink } from '@/lib/utils'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export default function Profile() {
   const { currentUser, currentUserProfile, currentUserLoading } = useUser()
   const [isEditMode, setIsEditMode] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const queryClient = useQueryClient()
   
   // Form state
   const [formData, setFormData] = useState({
@@ -37,6 +38,46 @@ export default function Profile() {
       })
     }
   }, [currentUserProfile, isEditMode])
+
+  // Profile update mutation
+  const updateProfileMutation = useMutation({
+    mutationFn: updateCurrentUserProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users', 'profile', currentUser?.id] })
+      setIsEditMode(false)
+      toast.success('Profile updated successfully!')
+    },
+    onError: (error) => {
+      console.error('Error updating profile:', error)
+      toast.error('Failed to update profile')
+    }
+  })
+
+  // Profile picture upload mutation
+  const uploadPictureMutation = useMutation({
+    mutationFn: setCurrentUserProfilePicture,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users', 'profile', currentUser?.id] })
+      toast.success('Profile picture updated successfully!')
+    },
+    onError: (error) => {
+      console.error('Error uploading image:', error)
+      toast.error('Failed to upload profile picture')
+    }
+  })
+
+  // Profile picture delete mutation
+  const deletePictureMutation = useMutation({
+    mutationFn: deleteCurrentUserProfilePicture,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users', 'profile', currentUser?.id] })
+      toast.success('Profile picture removed successfully!')
+    },
+    onError: (error) => {
+      console.error('Error removing image:', error)
+      toast.error('Failed to remove profile picture')
+    }
+  })
 
   if (currentUserLoading) {
     return (
@@ -68,25 +109,15 @@ export default function Profile() {
   }
 
   const handleSave = async () => {
-    setIsSaving(true)
-    try {
-      await updateCurrentUserProfile({
-        data: {
-          first_name: formData.first_name,
-          last_name: formData.last_name,
-          discord_handle: formData.discord_handle,
-          site_name: formData.site_name,
-          site_url: formData.site_url,
-        }
-      })
-      setIsEditMode(false)
-      toast.success('Profile updated successfully!')
-    } catch (error) {
-      console.error('Error updating profile:', error)
-      toast.error('Failed to update profile')
-    } finally {
-      setIsSaving(false)
-    }
+    updateProfileMutation.mutate({
+      data: {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        discord_handle: formData.discord_handle,
+        site_name: formData.site_name,
+        site_url: formData.site_url,
+      }
+    })
   }
 
   const handleCancel = () => {
@@ -104,32 +135,15 @@ export default function Profile() {
     const file = event.target.files?.[0]
     if (!file) return
 
-    setIsSaving(true)
-    try {
-      await setCurrentUserProfilePicture({ image: file })
-      toast.success('Profile picture updated successfully!')
-    } catch (error) {
-      console.error('Error uploading image:', error)
-      toast.error('Failed to upload profile picture')
-    } finally {
-      setIsSaving(false)
-    }
+    uploadPictureMutation.mutate({ image: file })
   }
 
   const handleRemoveImage = async () => {
-    setIsSaving(true)
-    try {
-      await deleteCurrentUserProfilePicture({})
-      toast.success('Profile picture removed successfully!')
-    } catch (error) {
-      console.error('Error removing image:', error)
-      toast.error('Failed to remove profile picture')
-    } finally {
-      setIsSaving(false)
-    }
+    deletePictureMutation.mutate({})
   }
 
   const fullName = `${currentUserProfile?.first_name || ''} ${currentUserProfile?.last_name || ''}`.trim() || 'No name set'
+  const isSaving = updateProfileMutation.isPending || uploadPictureMutation.isPending || deletePictureMutation.isPending
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
