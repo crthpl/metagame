@@ -155,12 +155,6 @@ export default function LoginPage() {
             >
               {isLoading ? "Logging in..." : "Log in"}
             </button>
-            <Link
-              href="/signup"
-              className="flex-1 text-center bg-green-500 text-white rounded py-2 px-4 hover:bg-green-600 transition-colors"
-            >
-              Sign up
-            </Link>
           </div>
         </form>
       </div>
