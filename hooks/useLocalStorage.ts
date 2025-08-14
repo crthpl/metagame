@@ -15,7 +15,11 @@ function setItem<T>(key: string, value: T) {
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
     // Notify subscribers on this tab as well
-    window.dispatchEvent(new StorageEvent('storage', { key }));
+    window.dispatchEvent(new StorageEvent('storage', { 
+      key, 
+      newValue: JSON.stringify(value),
+      storageArea: window.localStorage 
+    }));
   } catch (e) {
     console.warn(`Error setting localStorage key "${key}":`, e);
   }
@@ -26,7 +30,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
   const subscribe = (onStoreChange: () => void) => {
     if (typeof window === 'undefined') return () => {};
     const handler = (e: StorageEvent) => {
-      if (!e.key || e.key === key) onStoreChange();
+      if (e.key === key) onStoreChange();
     };
     window.addEventListener('storage', handler);
     return () => window.removeEventListener('storage', handler);
