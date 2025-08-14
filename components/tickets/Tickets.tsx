@@ -1,8 +1,10 @@
 'use client'
 
-import React from 'react';
+import React, { useState } from 'react';
 import { TicketCard } from './TicketCard';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import { InfoIcon } from 'lucide-react';
 
 export type PaymentCurrency = 'usd' | 'btc';
 
@@ -40,9 +42,12 @@ export const Tickets: React.FC = () => {
               <span>*Bitcoin purchases are <span className="font-extrabold underline">non-refundable</span> for logistical reasons.</span>
             </span>
           ) : (
-            <span className="">
-              <span>Discounted* bitcoin prices available.</span>
-            </span>
+            <div className="flex items-center gap-2">
+              <span>Discounted bitcoin prices available.</span>
+              <BtcPriceTooltip>
+                <InfoIcon className="size-3" />
+              </BtcPriceTooltip>
+            </div>
           )}
         </div>
 
@@ -56,6 +61,20 @@ export const Tickets: React.FC = () => {
         </div>
       </div>
     </section>
+  );
+};
+
+const BtcPriceTooltip = ({children}: {children: React.ReactNode}) => {
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  return (
+    <Tooltip open={isTooltipOpen}>
+      <TooltipTrigger onClick={() => setIsTooltipOpen(!isTooltipOpen)} onMouseEnter={() => setIsTooltipOpen(true)} onMouseLeave={() => setIsTooltipOpen(false)}>
+        {children}
+      </TooltipTrigger>
+      <TooltipContent>
+        <p className="text-base font-semibold max-w-lg">Bitcoin prices are fixed and their relationship to USD prices will vary depending on the exchange rate at the time of purchase.</p>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
