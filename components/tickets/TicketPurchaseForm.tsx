@@ -432,7 +432,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
             <span className="text-gray-300">Amount:</span>
             <span className="font-semibold">{btcAmount?.toFixed(6) ?? "?"} BTC</span>
           </div>
-          <p className="text-gray-400 text-sm bg-gray-800 p-2 rounded-lg">Clicking <span className="font-semibold">Continue</span> will create a pending OpenNode transaction and redirect you to a checkout page to complete your payment. Your ticket will be emailed to you after payment is confirmed.</p>
+          <p className="text-gray-400 text-sm bg-gray-800 p-2 rounded-lg">Click <span className="font-semibold">Continue</span> to begin your Bitcoin payment. An open transaction request will be created and you will be redirected to a secure checkout page with the destination address to complete it. Your ticket will be sent the email above once payment is confirmed.</p>
         </div>
       )}
 
