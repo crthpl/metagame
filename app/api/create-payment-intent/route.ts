@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     
     // Validate input using Zod schema
     const validatedData = paymentIntentSchema.parse(body);
-    const { ticketTypeId, name, email, discordHandle, couponCode } = validatedData;
+    const { ticketTypeId, name, email, couponCode } = validatedData;
 
     // Get ticket type and validate
     const ticketType = getTicketType(ticketTypeId);
@@ -53,7 +53,6 @@ export async function POST(request: NextRequest) {
       ticketType: ticketType.title,
       customerName: name,
       customerEmail: email,
-      customerDiscordHandle: discordHandle || '',
       originalPrice: originalPriceInCents.toString(),
       couponCode: coupon?.code || '',
       discountAmount: coupon ? coupon.discountAmount.toString() : '0',

@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     // Validate input using Zod schema
     const validatedData = paymentConfirmationSchema.parse(body);
     console.log("VALIDATEDDATA", validatedData);
-    const { paymentIntentId, name, email, discordHandle, ticketType } = validatedData;
+    const { paymentIntentId, name, email, ticketType } = validatedData;
 
     // Retrieve payment intent from Stripe to check its status
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId, {
@@ -87,7 +87,6 @@ export async function POST(request: NextRequest) {
       price,
       paymentIntentId,
       success,
-      discordHandle,
       stripeFee
     );
 

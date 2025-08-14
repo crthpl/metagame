@@ -82,7 +82,6 @@ export const formatAirtableRecord = (
   price: number,
   stripePaymentId: string,
   success: boolean,
-  discordHandle?: string,
   stripeFee?: number,
   volunteerRoles?: string[]
 ): AirtableRecord => {
@@ -93,7 +92,6 @@ export const formatAirtableRecord = (
   return {
     Name: name,
     Email: email,
-    'Discord Handle': discordHandle,
     'Ticket Type': ticketType,
     Price: price,
     'Stripe Payment ID': stripePaymentId,

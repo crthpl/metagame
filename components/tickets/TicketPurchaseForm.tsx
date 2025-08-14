@@ -42,8 +42,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
   
   const [formData, setFormData] = useState<TicketPurchaseFormData>({
     name: '',
-    email: '',
-    discordHandle: '',
+    email: '',  
     couponCode: '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof TicketPurchaseFormData, string>>>({});
@@ -188,7 +187,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
         ticketTypeId: ticketType.id,
         name: formData.name,
         email: formData.email,
-        discordHandle: formData.discordHandle,
         couponCode: appliedCoupon?.code || '',
       });
 
@@ -253,7 +251,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
           paymentIntentId: intentId,
           name: formData.name,
           email: formData.email,
-          discordHandle: formData.discordHandle,
           ticketType: ticketType.id,
           price: finalPrice,
         });

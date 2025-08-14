@@ -68,25 +68,6 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
         )}
       </div>
 
-      <div>
-        <label htmlFor="discordHandle" className="block text-sm font-medium text-gray-300 mb-2">
-          Discord Handle (Optional)
-        </label>
-        <input
-          type="text"
-          id="discordHandle"
-          value={formData.discordHandle}
-          onChange={(e) => onFormDataChange('discordHandle', e.target.value)}
-          disabled={disabled}
-          className={`w-full px-3 py-2 border rounded-md bg-bg-secondary border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
-            errors.discordHandle ? 'border-red-500' : ''
-          } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-          placeholder="Enter your Discord handle"
-        />
-        {errors.discordHandle && (
-          <p className="mt-1 text-sm text-red-400">{errors.discordHandle}</p>
-        )}
-      </div>
 
       {couponsEnabled && (
         <div>
