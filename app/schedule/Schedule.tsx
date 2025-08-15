@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, User2Icon, UserIcon, PlusIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
 import Image from "next/image";
@@ -8,7 +8,7 @@ import SessionDetailsCard from "./SessionModalCard";
 import { useRouter } from "next/navigation";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { Modal } from "@/components/Modal";
-import { SmartTooltip } from '@/components/SmartTooltip';
+import { SmartTooltip, SmartTooltipHandle } from '@/components/SmartTooltip';
 import { useQuery } from '@tanstack/react-query';
 import { getAllSessions, getCurrentUserRsvps } from '@/app/actions/db/sessions'
 import { getOrderedScheduleLocations } from '../actions/db/locations';
@@ -151,6 +151,10 @@ export default function Schedule({
     locationId: string;
   } | null>(null);
   
+  // Track tooltip refs and currently open tooltip
+  const tooltipRefs = useRef<Map<string, SmartTooltipHandle>>(new Map());
+  const [openTooltipId, setOpenTooltipId] = useState<string | null>(null);
+  
   // Sync URL parameters with state changes
   useEffect(() => {
     const params = new URLSearchParams();
@@ -191,6 +195,23 @@ export default function Schedule({
       return newFilter
     })
   }
+
+  // Handle tooltip open/close
+  const handleTooltipOpen = useCallback((sessionId: string) => {
+    // Close the previously open tooltip if it exists and is different
+    if (openTooltipId && openTooltipId !== sessionId) {
+      const previousTooltip = tooltipRefs.current.get(openTooltipId);
+      previousTooltip?.close();
+    }
+    setOpenTooltipId(sessionId);
+  }, [openTooltipId]);
+
+  const handleTooltipClose = useCallback((sessionId: string) => {
+    // Only clear if this was the open tooltip
+    if (openTooltipId === sessionId) {
+      setOpenTooltipId(null);
+    }
+  }, [openTooltipId]);
   // Helper function to get event color
   const getEventColor = (session:DbSessionView) => {
     const locationIndex = locations.findIndex(l => l.id === session.location_id)
@@ -322,7 +343,17 @@ export default function Schedule({
                   return (
                     <div key={venue.id} className="bg-dark-500 min-h-[60px] border border-dark-400 relative overflow-visible">
                       {eventsInSlot.map((session) => (
-                        <SmartTooltip key={session.id} tooltip={<SessionDetailsCard session={session}/>}>
+                        <SmartTooltip 
+                          key={session.id} 
+                          ref={(ref) => {
+                            if (ref && session.id) {
+                              tooltipRefs.current.set(session.id, ref);
+                            }
+                          }}
+                          tooltip={<SessionDetailsCard session={session}/>}
+                          onOpen={() => session.id && handleTooltipOpen(session.id)}
+                          onClose={() => session.id && handleTooltipClose(session.id)}
+                        >
                           
                           <div
                             onClick={() => handleOpenSessionModal(session.id!)}

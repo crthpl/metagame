@@ -1,13 +1,17 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 
 export const useSmartTooltip = ({
   tooltipWidth, 
   margin, 
-  lingerDuration = 1000
+  lingerDuration = 1000,
+  onOpen,
+  onClose
 }: {
   tooltipWidth: number;
   margin: number;
   lingerDuration?: number;
+  onOpen?: () => void;
+  onClose?: () => void;
 }) => {
   const [position, setPosition] = useState<'left' | 'right'>('right');
   const [isVisible, setIsVisible] = useState(false);
@@ -33,20 +37,42 @@ export const useSmartTooltip = ({
     
     updatePosition();
     setIsVisible(true);
-  }, [updatePosition]);
+    onOpen?.();
+  }, [updatePosition, onOpen]);
 
   const handleMouseLeave = useCallback(() => {
     // Set a timeout before hiding the tooltip based on lingerDuration
     timeoutRef.current = setTimeout(() => {
       setIsVisible(false);
+      onClose?.();
     }, lingerDuration);
-  }, [lingerDuration]);
+  }, [lingerDuration, onClose]);
+
+  const close = useCallback(() => {
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setIsVisible(false);
+    onClose?.();
+  }, [onClose]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return { 
     position, 
     triggerRef, 
     isVisible,
     handleMouseEnter,
-    handleMouseLeave
+    handleMouseLeave,
+    close
   };
 };

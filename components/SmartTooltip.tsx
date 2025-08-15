@@ -1,23 +1,40 @@
 import { useSmartTooltip } from "@/hooks/useSmartTooltip";
+import { forwardRef, useImperativeHandle } from "react";
 
-export const SmartTooltip = ({ 
-  children, 
-  tooltip, 
-  tooltipWidth = 480, 
-  margin = 20,
-  lingerDuration = 1000
-}: {
+export interface SmartTooltipHandle {
+  close: () => void;
+}
+
+interface SmartTooltipProps {
   children: React.ReactNode;
   tooltip: React.ReactNode;
   tooltipWidth?: number;
   margin?: number;
   lingerDuration?: number;
-}) => {
-  const { position, triggerRef, isVisible, handleMouseEnter, handleMouseLeave } = useSmartTooltip({
+  onOpen?: () => void;
+  onClose?: () => void;
+}
+
+export const SmartTooltip = forwardRef<SmartTooltipHandle, SmartTooltipProps>(({ 
+  children, 
+  tooltip, 
+  tooltipWidth = 480, 
+  margin = 20,
+  lingerDuration = 1000,
+  onOpen,
+  onClose
+}, ref) => {
+  const { position, triggerRef, isVisible, handleMouseEnter, handleMouseLeave, close } = useSmartTooltip({
     tooltipWidth, 
     margin, 
-    lingerDuration
+    lingerDuration,
+    onOpen,
+    onClose
   });
+
+  useImperativeHandle(ref, () => ({
+    close
+  }), [close]);
 
   return (
     <div 
@@ -50,4 +67,6 @@ export const SmartTooltip = ({
       </div>
     </div>
   );
-};
+});
+
+SmartTooltip.displayName = 'SmartTooltip';
