@@ -200,8 +200,11 @@ export default function Schedule({
   }
 
   const handleToggleFilterForUserEvents = () => {
-    setFilterForUserEvents(!filterForUserEvents)
-    toast.info(`Now displaying ${filterForUserEvents ? 'only your hosted/rsvp\'d events' : 'all events'}`)
+    setFilterForUserEvents(prev => {
+      const newFilter = !prev
+      toast.info(`Now displaying ${newFilter ? 'only your hosted/rsvp\'d events' : 'all events'}`)
+      return newFilter
+    })
   }
   // Helper function to get event color
   const getEventColor = (session:DbSessionView) => {
