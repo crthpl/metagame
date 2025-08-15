@@ -242,20 +242,24 @@ export function AddEventModal({
       return;
     }
 
-    // Convert to ISO datetime strings treating input as PST (UTC-8)
-    // Add -08:00 to indicate PST timezone
-    const startDateTime = new Date(
-      `${formData.day}T${formData.startTime}:00-07:00`,
-    ).toISOString();
-    const endDateTime = new Date(
-      `${formData.day}T${formData.endTime}:00-07:00`,
-    ).toISOString();
 
+    const startDateTime = dateUtils.dateFromParts({
+      year: 2025,
+      month: 9,
+      day: formData.day,
+      time: formData.startTime,
+    });
+    const endDateTime = dateUtils.dateFromParts({
+      year: 2025,
+      month: 9,
+      day: formData.day,
+      time: formData.endTime,
+    });
     const payload = {
       title: formData.title,
       description: formData.description || null,
-      start_time: startDateTime,
-      end_time: endDateTime,
+      start_time: startDateTime.toISOString(),
+      end_time: endDateTime.toISOString(),
       min_capacity: formData.minCapacity,
       max_capacity: formData.maxCapacity,
       location_id: formData.locationId,
