@@ -13,6 +13,7 @@ export default function ResetPasswordPage() {
     password: "",
     confirmPassword: "",
   });
+  
   const [errors, setErrors] = useState<PasswordErrors>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,7 +43,7 @@ export default function ResetPasswordPage() {
       if (error) {
         setErrors({ submit: error.message });
       } else {
-        router.push("/");
+        router.push("/profile/reset-password/success");
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
