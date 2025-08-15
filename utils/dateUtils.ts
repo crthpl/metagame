@@ -3,14 +3,13 @@ export const dateUtils = {
   stringTimestampToPSTString: (timestamp: string) => {
     const utcDate = new Date(timestamp);
     // Create a new date in PST by converting from UTC
-    return new Date(
-      utcDate.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }),
-    );
+    return utcDate.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
   },
   /** Returns the number of minutes since midnight in PST */
   getPSTMinutes: (timestamp: string) => {
-    const pstDate = dateUtils.stringTimestampToPSTString(timestamp);
-    return pstDate.getHours() * 60 + pstDate.getMinutes();
+    const date = new Date(timestamp);
+    const parts = dateUtils.getPacificParts(date);
+    return Number(parts.hour) * 60 + Number(parts.minute);
   },
   getYYYYMMDD: (date: Date) => {
     return YMD_PACIFIC.format(date);
@@ -32,6 +31,26 @@ export const dateUtils = {
     return Object.fromEntries(
       parts.filter((p) => p.type !== "literal").map((p) => [p.type, p.value]),
     );
+  },
+  dateFromParts: (parts: {
+    year: number | string;
+    month: number | string;
+    day: number | string;
+    time?: string;
+    hour?: number | string;
+    minute?: number | string;
+    timezone?: number | string; // hours from UTC, e.g. -7
+  }) => {
+    const { year, month, day, time, hour, minute, timezone = -7 } = parts;
+    
+    const [h, m] = time
+      ? time.split(":").map(Number)
+      : [Number(hour), Number(minute)];
+    const y = Number(year),
+      mo = Number(month) - 1,
+      d = Number(day);
+
+    return new Date(y, mo, d, h, m, Number(timezone))
   },
 };
 
