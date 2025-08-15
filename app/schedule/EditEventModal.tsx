@@ -27,14 +27,8 @@ import {
   SessionAgesEnum,
 } from "@/utils/dbUtils";
 import { XIcon } from "lucide-react";
-
-// Conference days configuration
-const CONFERENCE_DAYS = [
-  { date: "2025-09-12", name: "Friday" },
-  { date: "2025-09-13", name: "Saturday" },
-  { date: "2025-09-14", name: "Sunday" },
-];
-
+import { CONFERENCE_DAYS } from "./Schedule";
+import { dateUtils } from "@/utils/dateUtils";
 interface AddEventModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -73,7 +67,7 @@ export function AddEventModal({
   const defaultFormData = {
     title: "",
     description: "",
-    day: defaultDay || CONFERENCE_DAYS[0].date,
+    day: defaultDay || CONFERENCE_DAYS[0].date.getDate().toString(),
     startTime: "09:00",
     endTime: "09:30",
     minCapacity: null,
@@ -111,33 +105,20 @@ export function AddEventModal({
   });
 
   const [formData, setFormData] = useState<FormData>(defaultFormData);
-
   // Initialize form data when existingSession changes
   useEffect(() => {
     if (existingSession && !sessionLoading) {
-      const startDate = new Date(existingSession.start_time!);
-      const endDate = existingSession.end_time
-        ? new Date(existingSession.end_time)
-        : null;
-
-      // Convert UTC to PST for display
-      const pstStartDate = new Date(
-        startDate.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }),
-      );
-      const pstEndDate = endDate
-        ? new Date(
-            endDate.toLocaleString("en-US", {
-              timeZone: "America/Los_Angeles",
-            }),
-          )
+      const startDatePSTParts = dateUtils.getPacificParts(new Date(existingSession.start_time!));
+      const endDatePSTParts = existingSession.end_time
+        ? dateUtils.getPacificParts(new Date(existingSession.end_time))
         : null;
 
       setFormData({
         title: existingSession.title || "",
         description: existingSession.description || "",
-        day: pstStartDate.toISOString().split("T")[0],
-        startTime: pstStartDate.toTimeString().slice(0, 5),
-        endTime: pstEndDate ? pstEndDate.toTimeString().slice(0, 5) : "10:00",
+        day: startDatePSTParts.day,
+        startTime: startDatePSTParts.hour + ":" + startDatePSTParts.minute,
+        endTime: endDatePSTParts ? endDatePSTParts.hour + ":" + endDatePSTParts.minute : "10:00",
         minCapacity: existingSession.min_capacity,
         maxCapacity: existingSession.max_capacity,
         locationId: existingSession.location_id || null,
@@ -398,7 +379,7 @@ export function AddEventModal({
                 </SelectTrigger>
                 <SelectContent className="z-[70]">
                   {CONFERENCE_DAYS.map((day) => (
-                    <SelectItem key={day.date} value={day.date}>
+                    <SelectItem key={day.date.getDate().toString()} value={day.date.getDate().toString()}>
                       {day.name}
                     </SelectItem>
                   ))}

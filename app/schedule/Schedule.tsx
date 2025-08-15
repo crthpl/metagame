@@ -15,10 +15,16 @@ import { getOrderedScheduleLocations } from '../actions/db/locations';
 import { useUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
 import { AddEventModal } from './EditEventModal';
+import { dateUtils } from '@/utils/dateUtils';
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
 const SCHEDULE_END_TIMES = [22, 22, 22];
-
+  // Fixed conference days - create Date objects representing midnight in Pacific Time
+export const CONFERENCE_DAYS = [
+    { date: new Date('2025-09-12T00:00:00-07:00'), name: 'Friday' },
+    { date: new Date('2025-09-13T00:00:00-07:00'), name: 'Saturday' }, 
+    { date: new Date('2025-09-14T00:00:00-07:00'), name: 'Sunday' }
+  ];
 
 // Generate time slots from 9:00 to 22:00 in 30-minute intervals
 const generateTimeSlots = (dayIndex: number) => {
@@ -41,28 +47,11 @@ const locationEventColors = [
   "bg-indigo-300 border-indigo-400", "bg-teal-300 border-teal-400"
 ];
 
-
-// Add PST timezone constant
-const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
-
-// Helper function to convert UTC timestamp to PST Date object
-const toPSTDate = (timestamp: string) => {
-  const utcDate = new Date(timestamp);
-  // Create a new date in PST by converting from UTC
-  return new Date(utcDate.toLocaleString('en-US', { timeZone: CONFERENCE_TIMEZONE }));
-};
-
-// Helper function to get minutes since midnight in PST
-const getPSTMinutes = (timestamp: string) => {
-  const pstDate = toPSTDate(timestamp);
-  return pstDate.getHours() * 60 + pstDate.getMinutes();
-};
-
 // Updated slot checking - PST based
 const eventStartsInSlot = (session: DbSessionView, slotTime: string) => {
   if (!session.start_time) return false;
   
-  const sessionStartMinutes = getPSTMinutes(session.start_time);
+  const sessionStartMinutes = dateUtils.getPSTMinutes(session.start_time);
   const [slotHour, slotMinute] = slotTime.split(':').map(Number);
   const slotStartMinutes = slotHour * 60 + slotMinute;
   const slotEndMinutes = slotStartMinutes + 30;
@@ -74,7 +63,7 @@ const eventStartsInSlot = (session: DbSessionView, slotTime: string) => {
 const getEventOffsetMinutes = (session: DbSessionView, slotTime: string) => {
   if (!session.start_time) return 0;
   
-  const sessionStartMinutes = getPSTMinutes(session.start_time);
+  const sessionStartMinutes = dateUtils.getPSTMinutes(session.start_time);
   const [slotHour, slotMinute] = slotTime.split(':').map(Number);
   const slotStartMinutes = slotHour * 60 + slotMinute;
   
@@ -85,11 +74,10 @@ const getEventOffsetMinutes = (session: DbSessionView, slotTime: string) => {
 const getEventDurationMinutes = (session: DbSessionView) => {
   if (!session.start_time || !session.end_time) return 30;
   
-  const startMinutes = getPSTMinutes(session.start_time);
-  const endMinutes = getPSTMinutes(session.end_time);
+  const startMinutes = dateUtils.getPSTMinutes(session.start_time);
+  const endMinutes = dateUtils.getPSTMinutes(session.end_time);
   return endMinutes - startMinutes;
 };
-
 
 export default function Schedule({ 
   sessionId, dayIndex 
@@ -115,12 +103,7 @@ export default function Schedule({
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
 
-  // Fixed conference days
-  const CONFERENCE_DAYS = [
-    { date: '2025-09-12', name: 'Friday' },
-    { date: '2025-09-13', name: 'Saturday' }, 
-    { date: '2025-09-14', name: 'Sunday' }
-  ];
+
   
   // Group sessions by the 3 fixed conference days
   const days = useMemo(() => {
@@ -138,14 +121,15 @@ export default function Schedule({
     }
     const maybeFilteredSessions = filterForUserEvents ? sessions.filter(filterSessionForUser) : sessions
     maybeFilteredSessions.forEach((session) => {
-      if (!session.start_time || !session.end_time || !session.title) return;
+      const [sessionStart, sessionEnd] = [session.start_time, session.end_time].filter(Boolean)
+      if (!sessionStart || !sessionEnd || !session.title) return;
       
-      // Get date in PST and check which conference day it matches
-      const pstDate = toPSTDate(session.start_time);
-      const sessionDate = pstDate.toISOString().split('T')[0]; // YYYY-MM-DD
-      
-      // Assign to day 0, 1, or 2
-      const dayIndex = CONFERENCE_DAYS.findIndex(day => day.date === sessionDate);
+      const dayIndex = CONFERENCE_DAYS.findIndex(day => {
+        if (dateUtils.getPacificParts(day.date).day === dateUtils.getPacificParts(new Date(sessionStart)).day) {
+          return true;
+        }
+        return false;
+      });
       if (dayIndex >= 0) {
         dayEvents[dayIndex].push(session);
       }
@@ -154,7 +138,7 @@ export default function Schedule({
     // Create the final days array
     return CONFERENCE_DAYS.map((confDay, index) => ({
       date: confDay.date,
-      displayName: `${confDay.name} (${confDay.date})`,
+      displayName: `${confDay.name} (${dateUtils.getYYYYMMDD(confDay.date)})`,
       events: dayEvents[index].sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''))
     }));
   }, [sessions, filterForUserEvents]);
@@ -411,7 +395,7 @@ export default function Schedule({
           setIsAddEventModalOpen(false);
           setAddEventPrefill(null);
         }}
-        defaultDay={CONFERENCE_DAYS[currentDayIndex]?.date}
+        defaultDay={dateUtils.getPacificParts(CONFERENCE_DAYS[currentDayIndex]?.date).day}
         prefillData={addEventPrefill}
       />
 
