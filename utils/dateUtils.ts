@@ -5,15 +5,18 @@ export const dateUtils = {
     // Create a new date in PST by converting from UTC
     return utcDate.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
   },
+  
   /** Returns the number of minutes since midnight in PST */
   getPSTMinutes: (timestamp: string) => {
     const date = new Date(timestamp);
     const parts = dateUtils.getPacificParts(date);
     return Number(parts.hour) * 60 + Number(parts.minute);
   },
+  
   getYYYYMMDD: (date: Date) => {
     return YMD_PACIFIC.format(date);
   },
+  
   /** e.g. day: "14", hour: "20", minute: "36", month: "08", weekday: "Thu", year: "2025" */
   getPacificParts: (date: Date) => {
     const parts = new Intl.DateTimeFormat("en-US", {
@@ -32,6 +35,7 @@ export const dateUtils = {
       parts.filter((p) => p.type !== "literal").map((p) => [p.type, p.value]),
     );
   },
+  
   dateFromParts: (parts: {
     year: number | string;
     month: number | string;
@@ -46,12 +50,63 @@ export const dateUtils = {
     const [h, m] = time
       ? time.split(":").map(Number)
       : [Number(hour), Number(minute)];
-    const y = Number(year),
-      mo = Number(month) - 1,
-      d = Number(day);
-
-    return new Date(y, mo, d, h, m, Number(timezone))
+    
+    const y = Number(year);
+    const mo = Number(month) - 1; // Month is 0-indexed
+    const d = Number(day);
+    const tz = Number(timezone);
+    console.log(tz)
+    const tzString = tz >= 0 ? `+${tz.toString().padStart(2, '0')}:00` : `-${Math.abs(tz).toString().padStart(2, '0')}:00`;
+    // Create a date string in ISO format
+    console.log("tzString", tzString);
+    const dateString = `${y.toString().padStart(4, '0')}-${(mo + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}T${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}${tzString}`;
+    console.log("dateString", dateString);
+    // Create a date and interpret it as Pacific time
+    return new Date(dateString);
+    
   },
+  
+  /**
+   * Creates a Date object for a specific time in PST today
+   */
+  todayAtPST: (hour: number, minute: number = 0) => {
+    const now = new Date();
+    const todayParts = dateUtils.getPacificParts(now);
+    
+    return dateUtils.dateFromParts({
+      year: todayParts.year,
+      month: todayParts.month,
+      day: todayParts.day,
+      hour,
+      minute
+    });
+  },
+  
+  /**
+   * Gets the current time in PST as a Date object
+   */
+  nowInPST: () => {
+    const now = new Date();
+    const parts = dateUtils.getPacificParts(now);
+    
+    return dateUtils.dateFromParts({
+      year: parts.year,
+      month: parts.month,
+      day: parts.day,
+      hour: parts.hour,
+      minute: parts.minute
+    });
+  },
+  
+  /**
+   * Formats a date to show time in PST
+   */
+  formatPST: (date: Date, options?: Intl.DateTimeFormatOptions) => {
+    return date.toLocaleString("en-US", {
+      timeZone: "America/Los_Angeles",
+      ...options
+    });
+  }
 };
 
 const YMD_PACIFIC = new Intl.DateTimeFormat("en-CA", {
