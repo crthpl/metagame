@@ -113,7 +113,15 @@ export function AddEventModal({
         ? dateUtils.getPacificParts(new Date(existingSession.end_time))
         : null;
 
-      setFormData({
+      // Check if the host IDs exist in the profiles before setting them
+      const validateHostId = (hostId: string | null) => {
+        if (!hostId) return null;
+        if (!profiles) return null; // Don't set if profiles haven't loaded yet
+        const profileExists = profiles.some(p => p.id === hostId);
+        return profileExists ? hostId : null;
+      };
+
+      const newFormData = {
         title: existingSession.title || "",
         description: existingSession.description || "",
         day: startDatePSTParts.day,
@@ -123,10 +131,11 @@ export function AddEventModal({
         maxCapacity: existingSession.max_capacity,
         locationId: existingSession.location_id || null,
         ages: existingSession.ages || SessionAges.ALL,
-        host_1_id: existingSession.host_1_id || null,
-        host_2_id: existingSession.host_2_id || null,
-        host_3_id: existingSession.host_3_id || null,
-      });
+        host_1_id: validateHostId(existingSession.host_1_id),
+        host_2_id: validateHostId(existingSession.host_2_id),
+        host_3_id: validateHostId(existingSession.host_3_id),
+      };
+      setFormData(newFormData);
     } else if (prefillData) {
       // The prefillData.startTime is already the exact time of the slot (e.g., "14:30")
       // End time should be 30 minutes later (next half-hour slot)
@@ -156,10 +165,10 @@ export function AddEventModal({
         ...defaultFormData,
       });
     }
-  }, [existingSession, sessionLoading, isEditMode, defaultDay, prefillData]);
-
+  }, [existingSession, sessionLoading, isEditMode, defaultDay, prefillData, profiles]);
   // Bump up hosts when an earlier host is cleared
   useEffect(() => {
+    if (!formData.host_1_id && !formData.host_2_id && !formData.host_3_id) return;
     if (!formData.host_1_id) {
       setFormData(prev => ({ 
         ...prev, 
@@ -179,6 +188,7 @@ export function AddEventModal({
       }));
     }
   }, [formData.host_2_id]);
+
 
   const addEventMutation = useMutation({
     mutationFn: adminAddSession,
@@ -475,7 +485,10 @@ export function AddEventModal({
               name="host_1_id"
               value={formData.host_1_id || ""}
               onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, host_1_id: value }))
+                setFormData((prev) => {
+                  console.log("value", value)
+                  return { ...prev, host_1_id: value }
+                })
               }
             >
               <SelectTrigger>
