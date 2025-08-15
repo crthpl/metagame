@@ -102,7 +102,7 @@ const getDateString = (timestamp: string) => {
         <div className="flex flex-col gap-2">
           {/* Title and Hosts*/}
           <div className="flex flex-col gap-1">
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full justify-between">
               <h2 className="text-xl font-bold text-secondary-200 leading-tight">
                 {session.title || 'Untitled Session'}
               </h2>
