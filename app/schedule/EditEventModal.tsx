@@ -130,7 +130,7 @@ export function AddEventModal({
         minCapacity: existingSession.min_capacity,
         maxCapacity: existingSession.max_capacity,
         locationId: existingSession.location_id || null,
-        ages: existingSession.ages || SessionAges.ALL,
+        ages: existingSession.ages || SESSION_AGES.ALL,
         host_1_id: validateHostId(existingSession.host_1_id),
         host_2_id: validateHostId(existingSession.host_2_id),
         host_3_id: validateHostId(existingSession.host_3_id),
