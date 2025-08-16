@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useUser } from '@/hooks/dbQueries'
 import { updateCurrentUserProfile, deleteCurrentUserProfilePicture } from '@/app/actions/db/users'
 import { getCurrentUserProfilePictureUploadUrl } from '@/app/actions/db/storage'
