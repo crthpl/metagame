@@ -24,7 +24,6 @@ import { DbSessionAges } from "@/types/database/dbTypeAliases";
 import {
   getAgesDisplayText,
   SESSION_AGES,
-  SESSION_AGES,
   SessionAgesEnum,
 } from "@/utils/dbUtils";
 import { XIcon } from "lucide-react";
