@@ -169,8 +169,8 @@ export default function Profile() {
   const isSaving = updateProfileMutation.isPending || uploadPictureMutation.isPending || deletePictureMutation.isPending
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="flex justify-between items-center mb-8">
+    <div className="container mx-auto px-4 py-8 max-w-md md:max-w-4xl flex flex-col items-center">
+      <div className="flex w-full justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Profile</h1>
         {!isEditMode ? (
           <Button onClick={() => setIsEditMode(true)}>
@@ -188,8 +188,8 @@ export default function Profile() {
         )}
       </div>
 
-      <div className="bg-card rounded-lg border border-border-primary p-6">
-        <div className="flex flex-col md:flex-row gap-8">
+      <div className="bg-card rounded-lg border border-border-primary p-6 w-full" >
+        <div className="flex flex-col md:flex-row gap-8  items-center">
           {/* Profile Picture Section */}
           <div className="flex flex-col items-center space-y-4">
             <div className="relative">
