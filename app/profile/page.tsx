@@ -2,10 +2,11 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useUser } from '@/hooks/dbQueries'
 import { updateCurrentUserProfile, deleteCurrentUserProfilePicture } from '@/app/actions/db/users'
 import { getCurrentUserProfilePictureUploadUrl } from '@/app/actions/db/storage'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { LinkIcon } from 'lucide-react'
@@ -319,12 +320,18 @@ export default function Profile() {
               )}
             </div>
 
-            {/* Email (read-only) */}
             <div>
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
               <p className="text-lg">{currentUserProfile?.email || currentUser.email}</p>
+              {isEditMode && (
+                <Link href="/profile/change-email">
+                  <div className={buttonVariants({ variant: 'outline', size: 'sm' })}>
+                    Change Email
+                  </div>
+                </Link>
+              )}
             </div>
           </div>
         </div>

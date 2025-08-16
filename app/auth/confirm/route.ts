@@ -7,6 +7,8 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
+  const oldEmail = searchParams.get("old_email");
+  const newEmail = searchParams.get("new_email");
 
   // Default to 'email' type if not specified
   const otpType = type || "email";
@@ -29,13 +31,14 @@ export async function GET(request: NextRequest) {
   // Route based on the type parameter
   console.log(type);
   switch (type) {
-    case "invite": 
+    case "invite":                  
     case "recovery":
       // These require password setup
       redirect("/profile/reset-password");
+    case "email_change":
+      redirect(`/profile/change-email/success?old_email=${encodeURIComponent(oldEmail || "")}&new_email=${encodeURIComponent(newEmail || "")}`);
     case "signup":
     case "magiclink":
-    case "email_change":
     case "email":
     default:
       // These go straight to home
