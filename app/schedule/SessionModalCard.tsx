@@ -69,7 +69,7 @@ const getDateString = (timestamp: string) => {
       queryClient.invalidateQueries({ queryKey: ['sessions'] })
     }
   })
-  const currentUser = useUser()
+  const {currentUserProfile} = useUser()
 
   const handleToggleRsvp = () => {
     if (currentUserIsRsvpd) {
@@ -119,7 +119,7 @@ const getDateString = (timestamp: string) => {
                 }
 
                 {/* Edit button for admins */}
-                {currentUser.is_admin && (
+                {currentUserProfile?.is_admin && (
                   <button
                     onClick={() => setShowEditModal(true)}
                     className=" p-1 cursor-pointer rounded-md hover:bg-dark-400 transition-colors"
@@ -140,7 +140,7 @@ const getDateString = (timestamp: string) => {
           {/* Time & Date */}
           {session.start_time && (
             <div className="space-y-1">
-              {currentUser.currentUser && 
+              {currentUserProfile?.id && 
                 <div className="flex items-center gap-3">
                   {currentUserIsRsvpd ? (
                     <>

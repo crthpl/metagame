@@ -23,7 +23,6 @@ export const useUser = () => {
     currentUser, 
     currentUserLoading, 
     currentUserError,
-    is_admin: currentUserProfile?.is_admin ?? false,
     currentUserProfile
   }
 };

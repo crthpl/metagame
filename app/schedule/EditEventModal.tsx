@@ -62,7 +62,7 @@ export function AddEventModal({
   existingSessionId,
 }: AddEventModalProps) {
   const queryClient = useQueryClient();
-  const { is_admin } = useUser();
+  const { currentUserProfile } = useUser();
   const isEditMode = !!existingSessionId;
   const defaultFormData = {
     title: "",
@@ -85,7 +85,7 @@ export function AddEventModal({
   } = useQuery({
     queryKey: ["profiles", "all"],
     queryFn: adminGetAllProfiles,
-    enabled: !!is_admin && !!isOpen,
+    enabled: !!currentUserProfile?.is_admin && !!isOpen,
     staleTime: 1000 * 60 * 5,
   });
 
@@ -317,7 +317,7 @@ export function AddEventModal({
     }
   };
 
-  if (!isOpen || !is_admin) return null;
+  if (!isOpen || !currentUserProfile?.is_admin) return null;
 
   // Show loading state while fetching session data in edit mode
   if (isEditMode && sessionLoading) {

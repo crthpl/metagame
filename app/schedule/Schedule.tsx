@@ -87,6 +87,7 @@ export default function Schedule({
   dayIndex?: number;
 }) {
   const router = useRouter()
+  const {currentUserProfile} = useUser()
   const { data: sessions = [] , isLoading: sessionsLoading, isError: sessionsError} = useQuery({
     queryKey: ['sessions'],
     queryFn: getAllSessions
@@ -98,9 +99,9 @@ export default function Schedule({
   })
   const { data: currentUserRsvps = [] } = useQuery({
     queryKey: ['rsvps', 'current-user'],
-    queryFn: getCurrentUserRsvps
+    queryFn: getCurrentUserRsvps,
+    enabled: !!currentUserProfile?.id
   })
-  const {currentUser, is_admin} = useUser()
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
 
@@ -114,11 +115,12 @@ export default function Schedule({
       []  // Day 2: Sunday 9/14
     ] as DbSessionView[][];
     const filterSessionForUser = (session: DbSessionView) => {
+      if (!currentUserProfile) return true
       if (currentUserRsvps.some(rsvp => rsvp.session_id === session.id!)) {
         return true
       }
       const sessionHostIds = [session.host_1_id, session.host_2_id, session.host_3_id].filter(Boolean)
-      return sessionHostIds.some(hostId => currentUser?.id === hostId)
+      return sessionHostIds.some(hostId => currentUserProfile?.id === hostId)
     }
     const maybeFilteredSessions = filterForUserEvents ? sessions.filter(filterSessionForUser) : sessions
     maybeFilteredSessions.forEach((session) => {
@@ -175,7 +177,7 @@ export default function Schedule({
   }
 
   const handleEmptySlotClick = (time: string, locationId: string) => {
-    if (!is_admin) return;
+    if (!currentUserProfile?.is_admin) return;
     
     setAddEventPrefill({
       startTime: time,
@@ -283,7 +285,7 @@ export default function Schedule({
           <div className="grid bg-dark-400 sticky top-0 lg:top-[120px] z-20" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
             <div className="bg-dark-600 p-3 sticky border-b-2 left-0 top-0 z-30 border border-secondary-300">
               <div className="flex text-sm text-secondary-300 font-medium size-full items-center justify-center gap-1">
-                {currentUser && (
+                {currentUserProfile?.id && (
                   <button 
                     className={`${filterForUserEvents ? 'opacity-100' : 'opacity-50'} cursor-pointer bg-dark-200 rounded-sm p-2 hover:bg-dark-300 transition-colors`} 
                     title="Filter for events I am rsvp'd to or hosting"  
@@ -345,7 +347,7 @@ export default function Schedule({
                               <div className="font-sans absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
                                 {currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) && <CheckIcon className="size-3"/>}
                                 <UserIcon className="size-3"/> 
-                                {currentUser ? (
+                                {currentUserProfile?.id ? (
                                   session.max_capacity ? 
                                     `${session.rsvp_count ?? "0"} / ${session.max_capacity}` :
                                     `${session.rsvp_count ?? "0"}`
@@ -362,7 +364,7 @@ export default function Schedule({
                       ))}
                       
                       {/* Clickable empty slot for admins */}
-                      {is_admin && eventsInSlot.length === 0 && (
+                      {currentUserProfile?.is_admin && eventsInSlot.length === 0 && (
                         <div
                           onClick={() => handleEmptySlotClick(time, venue.id)}
                           className="absolute inset-0 cursor-pointer hover:bg-dark-400 hover:bg-opacity-20 transition-colors duration-200 group"
@@ -409,7 +411,7 @@ export default function Schedule({
       />
 
       {/* Floating Action Button - Admin Only */}
-      {is_admin && (
+      {currentUserProfile?.is_admin && (
         <button
           className="absolute bottom-6 right-6 z-40 bg-primary-500 hover:bg-primary-600 text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200"
           title="Add new event"
