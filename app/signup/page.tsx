@@ -3,9 +3,10 @@
 import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
-import { LockIcon, MailIcon, TicketIcon } from "lucide-react";
+import { InfoIcon, LockIcon, MailIcon, TicketIcon } from "lucide-react";
 import { passwordSchema} from "@/lib/schemas/password";
 import { signupByTicketCode } from "@/app/actions/db/tickets";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const signupSchema = z.object({
   email: z.email("Please enter a valid email address"),
@@ -138,13 +139,23 @@ function SignupForm() {
           </div>
 
           <div className="flex flex-col">
-            <label
-              htmlFor="ticketCode"
-              className="mb-1 font-medium flex gap-1 items-center"
-            >
-              <TicketIcon className="size-4" /> Ticket Code:{" "}
-              <span className="text-red-500">*</span>
-            </label>
+            <div className='w-full flex justify-between'>
+              <label
+                htmlFor="ticketCode"
+                className="mb-1 font-medium flex gap-1 items-center"
+              >
+                <TicketIcon className="size-4" /> Ticket Code:{" "}
+                <span className="text-red-500">*</span>
+              </label>
+              <Tooltip clickable>
+                <TooltipTrigger>
+                  <InfoIcon className="size-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Enter the code that was sent with your ticket purchase confirmation email. If you didn&apos;t get one but believe you should be able to make an account, <a href="mailto:ricki.heicklen+metagame@gmail.com, briantsmiley42+metagame@gmail.com" className="underline font-bold">contact us</a> so we can or issue you an account.</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <input
               id="ticketCode"
               name="ticketCode"
