@@ -317,6 +317,36 @@ export function AddEventModal({
     }
   };
 
+  const hostSelectOptions = () => {
+    if (profilesLoading) {
+      return (
+        <SelectItem value="loading" disabled>
+          Loading profiles...
+        </SelectItem>
+      )
+    }
+    if (profilesError) {
+      return (
+        <SelectItem value="error" disabled>
+          Error loading profiles: {profilesError.message}
+        </SelectItem>
+      )
+    }
+    if (profiles && profiles.length === 0) {
+      return (
+        <SelectItem value="empty" disabled>
+          No profiles found
+        </SelectItem>
+      )
+    }
+    return profiles?.map((profile) => {
+      return (
+        <SelectItem key={profile.id} value={profile.id}>
+          {profile.first_name ? `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}` : profile.email || profile.id}
+        </SelectItem>
+      );
+    })
+  }
   if (!isOpen || !currentUserProfile?.is_admin) return null;
 
   // Show loading state while fetching session data in edit mode
@@ -484,45 +514,18 @@ export function AddEventModal({
             <Select
               name="host_1_id"
               value={formData.host_1_id || ""}
-              onValueChange={(value) =>
+              onValueChange={(value) => {
+                if (!value) return;
                 setFormData((prev) => {
-                  console.log("value", value)
                   return { ...prev, host_1_id: value }
                 })
-              }
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select a host" />
               </SelectTrigger>
               <SelectContent className="z-[70]">
-                {profilesLoading && (
-                  <SelectItem value="loading" disabled>
-                    Loading profiles...
-                  </SelectItem>
-                )}
-                {profilesError && (
-                  <SelectItem value="error" disabled>
-                    Error loading profiles: {profilesError.message}
-                  </SelectItem>
-                )}
-                {profiles && profiles.length === 0 && (
-                  <SelectItem value="empty" disabled>
-                    No profiles found
-                  </SelectItem>
-                )}
-                {profiles?.map((profile) => {
-                  const display = () => {
-                    if (profile.first_name) {
-                      return `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}`;
-                    }
-                    return profile.email || profile.id;
-                  };
-                  return (
-                    <SelectItem key={profile.id} value={profile.id}>
-                      {display()}
-                    </SelectItem>
-                  );
-                })}
+                {hostSelectOptions()}
               </SelectContent>
             </Select>
             {profilesError && (
@@ -553,21 +556,7 @@ export function AddEventModal({
                   </SelectTrigger>
                 <SelectContent className="z-[70]">
                   <SelectItem value="none">No second host</SelectItem>
-                  {profiles?.map((profile) => {
-                    // Don't show the same profile as host 1
-                    if (profile.id === formData.host_1_id) return null;
-                    const display = () => {
-                      if (profile.first_name) {
-                        return `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}`;
-                      }
-                      return profile.email || profile.id;
-                    };
-                    return (
-                      <SelectItem key={profile.id} value={profile.id}>
-                        {display()}
-                      </SelectItem>
-                    );
-                  })}
+                  {hostSelectOptions()}
                 </SelectContent>
               </Select>
             </div>
@@ -594,21 +583,7 @@ export function AddEventModal({
                   </SelectTrigger>
                 <SelectContent className="z-[70]">
                   <SelectItem value="none">No third host</SelectItem>
-                  {profiles?.map((profile) => {
-                    // Don't show the same profiles as host 1 or 2
-                    if (profile.id === formData.host_1_id || profile.id === formData.host_2_id) return null;
-                    const display = () => {
-                      if (profile.first_name) {
-                        return `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}`;
-                      }
-                      return profile.email || profile.id;
-                    };
-                    return (
-                      <SelectItem key={profile.id} value={profile.id}>
-                        {display()}
-                      </SelectItem>
-                    );
-                  })}
+                  {hostSelectOptions()}
                 </SelectContent>
               </Select>
             </div>
