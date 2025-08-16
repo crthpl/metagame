@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useUser } from '@/hooks/dbQueries'
 import { updateCurrentUserProfile, deleteCurrentUserProfilePicture } from '@/app/actions/db/users'
 import { getCurrentUserProfilePictureUploadUrl } from '@/app/actions/db/storage'
@@ -12,6 +11,7 @@ import { toast } from 'sonner'
 import { LinkIcon } from 'lucide-react'
 import { toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import Link from 'next/link'
 
 export default function Profile() {
   const { currentUser, currentUserProfile, currentUserLoading } = useUser()
@@ -333,6 +333,15 @@ export default function Profile() {
                 </Link>
               )}
             </div>
+            {isEditMode && (
+              <div className="flex flex-col gap-2">
+                <Link href="/profile/reset-password">
+                  <Button variant="outline" size="sm">
+                    Reset Password
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

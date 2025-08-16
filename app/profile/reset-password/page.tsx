@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { LockIcon } from "lucide-react";
 import { passwordSchema, type PasswordErrors } from "@/lib/schemas/password";
+import { Input } from "@/components/ui/input";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -13,6 +14,8 @@ export default function ResetPasswordPage() {
     password: "",
     confirmPassword: "",
   });
+  const [nonce, setNonce] = useState<string | null>(null);
+  const [reauthNeeded, setReauthNeeded] = useState(false);
   const [errors, setErrors] = useState<PasswordErrors>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,15 +37,23 @@ export default function ResetPasswordPage() {
     try {
       const validatedData = passwordSchema.parse(formData);
       const supabase = createClient();
-
-      const { error } = await supabase.auth.updateUser({
+      
+      const { data, error } = await supabase.auth.updateUser({
         password: validatedData.password,
+        nonce: nonce ?? undefined,
       });
-
+      console.log(`"data": ${JSON.stringify(data)}`);
+      console.log(`"error": ${JSON.stringify(error)}`);
+      console.log(`"nonce": ${nonce}`);
       if (error) {
-        setErrors({ submit: error.message });
+        if (error.code === "needs_reauthentication" || error.code === "reauth_nonce_missing") {
+          setReauthNeeded(true);
+          await supabase.auth.reauthenticate();
+        } else {
+          setErrors({ submit: error.message });
+        }
       } else {
-        router.push("/");
+        router.push("/profile/reset-password/success");
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -142,7 +153,20 @@ export default function ResetPasswordPage() {
               </span>
             )}
           </div>
-
+          {reauthNeeded && (
+            <div className="flex flex-col gap-2">
+              <div className="text-red-400 text-sm text-center">
+              ⚠ You need to reauthenticate to set your password. Enter the code sent to your email to continue. ⚠
+              </div>
+              <Input
+                type="text"
+                value={nonce || ""}
+                onChange={(e) => setNonce(e.target.value)}
+                required
+                className="w-full"
+              />
+            </div>
+          )}
           {errors.submit && (
             <div className="text-red-500 text-sm text-center">
               {errors.submit}
