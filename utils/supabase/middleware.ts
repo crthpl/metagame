@@ -1,8 +1,13 @@
+import { usersService } from '@/lib/db/users'
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 const loggedInOnlyRoutes = [
   '/profile','/logout'
+]
+
+const adminOnlyRoutes = [
+  '/admin'
 ]
 
 export async function updateSession(request: NextRequest) {
@@ -41,14 +46,25 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  const isAdmin = !!user && await usersService.getUserAdminStatus({userId: user?.id})
+  // If there is no user, redirect any logged in or admin only routes to the login page
   if (
     !user &&
-    loggedInOnlyRoutes.some(route => request.nextUrl.pathname.startsWith(route))
+    loggedInOnlyRoutes.concat(adminOnlyRoutes).some(route => request.nextUrl.pathname.startsWith(route))
   ) {
-    // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
-    return NextResponse.redirect(url)
+    const redirect = NextResponse.redirect(url)
+    return redirect
+  }
+
+  if (
+    !isAdmin &&
+    adminOnlyRoutes.some(route => request.nextUrl.pathname.startsWith(route))
+  ) {
+    const response = NextResponse.redirect(new URL('/', request.url))
+    supabaseResponse.cookies.getAll().forEach(cookie => response.cookies.set(cookie.name, cookie.value))
+    return response
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
