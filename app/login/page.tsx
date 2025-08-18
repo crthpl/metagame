@@ -68,7 +68,7 @@ export default function LoginPage() {
       } else {
         // Invalidate user queries to refresh authentication state
         await queryClient.invalidateQueries({ queryKey: ['users'] });
-        router.push("/");
+        router.push("/profile");
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
