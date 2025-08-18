@@ -45,7 +45,7 @@
   --color-interactive-muted: var(--color-secondary-600);     /* Muted interactive elements */
 
   /* Semantic Border Colors */
-  --color-border-primary: var(--color-dark-300);    /* Main borders */
+  --color-border-primary: var(--color-dark-100);    /* Main borders */
   --color-border-secondary: var(--color-dark-200);  /* Secondary borders */
   --color-border-accent: var(--color-secondary-500); /* Accent borders */
   --color-border-muted: var(--color-dark-400);      /* Subtle borders */
