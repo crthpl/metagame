@@ -308,7 +308,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
           amountBtc,
           ticketDetails: {
             ticketType: ticketType.id,
-            isTest: true,
+            isTest: process.env.NEXT_PUBLIC_OPENNODE_ENV === 'dev',
             purchaserEmail: formData.email,
           },
         }),
