@@ -17,7 +17,7 @@ import { toast } from 'sonner';
 import { AddEventModal } from './EditEventModal';
 import { BloodDrippingFrame } from '@/components/BloodDrippingFrame';
 import { dateUtils } from '@/utils/dateUtils';
-
+import { usePathname } from 'next/navigation';
 const SCHEDULE_START_TIMES = [14, 9, 9];
 const SCHEDULE_END_TIMES = [22, 22, 22];
   // Fixed conference days - create Date objects representing midnight in Pacific Time
@@ -86,6 +86,7 @@ export default function Schedule({
   sessionId?: string;
   dayIndex?: number;
 }) {
+  const pathname = usePathname()
   const router = useRouter()
   const {currentUserProfile} = useUser()
   const { data: sessions = [] , isLoading: sessionsLoading, isError: sessionsError} = useQuery({
@@ -155,6 +156,7 @@ export default function Schedule({
   
   // Sync URL parameters with state changes
   useEffect(() => {
+    if (!pathname.startsWith('/schedule')) return;
     const params = new URLSearchParams();
     if (currentDayIndex !== 0) params.set('day', currentDayIndex.toString());
     if (openedSessionId) params.set('session', openedSessionId);
