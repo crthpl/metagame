@@ -18,7 +18,7 @@ import { AddEventModal } from './EditEventModal';
 import { BloodDrippingFrame } from '@/components/BloodDrippingFrame';
 import { dateUtils } from '@/utils/dateUtils';
 import { usePathname } from 'next/navigation';
-import { formatSessionTitle } from '@/lib/utils';
+import { SessionTitle } from '@/components/SessionTitle';
 import { SessionTooltip } from './SessionTooltip';
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
@@ -336,7 +336,7 @@ export default function Schedule({
                           >
                             <div className="flex flex-col size-full relative">
                               <div className="font-bold text-sm leading-tight">
-                                {formatSessionTitle(session.title)}
+                                <SessionTitle title={session.title} />
                               </div>
                               <div className="text-xs font-sans">
                                 {dbGetHostsFromSession(session).join(", ")}
