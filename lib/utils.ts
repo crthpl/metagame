@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import React from "react"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -37,4 +38,16 @@ export function canonicalUserProfilePictureUrl({ userId }: { userId: string }): 
     throw new Error('NEXT_PUBLIC_SUPABASE_URL environment variable is not set')
   }
   return `${supabaseUrl}/storage/v1/object/public/${bucket}/${path}`
+}
+
+export function formatSessionTitle(title: string | null): React.ReactNode {
+  if (title === "OPEN HDMI CABLE") {
+    return React.createElement(React.Fragment, null,
+      React.createElement('span', { className: 'text-primary-600' }, 'OPEN'),
+      ' HD',
+      React.createElement('span', { className: 'text-primary-600' }, 'MI C'),
+      'ABLE'
+    );
+  }
+  return title;
 }

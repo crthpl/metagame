@@ -9,6 +9,7 @@ import { getCurrentUserRsvps } from "../actions/db/sessions";
 import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions";
 import { useUser } from "@/hooks/dbQueries";
 import { AddEventModal } from "./EditEventModal";
+import { formatSessionTitle } from "@/lib/utils";
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -106,7 +107,7 @@ const getDateString = (timestamp: string) => {
           <div className="flex flex-col gap-1">
             <div className="flex gap-2 w-full justify-between">
               <h2 className="text-xl font-bold text-secondary-200 leading-tight">
-                {session.title || 'Untitled Session'}
+                {formatSessionTitle(session.title || 'Untitled Session')}
               </h2>
               <div className="w-fit flex gap-1 self-start">
                 {showCopiedMessage ?
