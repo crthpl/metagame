@@ -7,37 +7,42 @@ import { updateCurrentUserProfile, deleteCurrentUserProfilePicture } from '@/app
 import { getCurrentUserProfilePictureUploadUrl } from '@/app/actions/db/storage'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { toast } from 'sonner'
-import { LinkIcon } from 'lucide-react'
+import { CheckIcon, InfoIcon, LinkIcon, XIcon } from 'lucide-react'
 import { toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
+import { ProfileFormData, initialProfileFormData, profileFormSchema } from '@/lib/schemas/profile'
+import { ProfileInfoModal } from '@/components/ProfileInfoModal'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+
 
 export default function Profile() {
   const { currentUser, currentUserProfile, currentUserLoading } = useUser()
   const [isEditMode, setIsEditMode] = useState(false)
+  const [showCTAModal, setShowCTAModal] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const queryClient = useQueryClient()
   
-  // Form state
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    discord_handle: '',
-    site_name: '',
-    site_url: '',
-  })
+  // Form state using shared schema
+  const [formData, setFormData] = useState<ProfileFormData>(initialProfileFormData)
 
   // Update form data when profile loads
   useEffect(() => {
     if (currentUserProfile && !isEditMode) {
-      setFormData({
-        first_name: currentUserProfile.first_name || '',
-        last_name: currentUserProfile.last_name || '',
-        discord_handle: currentUserProfile.discord_handle || '',
-        site_name: currentUserProfile.site_name || '',
-        site_url: currentUserProfile.site_url || '',
-      })
+      setFormData(profileFormSchema.parse(currentUserProfile))
+    }
+  }, [currentUserProfile, isEditMode])
+
+  // Check if modal should be shown
+  useEffect(() => {
+    if (currentUserProfile &&
+      !currentUserProfile.dismissed_info_request &&
+      !isEditMode &&
+      (!currentUserProfile.first_name || currentUserProfile.opted_in_to_homepage_display === null)
+    ) {
+      setShowCTAModal(true)
     }
   }, [currentUserProfile, isEditMode])
 
@@ -140,18 +145,14 @@ export default function Profile() {
         discord_handle: formData.discord_handle,
         site_name: formData.site_name,
         site_url: formData.site_url,
+        opted_in_to_homepage_display: formData.opted_in_to_homepage_display,
+        minor: formData.minor,
       }
     })
   }
 
   const handleCancel = () => {
-    setFormData({
-      first_name: currentUserProfile?.first_name || '',
-      last_name: currentUserProfile?.last_name || '',
-      discord_handle: currentUserProfile?.discord_handle || '',
-      site_name: currentUserProfile?.site_name || '',
-      site_url: currentUserProfile?.site_url || '',
-    })
+    setFormData(profileFormSchema.parse(currentUserProfile))
     setIsEditMode(false)
   }
 
@@ -170,7 +171,16 @@ export default function Profile() {
   const isSaving = updateProfileMutation.isPending || uploadPictureMutation.isPending || deletePictureMutation.isPending
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-md md:max-w-4xl flex flex-col items-center">
+    <>
+      {showCTAModal && 
+        <ProfileInfoModal 
+          onClose={() => setShowCTAModal(false)}
+          currentProfile={currentUserProfile}
+          currentUserId={currentUser?.id}
+        />
+      }
+      
+      <div className="container mx-auto px-4 py-8 max-w-md md:max-w-4xl flex flex-col items-center">
       <div className="flex w-full justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Profile</h1>
         {!isEditMode ? (
@@ -251,13 +261,13 @@ export default function Profile() {
                 <div className="grid grid-cols-2 gap-2">
                   <Input
                     placeholder="First name"
-                    value={formData.first_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
+                    value={formData.first_name ?? ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value || null }))}
                   />
                   <Input
                     placeholder="Last name"
-                    value={formData.last_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
+                    value={formData.last_name ?? ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value || null }))}
                   />
                 </div>
               ) : (
@@ -273,8 +283,8 @@ export default function Profile() {
               {isEditMode ? (
                 <Input
                   placeholder="Your Discord handle"
-                  value={formData.discord_handle}
-                  onChange={(e) => setFormData(prev => ({ ...prev, discord_handle: e.target.value }))}
+                  value={formData.discord_handle ?? ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, discord_handle: e.target.value || null }))}
                 />
               ) : (
                 <p className="text-lg">
@@ -292,13 +302,13 @@ export default function Profile() {
                 <div className="space-y-2">
                   <Input
                     placeholder="Website name"
-                    value={formData.site_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, site_name: e.target.value }))}
+                    value={formData.site_name ?? ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, site_name: e.target.value || null }))}
                   />
                   <Input
                     placeholder="Website URL"
-                    value={formData.site_url}
-                    onChange={(e) => setFormData(prev => ({ ...prev, site_url: e.target.value }))}
+                    value={formData.site_url ?? ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, site_url: e.target.value || null }))}
                   />
                 </div>
               ) : (
@@ -321,6 +331,7 @@ export default function Profile() {
               )}
             </div>
 
+
             <div>
               <label className="label">
                 <span className="label-text">Email</span>
@@ -334,6 +345,77 @@ export default function Profile() {
                 </Link>
               )}
             </div>
+            <div className={`flex gap-4 ${isEditMode ? 'flex-col' : ''}`}>
+              {/* Homepage Display Radio Group */}
+              <div className="flex gap-2 items-center">
+                <span className="flex items-center gap-1">
+                  <label className="block text-sm font-medium">Show on Homepage?</label>
+                  <Tooltip clickable>
+                    <TooltipTrigger>
+                      <InfoIcon className="size-3" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Whether your profile card is displayed on the homepage attendee list. Opt-in.
+                    </TooltipContent>
+                  </Tooltip>
+                </span>
+                {isEditMode ? (
+                  <RadioGroup
+                    value={formData.opted_in_to_homepage_display === null ? '' : formData.opted_in_to_homepage_display ? 'yes' : 'no'}
+                    onValueChange={(value) => {
+                      const newValue = value === 'yes' ? true : value === 'no' ? false : null
+                      setFormData(prev => ({ ...prev, opted_in_to_homepage_display: newValue }))
+                    }}
+                    className="flex"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="homepage-yes" />
+                      <label htmlFor="homepage-yes" className="text-sm">Yes</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="homepage-no" />
+                      <label htmlFor="homepage-no" className="text-sm">No</label>
+                    </div>
+                  </RadioGroup>
+                ) : (
+                  <p className="text-lg">
+                    {currentUserProfile?.opted_in_to_homepage_display === null
+                      ? 'Default opted out'
+                      : currentUserProfile?.opted_in_to_homepage_display
+                        ? <CheckIcon className="w-4 h-4 text-green-500" />
+                        : <XIcon className="w-4 h-4 text-red-500" />
+                    }
+                  </p>
+                )}
+              </div>
+              {/* Age Status Radio Group */}
+              <div className="flex gap-2 items-center">
+                <label className="block text-sm font-medium">18+?</label>
+                {isEditMode ? (
+                  <RadioGroup
+                    value={formData.minor === null ? '' : formData.minor ? 'no' : 'yes'}
+                    onValueChange={(value) => {
+                      const newValue = value === 'yes' ? false : value === 'no' ? true : null
+                      setFormData(prev => ({ ...prev, minor: newValue }))
+                    }}
+                    className="flex"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="age-yes" />
+                      <label htmlFor="age-yes" className="text-sm">Yes</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="age-no" />
+                      <label htmlFor="age-no" className="text-sm">No</label>
+                    </div>
+                  </RadioGroup>
+                ) : (
+                  <p className="text-lg">
+                    {currentUserProfile?.minor ? <XIcon className="w-4 h-4 text-red-500" /> : <CheckIcon className="w-4 h-4 text-green-500" /> }
+                  </p>
+                )}
+              </div>
+            </div>
             {isEditMode && (
               <div className="flex flex-col gap-2">
                 <Link href="/profile/reset-password">
@@ -346,6 +428,7 @@ export default function Profile() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
