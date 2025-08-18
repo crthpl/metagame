@@ -1,0 +1,34 @@
+import { z } from "zod"
+
+const nullableTextFromForm = z
+  .string()
+  .trim()
+  .or(z.literal(""))
+  .transform(v => v === "" ? null : v)
+  .nullable()
+export const profileFormSchema = z.object({
+  first_name: nullableTextFromForm,
+  last_name: nullableTextFromForm,
+  discord_handle: nullableTextFromForm,
+  site_name: nullableTextFromForm,
+  site_url: z
+    .url()
+    .trim()
+    .or(z.literal(""))
+    .transform(v => v === "" ? null : v)
+    .nullable(),
+  opted_in_to_homepage_display: z.boolean().nullable(),
+  minor: z.boolean().nullable(),
+})
+
+export type ProfileFormData = z.infer<typeof profileFormSchema>
+
+export const initialProfileFormData: ProfileFormData = {
+  first_name: '',
+  last_name: '',
+  discord_handle: '',
+  site_name: '',
+  site_url: '',
+  opted_in_to_homepage_display: null,
+  minor: null,
+}
