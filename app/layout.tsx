@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Jura } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
-import "./globals.css";
+import "@/app/globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { KbarApp } from "@/components/Kbar/App";
