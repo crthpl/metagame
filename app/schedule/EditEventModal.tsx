@@ -22,7 +22,6 @@ import { DbSessionAges } from "@/types/database/dbTypeAliases";
 import {
   getAgesDisplayText,
   SESSION_AGES,
-  SessionAgesEnum,
 } from "@/utils/dbUtils";
 import { XIcon } from "lucide-react";
 import { CONFERENCE_DAYS } from "./Schedule";
@@ -680,7 +679,7 @@ export function AddEventModal({
                   <SelectValue placeholder="Select an age" />
                 </SelectTrigger>
                 <SelectContent className="z-[70]">
-                  {SessionAgesEnum.map((age) => (
+                  {Object.values(SESSION_AGES).map((age) => (
                     <SelectItem key={age} value={age}>
                       {getAgesDisplayText(age)}
                     </SelectItem>

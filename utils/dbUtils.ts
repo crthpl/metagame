@@ -26,8 +26,6 @@ export const SESSION_AGES = {
   KIDS: 'KIDS' as const,
 } as const;
 
-export const SessionAgesEnum = Object.values(SESSION_AGES) as DbSessionAges[];
-
 export const TICKET_TYPES: Record<Uppercase<DbTicketType>, DbTicketType> = {
   NPC: 'npc' as const,
   PLAYER: 'player' as const,
