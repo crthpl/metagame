@@ -97,7 +97,7 @@ export const validateCouponForPurchase = async (
       });
     }
 
-    const originalPriceInCents = ticketType.price * 100;
+    const originalPriceInCents = ticketType.priceUSD * 100;
     const discountedPriceInCents = applyCouponDiscount(originalPriceInCents, coupon);
 
     return validateCouponResultSchema.parse({

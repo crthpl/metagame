@@ -55,9 +55,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
   const [message, setMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<ValidatedCoupon | null>(null);
-  const [finalPrice, setFinalPrice] = useState(selectedUsdPrice ?? ticketType.price);
+  const [finalPrice, setFinalPrice] = useState(selectedUsdPrice ?? ticketType.priceUSD);
   const isBtc = paymentMethod === 'btc';
-  const btcAmount = selectedBtcPrice ?? ticketType.priceBtc;
+  const btcAmount = selectedBtcPrice ?? ticketType.priceBTC;
   const couponsEnabled = isTicketTypeEligibleForCoupons(ticketType.id as DbTicketType) && !isBtc;
   
   const validateForm = (): boolean => {
@@ -135,7 +135,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
           couponCode: errorData?.error || `API error (${response.status})` 
         }));
         setAppliedCoupon(null);
-        setFinalPrice(ticketType.price);
+        setFinalPrice(ticketType.priceUSD);
         return;
       }
 
@@ -144,7 +144,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
       if (!parsedData.valid) {
         setErrors(prev => ({ ...prev, couponCode: parsedData.error || 'Invalid coupon code' }));
         setAppliedCoupon(null);
-        setFinalPrice(ticketType.price);
+        setFinalPrice(ticketType.priceUSD);
         return;
       }
 
@@ -165,7 +165,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
 
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null);
-    setFinalPrice(ticketType.price);
+    setFinalPrice(ticketType.priceUSD);
     setErrors(prev => ({
       ...prev,
       couponCode: ''
@@ -382,7 +382,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
           {/* Original Price */}
           <div className="flex justify-between items-center">
             <span className="text-gray-300">Ticket Price:</span>
-            <span className="text-gray-300">${ticketType.price.toFixed(2)}</span>
+            <span className="text-gray-300">${ticketType.priceUSD.toFixed(2)}</span>
           </div>
 
           {/* Separator */}
@@ -404,7 +404,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
               </button>
             </div>
             <span className="text-green-300 text-sm">
-              -${Math.min(appliedCoupon.discountAmountCents / 100, ticketType.price).toFixed(2)}
+              -${Math.min(appliedCoupon.discountAmountCents / 100, ticketType.priceUSD).toFixed(2)}
             </span>
           </div>
 

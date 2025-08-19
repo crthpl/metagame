@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Convert ticket price from dollars to cents for Stripe
-    const originalPriceInCents = ticketType.price * 100;
+    const originalPriceInCents = ticketType.priceUSD * 100;
 
     // Validate coupon if provided
     let coupon = null;

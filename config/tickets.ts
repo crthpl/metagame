@@ -6,17 +6,17 @@ export const DAY_PASS_OPTIONS: TicketType[] = [
   {
     id: 'friday',
     title: 'Friday',
-    price: 150,
+    priceUSD: 150,
     live: true,
     applicationBased: false,
-    priceBtc: 0.0011,
+    priceBTC: 0.0011,
     description: 'Single day pass for Friday 9/12'
   },
   {
     id: 'saturday', 
     title: 'Saturday',
-    price: 250,
-    priceBtc: 0.0018,
+    priceUSD: 250,
+    priceBTC: 0.0018,
     live: true,
     applicationBased: false,
     description: 'Single day pass for Saturday 9/13'
@@ -24,10 +24,10 @@ export const DAY_PASS_OPTIONS: TicketType[] = [
   {
     id: 'sunday', 
     title: 'Sunday', 
-    price: 250,
+    priceUSD: 250,
     live: true,
     applicationBased: false,
-    priceBtc: 0.0018,
+    priceBTC: 0.0018,
     description: 'Single day pass for Sunday 9/14'
   },
 ];
@@ -36,7 +36,7 @@ export const TICKET_TYPES: Record<string, TicketType> = {
   volunteer: {
     id: 'volunteer',
     title: 'Volunteer',
-    price: 0,
+    priceUSD: 0,
     live: true,
     applicationBased: true,
     ticketUrl: URLS.TICKET_VOLUNTEER,
@@ -50,8 +50,8 @@ export const TICKET_TYPES: Record<string, TicketType> = {
   player: {
     id: 'player',
     title: 'Player',
-    price: 580,
-    priceBtc: .004,
+    priceUSD: 580,
+    priceBTC: .004,
     live: true,
     regularPrice: 580,
     applicationBased: false,
@@ -65,8 +65,8 @@ export const TICKET_TYPES: Record<string, TicketType> = {
   supporter: {
     id: 'supporter',
     title: 'Supporter',
-    price: 2048,
-    priceBtc: .016,
+    priceUSD: 2048,
+    priceBTC: .016,
     regularPrice: 2048,
     applicationBased: false,
     live: true,
@@ -81,8 +81,8 @@ export const TICKET_TYPES: Record<string, TicketType> = {
   student: {
     id: 'student',
     title: 'Student',
-    price: 275,
-    priceBtc: .002,
+    priceUSD: 275,
+    priceBTC: .002,
     live: true,
     regularPrice: 275,
     applicationBased: false,
@@ -91,8 +91,8 @@ export const TICKET_TYPES: Record<string, TicketType> = {
   dayPass: {
     id: 'dayPass',
     title: 'Day Pass',
-    price: 150, // Default to Friday price, will be updated based on selection
-    priceBtc: .0011,
+    priceUSD: 150, // Default to Friday price, will be updated based on selection
+    priceBTC: .0011,
     live: true,
     regularPrice: 150,
     applicationBased: false,
@@ -102,7 +102,7 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     id: 'financialAid',
     title: 'Financial Aid',
     ticketUrl: URLS.TICKET_FINANCIAL_AID,
-    price: 0,
+    priceUSD: 0,
     live: true,
     regularPrice: 0,
     applicationBased: true,

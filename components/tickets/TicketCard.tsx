@@ -32,8 +32,8 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 
   // For day pass tickets, calculate price range and use selected day's details
   const isDayPass = ticketTypeId === 'dayPass';
-  const dayPassPrices = DAY_PASS_OPTIONS.map(option => option.price);
-  const dayPassPricesBtc = DAY_PASS_OPTIONS.map(option => option.priceBtc!);
+  const dayPassPrices = DAY_PASS_OPTIONS.map(option => option.priceUSD);
+  const dayPassPricesBtc = DAY_PASS_OPTIONS.map(option => option.priceBTC!);
   const minPrice = Math.min(...dayPassPrices);
   const maxPrice = Math.max(...dayPassPrices);
   const priceRange = minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-${maxPrice}`;
@@ -45,8 +45,8 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     if (!ticketType) return null;
   
     if (ticketTypeId === 'dayPass') {
-      const price = selectedDayPass?.price ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.price));
-      const priceBtc = selectedDayPass?.priceBtc ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceBtc!));
+      const price = selectedDayPass?.priceUSD ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceUSD));
+      const priceBtc = selectedDayPass?.priceBTC ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceBTC!));
       return {
         ...ticketType,
         price,
@@ -135,7 +135,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                         key={option.id} 
                         value={option.id}
                       >
-                        {option.title} - {isBtc ? `₿${option.priceBtc}` : `$${option.price}`}
+                        {option.title} - {isBtc ? `₿${option.priceBTC}` : `$${option.priceUSD}`}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -159,7 +159,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 
           {/* Price Display  */}
           <div className="">
-            {!isBtc && displayTicketType.regularPrice && displayTicketType.price !== displayTicketType.regularPrice ? (
+            {!isBtc && displayTicketType.regularPrice && displayTicketType.priceUSD !== displayTicketType.regularPrice ? (
               <div className="text-4xl text-gray-400 relative">
                 ${displayTicketType.regularPrice}
                 <div className="absolute left-7 right-0 mx-auto w-[65px] top-5 border-b-2 -rotate-[33deg] border-secondary-300" />
@@ -176,10 +176,10 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                         {priceRangeBtc}
                       </span>
                     : <span className="">
-                        ₿{displayTicketType.priceBtc}
+                        ₿{displayTicketType.priceBTC}
                       </span>
                 )
-                : (isDayPass && !selectedDayPass ? priceRange : `$${displayTicketType.price}`)
+                : (isDayPass && !selectedDayPass ? priceRange : `$${displayTicketType.priceUSD}`)
               }
             </p>
           </div>
