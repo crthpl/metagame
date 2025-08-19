@@ -107,12 +107,15 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
 
     try {
       // Prepare coupon data
-      const couponData = validateCouponBodySchema.parse({
+      const {data: couponData, error: couponError} = validateCouponBodySchema.safeParse({
         couponCode: formData.couponCode,
         ticketTypeId: ticketType.id,
         userEmail: formData.email || undefined,
       });
-
+      if (couponError) {
+        setErrors(prev => ({ ...prev, couponCode: couponError.issues.map(issue => issue.message).join(", ") }));
+        return;
+      }
       const response = await fetch('/api/validate-coupon', {
         method: 'POST',
         headers: {
