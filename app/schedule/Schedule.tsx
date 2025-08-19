@@ -325,7 +325,7 @@ export default function Schedule({
                           
                           <div
                             onClick={() => handleOpenSessionModal(session.id!)}
-                            className={` z-content p-1 m-0.5 border-2 rounded-md ${getEventColor(session)} text-black font-semibold`}
+                            className={`absolute z-content p-1 m-0.5 border-2 rounded-md ${getEventColor(session)} text-black font-semibold`}
                             style={{
                               top: `${getEventOffsetMinutes(session, time) * 2}px`,     // 2px per minute
                               height: `${getEventDurationMinutes(session) * 2}px`, // 2px per minute  

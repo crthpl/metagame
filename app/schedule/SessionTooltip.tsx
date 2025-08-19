@@ -74,7 +74,6 @@ export const SessionTooltip = ({
         <div 
           ref={triggerRef}
           onMouseEnter={updatePosition}
-          className="inline-block"
         >
           {children}
         </div>
