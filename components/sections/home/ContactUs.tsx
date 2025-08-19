@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '../../Card';
 import { Button } from '../../Button';
-import { CALL_FOR_SPEAKERS } from '../../../config';
+import { URLS } from '../../../utils/urls';
 
 export const ContactUs: React.FC = () => {
   return (
@@ -16,7 +16,7 @@ export const ContactUs: React.FC = () => {
             </p>
             <Button 
               className="mt-8 uppercase" 
-              link={CALL_FOR_SPEAKERS} 
+              link={URLS.CALL_FOR_SPEAKERS} 
               target="_blank"
             >
               GET INVOLVED!

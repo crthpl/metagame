@@ -1,5 +1,5 @@
 import Link from "./Link";
-import { SOCIAL_LINKS } from "../config";
+import { SOCIAL_LINKS } from "../utils/urls";
 
 export default function Footer() {
   const year = new Date().getFullYear();

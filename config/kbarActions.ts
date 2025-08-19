@@ -1,5 +1,5 @@
 import type { Action } from 'kbar';
-import { SOCIAL_LINKS } from '../config';
+import { SOCIAL_LINKS } from '../utils/urls';
 import { coinCount } from '../stores/coinStore';
 
 // Define our custom action type
