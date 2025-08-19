@@ -1,6 +1,6 @@
 import ScheduleProvider from "@/app/schedule/ScheduleProvider";
 import { Button } from "@/components/Button";
-import { CALL_FOR_SESSIONS } from "@/config";
+import { URLS } from "@/utils/urls";
 
 export default function ScheduleSection() {
     return (
@@ -14,7 +14,7 @@ export default function ScheduleSection() {
               />
             </div>
             <div className="my-8 flex justify-center">
-              <Button background="bg-cyan-500" link={CALL_FOR_SESSIONS} target="_blank">
+              <Button background="bg-cyan-500" link={URLS.CALL_FOR_SESSIONS} target="_blank">
                 Submit a session proposal
               </Button>
             </div>

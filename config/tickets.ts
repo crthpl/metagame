@@ -1,4 +1,4 @@
-import { TICKET_FINANCIAL_AID_URL, TICKET_VOLUNTEER_URL } from '@/config';
+import { URLS } from '@/utils/urls';
 import type { TicketType } from '../lib/types';
 
 // Day pass options for the dropdown
@@ -39,7 +39,7 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     price: 0,
     live: true,
     applicationBased: true,
-    ticketUrl: TICKET_VOLUNTEER_URL,
+    ticketUrl: URLS.TICKET_VOLUNTEER,
     description: 'Volunteer for 1-6 shifts for a free or reduced price ticket. May preclude participation in the megagame.',
     // features: [
     //   'Volunteer for 6 shifts over the weekend',
@@ -101,7 +101,7 @@ export const TICKET_TYPES: Record<string, TicketType> = {
   financialAid: {
     id: 'financialAid',
     title: 'Financial Aid',
-    ticketUrl: TICKET_FINANCIAL_AID_URL,
+    ticketUrl: URLS.TICKET_FINANCIAL_AID,
     price: 0,
     live: true,
     regularPrice: 0,
