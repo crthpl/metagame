@@ -1,16 +1,15 @@
 import Airtable from 'airtable';
 import type { AirtableRecord } from './types';
-import { AIRTABLE_PAT, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME } from './env';
-
-// console.log('Airtable configuration:', {
-//   hasPat: !!AIRTABLE_PAT,
-//   patLength: AIRTABLE_PAT?.length,
-//   hasBaseId: !!AIRTABLE_BASE_ID,
-//   hasTableName: !!AIRTABLE_TABLE_NAME,
-//   tableName: AIRTABLE_TABLE_NAME
-// });
 
 // Initialize Airtable with Personal Access Token (PAT)
+const AIRTABLE_PAT = process.env.AIRTABLE_PAT;
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+const AIRTABLE_TABLE_NAME = process.env.AIRTABLE_TABLE_NAME;
+
+if (!AIRTABLE_PAT || !AIRTABLE_BASE_ID || !AIRTABLE_TABLE_NAME) {
+  throw new Error('Missing required Airtable environment variables');
+}
+
 const base = new Airtable({
   apiKey: AIRTABLE_PAT,
 }).base(AIRTABLE_BASE_ID);
