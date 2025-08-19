@@ -1,3 +1,5 @@
+import { Button } from './Button';
+
 interface FAQ {
   id: number;
   question: string;
@@ -42,6 +44,32 @@ const faqs: FAQ[] = [
   },
   {
     id: 5,
+    question: "Are children welcome at Metagame?",
+    contentHtml:
+      <>
+        <p>Yes! We&apos;d love to see more children around, and kids under 13 attend Metagame for free. If you&apos;re bringing children, please register them by <strong>September 1st</strong>.</p>  
+        <p>In addition, childcare and children&apos;s programming for kids ages 5-12 will be available free of charge during the following hours:</p>
+        <ul>
+          <li><strong>Friday:</strong> 3pm-7pm (flexible dropoff & pickup)</li>
+          <li><strong>Saturday:</strong> 9:45am-3pm (dropoff 9:45am-10am, pickup 2:45pm-3pm)</li>
+          <li><strong>Saturday:</strong> 5pm-7:30pm (dropoff 5pm-5:15pm, pickup 7:15pm-7:30pm)</li>
+          <li><strong>Sunday:</strong> 9:45am-3pm (dropoff 9:45am-10am, pickup 2:45pm-3pm)</li>
+          <li><strong>Sunday:</strong> 5pm-7:30pm (dropoff 5pm-5:15pm, pickup 7:15pm-7:30pm)</li>
+        </ul>
+        <p>See the <a href="/schedule" target="_blank">schedule</a> for more details.</p>
+        <div className="mt-4 text-center">
+          <Button 
+            link="https://airtable.com/appTvPARUssZp4qiB/pagZ9WbXLji0eBqDU/form"
+            target="_blank"
+            className="inline-block"
+          >
+            Register Your Children
+          </Button>
+        </div>
+      </>,
+  },
+  {
+    id: 6,
     question: "I have another question",
     contentHtml:
       <p>Let us know <a href="https://bit.ly/metagame-interest" target="_blank">here</a>!</p>,
