@@ -9,6 +9,7 @@ import { getCurrentUserRsvps } from "../actions/db/sessions";
 import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions";
 import { useUser } from "@/hooks/dbQueries";
 import { AddEventModal } from "./EditEventModal";
+import { userCanEditSession } from "./actions";
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -53,7 +54,7 @@ const getDateString = (timestamp: string) => {
   
   // Check if session is at capacity
   const isSessionFull = session.max_capacity !== null && 
-                        (session.rsvp_count || 0) >= session.max_capacity
+  (session.rsvp_count || 0) >= session.max_capacity
   const queryClient = useQueryClient()
   const unrsvpMutation = useMutation({
     mutationFn: unrsvpCurrentUserFromSession,
@@ -70,7 +71,12 @@ const getDateString = (timestamp: string) => {
     }
   })
   const {currentUserProfile} = useUser()
-
+  const {data: showEditButton} = useQuery({
+    queryKey: ['userCanEditSession', session.id],
+    queryFn: () => userCanEditSession({userId: currentUserProfile!.id!, sessionId: session.id!}),
+    enabled: !!currentUserProfile?.id && !!session.id
+  })
+  
   const handleToggleRsvp = () => {
     if (currentUserIsRsvpd) {
       unrsvpMutation.mutate({sessionId:session.id!})
@@ -78,7 +84,7 @@ const getDateString = (timestamp: string) => {
       rsvpMutation.mutate({sessionId:session.id!})
     }
   }
-
+  
   const copyLink = () => {
     const base = window.location.origin
     const fullUrl = `${base}/schedule?session=${session.id!}`
@@ -119,7 +125,7 @@ const getDateString = (timestamp: string) => {
                 }
 
                 {/* Edit button for admins */}
-                {currentUserProfile?.is_admin && (
+                {showEditButton && (
                   <button
                     onClick={() => setShowEditModal(true)}
                     className=" p-1 cursor-pointer rounded-md hover:bg-dark-400 transition-colors"
