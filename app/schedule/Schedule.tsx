@@ -8,7 +8,7 @@ import SessionDetailsCard from "./SessionModalCard";
 import { useRouter } from "next/navigation";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { Modal } from "@/components/Modal";
-import { SmartTooltip } from '@/components/SmartTooltip';
+
 import { useQuery } from '@tanstack/react-query';
 import { getAllSessions, getCurrentUserRsvps } from '@/app/actions/db/sessions'
 import { getOrderedScheduleLocations } from '../actions/db/locations';
@@ -18,6 +18,8 @@ import { AddEventModal } from './EditEventModal';
 import { BloodDrippingFrame } from '@/components/BloodDrippingFrame';
 import { dateUtils } from '@/utils/dateUtils';
 import { usePathname } from 'next/navigation';
+import { SessionTooltip } from './SessionTooltip';
+
 const SCHEDULE_START_TIMES = [14, 9, 9];
 const SCHEDULE_END_TIMES = [22, 22, 22];
   // Fixed conference days - create Date objects representing midnight in Pacific Time
@@ -326,11 +328,11 @@ export default function Schedule({
                   return (
                     <div key={venue.id} className="bg-dark-500 min-h-[60px] border border-dark-400 relative overflow-visible">
                       {eventsInSlot.map((session) => (
-                        <SmartTooltip key={session.id} tooltip={<SessionDetailsCard session={session}/>}>
+                        <SessionTooltip key={session.id} tooltip={<SessionDetailsCard session={session}/>}>
                           
                           <div
                             onClick={() => handleOpenSessionModal(session.id!)}
-                            className={`absolute z-content p-1 m-0.5 border-2 rounded-md ${getEventColor(session)} text-black font-semibold`}
+                            className={` z-content p-1 m-0.5 border-2 rounded-md ${getEventColor(session)} text-black font-semibold`}
                             style={{
                               top: `${getEventOffsetMinutes(session, time) * 2}px`,     // 2px per minute
                               height: `${getEventDurationMinutes(session) * 2}px`, // 2px per minute  
@@ -362,7 +364,7 @@ export default function Schedule({
 
                             </div>
                           </div>
-                        </SmartTooltip>
+                        </SessionTooltip>
                       ))}
                       
                       {/* Clickable empty slot for admins */}
