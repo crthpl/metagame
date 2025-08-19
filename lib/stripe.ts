@@ -1,5 +1,10 @@
 import Stripe from 'stripe';
-import { STRIPE_SECRET_KEY } from './env';
+
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+
+if (!STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe environment variables');
+}
 
 // Initialize Stripe with secret key
 export const stripe = new Stripe(STRIPE_SECRET_KEY, {
