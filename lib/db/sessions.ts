@@ -1,5 +1,6 @@
 import { createServiceClient } from "@/utils/supabase/service"
 import { DbSessionInsert, DbSessionUpdate } from "@/types/database/dbTypeAliases"
+import { dbGetHostsFromSession } from "@/utils/dbUtils"
 
 export const sessionsService = {
   getSessionById: async ({sessionId}: {sessionId: string}) => {
@@ -230,4 +231,16 @@ export const sessionsService = {
     }
     return { success: true }
   },
+  getSessionHosts: async ({sessionId}: {sessionId: string}) => {
+    const supabase = createServiceClient()
+    const { data, error } = await supabase
+      .from('sessions_view')
+      .select()
+      .eq('id', sessionId)
+      .single()
+    if (error) {
+      throw new Error(error.message)
+    }
+    return dbGetHostsFromSession(data)
+  }
 }

@@ -29,6 +29,7 @@ import {
 import { XIcon } from "lucide-react";
 import { CONFERENCE_DAYS } from "./Schedule";
 import { dateUtils } from "@/utils/dateUtils";
+import { userEditSession } from "./actions";
 interface AddEventModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -116,7 +117,8 @@ export function AddEventModal({
       // Check if the host IDs exist in the profiles before setting them
       const validateHostId = (hostId: string | null) => {
         if (!hostId) return null;
-        if (!profiles) return null; // Don't set if profiles haven't loaded yet
+        // If profiles aren't loaded (e.g., non-admin view), keep the existing host id as-is
+        if (!profiles) return hostId;
         const profileExists = profiles.some(p => p.id === hostId);
         return profileExists ? hostId : null;
       };
@@ -206,6 +208,18 @@ export function AddEventModal({
     },
   });
 
+  const userEditSessionMutation = useMutation({
+    mutationFn: userEditSession,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sessions"] });
+      toast.success("Event updated successfully!");
+      onClose();
+    },
+    onError: (error) => {
+      toast.error(`Failed to update event: ${error.message}`);
+    },
+  });
+
   const updateEventMutation = useMutation({
     mutationFn: adminUpdateSession,
     onSuccess: () => {
@@ -280,10 +294,17 @@ export function AddEventModal({
     };
 
     if (isEditMode && existingSessionId) {
-      updateEventMutation.mutate({
-        sessionId: existingSessionId,
-        payload,
-      });
+      if (currentUserProfile?.is_admin) {
+        updateEventMutation.mutate({
+          sessionId: existingSessionId,
+          payload,
+        });
+      } else {
+        userEditSessionMutation.mutate({
+          sessionId: existingSessionId,
+          sessionUpdate: payload,
+        });
+      }
     } else {
       addEventMutation.mutate(payload);
     }
@@ -318,6 +339,14 @@ export function AddEventModal({
   };
 
   const hostSelectOptions = () => {
+    if (!currentUserProfile?.is_admin) {
+      console.log("non-admin")
+      return (
+        <SelectItem value="read-only" disabled>
+          Hosts are read-only for non-admins
+        </SelectItem>
+      );
+    }
     if (profilesLoading) {
       return (
         <SelectItem value="loading" disabled>
@@ -325,12 +354,12 @@ export function AddEventModal({
         </SelectItem>
       )
     }
-    if (profilesError) {
+    if (profilesError && currentUserProfile?.is_admin) {
       return (
         <SelectItem value="error" disabled>
           Error loading profiles: {profilesError.message}
         </SelectItem>
-      )
+      );
     }
     if (profiles && profiles.length === 0) {
       return (
@@ -347,7 +376,7 @@ export function AddEventModal({
       );
     })
   }
-  if (!isOpen || !currentUserProfile?.is_admin) return null;
+  if (!isOpen) return null;
 
   // Show loading state while fetching session data in edit mode
   if (isEditMode && sessionLoading) {
@@ -414,6 +443,7 @@ export function AddEventModal({
                 name="day"
                 required
                 value={formData.day}
+                disabled={!currentUserProfile?.is_admin}
                 onValueChange={(value) =>
                   setFormData((prev) => ({ ...prev, day: value }))
                 }
@@ -440,6 +470,7 @@ export function AddEventModal({
               <Select
                 name="locationId"
                 value={formData.locationId || ""}
+                disabled={!currentUserProfile?.is_admin}
                 onValueChange={(value) => {
                   if (!value) {
                     return
@@ -479,9 +510,10 @@ export function AddEventModal({
                 name="startTime"
                 type="time"
                 required
+                disabled={!currentUserProfile?.is_admin}
                 value={formData.startTime}
                 onChange={handleInputChange}
-                className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
+                className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
             <div>
@@ -496,57 +528,62 @@ export function AddEventModal({
                 name="endTime"
                 type="time"
                 required
+                disabled={!currentUserProfile?.is_admin}
                 value={formData.endTime}
                 onChange={handleInputChange}
-                className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
+                className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
           </div>
-
+          
           {/* Host 1 - Required */}
-          <div>
-            <div className="flex gap-2">
-              <label htmlFor="host_1_id" className="mb-1 block text-sm font-medium">
-                Host 1 <span className="text-red-500">*</span>
-              </label>
-              {formData.host_1_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_1_id: null }))} />}
+          { currentUserProfile?.is_admin && 
+            <div>
+              <div className="flex gap-2">
+                <label htmlFor="host_1_id" className="mb-1 block text-sm font-medium">
+                  Host 1 <span className="text-red-500">*</span>
+                </label>
+                {formData.host_1_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_1_id: null }))} />}
+              </div>
+              <Select
+                name="host_1_id"
+                value={formData.host_1_id || ""}
+                disabled={!currentUserProfile?.is_admin}
+                onValueChange={(value) => {
+                  if (!value) return;
+                  setFormData((prev) => {
+                    return { ...prev, host_1_id: value }
+                  })
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a host" />
+                </SelectTrigger>
+                <SelectContent className="z-[70]">
+                  {hostSelectOptions()}
+                </SelectContent>
+              </Select>
+              {profilesError && (
+                <p className="mt-1 text-xs text-red-400">
+                  Error: {profilesError.message}
+                </p>
+              )}
             </div>
-            <Select
-              name="host_1_id"
-              value={formData.host_1_id || ""}
-              onValueChange={(value) => {
-                if (!value) return;
-                setFormData((prev) => {
-                  return { ...prev, host_1_id: value }
-                })
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a host" />
-              </SelectTrigger>
-              <SelectContent className="z-[70]">
-                {hostSelectOptions()}
-              </SelectContent>
-            </Select>
-            {profilesError && (
-              <p className="mt-1 text-xs text-red-400">
-                Error: {profilesError.message}
-              </p>
-            )}
-          </div>
+          }
 
           {/* Host 2 - Optional, only show if Host 1 is selected */}
-          {formData.host_1_id && (
+          {formData.host_1_id && currentUserProfile?.is_admin && (
             <div>
               <div className="flex gap-2">
                 <label htmlFor="host_2_id" className="mb-1 block text-sm font-medium">
                   Host 2 <span className="text-gray-400">(Optional)</span> 
                 </label>
-                                 {formData.host_2_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_2_id: null }))} />}
+                {formData.host_2_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_2_id: null }))} />}
               </div>
-                                                              <Select
+                  <Select
                     name="host_2_id"
                     value={formData.host_2_id || ""}
+                    disabled={!currentUserProfile?.is_admin}
                     onValueChange={(value) =>
                       setFormData((prev) => ({ ...prev, host_2_id: value === "none" ? null : value }))
                     }
@@ -563,17 +600,18 @@ export function AddEventModal({
           )}
 
           {/* Host 3 - Optional, only show if Host 2 is selected */}
-          {formData.host_1_id && formData.host_2_id && (
+          {formData.host_1_id && formData.host_2_id && currentUserProfile?.is_admin && (
             <div>
               <div className="flex gap-2">
                 <label htmlFor="host_3_id" className="mb-1 block text-sm font-medium">
                   Host 3 <span className="text-gray-400">(Optional)</span>
                 </label>
-                                 {formData.host_3_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_3_id: null }))} />}
+                {formData.host_3_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_3_id: null }))} />}
               </div>
-                                                              <Select
+                      <Select
                     name="host_3_id"
                     value={formData.host_3_id || ""}
+                    disabled={!currentUserProfile?.is_admin}
                     onValueChange={(value) =>
                       setFormData((prev) => ({ ...prev, host_3_id: value === "none" ? null : value }))
                     }
