@@ -7,7 +7,6 @@ import z from "zod"
 import { SessionAgesEnum } from "@/utils/dbUtils"
 
 export async function userCanEditSession({userId, sessionId}: {userId: string, sessionId: string}) {
-  console.log("userCanEditSession", userId, sessionId)
   //Admins can edit any session
   if (await usersService.getUserAdminStatus({userId})) {
     return true
@@ -43,11 +42,47 @@ export async function userEditSession(
     const supabase = await createClient()
     const {data: {user: currentUser}, error: currentUserError } = await supabase.auth.getUser()
     if (currentUserError || !currentUser) {
-      return false
+      throw new Error("User not authenticated")
     }
-    if (!userCanEditSession({userId: currentUser.id, sessionId})) {
+    
+    // Check permissions using the efficient method
+    const permissions = await getUserEditPermissionsForSessions({
+      userId: currentUser.id,
+      sessionIds: [sessionId]
+    })
+    
+    if (!permissions[sessionId]) {
       throw new Error("Unauthorized")
     }
+    
     const validatedSessionUpdate = sessionUpdateSchema.parse(sessionUpdate)
     await sessionsService.updateSession({sessionId, payload: validatedSessionUpdate})
   }
+
+export async function getUserEditPermissionsForSessions({userId, sessionIds}: {userId: string, sessionIds: string[]}) {
+  
+  // If no sessions, return empty object
+  if (!sessionIds.length) return {}
+  
+  // Check if user is admin first
+  const userIsAdmin = await usersService.getUserAdminStatus({userId})
+  if (userIsAdmin) {
+    // Admin can edit all sessions
+    return sessionIds.reduce((acc, sessionId) => {
+      acc[sessionId] = true
+      return acc
+    }, {} as Record<string, boolean>)
+  }
+
+  // For non-admins, get all sessions they host
+  const hostedSessions = await sessionsService.getUsersHostedSessions({userId})
+  const hostedSessionIds = new Set(hostedSessions.map(session => session.id))
+  
+  // Create permissions object
+  const permissions: Record<string, boolean> = {}
+  for (const sessionId of sessionIds) {
+    permissions[sessionId] = hostedSessionIds.has(sessionId)
+  }
+  
+  return permissions
+}

@@ -39,6 +39,7 @@ interface AddEventModalProps {
     locationId: string;
   } | null;
   existingSessionId?: string | null;
+  canEdit?: boolean;
 }
 
 type FormData = {
@@ -61,6 +62,7 @@ export function AddEventModal({
   defaultDay,
   prefillData,
   existingSessionId,
+  canEdit = false,
 }: AddEventModalProps) {
   const queryClient = useQueryClient();
   const { currentUserProfile } = useUser();
@@ -299,11 +301,14 @@ export function AddEventModal({
           sessionId: existingSessionId,
           payload,
         });
-      } else {
+      } else if (canEdit) {
         userEditSessionMutation.mutate({
           sessionId: existingSessionId,
           sessionUpdate: payload,
         });
+      } else {
+        toast.error("You don't have permission to edit this event");
+        return;
       }
     } else {
       addEventMutation.mutate(payload);

@@ -9,7 +9,6 @@ import { getCurrentUserRsvps } from "../actions/db/sessions";
 import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions";
 import { useUser } from "@/hooks/dbQueries";
 import { AddEventModal } from "./EditEventModal";
-import { userCanEditSession } from "./actions";
 
 // Add PST timezone constant
 const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
@@ -37,9 +36,11 @@ const getDateString = (timestamp: string) => {
 
 
   export default function SessionDetailsCard({ 
-    session
+    session,
+    canEdit = false
   }: {
     session: DbSessionView;
+    canEdit?: boolean;
   }) {
   const [showCopiedMessage, setShowCopiedMessage] = useState(false)
   const [copyError, setCopyError] = useState(false)
@@ -71,11 +72,6 @@ const getDateString = (timestamp: string) => {
     }
   })
   const {currentUserProfile} = useUser()
-  const {data: showEditButton} = useQuery({
-    queryKey: ['userCanEditSession', session.id],
-    queryFn: () => userCanEditSession({userId: currentUserProfile!.id!, sessionId: session.id!}),
-    enabled: !!currentUserProfile?.id && !!session.id
-  })
   
   const handleToggleRsvp = () => {
     if (currentUserIsRsvpd) {
@@ -125,7 +121,7 @@ const getDateString = (timestamp: string) => {
                 }
 
                 {/* Edit button for admins */}
-                {showEditButton && (
+                {canEdit && (
                   <button
                     onClick={() => setShowEditModal(true)}
                     className=" p-1 cursor-pointer rounded-md hover:bg-dark-400 transition-colors"
@@ -200,6 +196,7 @@ const getDateString = (timestamp: string) => {
           isOpen={showEditModal}
           onClose={() => setShowEditModal(false)}
           existingSessionId={session.id}
+          canEdit={canEdit}
         />
       </div>
   );
