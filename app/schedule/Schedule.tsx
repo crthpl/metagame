@@ -18,6 +18,7 @@ import { AddEventModal } from './EditEventModal';
 import { BloodDrippingFrame } from '@/components/BloodDrippingFrame';
 import { dateUtils } from '@/utils/dateUtils';
 import { usePathname } from 'next/navigation';
+import { getUserEditPermissionsForSessions } from './actions';
 import { SessionTooltip } from './SessionTooltip';
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
@@ -105,6 +106,17 @@ export default function Schedule({
     queryFn: getCurrentUserRsvps,
     enabled: !!currentUserProfile?.id
   })
+  
+  // Fetch edit permissions for all sessions at once
+  const { data: editPermissions = {} } = useQuery({
+    queryKey: ['editPermissions'],
+    queryFn: () => getUserEditPermissionsForSessions({
+      userId: currentUserProfile!.id!,
+      sessionIds: sessions.map(s => s.id).filter(Boolean) as string[]
+    }),
+    enabled: !!currentUserProfile?.id && sessions.length > 0
+  })
+  
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
 
@@ -400,6 +412,7 @@ export default function Schedule({
         >
           <SessionDetailsCard 
             session={sessions.find(s => s.id === openedSessionId)!} 
+            canEdit={editPermissions[openedSessionId!] || false}
           />
         </Modal>
       }
