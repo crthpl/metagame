@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from './Button';
-import { SOCIAL_LINKS } from '../config';
+import { SOCIAL_LINKS } from '../utils/urls';
 
 export default function ContributeContent() {
   useEffect(() => {

@@ -5,7 +5,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { TicketFormFields } from './TicketFormFields';
 import type { TicketType } from '../../lib/types';
-import { SOCIAL_LINKS } from '../../config';
+import { SOCIAL_LINKS } from '../../utils/urls';
 import { 
   ticketPurchaseSchema,
   type TicketPurchaseFormData, 

@@ -1,4 +1,4 @@
-import { SOCIAL_LINKS } from '@/config';
+import { SOCIAL_LINKS } from '@/utils/urls';
 import { getTicketType } from '@/config/tickets';
 import { Resend } from 'resend';
 
