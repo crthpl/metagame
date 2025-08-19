@@ -392,7 +392,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
           {/* Applied Coupon */}
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <span className="text-green-300 text-sm">Coupon: {appliedCoupon.code}</span>
+              <span className="text-green-300">Coupon: {appliedCoupon.code}</span>
               <button
                 type="button"
                 onClick={handleRemoveCoupon}
@@ -402,7 +402,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
                 <XIcon className="size-4" />
               </button>
             </div>
-            <span className="text-green-300 text-sm">
+            <span className="text-green-300">
               -${Math.min(appliedCoupon.discountAmountCents / 100, ticketType.priceUSD).toFixed(2)}
             </span>
           </div>
