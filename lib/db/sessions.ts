@@ -167,8 +167,7 @@ export const sessionsService = {
     const { data, error } = await supabase
       .from('sessions_view')
       .select('*')
-      .eq('host_1_id', userId)
-      .or(`host_2_id.eq.${userId},host_3_id.eq.${userId}`)
+      .or(`host_1_id.eq.${userId},host_2_id.eq.${userId},host_3_id.eq.${userId}`)
     if (error) {
       throw new Error(error.message)
     }
