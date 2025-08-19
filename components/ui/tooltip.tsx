@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 
 const TooltipContext = React.createContext<{
   clickable: boolean
+  showArrow?: boolean
   open?: boolean
   setOpen?: (open: boolean) => void
   hoverTimeoutRef?: React.RefObject<NodeJS.Timeout | null>
@@ -27,10 +28,12 @@ function TooltipProvider({
 
 interface TooltipProps extends React.ComponentProps<typeof TooltipPrimitive.Root> {
   clickable?: boolean
+  showArrow?: boolean
 }
 
 function Tooltip({
   clickable = false,
+  showArrow = true,
   ...props
 }: TooltipProps) {
   const [open, setOpen] = React.useState(false)
@@ -40,8 +43,9 @@ function Tooltip({
     clickable,
     open,
     setOpen,
-    hoverTimeoutRef
-  }), [clickable, open])
+    hoverTimeoutRef,
+    showArrow
+  }), [clickable, open, showArrow])
 
   if (clickable) {
     return (
@@ -128,7 +132,7 @@ function TooltipContent({
   onMouseLeave,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content>) {
-  const { clickable, setOpen, hoverTimeoutRef } = React.useContext(TooltipContext)
+  const { clickable, setOpen, hoverTimeoutRef, showArrow } = React.useContext(TooltipContext)
 
   if (clickable && setOpen && hoverTimeoutRef) {
     const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -163,7 +167,7 @@ function TooltipContent({
           {...props}
         >
           {children}
-          <TooltipPrimitive.Arrow className="bg-bg-tertiary fill-bg-tertiary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
+          {showArrow && <TooltipPrimitive.Arrow className="bg-bg-tertiary fill-bg-tertiary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />}
         </TooltipPrimitive.Content>
       </TooltipPrimitive.Portal>
     )
