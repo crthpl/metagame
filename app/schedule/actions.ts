@@ -4,7 +4,7 @@ import { DbSession, DbSessionUpdate } from "@/types/database/dbTypeAliases"
 import { createClient } from "@/utils/supabase/server"
 import { usersService } from "@/lib/db/users"
 import z from "zod"
-import { SessionAgesEnum } from "@/utils/dbUtils"
+import { SESSION_AGES } from "@/utils/dbUtils"
 
 export async function userCanEditSession({userId, sessionId}: {userId: string, sessionId: string}) {
   //Admins can edit any session
@@ -29,7 +29,7 @@ const sessionUpdateSchema = z.object({
   description: z.string().min(1),
   min_capacity: z.number().min(1),
   max_capacity: z.number().min(1),
-  ages: z.enum(SessionAgesEnum)
+  ages: z.enum(SESSION_AGES)
 })
 export async function userEditSession(
   {
