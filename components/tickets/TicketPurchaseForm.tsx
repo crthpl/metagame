@@ -20,6 +20,7 @@ import { isTicketTypeEligibleForCoupons, ValidatedCoupon } from '@/lib/coupons';
 import { DbTicketType } from '@/types/database/dbTypeAliases';
 import { validateCouponBodySchema } from '@/app/api/validate-coupon/reqSchema';
 import { validateCouponResultSchema } from '@/lib/coupons';
+import { XIcon } from 'lucide-react';
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -395,12 +396,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
               <button
                 type="button"
                 onClick={handleRemoveCoupon}
-                className="text-gray-400 hover:text-red-400 transition-colors"
+                className="text-red-400 transition-colors"
                 title="Remove coupon"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <XIcon className="size-4" />
               </button>
             </div>
             <span className="text-green-300 text-sm">
