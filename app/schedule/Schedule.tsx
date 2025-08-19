@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, User2Icon, UserIcon, PlusIcon } from "lucide-react";
 import { DbSessionView } from "@/types/database/dbTypeAliases";
+import { Database } from "@/types/database/supabase.types";
 import Image from "next/image";
 import SessionDetailsCard from "./SessionModalCard";
 import { useRouter } from "next/navigation";
@@ -10,15 +11,13 @@ import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { Modal } from "@/components/Modal";
 
 import { useQuery } from '@tanstack/react-query';
-import { getAllSessions, getCurrentUserRsvps } from '@/app/actions/db/sessions'
-import { getOrderedScheduleLocations } from '../actions/db/locations';
+import { getCurrentUserRsvps } from '@/app/actions/db/sessions'
 import { useUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
 import { AddEventModal } from './EditEventModal';
 import { BloodDrippingFrame } from '@/components/BloodDrippingFrame';
 import { dateUtils } from '@/utils/dateUtils';
 import { usePathname } from 'next/navigation';
-import { getUserEditPermissionsForSessions } from './actions';
 import { SessionTooltip } from './SessionTooltip';
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
@@ -84,37 +83,26 @@ const getEventDurationMinutes = (session: DbSessionView) => {
 };
 
 export default function Schedule({ 
-  sessionId, dayIndex 
+  sessionId, 
+  dayIndex,
+  sessions,
+  locations,
+  editPermissions
 }: {
   sessionId?: string;
   dayIndex?: number;
+  sessions: DbSessionView[];
+  locations: Database['public']['Tables']['locations']['Row'][];
+  editPermissions: Record<string, boolean>;
 }) {
   const pathname = usePathname()
   const router = useRouter()
   const {currentUserProfile} = useUser()
-  const { data: sessions = [] , isLoading: sessionsLoading, isError: sessionsError} = useQuery({
-    queryKey: ['sessions'],
-    queryFn: getAllSessions
 
-  })
-  const { data: locations = [] , isLoading: locationsLoading, isError: locationsError} = useQuery({
-    queryKey: ['locations'],
-    queryFn: getOrderedScheduleLocations
-  })
   const { data: currentUserRsvps = [] } = useQuery({
     queryKey: ['rsvps', 'current-user'],
     queryFn: getCurrentUserRsvps,
     enabled: !!currentUserProfile?.id
-  })
-  
-  // Fetch edit permissions for all sessions at once
-  const { data: editPermissions = {} } = useQuery({
-    queryKey: ['editPermissions'],
-    queryFn: () => getUserEditPermissionsForSessions({
-      userId: currentUserProfile!.id!,
-      sessionIds: sessions.map(s => s.id).filter(Boolean) as string[]
-    }),
-    enabled: !!currentUserProfile?.id && sessions.length > 0
   })
   
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
@@ -215,14 +203,7 @@ export default function Schedule({
     return currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) ? 'bg-green-400 border-green-500' : locationEventColors[locationIndex % locationEventColors.length]
   };
 
-  if (sessionsLoading || locationsLoading) {
-    return <div>Loading...</div>
-  }
-  if (sessionsError || locationsError) {
-    console.error(sessionsError, locationsError)
 
-    return <div className="text-red-200">Error loading sessions or locations</div>
-  }
   return (
     <div className="relative font-serif w-full h-full flex flex-col bg-dark-500 overflow-hidden">
       {/* Day Navigator - Fixed on desktop, scrollable on mobile */}

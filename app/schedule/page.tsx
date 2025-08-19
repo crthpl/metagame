@@ -1,4 +1,4 @@
-import Schedule from "./Schedule";
+import ScheduleProvider from "./ScheduleProvider";
 import {z} from 'zod'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -15,7 +15,7 @@ export default async function ScheduleDemo({searchParams}:{searchParams: SearchP
   return (
     <div className="h-[calc(100vh-80px)] bg-dark-500  p-4 overflow-hidden">
       <div className="container mx-auto max-w-7xl h-full flex flex-col border border-secondary-300 rounded-xl overflow-y-auto">
-        <Schedule
+        <ScheduleProvider
           dayIndex={dayIndex}
           sessionId={parsedSessionId.success ? parsedSessionId.data : undefined}
         />

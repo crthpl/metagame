@@ -1,4 +1,4 @@
-import Schedule from "@/app/schedule/Schedule";
+import ScheduleProvider from "@/app/schedule/ScheduleProvider";
 import { Button } from "@/components/Button";
 import { CALL_FOR_SESSIONS } from "@/config";
 
@@ -10,7 +10,7 @@ export default function ScheduleSection() {
               Times, locations, content, hosts, and the fundamental fabric of reality all subject to change.
             </p>
             <div className="container mx-auto h-[calc(100vh-150px)] flex flex-col border border-secondary-300 rounded-xl overflow-y-auto">
-              <Schedule
+              <ScheduleProvider
               />
             </div>
             <div className="my-8 flex justify-center">
