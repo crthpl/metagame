@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { LinkIcon, UserIcon, EditIcon } from "lucide-react";
-import { DbSessionView } from "@/types/database/dbTypeAliases";
+import { SessionResponse } from "@/app/api/queries/sessions/schema";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getCurrentUserRsvps } from "../actions/db/sessions";
+import { fetchCurrentUserRsvps } from "./queries";
 import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions";
 import { useUser } from "@/hooks/dbQueries";
 import { AddEventModal } from "./EditEventModal";
@@ -16,7 +16,7 @@ import { dateUtils } from "@/utils/dateUtils";
     session,
     canEdit = false
   }: {
-    session: DbSessionView;
+    session: SessionResponse;
     canEdit?: boolean;
   }) {
   const [showCopiedMessage, setShowCopiedMessage] = useState(false)
@@ -24,7 +24,7 @@ import { dateUtils } from "@/utils/dateUtils";
   const [showEditModal, setShowEditModal] = useState(false)
   const currentUserRsvps = useQuery({
     queryKey: ['rsvps', 'current-user'],
-    queryFn: getCurrentUserRsvps
+    queryFn: fetchCurrentUserRsvps
   })
   const currentUserRsvp = currentUserRsvps.data?.find(rsvp => rsvp.session_id === session.id!)
   const currentUserIsRsvpd = !!currentUserRsvp
@@ -38,7 +38,7 @@ import { dateUtils } from "@/utils/dateUtils";
     mutationFn: unrsvpCurrentUserFromSession,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rsvps', 'current-user'] })
-      queryClient.invalidateQueries({ queryKey: ['sessions', session.id!] })
+      queryClient.invalidateQueries({ queryKey: ['sessions'] })
     }
   })
   const rsvpMutation = useMutation({

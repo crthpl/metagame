@@ -7,10 +7,8 @@ import {
   adminAddSession,
   adminUpdateSession,
   adminDeleteSession,
-  getSessionById,
 } from "../actions/db/sessions";
-import { adminGetAllProfiles } from "../actions/db/users";
-import { getOrderedScheduleLocations } from "../actions/db/locations";
+import { fetchLocations, fetchProfiles, fetchSessionById } from "./queries";
 import { useUser } from "@/hooks/dbQueries";
 import { toast } from "sonner";
 import {
@@ -87,14 +85,14 @@ export function AddEventModal({
     error: profilesError,
   } = useQuery({
     queryKey: ["profiles", "all"],
-    queryFn: adminGetAllProfiles,
+    queryFn: fetchProfiles,
     enabled: !!currentUserProfile?.is_admin && !!isOpen,
     staleTime: 1000 * 60 * 5,
   });
 
   const { data: locations = [], isLoading: locationsLoading } = useQuery({
     queryKey: ["locations"],
-    queryFn: getOrderedScheduleLocations,
+    queryFn: fetchLocations,
     enabled: !!isOpen,
     staleTime: 1000 * 60 * 5,
   });
@@ -102,7 +100,7 @@ export function AddEventModal({
   // Fetch the existing session data if in edit mode
   const { data: existingSession, isLoading: sessionLoading } = useQuery({
     queryKey: ["sessions", existingSessionId],
-    queryFn: () => getSessionById({ sessionId: existingSessionId! }),
+    queryFn: () => fetchSessionById(existingSessionId!),
     enabled: !!isEditMode && !!existingSessionId && !!isOpen,
     staleTime: 1000 * 60 * 5,
   });

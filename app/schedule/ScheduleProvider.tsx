@@ -1,7 +1,8 @@
-import { getAllSessions, getCurrentUserRsvps } from "@/app/actions/db/sessions"
 import { getUserEditPermissionsForSessions } from "./actions"
-import { getOrderedScheduleLocations } from "@/app/actions/db/locations"
 import { createClient } from "@/utils/supabase/server"
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
+import { fetchSessions, fetchCurrentUserRsvps, fetchLocations } from "./queries"
+import { SessionResponse } from "@/app/api/queries/sessions/schema"
 import Schedule from "./Schedule"
 
 export default async function ScheduleProvider({ 
@@ -11,41 +12,48 @@ export default async function ScheduleProvider({
   sessionId?: string;
   dayIndex?: number;
 }) {
-  const maybeCurrentUserRsvps = async () => {
-    try {
-      return await getCurrentUserRsvps()
-    } catch {
-      return []
-    }
-  }
-  const [sessions, locations, currentUserRsvps] = await Promise.all([
-    getAllSessions(),
-    getOrderedScheduleLocations(),
-    maybeCurrentUserRsvps()
+  const queryClient = new QueryClient()
+
+  // Prefetch all the data server-side
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ['sessions'],
+      queryFn: fetchSessions,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['rsvps', 'current-user'],
+      queryFn: fetchCurrentUserRsvps,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['locations'],
+      queryFn: fetchLocations,
+    }),
   ])
 
-  
-  // Get current user
+  // Get current user for edit permissions
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
   // Fetch edit permissions if user is logged in
   let editPermissions: Record<string, boolean> = {}
   if (user?.id) {
-    editPermissions = await getUserEditPermissionsForSessions({
-      userId: user.id,
-      sessionIds: sessions.map(s => s.id).filter(Boolean) as string[]
-    })
+    // Get sessions from the prefetched data
+    const sessions = queryClient.getQueryData(['sessions']) as SessionResponse[] | undefined
+    if (sessions) {
+      editPermissions = await getUserEditPermissionsForSessions({
+        userId: user.id,
+        sessionIds: sessions.map(s => s.id).filter(Boolean) as string[]
+      })
+    }
   }
   
   return (
-    <Schedule 
-      sessionId={sessionId} 
-      dayIndex={dayIndex}
-      locations={locations}
-      sessions={sessions}
-      editPermissions={editPermissions}
-      currentUserRsvps={currentUserRsvps}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Schedule 
+        sessionId={sessionId} 
+        dayIndex={dayIndex}
+        editPermissions={editPermissions}
+      />
+    </HydrationBoundary>
   )
 }
