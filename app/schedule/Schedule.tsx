@@ -358,7 +358,7 @@ export default function Schedule({
                               </div>
 
                               <div className="font-sans absolute bottom-0 right-0 text-xs opacity-80 flex items-center gap-1">
-                                {currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) && <CheckIcon className="size-3"/>}
+                                {currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) && <CheckIcon className="size-4 bg-white rounded-full p-0.5 text-green-600" strokeWidth={3}/>}
                                 <UserIcon className="size-3"/> 
                                 {currentUserProfile?.id ? (
                                   session.max_capacity ? 

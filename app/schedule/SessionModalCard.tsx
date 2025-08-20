@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { LinkIcon, UserIcon, EditIcon } from "lucide-react";
+import { useMemo, useState } from "react";
+import { LinkIcon, UserIcon, EditIcon, CheckIcon } from "lucide-react";
 import { SessionResponse } from "@/app/api/queries/sessions/schema";
 import { RsvpResponse } from "@/app/api/queries/rsvps/schema";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
@@ -27,9 +27,7 @@ import { dateUtils } from "@/utils/dateUtils";
     queryKey: ['rsvps', 'current-user'],
     queryFn: fetchCurrentUserRsvps
   })
-  const currentUserRsvp = currentUserRsvps.data?.find(rsvp => rsvp.session_id === session.id!)
-  const currentUserIsRsvpd = !!currentUserRsvp
-  const currentUserIsOnWaitlist = currentUserRsvp?.on_waitlist ?? false
+  const currentUserRsvp = useMemo(() => currentUserRsvps.data?.find(rsvp => rsvp.session_id === session.id!), [currentUserRsvps.data, session.id])
   
   // Check if session is at capacity
   const isSessionFull = session.max_capacity !== null && 
@@ -130,7 +128,7 @@ import { dateUtils } from "@/utils/dateUtils";
   const {currentUserProfile} = useUser()
   
   const handleToggleRsvp = () => {
-    if (currentUserIsRsvpd) {
+    if (!!currentUserRsvp) {
       unrsvpMutation.mutate({sessionId:session.id!})
     } else {
       rsvpMutation.mutate({sessionId:session.id!})
@@ -200,10 +198,10 @@ import { dateUtils } from "@/utils/dateUtils";
             <div className="space-y-1">
               {currentUserProfile?.id && 
                 <div className="flex items-center gap-3">
-                  {currentUserIsRsvpd ? (
+                  {!!currentUserRsvp ? (
                     <>
-                      <span className={`font-semibold ${currentUserIsOnWaitlist ? 'text-yellow-400' : 'text-green-400'}`}>
-                        {currentUserIsOnWaitlist ? 'on Waitlist' : "RSVP'D"}
+                      <span className={`font-semibold ${currentUserRsvp.on_waitlist ? 'text-yellow-400' : 'text-green-400'}`}>
+                        {currentUserRsvp.on_waitlist ? 'Waitlist' : "RSVP'D"}
                       </span>
                       <button 
                         className="text-red-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
@@ -249,6 +247,11 @@ import { dateUtils } from "@/utils/dateUtils";
             </div>
             {session.max_capacity && (
               <div className="text-secondary-300">
+                {currentUserRsvp && <CheckIcon 
+                  className={`size-4 inline-block mr-1 ${currentUserRsvp.on_waitlist ? 'text-yellow-600 bg-gray-600' : 'text-green-600 bg-white'} rounded-full p-0.5`} 
+                  strokeWidth={3}
+                  /> }
+                  
                 <UserIcon className="size-4 inline-block mr-1" /> {session.rsvp_count} / {session.max_capacity}
               </div>
             )}
