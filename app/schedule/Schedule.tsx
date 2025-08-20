@@ -215,8 +215,14 @@ export default function Schedule({
   }
   // Helper function to get event color
   const getEventColor = (session:SessionResponse) => {
+    const userIsRsvpd = currentUserRsvps.some(rsvp => rsvp.session_id === session.id!)
+    if (session.megagame) {
+      return userIsRsvpd 
+      ? "bg-[repeating-linear-gradient(45deg,#f97316,#f97316_10px,#a855f7_10px,#a855f7_20px)]" 
+      : "bg-[repeating-linear-gradient(45deg,#fb923c,#fb923c_10px,#c084fc_10px,#c084fc_20px)]"
+    }
     const locationIndex = locations.findIndex(l => l.id === session.location_id)
-    return currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) ? locationEventRSVPdColors[locationIndex % locationEventRSVPdColors.length] : locationEventColors[locationIndex % locationEventColors.length]
+    return userIsRsvpd ? locationEventRSVPdColors[locationIndex % locationEventRSVPdColors.length] : locationEventColors[locationIndex % locationEventColors.length]
   };
 
 
