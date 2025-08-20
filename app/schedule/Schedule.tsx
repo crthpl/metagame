@@ -2,8 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, User2Icon, UserIcon, PlusIcon } from "lucide-react";
-import { DbSessionRsvp, DbSessionView } from "@/types/database/dbTypeAliases";
-import { Database } from "@/types/database/supabase.types";
+import { SessionResponse } from "@/app/api/queries/sessions/schema";
 import Image from "next/image";
 import SessionDetailsCard from "./SessionModalCard";
 import { useRouter } from "next/navigation";
@@ -18,6 +17,8 @@ import { dateUtils } from '@/utils/dateUtils';
 import { usePathname } from 'next/navigation';
 import { SessionTitle } from '@/components/SessionTitle';
 import { SessionTooltip } from './SessionTooltip';
+import { useQuery } from '@tanstack/react-query';
+import { fetchSessions, fetchCurrentUserRsvps, fetchLocations } from './queries';
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
 const SCHEDULE_END_TIMES = [22, 22, 22];
@@ -50,7 +51,7 @@ const locationEventColors = [
 ];
 
 // Updated slot checking - PST based
-const eventStartsInSlot = (session: DbSessionView, slotTime: string) => {
+const eventStartsInSlot = (session: SessionResponse, slotTime: string) => {
   if (!session.start_time) return false;
   
   const sessionStartMinutes = dateUtils.getPSTMinutes(session.start_time);
@@ -62,7 +63,7 @@ const eventStartsInSlot = (session: DbSessionView, slotTime: string) => {
 };
 
 // Updated offset calculation - PST based
-const getEventOffsetMinutes = (session: DbSessionView, slotTime: string) => {
+const getEventOffsetMinutes = (session: SessionResponse, slotTime: string) => {
   if (!session.start_time) return 0;
   
   const sessionStartMinutes = dateUtils.getPSTMinutes(session.start_time);
@@ -73,7 +74,7 @@ const getEventOffsetMinutes = (session: DbSessionView, slotTime: string) => {
 };
 
 // Updated duration calculation - PST based
-const getEventDurationMinutes = (session: DbSessionView) => {
+const getEventDurationMinutes = (session: SessionResponse) => {
   if (!session.start_time || !session.end_time) return 30;
   
   const startMinutes = dateUtils.getPSTMinutes(session.start_time);
@@ -84,21 +85,31 @@ const getEventDurationMinutes = (session: DbSessionView) => {
 export default function Schedule({ 
   sessionId, 
   dayIndex,
-  sessions,
-  locations,
-  editPermissions,
-  currentUserRsvps
+  editPermissions
 }: {
   sessionId?: string;
   dayIndex?: number;
-  sessions: DbSessionView[];
-  locations: Database['public']['Tables']['locations']['Row'][];
   editPermissions: Record<string, boolean>;
-  currentUserRsvps: DbSessionRsvp[]
 }) {
   const pathname = usePathname()
   const router = useRouter()
   const {currentUserProfile} = useUser()
+
+  // Use queries to fetch data
+  const { data: sessions = [] } = useQuery({
+    queryKey: ['sessions'],
+    queryFn: fetchSessions,
+  })
+
+  const { data: currentUserRsvps = [] } = useQuery({
+    queryKey: ['rsvps', 'current-user'],
+    queryFn: fetchCurrentUserRsvps,
+  })
+
+  const { data: locations = [] } = useQuery({
+    queryKey: ['locations'],
+    queryFn: fetchLocations,
+  })
 
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
@@ -108,8 +119,8 @@ export default function Schedule({
       [], // Day 0: Friday 9/12
       [], // Day 1: Saturday 9/13  
       []  // Day 2: Sunday 9/14
-    ] as DbSessionView[][];
-    const filterSessionForUser = (session: DbSessionView) => {
+    ] as SessionResponse[][];
+    const filterSessionForUser = (session: SessionResponse) => {
       if (!currentUserProfile) return true
       if (currentUserRsvps.some(rsvp => rsvp.session_id === session.id!)) {
         return true
@@ -141,7 +152,7 @@ export default function Schedule({
     }));
   }, [sessions, filterForUserEvents]);
   const [currentDayIndex, setCurrentDayIndex] = useState(dayIndex ?? 0);
-  const [openedSessionId, setOpenedSessionId] = useState<DbSessionView['id'] | null>(sessionId ?? null);
+  const [openedSessionId, setOpenedSessionId] = useState<SessionResponse['id'] | null>(sessionId ?? null);
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
   const [addEventPrefill, setAddEventPrefill] = useState<{
     startTime: string;
@@ -190,7 +201,7 @@ export default function Schedule({
     })
   }
   // Helper function to get event color
-  const getEventColor = (session:DbSessionView) => {
+  const getEventColor = (session:SessionResponse) => {
     const locationIndex = locations.findIndex(l => l.id === session.location_id)
     return currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) ? 'bg-green-400 border-green-500' : locationEventColors[locationIndex % locationEventColors.length]
   };

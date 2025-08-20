@@ -2,11 +2,11 @@
 
 import { useState, useRef } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { DbSessionView } from "@/types/database/dbTypeAliases";
+import { SessionResponse } from "@/app/api/queries/sessions/schema";
 import SessionDetailsCard from "./SessionModalCard";
 
 interface SmartSessionTooltipProps {
-  session: DbSessionView;
+  session: SessionResponse;
   children: React.ReactNode;
 }
 
