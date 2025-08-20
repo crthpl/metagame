@@ -157,7 +157,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ ticketType, onClose, paymentM
       }));
     } catch (error) {
       console.error('Error applying coupon:', error);
-      setErrors(prev => ({ ...prev, couponCode: 'Failed to validate coupon' }));
+      setErrors(prev => ({ ...prev, couponCode: `Failed to validate coupon: ${error}` }));
     } finally {
       setIsApplyingCoupon(false);
     }
