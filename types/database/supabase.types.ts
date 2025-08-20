@@ -252,6 +252,7 @@ export type Database = {
           id: string
           location_id: string | null
           max_capacity: number | null
+          megagame: boolean
           min_capacity: number | null
           start_time: string | null
           title: string | null
@@ -266,6 +267,7 @@ export type Database = {
           id?: string
           location_id?: string | null
           max_capacity?: number | null
+          megagame?: boolean
           min_capacity?: number | null
           start_time?: string | null
           title?: string | null
@@ -280,6 +282,7 @@ export type Database = {
           id?: string
           location_id?: string | null
           max_capacity?: number | null
+          megagame?: boolean
           min_capacity?: number | null
           start_time?: string | null
           title?: string | null
@@ -413,6 +416,7 @@ export type Database = {
           location_id: string | null
           location_name: string | null
           max_capacity: number | null
+          megagame: boolean | null
           min_capacity: number | null
           rsvp_count: number | null
           start_time: string | null

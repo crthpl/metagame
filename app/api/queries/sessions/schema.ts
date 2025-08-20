@@ -26,6 +26,7 @@ export const SessionSchema = z.object({
   host_3_first_name: z.string().nullable(),
   host_3_last_name: z.string().nullable(),
   ages: z.enum(SESSION_AGES).nullable(),
+  megagame: z.boolean(),
 }) satisfies z.ZodType<DbSession>
 
 export const SessionsResponseSchema = z.array(SessionSchema)
