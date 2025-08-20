@@ -24,9 +24,9 @@ export const SESSION_AGES = {
   ALL: 'ALL' as const,
   ADULTS: 'ADULTS' as const,
   KIDS: 'KIDS' as const,
-} as const;
+} as const satisfies Record<Uppercase<DbSessionAges>, DbSessionAges>;
 
-export const TICKET_TYPES: Record<Uppercase<DbTicketType>, DbTicketType> = {
+export const TICKET_TYPES = {
   NPC: 'npc' as const,
   PLAYER: 'player' as const,
   SUPPORTER: 'supporter' as const,
@@ -34,7 +34,7 @@ export const TICKET_TYPES: Record<Uppercase<DbTicketType>, DbTicketType> = {
   FRIDAY: 'friday' as const,
   SATURDAY: 'saturday' as const,
   SUNDAY: 'sunday' as const,
-} as const;
+} as const satisfies Record<Uppercase<DbTicketType>, DbTicketType>;
 
 export const TICKET_TYPES_ENUM = Object.values(TICKET_TYPES) as DbTicketType[];
 
