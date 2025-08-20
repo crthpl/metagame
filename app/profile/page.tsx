@@ -70,7 +70,8 @@ export default function Profile() {
       // Upload file directly to storage using signed URL
       await uploadFileWithSignedUrl(signedUrl, file)
       
-      updateProfileMutation.mutate({
+      // Update profile with new picture URL directly without triggering the profile update mutation
+      await updateCurrentUserProfile({
         data: {
           profile_pictures_url: storageUrl + '?v=' + Date.now()
         }
