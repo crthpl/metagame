@@ -6,7 +6,7 @@ import { SessionResponse } from "@/app/api/queries/sessions/schema";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchCurrentUserRsvps } from "./queries";
-import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actions/db/sessions";
+import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "@/app/actions/db/sessions";
 import { useUser } from "@/hooks/dbQueries";
 import { AddEventModal } from "./EditEventModal";
 import { SessionTitle } from "@/components/SessionTitle";

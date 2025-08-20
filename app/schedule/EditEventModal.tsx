@@ -7,7 +7,7 @@ import {
   adminAddSession,
   adminUpdateSession,
   adminDeleteSession,
-} from "../actions/db/sessions";
+} from "@/app/actions/db/sessions";
 import { fetchLocations, fetchProfiles, fetchSessionById } from "./queries";
 import { useUser } from "@/hooks/dbQueries";
 import { toast } from "sonner";

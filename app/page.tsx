@@ -1,4 +1,4 @@
-import SetAnimation from "../components/Set/SetAnimation";
+import SetAnimation from "@/components/Set/SetAnimation";
 import Tickets from "@/components/tickets/Tickets";
 import Sponsors from "@/components/Sponsors";
 import { Hero } from "@/components/sections/home/Hero";
