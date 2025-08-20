@@ -62,13 +62,20 @@ export const validateCouponForPurchase = async (
       if (!purchaserEmail) {
         return validateCouponResultSchema.parse({
           valid: false,
-          error: 'Coupon is marked as for a specific email address, but no email was provided'
+          error: 'Coupon is limited to specific purchaser emails, but no email was provided'
         });
       }
-      if (coupon.email_for !== purchaserEmail) {
+      const couponCheck = await couponsService.checkEmailAuthorization({ couponId: coupon.id, email: purchaserEmail })
+      if (!couponCheck) {
         return validateCouponResultSchema.parse({
           valid: false,
-          error: 'Coupon is marked as for a different email address'
+          error: 'Coupon is not enabled for this email address'
+        });
+      }
+      if (couponCheck.uses >= couponCheck.max_uses) {
+        return validateCouponResultSchema.parse({
+          valid: false,
+          error: 'Coupon has reached its maximum number of uses for this email address'
         });
       }
     }
