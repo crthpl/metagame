@@ -12,6 +12,14 @@ export const dateUtils = {
     const parts = dateUtils.getPacificParts(date);
     return Number(parts.hour) * 60 + Number(parts.minute);
   },
+  getStringDate: (timestamp: string) => {
+    const parts = dateUtils.getPacificParts(new Date(timestamp));
+    return `${parts.weekday}, ${parts.month} ${parts.day}, ${parts.year}`;
+  },
+  getStringTime: (timestamp: string) => {
+    const parts = dateUtils.getPacificParts(new Date(timestamp));
+    return `${parts.hour}:${parts.minute}`;
+  },
   
   getYYYYMMDD: (date: Date) => {
     return YMD_PACIFIC.format(date);
