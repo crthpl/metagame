@@ -14,15 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      coupon_emails: {
+        Row: {
+          coupon_id: string
+          email: string
+          max_uses: number
+          uses: number
+        }
+        Insert: {
+          coupon_id: string
+          email: string
+          max_uses?: number
+          uses?: number
+        }
+        Update: {
+          coupon_id?: string
+          email?: string
+          max_uses?: number
+          uses?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_emails_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupons: {
         Row: {
           coupon_code: string
           created_at: string
           description: string | null
           discount_amount_cents: number
-          email_for: string | null
+          email_for: boolean
           enabled: boolean
-          id: number
+          id: string
           max_uses: number | null
           used_count: number
         }
@@ -31,9 +60,9 @@ export type Database = {
           created_at?: string
           description?: string | null
           discount_amount_cents?: number
-          email_for?: string | null
+          email_for?: boolean
           enabled?: boolean
-          id?: number
+          id?: string
           max_uses?: number | null
           used_count?: number
         }
@@ -42,9 +71,9 @@ export type Database = {
           created_at?: string
           description?: string | null
           discount_amount_cents?: number
-          email_for?: string | null
+          email_for?: boolean
           enabled?: boolean
-          id?: number
+          id?: string
           max_uses?: number | null
           used_count?: number
         }
@@ -320,6 +349,24 @@ export type Database = {
       }
     }
     Views: {
+      coupon_emails_view: {
+        Row: {
+          coupon_code: string | null
+          coupon_id: string | null
+          email: string | null
+          max_uses: number | null
+          uses: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_emails_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       session_rsvps_view: {
         Row: {
           created_at: string | null
