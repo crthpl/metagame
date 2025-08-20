@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LinkIcon, UserIcon, EditIcon } from "lucide-react";
 import { SessionResponse } from "@/app/api/queries/sessions/schema";
+import { RsvpResponse } from "@/app/api/queries/rsvps/schema";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchCurrentUserRsvps } from "./queries";
@@ -36,14 +37,92 @@ import { dateUtils } from "@/utils/dateUtils";
   const queryClient = useQueryClient()
   const unrsvpMutation = useMutation({
     mutationFn: unrsvpCurrentUserFromSession,
-    onSuccess: () => {
+    onMutate: async ({ sessionId }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['rsvps', 'current-user'] })
+      await queryClient.cancelQueries({ queryKey: ['sessions'] })
+      
+      // Snapshot the previous values
+      const previousRsvps = queryClient.getQueryData(['rsvps', 'current-user'])
+      const previousSessions = queryClient.getQueryData(['sessions'])
+      
+      // Optimistically update RSVPs
+      queryClient.setQueryData(['rsvps', 'current-user'], (old: RsvpResponse[] | undefined) => 
+        old?.filter((rsvp) => rsvp.session_id !== sessionId) || []
+      )
+      
+      // Optimistically update sessions (decrease RSVP count)
+      queryClient.setQueryData(['sessions'], (old: SessionResponse[] | undefined) => 
+        old?.map((s) => 
+          s.id === sessionId 
+            ? { ...s, rsvp_count: Math.max(0, (s.rsvp_count || 0) - 1) }
+            : s
+        ) || []
+      )
+      
+      return { previousRsvps, previousSessions }
+    },
+    onError: (err, variables, context) => {
+      // Rollback on error
+      if (context?.previousRsvps) {
+        queryClient.setQueryData(['rsvps', 'current-user'], context.previousRsvps)
+      }
+      if (context?.previousSessions) {
+        queryClient.setQueryData(['sessions'], context.previousSessions)
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure consistency
       queryClient.invalidateQueries({ queryKey: ['rsvps', 'current-user'] })
       queryClient.invalidateQueries({ queryKey: ['sessions'] })
     }
   })
+  
   const rsvpMutation = useMutation({
     mutationFn: rsvpCurrentUserToSession,
-    onSuccess: () => {
+    onMutate: async ({ sessionId }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['rsvps', 'current-user'] })
+      await queryClient.cancelQueries({ queryKey: ['sessions'] })
+      
+      // Snapshot the previous values
+      const previousRsvps = queryClient.getQueryData(['rsvps', 'current-user'])
+      const previousSessions = queryClient.getQueryData(['sessions'])
+      
+      // Optimistically add RSVP (simplified - no waitlist logic)
+      const newRsvp: RsvpResponse = {
+        session_id: sessionId,
+        user_id: currentUserProfile?.id || '',
+        on_waitlist: false, // Let server handle waitlist logic
+        created_at: new Date().toISOString()
+      }
+      
+      queryClient.setQueryData(['rsvps', 'current-user'], (old: RsvpResponse[] | undefined) => 
+        [...(old || []), newRsvp]
+      )
+      
+      // Optimistically update sessions (increase RSVP count)
+      queryClient.setQueryData(['sessions'], (old: SessionResponse[] | undefined) => 
+        old?.map((s) => 
+          s.id === sessionId 
+            ? { ...s, rsvp_count: (s.rsvp_count || 0) + 1 }
+            : s
+        ) || []
+      )
+      
+      return { previousRsvps, previousSessions }
+    },
+    onError: (err, variables, context) => {
+      // Rollback on error
+      if (context?.previousRsvps) {
+        queryClient.setQueryData(['rsvps', 'current-user'], context.previousRsvps)
+      }
+      if (context?.previousSessions) {
+        queryClient.setQueryData(['sessions'], context.previousSessions)
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure consistency
       queryClient.invalidateQueries({ queryKey: ['rsvps', 'current-user'] })
       queryClient.invalidateQueries({ queryKey: ['sessions'] })
     }
@@ -126,13 +205,21 @@ import { dateUtils } from "@/utils/dateUtils";
                       <span className={`font-semibold ${currentUserIsOnWaitlist ? 'text-yellow-400' : 'text-green-400'}`}>
                         {currentUserIsOnWaitlist ? 'on Waitlist' : "RSVP'D"}
                       </span>
-                      <button className="text-red-400 cursor-pointer" onClick={handleToggleRsvp}>
-                        Un-RSVP
+                      <button 
+                        className="text-red-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
+                        onClick={handleToggleRsvp}
+                        disabled={rsvpMutation.isPending || unrsvpMutation.isPending}
+                      >
+                        {unrsvpMutation.isPending ? 'Un-RSVPing...' : 'Un-RSVP'}
                       </button>
                     </>
                   ) : (
-                    <button className="text-green-400 cursor-pointer" onClick={handleToggleRsvp}>
-                      {isSessionFull ? 'Join Waitlist' : 'RSVP'}
+                    <button 
+                      className="text-green-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
+                      onClick={handleToggleRsvp}
+                      disabled={rsvpMutation.isPending || unrsvpMutation.isPending}
+                    >
+                      {rsvpMutation.isPending ? 'RSVPing...' : (isSessionFull ? 'Join Waitlist' : 'RSVP')}
                     </button>
                   )}
                 </div>
