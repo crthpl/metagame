@@ -1,6 +1,6 @@
 import { createServiceClient } from "@/utils/supabase/service";
 import { OpenNodeCharge, OpenNodeChargeWebhook } from "opennode/dist/types/v1";
-import { OpennodeChargeInput } from "../schemas/opennode";
+import { OpennodeChargeInput } from "@/lib/schemas/opennode";
 import { DbOpendnodeOrder } from "@/types/database/dbTypeAliases";
 
 export const opennodeDbService = {

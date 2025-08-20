@@ -9,7 +9,7 @@ import {
   KBarResults,
   useMatches,
 } from "kbar";
-import { staticActions } from "../../config/kbarActions";
+import { staticActions } from "@/config/kbarActions";
 
 function RenderResults() {
   const { results } = useMatches();

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useDebounce } from "../utils/useDebounce";
+import { useDebounce } from "@/utils/useDebounce";
 
 interface TagProps {
   text?: string;
