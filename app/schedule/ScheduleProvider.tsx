@@ -1,4 +1,4 @@
-import { getAllSessions } from "@/app/actions/db/sessions"
+import { getAllSessions, getCurrentUserRsvps } from "@/app/actions/db/sessions"
 import { getUserEditPermissionsForSessions } from "./actions"
 import { getOrderedScheduleLocations } from "@/app/actions/db/locations"
 import { createClient } from "@/utils/supabase/server"
@@ -11,11 +11,19 @@ export default async function ScheduleProvider({
   sessionId?: string;
   dayIndex?: number;
 }) {
-  // Fetch all sessions and locations on the server
-  const [sessions, locations] = await Promise.all([
+  const maybeCurrentUserRsvps = async () => {
+    try {
+      return await getCurrentUserRsvps()
+    } catch {
+      return []
+    }
+  }
+  const [sessions, locations, currentUserRsvps] = await Promise.all([
     getAllSessions(),
-    getOrderedScheduleLocations()
+    getOrderedScheduleLocations(),
+    maybeCurrentUserRsvps()
   ])
+
   
   // Get current user
   const supabase = await createClient()
@@ -37,6 +45,7 @@ export default async function ScheduleProvider({
       locations={locations}
       sessions={sessions}
       editPermissions={editPermissions}
+      currentUserRsvps={currentUserRsvps}
     />
   )
 }
