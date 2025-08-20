@@ -10,31 +10,7 @@ import { rsvpCurrentUserToSession, unrsvpCurrentUserFromSession } from "../actio
 import { useUser } from "@/hooks/dbQueries";
 import { AddEventModal } from "./EditEventModal";
 import { SessionTitle } from "@/components/SessionTitle";
-
-// Add PST timezone constant
-const CONFERENCE_TIMEZONE = 'America/Los_Angeles';
-
-// Helper function to get PST time string
-const getTimeString = (timestamp: string) => {
-  return new Date(timestamp).toLocaleTimeString('en-US', { 
-    hour12: false, 
-    hour: '2-digit', 
-    minute: '2-digit',
-    timeZone: CONFERENCE_TIMEZONE
-  });
-};
-
-// Helper function to get PST date string
-const getDateString = (timestamp: string) => {
-  return new Date(timestamp).toLocaleDateString('en-US', { 
-    weekday: 'long',
-    month: 'long', 
-    day: 'numeric',
-    timeZone: CONFERENCE_TIMEZONE
-  });
-};
-
-
+import { dateUtils } from "@/utils/dateUtils";
 
   export default function SessionDetailsCard({ 
     session,
@@ -162,11 +138,11 @@ const getDateString = (timestamp: string) => {
                 </div>
               }
               <div className="text-secondary-300 font-medium">
-                📅 {getDateString(session.start_time)}
+                📅 {dateUtils.getStringDate(session.start_time)}
               </div>
               <div className="text-secondary-300">
-                🕐 {getTimeString(session.start_time)}
-                {session.end_time && ` - ${getTimeString(session.end_time)}`}
+                🕐 {dateUtils.getStringTime(session.start_time)}
+                {session.end_time && ` - ${dateUtils.getStringTime(session.end_time)}`}
               </div>
             </div>
           )}
