@@ -106,11 +106,18 @@ export default function Schedule({
     queryFn: fetchCurrentUserRsvps,
   })
 
-  const { data: locations = [] } = useQuery({
+  const { data: allLocations = [] } = useQuery({
     queryKey: ['locations'],
     queryFn: fetchLocations,
   })
 
+  // Filter and sort locations for schedule display
+  const locations = useMemo(() => {
+    return allLocations
+      .filter(location => location.display_in_schedule) // Only show locations that should be displayed in schedule
+      .sort((a, b) => a.schedule_display_order - b.schedule_display_order); // Sort by display order
+  }, [allLocations]);
+  
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
   // Group sessions by the 3 fixed conference days
