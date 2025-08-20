@@ -6,5 +6,5 @@ export const validateCouponBodySchema = z.object({
     ticketTypeId: z.enum(TICKET_TYPES_ENUM, {
       message: `Invalid ticket type, must be one of ${TICKET_TYPES_ENUM.join(', ')}`
     }),
-    userEmail: z.email("Invalid userEmail address").optional(),
+    userEmail: z.string().optional(),
   })
