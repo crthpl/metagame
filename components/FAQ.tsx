@@ -1,4 +1,5 @@
 import { Button } from './Button';
+import { URLS } from '../utils/urls';
 
 interface FAQ {
   id: number;
@@ -35,8 +36,8 @@ const faqs: FAQ[] = [
       <>
       <p>Yes, we offer several discount options:</p>
       <ul>
-        <li><strong>Volunteer tickets</strong>: Applications for volunteer tickets can be found <a href="https://airtable.com/appTvPARUssZp4qiB/pageL9exVG05jsQ0a/form" target="_blank">here</a> and will be evaluated on a rolling basis. Volunteers work up to 6 credits (with most 4-hour shifts worth between 1 and 3 credits) during or in advance of the conference, in exchange for a free or reduced price ticket.</li>
-        <li><strong>Financial aid tickets</strong>: We have a scholarship fund with free and reduced price tickets available for people for whom attending Metagame would pose a financial hardship. If the current ticket price ($580) is prohibitive but a 50% off ticket would be doable, you can use the discount code <strong>HALFPRICE</strong> to get a $290 ticket, on the honor system. For a reduction in ticket price beyond that or to apply for travel assistance, please fill out <a href="https://airtable.com/appTvPARUssZp4qiB/pagn3JjavjQvjvpge/form" target="_blank">this form</a>. The deadline to apply for financial aid is Monday, August 25th. We will try to get answers by Monday, September 1st.</li>
+        <li><strong>Volunteer tickets</strong>: Applications for volunteer tickets can be found <a href={URLS.TICKET_VOLUNTEER} target="_blank">here</a> and will be evaluated on a rolling basis. Volunteers work up to 6 credits (with most 4-hour shifts worth between 1 and 3 credits) during or in advance of the conference, in exchange for a free or reduced price ticket.</li>
+        <li><strong>Financial aid tickets</strong>: We have a scholarship fund with free and reduced price tickets available for people for whom attending Metagame would pose a financial hardship. If the current ticket price ($580) is prohibitive but a 50% off ticket would be doable, you can use the discount code <strong>HALFPRICE</strong> to get a $290 ticket, on the honor system. For a reduction in ticket price beyond that or to apply for travel assistance, please fill out <a href={URLS.TICKET_FINANCIAL_AID} target="_blank">this form</a>. The deadline to apply for financial aid is Monday, August 25th. We will try to get answers by Monday, September 1st.</li>
         <li><strong>Hidden discounts</strong>: There are plenty of easter eggs throughout the site that will unlock discounts. Only one discount code can be used per ticket, and the maximum discount attainable through minigames and puzzles is $100.</li>
         <li><strong>Community Partner Discount</strong>{`: If you want to be a major sponsor, we'll give you a free ticket, for a confusing notion of "free".`}</li>
       </ul>
@@ -59,7 +60,7 @@ const faqs: FAQ[] = [
         <p>See the <a href="/schedule" target="_blank">schedule</a> for more details.</p>
         <div className="mt-4 text-center">
           <Button 
-            link="https://airtable.com/appTvPARUssZp4qiB/pagZ9WbXLji0eBqDU/form"
+            link={URLS.CHILDREN_REGISTRATION}
             target="_blank"
             className="inline-block"
           >
@@ -78,7 +79,7 @@ const faqs: FAQ[] = [
     id: 7,
     question: "I have another question",
     contentHtml:
-      <p>Let us know <a href="https://bit.ly/metagame-interest" target="_blank">here</a>!</p>,
+      <p>Let us know <a href={URLS.INTEREST_FORM} target="_blank">here</a>!</p>,
   },
 ];
 
