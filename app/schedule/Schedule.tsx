@@ -45,9 +45,15 @@ const generateTimeSlots = (dayIndex: number) => {
 
 // Color options for events
 const locationEventColors = [
-  "bg-blue-300 border-blue-400", "bg-purple-300 border-purple-400", "bg-orange-300 border-orange-400", 
-  "bg-cyan-200 border-cyan-300", "bg-pink-300 border-pink-400", "bg-yellow-300 border-yellow-400", "bg-red-300 border-red-400", 
-  "bg-indigo-300 border-indigo-400", "bg-teal-300 border-teal-400"
+  "bg-blue-200 border-blue-300", "bg-purple-200 border-purple-300", "bg-orange-200 border-orange-300",
+  "bg-cyan-100 border-cyan-200", "bg-pink-200 border-pink-300", "bg-yellow-200 border-yellow-300", "bg-red-200 border-red-300",
+  "bg-indigo-200 border-indigo-300", "bg-teal-200 border-teal-300"
+];
+
+const locationEventRSVPdColors = [
+  "bg-blue-500 border-blue-600", "bg-purple-500 border-purple-600", "bg-orange-500 border-orange-600",
+  "bg-cyan-400 border-cyan-500", "bg-pink-500 border-pink-600", "bg-yellow-500 border-yellow-600", "bg-red-500 border-red-600",
+  "bg-indigo-500 border-indigo-600", "bg-teal-500 border-teal-600"
 ];
 
 // Updated slot checking - PST based
@@ -210,7 +216,7 @@ export default function Schedule({
   // Helper function to get event color
   const getEventColor = (session:SessionResponse) => {
     const locationIndex = locations.findIndex(l => l.id === session.location_id)
-    return currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) ? 'bg-green-400 border-green-500' : locationEventColors[locationIndex % locationEventColors.length]
+    return currentUserRsvps.some(rsvp => rsvp.session_id === session.id!) ? locationEventRSVPdColors[locationIndex % locationEventRSVPdColors.length] : locationEventColors[locationIndex % locationEventColors.length]
   };
 
 
