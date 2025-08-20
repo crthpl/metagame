@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { DbSession } from "@/types/database/dbTypeAliases"
-import { SessionAgesEnum } from "@/utils/dbUtils"
+import { SESSION_AGES } from "@/utils/dbUtils"
 
 export const SessionSchema = z.object({
   id: z.string(),
@@ -25,7 +25,7 @@ export const SessionSchema = z.object({
   host_3_email: z.string().nullable(),
   host_3_first_name: z.string().nullable(),
   host_3_last_name: z.string().nullable(),
-  ages: z.enum(SessionAgesEnum).nullable(),
+  ages: z.enum(SESSION_AGES).nullable(),
 }) satisfies z.ZodType<DbSession>
 
 export const SessionsResponseSchema = z.array(SessionSchema)
