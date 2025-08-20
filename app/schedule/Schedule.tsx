@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { CheckIcon, ChevronLeft, ChevronRight, FilterIcon, User2Icon, UserIcon, PlusIcon } from "lucide-react";
-import { DbSessionView } from "@/types/database/dbTypeAliases";
+import { DbSessionRsvp, DbSessionView } from "@/types/database/dbTypeAliases";
 import { Database } from "@/types/database/supabase.types";
 import Image from "next/image";
 import SessionDetailsCard from "./SessionModalCard";
@@ -10,8 +10,6 @@ import { useRouter } from "next/navigation";
 import { dbGetHostsFromSession } from "@/utils/dbUtils";
 import { Modal } from "@/components/Modal";
 
-import { useQuery } from '@tanstack/react-query';
-import { getCurrentUserRsvps } from '@/app/actions/db/sessions'
 import { useUser } from '@/hooks/dbQueries';
 import { toast } from 'sonner';
 import { AddEventModal } from './EditEventModal';
@@ -88,29 +86,22 @@ export default function Schedule({
   dayIndex,
   sessions,
   locations,
-  editPermissions
+  editPermissions,
+  currentUserRsvps
 }: {
   sessionId?: string;
   dayIndex?: number;
   sessions: DbSessionView[];
   locations: Database['public']['Tables']['locations']['Row'][];
   editPermissions: Record<string, boolean>;
+  currentUserRsvps: DbSessionRsvp[]
 }) {
   const pathname = usePathname()
   const router = useRouter()
   const {currentUserProfile} = useUser()
 
-  const { data: currentUserRsvps = [] } = useQuery({
-    queryKey: ['rsvps', 'current-user'],
-    queryFn: getCurrentUserRsvps,
-    enabled: !!currentUserProfile?.id
-  })
-  
   const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
-
-
-  
   // Group sessions by the 3 fixed conference days
   const days = useMemo(() => {
     const dayEvents = [

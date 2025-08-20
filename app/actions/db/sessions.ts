@@ -16,5 +16,5 @@ export const getAllSessions =  sessionsService.getAllSessions
 export const getSessionById = sessionsService.getSessionById
 export const getAllSessionRsvpCounts = sessionsService.getAllSessionRsvpCounts
 export const getSingleSessionRsvps = sessionsService.getSingleSessionRsvps
-export const getCurrentUserRsvps = currentUserWrapper(sessionsService.getUserRsvps)
+export const getCurrentUserRsvps = async () => currentUserWrapper(sessionsService.getUserRsvps)({})
 export const getCurrentUserHostedSessions = currentUserWrapper(sessionsService.getUsersHostedSessions)
