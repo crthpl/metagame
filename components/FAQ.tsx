@@ -1,3 +1,6 @@
+import { Button } from './Button';
+import { URLS } from '../utils/urls';
+
 interface FAQ {
   id: number;
   question: string;
@@ -22,9 +25,9 @@ const faqs: FAQ[] = [
   },
   {
     id: 3,
-    question: "Do you have day passes?",
+    question: "What time does Metagame start and end?",
     contentHtml:
-      <p>Not right now, but we might add them. If you are interested in day passes, please <a href="https://bit.ly/metagame-interest" target="_blank">let us know</a>!</p>,
+      <p>The registration desk opens at 2pm Friday, September 12th, and will stay open over the course of the conference. Metagame will run late into the night Sunday, September 14th.</p>,
   },
   {
     id: 4,
@@ -33,18 +36,50 @@ const faqs: FAQ[] = [
       <>
       <p>Yes, we offer several discount options:</p>
       <ul>
-        <li><strong>Early Bird</strong>: We have tiered pricing that increases over time. I once tried to do <a href="https://bayesshammai.substack.com/i/147141321/weird-experimental-pricing-scheme" target="_blank"> an exponential pricing system</a> based on what number ticket you purchased and it was a huge mess. So this one just has date cutoffs.</li>
-        <li><strong>NPC (Volunteer ticket)</strong>: Volunteers work 6 shifts over the weekend in exchange for a substantially reduced ticket price. They help staff the front desk, run the Megagame, make sure sessions are going smoothly, and do various other tasks that need to be done.</li>
-        <li><strong>Hidden discounts</strong>: There are plenty of easter eggs throughout the site that will unlock discounts. Each discount code will only be available a limited number of times.</li>
+        <li><strong>Volunteer tickets</strong>: Applications for volunteer tickets can be found <a href={URLS.TICKET_VOLUNTEER} target="_blank">here</a> and will be evaluated on a rolling basis. Volunteers work up to 6 credits (with most 4-hour shifts worth between 1 and 3 credits) during or in advance of the conference, in exchange for a free or reduced price ticket.</li>
+        <li><strong>Financial aid tickets</strong>: We have a scholarship fund with free and reduced price tickets available for people for whom attending Metagame would pose a financial hardship. If the current ticket price ($580) is prohibitive but a 50% off ticket would be doable, you can use the discount code <strong>HALFPRICE</strong> to get a $290 ticket, on the honor system. For a reduction in ticket price beyond that or to apply for travel assistance, please fill out <a href={URLS.TICKET_FINANCIAL_AID} target="_blank">this form</a>. The deadline to apply for financial aid is Monday, August 25th. We will try to get answers by Monday, September 1st.</li>
+        <li><strong>Hidden discounts</strong>: There are plenty of easter eggs throughout the site that will unlock discounts. Only one discount code can be used per ticket, and the maximum discount attainable through minigames and puzzles is $100.</li>
         <li><strong>Community Partner Discount</strong>{`: If you want to be a major sponsor, we'll give you a free ticket, for a confusing notion of "free".`}</li>
       </ul>
     </>,
   },
   {
     id: 5,
+    question: "Are children welcome at Metagame?",
+    contentHtml:
+      <>
+        <p>Yes! We&apos;d love to see more children around, and kids under 13 attend Metagame for free. If you&apos;re bringing children, please register them by <strong>September 1st</strong>.</p>  
+        <p>In addition, childcare and children&apos;s programming for kids ages 5-12 will be available free of charge during the following hours:</p>
+        <ul>
+          <li><strong>Friday:</strong> 3pm-7pm (flexible dropoff & pickup)</li>
+          <li><strong>Saturday:</strong> 9:45am-3pm (dropoff 9:45am-10am, pickup 2:45pm-3pm)</li>
+          <li><strong>Saturday:</strong> 5pm-7:30pm (dropoff 5pm-5:15pm, pickup 7:15pm-7:30pm)</li>
+          <li><strong>Sunday:</strong> 9:45am-3pm (dropoff 9:45am-10am, pickup 2:45pm-3pm)</li>
+          <li><strong>Sunday:</strong> 5pm-7:30pm (dropoff 5pm-5:15pm, pickup 7:15pm-7:30pm)</li>
+        </ul>
+        <p>See the <a href="/schedule" target="_blank">schedule</a> for more details.</p>
+        <div className="mt-4 text-center">
+          <Button 
+            link={URLS.CHILDREN_REGISTRATION}
+            target="_blank"
+            className="inline-block"
+          >
+            Register Your Children
+          </Button>
+        </div>
+      </>,
+  },
+  {
+    id: 6,
+    question: "What is the refund policy?",
+    contentHtml:
+      <p>Metagame tickets purchased in dollars are 94% refundable if requested by September 1st. After that point, we will not be able to issue refunds. Tickets purchased in Bitcoin are not refundable. You can also transfer your ticket to someone else by September 1st by emailing <a href="mailto:metagame@arbor.tech">ricki.heicklen@gmail.com</a>.</p>,
+  },
+  {
+    id: 7,
     question: "I have another question",
     contentHtml:
-      <p>Let us know <a href="https://bit.ly/metagame-interest" target="_blank">here</a>!</p>,
+      <p>Let us know <a href={URLS.INTEREST_FORM} target="_blank">here</a>!</p>,
   },
 ];
 

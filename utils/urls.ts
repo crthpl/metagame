@@ -8,7 +8,7 @@ export const URLS = {
   CALL_FOR_SPEAKERS: 'https://airtable.com/appTvPARUssZp4qiB/pagqYAgxKlTdRbS6n/form',
   CALL_FOR_SESSIONS: 'https://airtable.com/appTvPARUssZp4qiB/pagVuzTEXODlUwoi0/form',
   CALL_FOR_VOLUNTEERS: 'https://airtable.com/appTvPARUssZp4qiB/pagqYAgxKlTdRbS6n/form',
-  CALL_FOR_SPONSORS: 'https://airtable.com/appTvPARUssZp4qiB/pagqYAgxKlTdRbS6n/form',
+  CHILDREN_REGISTRATION: 'https://airtable.com/appTvPARUssZp4qiB/pagZ9WbXLji0eBqDU/form',
 } as const;
 
 export const SOCIAL_LINKS = {
