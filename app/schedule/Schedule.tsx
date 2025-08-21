@@ -14,7 +14,7 @@ import { SessionResponse } from "@/app/api/queries/sessions/schema";
 import Image from "next/image";
 import SessionDetailsCard from "./SessionModalCard";
 import { useRouter } from "next/navigation";
-import { dbGetHostsFromSession } from "@/utils/dbUtils";
+import { dbGetHostsFromSession, SESSION_AGES } from "@/utils/dbUtils";
 import { Modal } from "@/components/Modal";
 
 import { useUser } from "@/hooks/dbQueries";
@@ -31,6 +31,8 @@ import {
   fetchCurrentUserRsvps,
   fetchLocations,
 } from "./queries";
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const SCHEDULE_START_TIMES = [14, 9, 9];
 const SCHEDULE_END_TIMES = [22, 22, 22];
@@ -483,6 +485,30 @@ export default function Schedule({
                               </div>
 
                               <div className="absolute right-0 bottom-0 flex items-center gap-1 font-sans text-xs opacity-80">
+                                {session.ages === SESSION_AGES.ADULTS &&
+                                  <Tooltip clickable>
+                                    <TooltipTrigger>
+                                      <span className="text-lg z-10">
+                                       🔞
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Adults only</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                }
+                                {session.ages === SESSION_AGES.KIDS &&
+                                  <Tooltip clickable>
+                                    <TooltipTrigger>
+                                      <Badge className=" bg-blue-600 text-base z-10 rounded-full p-0.5 aspect-square">
+                                        🐥
+                                      </Badge>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Kid friendly</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                }
                                 {currentUserRsvps.some(
                                   (rsvp) => rsvp.session_id === session.id!,
                                 ) && (
@@ -500,6 +526,8 @@ export default function Schedule({
                                     ? `${session.min_capacity} - ${session.max_capacity}`
                                     : null}
                               </div>
+
+                              
                             </div>
                           </div>
                         </SessionTooltip>
