@@ -227,7 +227,7 @@ export default function Schedule({
 
 
   return (
-    <div className="relative font-serif w-full h-full flex flex-col bg-dark-500 overflow-hidden">
+    <div className="font-serif flex flex-col bg-dark-500 rounded-2xl">
       {/* Day Navigator - Fixed on desktop, scrollable on mobile */}
       <div className="hidden lg:flex flex-shrink-0 items-center justify-between p-4 bg-dark-600 border-b border-secondary-300">
         <button
@@ -252,7 +252,7 @@ export default function Schedule({
       </div>
 
       {/* Scrollable Schedule Content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-x-auto overflow-y-hidden">
         {/* Day Navigator - Mobile only, inside scrollable area, sticky left */}
         <div className="lg:hidden flex items-center justify-between p-4 bg-dark-600 border-b border-secondary-300 sticky left-0 z-30">
           <button
@@ -278,14 +278,14 @@ export default function Schedule({
 
         <div className="min-w-fit h-fit">
           {/* Images Row - Scrollable on mobile, sticky on large */}
-          <div className="grid bg-dark-400 lg:sticky lg:top-0 lg:z-30" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
-            <div className="bg-dark-600 p-3 border left-0 sticky border-secondary-300">
+          <div className="grid bg-dark-400 lg:top-0 lg:z-30" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
+            <div className="bg-dark-600 p-3 border left-0 sticky z-30 border-secondary-300">
               {/* Empty space above time column */}
             </div>
             {locations.map((location) => (
               <div key={location.id} className="bg-dark-600 p-3 border border-secondary-300">
                 {location.name === "The Clocktower" ? (
-                  <BloodDrippingFrame className="w-full h-24">
+                  <BloodDrippingFrame className="w-full h-24 z-1">
                     {location.thumbnail_url ? 
                       <Image src={location.thumbnail_url} alt={location.name} width={100} height={100} className="object-cover w-full h-24"/>
                       : <div className="w-full h-24 bg-dark-500"/>
@@ -301,9 +301,9 @@ export default function Schedule({
           </div>
 
           {/* Names Row - Always sticky, with day nav on mobile */}
-          <div className="grid bg-dark-400 sticky top-0 lg:top-[120px] z-20" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
+          <div className="grid bg-dark-400 sticky top-0 z-20" style={{ gridTemplateColumns: `60px repeat(${locations.length}, minmax(180px, 1fr))` }}>
             <div className="bg-dark-600 p-3 sticky border-b-2 left-0 top-0 z-30 border border-secondary-300">
-              <div className="flex text-sm text-secondary-300 font-medium size-full items-center justify-center gap-1">
+              <div className="flex text-sm text-secondary-300 sticky font-medium size-full items-center justify-center gap-1">
                 {currentUserProfile?.id && (
                   <button 
                     className={`${filterForUserEvents ? 'opacity-100' : 'opacity-50'} cursor-pointer bg-dark-200 rounded-sm p-2 hover:bg-dark-300 transition-colors`} 
@@ -430,10 +430,10 @@ export default function Schedule({
         prefillData={addEventPrefill}
       />
 
-      {/* Floating Action Button - Admin Only */}
-      {currentUserProfile?.is_admin && (
+      {/* Floating Action Button - Admin Only - Only on /schedule route */}
+      {currentUserProfile?.is_admin && pathname.startsWith('/schedule') && (
         <button
-          className="absolute bottom-6 right-6 z-40 bg-primary-500 hover:bg-primary-600 text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200"
+          className="fixed bottom-6 right-6 z-[9999] bg-primary-500 hover:bg-primary-600 text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200"
           title="Add new event"
           onClick={() => setIsAddEventModalOpen(true)}
         >
