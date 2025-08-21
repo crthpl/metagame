@@ -45,12 +45,12 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     if (!ticketType) return null;
   
     if (ticketTypeId === 'dayPass') {
-      const price = selectedDayPass?.priceUSD ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceUSD));
+      const priceUSD = selectedDayPass?.priceUSD ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceUSD));
       const priceBTC = selectedDayPass?.priceBTC ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceBTC!));
       return {
         ...ticketType,
-        price,
-        regularPrice: price,
+        priceUSD,
+        regularPrice: priceUSD,
         description: selectedDayPass?.description ?? 'Single day pass - choose a day',
         title: selectedDayPass ? `Day Pass: ${selectedDayPass.title}` : 'Day Pass',
         priceBTC,
@@ -60,7 +60,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     if (ticketTypeId === 'volunteer') {
       return {
         ...ticketType,
-        price: '0+',
+        priceUSD: '0+',
         priceBTC: '0+',
         regularPrice: null
       };
@@ -68,7 +68,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
     if (ticketTypeId === 'financialAid') {
       return {
         ...ticketType,
-        price: '0-290',
+        priceUSD: '0-290',
         priceBTC: '0-0.002',
         regularPrice: null
       };
