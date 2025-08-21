@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { Button } from '../../Button';
 import { Typer } from '../../Typer';
 import './Hero.css';
+import RFPCTA from './RFPCTA';
 
 const gameNames = ["board games", "card games", "puzzle hunts", "LARPS", "video games", "escape rooms", "RPGs", "calvinball"];
 
@@ -58,6 +59,7 @@ export const Hero: React.FC = () => {
           </span>
         </p>
         <Button background="bg-cyan-500" link="#tickets">GET YOUR TICKET</Button>
+        <RFPCTA />
       </div>
     </section>
   );
