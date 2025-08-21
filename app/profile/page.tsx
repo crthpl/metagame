@@ -250,12 +250,12 @@ export default function Profile() {
               {isEditMode ? (
                 <div className="grid grid-cols-2 gap-2">
                   <Input
-                    placeholder="First name"
+                    placeholder="First"
                     value={formData.first_name}
                     onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
                   />
                   <Input
-                    placeholder="Last name"
+                    placeholder="Last"
                     value={formData.last_name}
                     onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
                   />
