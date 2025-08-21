@@ -9,7 +9,7 @@ export default function ScheduleSection() {
             <p className="text-center text-primary-200 mb-8">
               Times, locations, content, hosts, and the fundamental fabric of reality all subject to change.
             </p>
-            <div className="container mx-auto h-[calc(100vh-150px)] flex flex-col border border-secondary-300 rounded-xl overflow-y-auto">
+            <div className="container relative mx-auto h-[calc(100vh-150px)] flex flex-col border border-secondary-300 rounded-xl overflow-y-auto">
               <ScheduleProvider
               />
             </div>
