@@ -216,7 +216,9 @@ export default function Profile() {
               ) : (
                 <div className="w-32 h-32 bg-muted rounded-full flex items-center justify-center">
                   <span className="text-2xl text-muted-foreground">
-                    {fullName.charAt(0).toUpperCase()}
+                    {currentUserProfile?.first_name?.charAt(0)?.toUpperCase() || 
+                      currentUser?.email?.charAt(0)?.toUpperCase() || 
+                      '?'}
                   </span>
                 </div>
               )}
