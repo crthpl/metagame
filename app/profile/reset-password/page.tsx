@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
     try {
       const validatedData = passwordSchema.parse(formData);
       const supabase = createClient();
-      
+
       const { data, error } = await supabase.auth.updateUser({
         password: validatedData.password,
         nonce: nonce ?? undefined,
@@ -46,7 +46,10 @@ export default function ResetPasswordPage() {
       console.log(`"error": ${JSON.stringify(error)}`);
       console.log(`"nonce": ${nonce}`);
       if (error) {
-        if (error.code === "needs_reauthentication" || error.code === "reauth_nonce_missing") {
+        if (
+          error.code === "needs_reauthentication" ||
+          error.code === "reauth_nonce_missing"
+        ) {
           setReauthNeeded(true);
           await supabase.auth.reauthenticate();
         } else {
@@ -82,16 +85,16 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">
+    <div className="flex min-h-[80vh] items-center justify-center">
+      <div className="bg-dark-400 w-full max-w-md rounded-lg p-8 shadow-lg">
+        <h1 className="mb-6 text-center text-2xl font-bold">
           Set Your Password
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col">
             <label
               htmlFor="password"
-              className="mb-1 font-medium flex gap-1 items-center"
+              className="mb-1 flex items-center gap-1 font-medium"
             >
               <LockIcon className="size-4" /> New Password:{" "}
               <span className="text-red-500">*</span>
@@ -103,22 +106,22 @@ export default function ResetPasswordPage() {
               value={formData.password}
               onChange={handleInputChange}
               required
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 ${
+              className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
                 errors.password ? "border-red-500" : ""
               }`}
             />
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="mt-1 text-xs text-gray-500">
               Must be at least 10 characters with uppercase, lowercase, number,
               and symbol
             </div>
             {errors.password && (
-              <div className="text-red-500 text-xs mt-1">
+              <div className="mt-1 text-xs text-red-500">
                 {Array.isArray(errors.password) ? (
-                  <ul className="list-disc list-inside">
+                  <ul className="list-inside list-disc">
                     {(errors.password as string[]).map(
                       (error: string, index: number) => (
                         <li key={index}>{error}</li>
-                      )
+                      ),
                     )}
                   </ul>
                 ) : (
@@ -131,7 +134,7 @@ export default function ResetPasswordPage() {
           <div className="flex flex-col">
             <label
               htmlFor="confirmPassword"
-              className="mb-1 font-medium flex gap-1 items-center"
+              className="mb-1 flex items-center gap-1 font-medium"
             >
               <LockIcon className="size-4" /> Confirm Password:{" "}
               <span className="text-red-500">*</span>
@@ -143,20 +146,21 @@ export default function ResetPasswordPage() {
               value={formData.confirmPassword}
               onChange={handleInputChange}
               required
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 ${
+              className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
                 errors.confirmPassword ? "border-red-500" : ""
               }`}
             />
             {errors.confirmPassword && (
-              <span className="text-red-500 text-xs mt-1">
+              <span className="mt-1 text-xs text-red-500">
                 {errors.confirmPassword}
               </span>
             )}
           </div>
           {reauthNeeded && (
             <div className="flex flex-col gap-2">
-              <div className="text-red-400 text-sm text-center">
-              ⚠ You need to reauthenticate to set your password. Enter the code sent to your email to continue. ⚠
+              <div className="text-center text-sm text-red-400">
+                ⚠ You need to reauthenticate to set your password. Enter the
+                code sent to your email to continue. ⚠
               </div>
               <Input
                 type="text"
@@ -168,7 +172,7 @@ export default function ResetPasswordPage() {
             </div>
           )}
           {errors.submit && (
-            <div className="text-red-500 text-sm text-center">
+            <div className="text-center text-sm text-red-500">
               {errors.submit}
             </div>
           )}
@@ -176,7 +180,7 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? "Setting password..." : "Set Password"}
           </button>

@@ -31,12 +31,14 @@ export async function GET(request: NextRequest) {
   // Route based on the type parameter
   console.log(type);
   switch (type) {
-    case "invite":                  
+    case "invite":
     case "recovery":
       // These require password setup
       redirect("/profile/reset-password");
     case "email_change":
-      redirect(`/profile/change-email/success?old_email=${encodeURIComponent(oldEmail || "")}&new_email=${encodeURIComponent(newEmail || "")}`);
+      redirect(
+        `/profile/change-email/success?old_email=${encodeURIComponent(oldEmail || "")}&new_email=${encodeURIComponent(newEmail || "")}`,
+      );
     case "signup":
       redirect(`/signup/success?confirmed=true`);
     case "magiclink":

@@ -6,7 +6,7 @@ This is a website for the Metagame 2025 conference.
 
 ## Contributing
 
-Metagame is intended to be collaborative! Anybody can insert a little game into the site! Please feel free to make a fork, make a feature branch, and submit a PR. 
+Metagame is intended to be collaborative! Anybody can insert a little game into the site! Please feel free to make a fork, make a feature branch, and submit a PR.
 
 If you'd like to add a coupon associated with your game, please reach out to Ricki (ricki.heicklen@gmail.com) or leave a note about that in the PR.
 
@@ -29,6 +29,6 @@ pnpm dev
 The site should now be running at `http://localhost:3000`
 
 ### Requirements
+
 - Node.js 18 or later
 - pnpm 8.x or later
-

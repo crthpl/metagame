@@ -1,4 +1,9 @@
-import { Tables, TablesInsert, TablesUpdate, Enums } from "@/types/database/supabase.types";
+import {
+  Tables,
+  TablesInsert,
+  TablesUpdate,
+  Enums,
+} from "@/types/database/supabase.types";
 
 export type DbSession = Tables<"sessions">;
 export type DbSessionInsert = TablesInsert<"sessions">;

@@ -1,6 +1,6 @@
 ---
 id: 20
-name: Jacob "Conflux" Cohen 
+name: Jacob "Conflux" Cohen
 image: /images/conflux_crossword_finger.png
 gameName: "Puzzles for Progress"
 gameUrl: "https://www.puzzlesforprogress.net/"

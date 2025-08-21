@@ -4,27 +4,32 @@ import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { InfoIcon, LockIcon, MailIcon, TicketIcon } from "lucide-react";
-import { passwordSchema} from "@/lib/schemas/password";
+import { passwordSchema } from "@/lib/schemas/password";
 import { signupByTicketCode } from "@/app/actions/db/tickets";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const signupSchema = z.object({
   email: z.email("Please enter a valid email address"),
-  ticketCode: z.string().min(1, "Ticket code from purchase confirmation is required for signup").toUpperCase(),
+  ticketCode: z
+    .string()
+    .min(1, "Ticket code from purchase confirmation is required for signup")
+    .toUpperCase(),
   ...passwordSchema.shape,
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
-type SignupErrors = Partial<
-  Record<keyof SignupFormData, string | string[]>
-> & {
+type SignupErrors = Partial<Record<keyof SignupFormData, string | string[]>> & {
   submit?: string;
 };
 
 function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [formData, setFormData] = useState<SignupFormData>({
     email: "",
     ticketCode: "",
@@ -38,19 +43,22 @@ function SignupForm() {
   useEffect(() => {
     const email = searchParams.get("email");
     const ticketCode = searchParams.get("ticketCode");
-    
+
     if (email) {
-      setFormData(prev => ({ ...prev, email }));
+      setFormData((prev) => ({ ...prev, email }));
     }
     if (ticketCode) {
-      setFormData(prev => ({ ...prev, ticketCode: ticketCode.toUpperCase() }));
+      setFormData((prev) => ({
+        ...prev,
+        ticketCode: ticketCode.toUpperCase(),
+      }));
     }
   }, [searchParams]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const processedValue = name === "ticketCode" ? value.toUpperCase() : value;
-    
+
     setFormData((prev) => ({ ...prev, [name]: processedValue }));
 
     // Clear errors when user starts typing
@@ -66,7 +74,7 @@ function SignupForm() {
 
     try {
       const validatedData = signupSchema.parse(formData);
-      
+
       await signupByTicketCode({
         email: validatedData.email,
         password: validatedData.password,
@@ -105,16 +113,16 @@ function SignupForm() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">
+    <div className="flex min-h-[80vh] items-center justify-center">
+      <div className="bg-dark-400 w-full max-w-md rounded-lg p-8 shadow-lg">
+        <h1 className="mb-6 text-center text-2xl font-bold">
           Create Your Account
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col">
             <label
               htmlFor="email"
-              className="mb-1 font-medium flex gap-1 items-center"
+              className="mb-1 flex items-center gap-1 font-medium"
             >
               <MailIcon className="size-4" /> Email:{" "}
               <span className="text-red-500">*</span>
@@ -126,22 +134,20 @@ function SignupForm() {
               value={formData.email}
               onChange={handleInputChange}
               required
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 ${
+              className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
                 errors.email ? "border-red-500" : ""
               }`}
             />
             {errors.email && (
-              <span className="text-red-500 text-xs mt-1">
-                {errors.email}
-              </span>
+              <span className="mt-1 text-xs text-red-500">{errors.email}</span>
             )}
           </div>
 
           <div className="flex flex-col">
-            <div className='w-full flex justify-between'>
+            <div className="flex w-full justify-between">
               <label
                 htmlFor="ticketCode"
-                className="mb-1 font-medium flex gap-1 items-center"
+                className="mb-1 flex items-center gap-1 font-medium"
               >
                 <TicketIcon className="size-4" /> Ticket Code:{" "}
                 <span className="text-red-500">*</span>
@@ -151,7 +157,18 @@ function SignupForm() {
                   <InfoIcon className="size-4" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Enter the code that was sent with your ticket purchase confirmation email. If you didn&apos;t get one but believe you should be able to make an account, <a href="mailto:ricki.heicklen+metagame@gmail.com, briantsmiley42+metagame@gmail.com" className="underline font-bold">contact us</a> so we can or issue you an account.</p>
+                  <p>
+                    Enter the code that was sent with your ticket purchase
+                    confirmation email. If you didn&apos;t get one but believe
+                    you should be able to make an account,{" "}
+                    <a
+                      href="mailto:ricki.heicklen+metagame@gmail.com, briantsmiley42+metagame@gmail.com"
+                      className="font-bold underline"
+                    >
+                      contact us
+                    </a>{" "}
+                    so we can or issue you an account.
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -163,12 +180,12 @@ function SignupForm() {
               onChange={handleInputChange}
               required
               placeholder="Enter your ticket code"
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 uppercase ${
+              className={`rounded border p-2 uppercase dark:border-gray-600 dark:bg-gray-700 ${
                 errors.ticketCode ? "border-red-500" : ""
               }`}
             />
             {errors.ticketCode && (
-              <span className="text-red-500 text-xs mt-1">
+              <span className="mt-1 text-xs text-red-500">
                 {errors.ticketCode}
               </span>
             )}
@@ -177,7 +194,7 @@ function SignupForm() {
           <div className="flex flex-col">
             <label
               htmlFor="password"
-              className="mb-1 font-medium flex gap-1 items-center"
+              className="mb-1 flex items-center gap-1 font-medium"
             >
               <LockIcon className="size-4" /> Password:{" "}
               <span className="text-red-500">*</span>
@@ -189,22 +206,22 @@ function SignupForm() {
               value={formData.password}
               onChange={handleInputChange}
               required
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 ${
+              className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
                 errors.password ? "border-red-500" : ""
               }`}
             />
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="mt-1 text-xs text-gray-500">
               Must be at least 10 characters with uppercase, lowercase, number,
               and symbol
             </div>
             {errors.password && (
-              <div className="text-red-500 text-xs mt-1">
+              <div className="mt-1 text-xs text-red-500">
                 {Array.isArray(errors.password) ? (
-                  <ul className="list-disc list-inside">
+                  <ul className="list-inside list-disc">
                     {(errors.password as string[]).map(
                       (error: string, index: number) => (
                         <li key={index}>{error}</li>
-                      )
+                      ),
                     )}
                   </ul>
                 ) : (
@@ -217,7 +234,7 @@ function SignupForm() {
           <div className="flex flex-col">
             <label
               htmlFor="confirmPassword"
-              className="mb-1 font-medium flex gap-1 items-center"
+              className="mb-1 flex items-center gap-1 font-medium"
             >
               <LockIcon className="size-4" /> Confirm Password:{" "}
               <span className="text-red-500">*</span>
@@ -229,19 +246,19 @@ function SignupForm() {
               value={formData.confirmPassword}
               onChange={handleInputChange}
               required
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 ${
+              className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
                 errors.confirmPassword ? "border-red-500" : ""
               }`}
             />
             {errors.confirmPassword && (
-              <span className="text-red-500 text-xs mt-1">
+              <span className="mt-1 text-xs text-red-500">
                 {errors.confirmPassword}
               </span>
             )}
           </div>
 
           {errors.submit && (
-            <div className="text-red-500 text-sm text-center">
+            <div className="text-center text-sm text-red-500">
               {errors.submit}
             </div>
           )}
@@ -249,7 +266,7 @@ function SignupForm() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? "Creating account..." : "Create Account"}
           </button>
@@ -263,9 +280,11 @@ export default function SignupPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[80vh] flex items-center justify-center">
-          <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md">
-            <h1 className="text-2xl font-bold mb-6 text-center">Create Your Account</h1>
+        <div className="flex min-h-[80vh] items-center justify-center">
+          <div className="bg-dark-400 w-full max-w-md rounded-lg p-8 shadow-lg">
+            <h1 className="mb-6 text-center text-2xl font-bold">
+              Create Your Account
+            </h1>
           </div>
         </div>
       }

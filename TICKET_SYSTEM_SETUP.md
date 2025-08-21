@@ -15,6 +15,7 @@ The new system allows users to purchase tickets directly on your website without
 ## Required Dependencies
 
 The following packages have been added to `package.json`:
+
 - `stripe` - Server-side Stripe SDK
 - `@stripe/stripe-js` - Client-side Stripe SDK
 - `@stripe/react-stripe-js` - React components for Stripe
@@ -66,8 +67,8 @@ pnpm install
    - Stripe Payment ID (Single line text)
    - Purchase Date (Date)
    - Status (Single select: Success, Failed)
-   - Stripe Fee (Number) - *Automatically populated with processing fee*
-   - Discord Handle (Single line text) - *Optional field*
+   - Stripe Fee (Number) - _Automatically populated with processing fee_
+   - Discord Handle (Single line text) - _Optional field_
 3. **Create a Personal Access Token (PAT):**
    - Go to https://airtable.com/create/tokens
    - Click "Create new token"
@@ -105,6 +106,7 @@ src/
 ## Ticket Configuration
 
 Tickets are configured in `src/config/tickets.ts`. You can easily modify:
+
 - Ticket types and prices
 - Descriptions and features
 - Regular vs sale prices
@@ -138,6 +140,7 @@ Tickets are configured in `src/config/tickets.ts`. You can easily modify:
 ### Debug Mode
 
 Add console logs in the API routes to debug issues:
+
 - Check payment intent creation
 - Verify payment confirmation
 - Monitor Airtable record creation
@@ -160,6 +163,7 @@ Add console logs in the API routes to debug issues:
 ## Support
 
 For issues with:
+
 - **Stripe**: Check Stripe documentation and dashboard
 - **Airtable**: Verify PAT permissions and table structure
-- **Code**: Review console logs and API responses 
+- **Code**: Review console logs and API responses

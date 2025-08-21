@@ -43,7 +43,7 @@ export default function SetCard({
 
   const getShape = () => {
     return (
-      <div className="h-[80%] aspect-[1/2]">
+      <div className="aspect-[1/2] h-[80%]">
         <svg
           width="100%"
           height="100%"
@@ -122,10 +122,10 @@ export default function SetCard({
 
   return (
     <div
-      className={`${sizeClass} rounded-[8%] flex justify-center items-center border-2 ${selectedClasses} bg-bg-primary`}
+      className={`${sizeClass} flex items-center justify-center rounded-[8%] border-2 ${selectedClasses} bg-bg-primary`}
     >
       {[...Array(number)].map((_, i) => (
-        <div key={i} className="flex justify-center items-center h-full">
+        <div key={i} className="flex h-full items-center justify-center">
           {getShape()}
         </div>
       ))}

@@ -1,6 +1,6 @@
-import type { Action } from 'kbar';
-import { SOCIAL_LINKS } from '../utils/urls';
-import { coinCount } from '../stores/coinStore';
+import type { Action } from "kbar";
+import { SOCIAL_LINKS } from "../utils/urls";
+import { coinCount } from "../stores/coinStore";
 
 // Define our custom action type
 interface CustomAction extends Action {
@@ -19,13 +19,16 @@ const actionActions: CustomAction[] = [
     perform: () => {
       const coins = coinCount.get();
       const cost = 1;
-      if (coins >= cost) { // Assuming it costs 1 coin to pay respects
+      if (coins >= cost) {
+        // Assuming it costs 1 coin to pay respects
         coinCount.set(coins - cost);
         alert("You have paid your respects. 🫡");
       } else {
-        alert(`Sorry, you need ${cost} coin${cost == 1 ? '' : 's'} to pay respects. You only have ${coins} coin${coins == 1 ? '' : 's'}.`);
+        alert(
+          `Sorry, you need ${cost} coin${cost == 1 ? "" : "s"} to pay respects. You only have ${coins} coin${coins == 1 ? "" : "s"}.`,
+        );
       }
-    }
+    },
   },
   {
     id: "doubt",
@@ -35,9 +38,9 @@ const actionActions: CustomAction[] = [
     shortcut: ["X"],
     perform: () => {
       alert("You have doubted.");
-    }
-  }
-]
+    },
+  },
+];
 
 // Navigation Actions
 const navigationActions: CustomAction[] = [
@@ -48,7 +51,7 @@ const navigationActions: CustomAction[] = [
     keywords: "home main landing",
     section: "Navigation",
     icon: "🏠",
-    perform: () => window.location.pathname = "/"
+    perform: () => (window.location.pathname = "/"),
   },
   {
     id: "tickets",
@@ -57,7 +60,7 @@ const navigationActions: CustomAction[] = [
     keywords: "purchase buy register",
     section: "Navigation",
     icon: "🎫",
-    perform: () => window.location.href = "/#tickets"
+    perform: () => (window.location.href = "/#tickets"),
   },
   {
     id: "faq",
@@ -66,8 +69,8 @@ const navigationActions: CustomAction[] = [
     keywords: "frequently asked questions",
     section: "Navigation",
     icon: "❓",
-    perform: () => window.location.pathname = "/faq"
-  }
+    perform: () => (window.location.pathname = "/faq"),
+  },
 ];
 
 // Game Actions
@@ -92,10 +95,11 @@ const gameActions: CustomAction[] = [
     name: "Play Set",
     section: "Games",
     icon: "🃏",
-    subtitle: "Or like, mess with the current version of what Brian's working on",
+    subtitle:
+      "Or like, mess with the current version of what Brian's working on",
     shortcut: ["s"],
-    perform: () => window.location.pathname = "/set"
-  }
+    perform: () => (window.location.pathname = "/set"),
+  },
 ];
 
 // Social Actions
@@ -106,7 +110,7 @@ const socialActions: CustomAction[] = [
     section: "Social",
     icon: "🐦",
     shortcut: ["t"],
-    perform: () => window.open(SOCIAL_LINKS.TWITTER, "_blank")
+    perform: () => window.open(SOCIAL_LINKS.TWITTER, "_blank"),
   },
   {
     id: "discord",
@@ -114,13 +118,13 @@ const socialActions: CustomAction[] = [
     section: "Social",
     icon: "💬",
     shortcut: ["d"],
-    perform: () => window.open(SOCIAL_LINKS.DISCORD, "_blank")
-  }
+    perform: () => window.open(SOCIAL_LINKS.DISCORD, "_blank"),
+  },
 ];
 
 export const staticActions = [
   ...actionActions,
   ...navigationActions,
   ...gameActions,
-  ...socialActions
-]; 
+  ...socialActions,
+];

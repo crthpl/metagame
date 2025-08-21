@@ -9,9 +9,9 @@ export function SessionTitle({ title, className }: SessionTitleProps) {
       return (
         <span className={className}>
           <span className="text-primary-600">OPEN</span>
-          {' HD'}
+          {" HD"}
           <span className="text-primary-600">MI C</span>
-          {'ABLE'}
+          {"ABLE"}
         </span>
       );
     default:

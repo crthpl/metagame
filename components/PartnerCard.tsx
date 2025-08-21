@@ -1,5 +1,5 @@
-import { Partner } from '@/lib/content';
-import Image from 'next/image';
+import { Partner } from "@/lib/content";
+import Image from "next/image";
 
 interface PartnerCardProps {
   partner: Partner;
@@ -7,16 +7,16 @@ interface PartnerCardProps {
 }
 
 export default function PartnerCard({ partner, imgClass }: PartnerCardProps) {
-  const hasWebsite = partner.website && partner.website.trim() !== '';
+  const hasWebsite = partner.website && partner.website.trim() !== "";
 
   const cardContent = (
-    <div className="rounded-md border-amber-400 transition-all text-center flex flex-col border-0 p-0 gap-4 items-center justify-center hover:underline">
+    <div className="flex flex-col items-center justify-center gap-4 rounded-md border-0 border-amber-400 p-0 text-center transition-all hover:underline">
       <Image
         src={partner.logo}
         alt={`${partner.name} logo`}
         width={partner.wideLogo ? 240 : 160}
         height={80}
-        className={`${imgClass || 'h-20 w-40'} object-contain`}
+        className={`${imgClass || "h-20 w-40"} object-contain`}
         loading="lazy"
       />
     </div>
@@ -25,7 +25,7 @@ export default function PartnerCard({ partner, imgClass }: PartnerCardProps) {
   if (hasWebsite) {
     return (
       <a
-        className="font-medium text-xl mt-10 flex items-center justify-center"
+        className="mt-10 flex items-center justify-center text-xl font-medium"
         href={partner.website}
         target="_blank"
         rel="noopener noreferrer"
@@ -36,8 +36,8 @@ export default function PartnerCard({ partner, imgClass }: PartnerCardProps) {
   }
 
   return (
-    <div className="font-medium text-xl flex items-center justify-center">
+    <div className="flex items-center justify-center text-xl font-medium">
       {cardContent}
     </div>
   );
-} 
+}

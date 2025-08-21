@@ -9,15 +9,21 @@ type Props = {
   className?: string;
 };
 
-export default function Link({ href, rel, target, children, className = "" }: Props) {
+export default function Link({
+  href,
+  rel,
+  target,
+  children,
+  className = "",
+}: Props) {
   return (
     <NextLink
       href={href}
-      className={`text-secondary-500 hover:text-fuchsia-500 hover:underline transition-colors ${className}`}
+      className={`text-secondary-500 transition-colors hover:text-fuchsia-500 hover:underline ${className}`}
       target={target}
       rel={rel}
     >
       {children}
     </NextLink>
   );
-} 
+}

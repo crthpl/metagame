@@ -1,12 +1,12 @@
-'use server';
-import { opennodeDbService } from '@/lib/db/opennode';
-import { opennode } from '@/lib/opennode';
+"use server";
+import { opennodeDbService } from "@/lib/db/opennode";
+import { opennode } from "@/lib/opennode";
 
 export async function getOrderStatus({ orderId }: { orderId: string }) {
   // Get our internal DB record for this order
   const dbCharge = await opennodeDbService.getChargeByOrderId({ orderId });
   if (!dbCharge) {
-    throw new Error('Order not found');
+    throw new Error("Order not found");
   }
 
   // Fetch current status from OpenNode
@@ -20,6 +20,6 @@ export async function getOrderStatus({ orderId }: { orderId: string }) {
     opennodeId: remote.id,
     purchaserEmail: dbCharge.purchaser_email,
     ticketType: dbCharge.ticket_type,
-    hostedUrl: `https://checkout.opennode.com/${remote.id}`
+    hostedUrl: `https://checkout.opennode.com/${remote.id}`,
   };
-} 
+}

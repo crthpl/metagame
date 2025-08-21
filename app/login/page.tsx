@@ -29,7 +29,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<LoginErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const { currentUser } = useUser();
-  
+
   useEffect(() => {
     if (currentUser) {
       router.push("/");
@@ -64,14 +64,17 @@ export default function LoginPage() {
       });
 
       if (error) {
-        if (error.code === 'email_not_confirmed') {
-          setErrors({ submit: "Email not confirmed. Please check your email for a confirmation link." });
+        if (error.code === "email_not_confirmed") {
+          setErrors({
+            submit:
+              "Email not confirmed. Please check your email for a confirmation link.",
+          });
           return;
         }
         setErrors({ submit: error.message });
       } else {
         // Invalidate user queries to refresh authentication state
-        await queryClient.invalidateQueries({ queryKey: ['users'] });
+        await queryClient.invalidateQueries({ queryKey: ["users"] });
         router.push("/profile");
       }
     } catch (error) {
@@ -90,9 +93,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Log In</h1>
+    <div className="flex min-h-[80vh] items-center justify-center">
+      <div className="bg-dark-400 w-full max-w-md rounded-lg p-8 shadow-lg">
+        <h1 className="mb-6 text-center text-2xl font-bold">Log In</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col">
             <label htmlFor="email" className="mb-1 font-medium">
@@ -105,12 +108,12 @@ export default function LoginPage() {
               value={formData.email}
               onChange={handleInputChange}
               required
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 ${
+              className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
                 errors.email ? "border-red-500" : ""
               }`}
             />
             {errors.email && (
-              <span className="text-red-500 text-xs mt-1">{errors.email}</span>
+              <span className="mt-1 text-xs text-red-500">{errors.email}</span>
             )}
           </div>
 
@@ -125,27 +128,27 @@ export default function LoginPage() {
               value={formData.password}
               onChange={handleInputChange}
               required
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 ${
+              className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
                 errors.password ? "border-red-500" : ""
               }`}
             />
             {errors.password && (
-              <span className="text-red-500 text-xs mt-1">
+              <span className="mt-1 text-xs text-red-500">
                 {errors.password}
               </span>
             )}
           </div>
 
           {errors.submit && (
-            <div className="text-red-500 text-sm text-center">
+            <div className="text-center text-sm text-red-500">
               {errors.submit}
             </div>
           )}
 
-          <div className="text-center mt-4">
+          <div className="mt-4 text-center">
             <Link
               href="/login/reset"
-              className="text-sm text-blue-400 hover:text-blue-300 underline"
+              className="text-sm text-blue-400 underline hover:text-blue-300"
             >
               Forgot/reset password
             </Link>
@@ -155,13 +158,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? "Logging in..." : "Log in"}
             </button>
-            <Link 
-              href="/signup" 
-              className="flex-1 text-center bg-green-600 text-white rounded py-2 px-4 hover:bg-green-700 transition-colors flex flex-col items-center justify-center"
+            <Link
+              href="/signup"
+              className="flex flex-1 flex-col items-center justify-center rounded bg-green-600 px-4 py-2 text-center text-white transition-colors hover:bg-green-700"
             >
               <span>Sign up</span>
               <span className="text-xs text-gray-200">(using ticket code)</span>

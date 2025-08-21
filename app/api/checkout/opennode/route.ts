@@ -1,17 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createChargeRaw } from '@/lib/opennode';
-import { opennodeChargeSchema, TicketPurchaseDetails } from '@/lib/schemas/opennode';
-import { v4 as uuidv4 } from 'uuid';
-import { opennodeDbService } from '@/lib/db/opennode';
-import { getTicketType } from '@/config/tickets';
-import { OpenNodeCharge } from 'opennode/dist/types/v1';
-import { Resend } from 'resend';
-import { getHostedCheckoutUrl } from '@/utils/opennode';
+import { NextRequest, NextResponse } from "next/server";
+import { createChargeRaw } from "@/lib/opennode";
+import {
+  opennodeChargeSchema,
+  TicketPurchaseDetails,
+} from "@/lib/schemas/opennode";
+import { v4 as uuidv4 } from "uuid";
+import { opennodeDbService } from "@/lib/db/opennode";
+import { getTicketType } from "@/config/tickets";
+import { OpenNodeCharge } from "opennode/dist/types/v1";
+import { Resend } from "resend";
+import { getHostedCheckoutUrl } from "@/utils/opennode";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
-  const { amountBtc, ticketDetails } = opennodeChargeSchema.parse(await req.json());
+  const { amountBtc, ticketDetails } = opennodeChargeSchema.parse(
+    await req.json(),
+  );
   const callback = `${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout/opennode/webhook`;
   const metagameOrderId = uuidv4();
 
@@ -28,32 +33,39 @@ export async function POST(req: NextRequest) {
     success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/status/${metagameOrderId}`,
   });
 
-
-  await opennodeDbService.createCharge({charge, ticketDetails});
+  await opennodeDbService.createCharge({ charge, ticketDetails });
 
   // Send email to purchaser with payment link
   try {
     await sendChargeCreationEmail(charge, ticketDetails);
   } catch (error) {
-    console.error('Failed to send charge creation email:', error);
+    console.error("Failed to send charge creation email:", error);
     // Don't fail the request if email fails
   }
 
   return NextResponse.json({ charge });
 }
 
-
-function sendChargeCreationEmail(charge: OpenNodeCharge, ticketDetails: TicketPurchaseDetails) {
+function sendChargeCreationEmail(
+  charge: OpenNodeCharge,
+  ticketDetails: TicketPurchaseDetails,
+) {
   const ticketTitle = getTicketType(ticketDetails.ticketType)?.title;
   const amountBtc = (charge.amount / 100000000).toFixed(6);
   const hostedUrl = getHostedCheckoutUrl(charge.id);
-  
+
   return resend.emails.send({
-    from: 'Metagame 2025 <tickets@mail.metagame.games>',
+    from: "Metagame 2025 <tickets@mail.metagame.games>",
     to: ticketDetails.purchaserEmail,
-    bcc: ['ricki.heicklen+metagame@gmail.com', 'briantsmiley42+metagame@gmail.com'],
-    replyTo: ['ricki.heicklen+metagame@gmail.com', 'briantsmiley42+metagame@gmail.com'],
-    subject: 'Complete your Metagame 2025 ticket payment',
+    bcc: [
+      "ricki.heicklen+metagame@gmail.com",
+      "briantsmiley42+metagame@gmail.com",
+    ],
+    replyTo: [
+      "ricki.heicklen+metagame@gmail.com",
+      "briantsmiley42+metagame@gmail.com",
+    ],
+    subject: "Complete your Metagame 2025 ticket payment",
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h1 style="color: #333;">Complete your Metagame 2025 ticket payment</h1>
@@ -105,6 +117,6 @@ After payment is complete, you'll receive a confirmation email with your ticket 
 See you at Metagame 2025!
 
 This is not a puzzle.
-    `.trim()
+    `.trim(),
   });
 }

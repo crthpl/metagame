@@ -25,7 +25,7 @@ export default function AnimatedCustomDie({
   className = "",
 }: AnimatedCustomDieProps) {
   const [dieIdentifier, setDieIdentifier] = useState(
-    startingDieIdentifier ?? generateRandomDieIdentifier(dieGenerationOptions)
+    startingDieIdentifier ?? generateRandomDieIdentifier(dieGenerationOptions),
   );
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -72,8 +72,8 @@ export default function AnimatedCustomDie({
       onClick={animate}
       disabled={isAnimating}
       className={cn(
-        "relative inline-flex items-center justify-center size-10 transition-transform duration-500",
-        className
+        "relative inline-flex size-10 items-center justify-center transition-transform duration-500",
+        className,
       )}
       style={
         scaleAnimation

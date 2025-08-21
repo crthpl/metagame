@@ -347,7 +347,7 @@ const CurrentClue = () => {
     };
 
     const gridContainer = document.querySelector(
-      '[data-testid="grid-container"]'
+      '[data-testid="grid-container"]',
     );
 
     if (gridContainer) {
@@ -364,7 +364,7 @@ const CurrentClue = () => {
 
   // Return empty message if user hasn't clicked yet
   if (!hasInteracted) {
-    return <div className="text-center p-4"></div>;
+    return <div className="p-4 text-center"></div>;
   }
 
   const getCurrentClue = () => {
@@ -391,17 +391,23 @@ const CurrentClue = () => {
   const currentClue = getCurrentClue();
 
   if (!currentClue) {
-    return <div className="text-center p-4">No clue found</div>;
+    return <div className="p-4 text-center">No clue found</div>;
   }
 
   return (
     <div className="w-full">
       {hasInteracted && (
-        <div className="text-end text-sm text-gray-500 mt-2">
-          Crossword calendar concept courtesy of <a href="https://crosswordcal.com/products/2025-crossword-calendar" className="hover:underline">Adam Aaronson</a>
+        <div className="mt-2 text-end text-sm text-gray-500">
+          Crossword calendar concept courtesy of{" "}
+          <a
+            href="https://crosswordcal.com/products/2025-crossword-calendar"
+            className="hover:underline"
+          >
+            Adam Aaronson
+          </a>
         </div>
       )}
-      <div className="text-center p-4">
+      <div className="p-4 text-center">
         {hasInteracted ? (
           <>
             <span className="font-bold">
@@ -420,9 +426,9 @@ const CurrentClue = () => {
 const DayLabels = () => {
   const days = ["S", "M", "T", "W", "Th", "F", "S"];
   return (
-    <div className="flex w-full mb-2">
+    <div className="mb-2 flex w-full">
       {days.map((day, index) => (
-        <div key={index} className="text-center font-bold flex-1">
+        <div key={index} className="flex-1 text-center font-bold">
           {day}
         </div>
       ))}
@@ -473,13 +479,12 @@ export default function MyCrossword() {
   }, [isCompleted, isCorrect]);
 
   const onCrosswordComplete = useCallback((correct: boolean) => {
-
     setIsCompleted(true);
     setIsCorrect(correct);
     if (correct) {
       fetchCouponInfo();
     }
-  }, [])
+  }, []);
 
   // const onAnswerCorrect = (
   //   direction: Direction,
@@ -503,14 +508,14 @@ export default function MyCrossword() {
 
   const fetchCouponInfo = async () => {
     try {
-      const response = await fetch('/api/get-coupon-display', {
-        method: 'POST',
+      const response = await fetch("/api/get-coupon-display", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           puzzleSolved: true,
-          couponName: 'CROSSWORD'
+          couponName: "CROSSWORD",
         }),
       });
 
@@ -518,10 +523,10 @@ export default function MyCrossword() {
         const data = await response.json();
         setCouponInfo(data);
       } else {
-        console.error('Failed to fetch coupon info:', response.status);
+        console.error("Failed to fetch coupon info:", response.status);
       }
     } catch (error) {
-      console.error('Failed to fetch coupon info:', error);
+      console.error("Failed to fetch coupon info:", error);
     }
   };
 
@@ -536,7 +541,7 @@ export default function MyCrossword() {
         alignItems: "center",
       }}
     >
-      <div className="text-center text-5xl p-4">September 2025</div>
+      <div className="p-4 text-center text-5xl">September 2025</div>
       <ThemeProvider theme={themeContext}>
         <CrosswordProvider
           data={data}
@@ -559,39 +564,38 @@ export default function MyCrossword() {
               <CrosswordGrid />
               {showReset && (
                 <button
-                  className="absolute right-1 bottom-1 "
+                  className="absolute right-1 bottom-1"
                   onClick={() => {
                     crosswordRef.current?.reset();
-                    setIsCompleted(false)
-                    setIsCorrect(false)
+                    setIsCompleted(false);
+                    setIsCorrect(false);
                     setShowReset(false);
                   }}
                 >
-                  <RotateCcw className="size-4 text-foreground" />
+                  <RotateCcw className="text-foreground size-4" />
                 </button>
               )}
             </div>
             <OverlaysContainer gridRef={gridRef} />
           </div>
           <CurrentClue />
-          {isCompleted && (
-            isCorrect ? (
-              <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg text-center">
-                You hold the key to unlock countless rewards... at least for
-                a few seconds
+          {isCompleted &&
+            (isCorrect ? (
+              <div className="mt-4 rounded-lg bg-green-100 p-4 text-center text-green-800">
+                You hold the key to unlock countless rewards... at least for a
+                few seconds
                 {escapeHoldCompleted && (
-                  <div className="mt-2 p-4 bg-blue-100 text-blue-800 rounded-lg text-center">
-                    Congratulations! Use coupon code &quot;{couponInfo?.code}&quot; for {couponInfo?.discount} off your
-                    ticket price! 🎉
+                  <div className="mt-2 rounded-lg bg-blue-100 p-4 text-center text-blue-800">
+                    Congratulations! Use coupon code &quot;{couponInfo?.code}
+                    &quot; for {couponInfo?.discount} off your ticket price! 🎉
                   </div>
-              )}
+                )}
               </div>
             ) : (
-              <div className="mt-4 p-4 bg-red-100 text-red-800 rounded-lg text-center">
+              <div className="mt-4 rounded-lg bg-red-100 p-4 text-center text-red-800">
                 Something&apos;s not quite right!
               </div>
-            )
-          )}
+            ))}
         </CrosswordProvider>
       </ThemeProvider>
     </div>

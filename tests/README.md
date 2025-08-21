@@ -17,14 +17,14 @@ tests/
 Create new test files in `tests/e2e/` with the `.spec.ts` extension:
 
 ```typescript
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Feature Name', () => {
-  test('should do something', async ({ page }) => {
-    await page.goto('/');
-    
+test.describe("Feature Name", () => {
+  test("should do something", async ({ page }) => {
+    await page.goto("/");
+
     // Your test assertions
-    await expect(page.locator('#element')).toBeVisible();
+    await expect(page.locator("#element")).toBeVisible();
   });
 });
 ```
@@ -32,34 +32,37 @@ test.describe('Feature Name', () => {
 ## Common Patterns
 
 ### Waiting for Elements
+
 ```typescript
 // Wait for element to be visible
-await expect(page.locator('#hero')).toBeVisible();
+await expect(page.locator("#hero")).toBeVisible();
 
 // Wait for text
-await expect(page.getByText('METAGAME 2025')).toBeVisible();
+await expect(page.getByText("METAGAME 2025")).toBeVisible();
 
 // Wait with timeout
-await expect(page.locator('.slow-element')).toBeVisible({ timeout: 10000 });
+await expect(page.locator(".slow-element")).toBeVisible({ timeout: 10000 });
 ```
 
 ### Navigation
+
 ```typescript
 // Basic navigation
-await page.goto('/');
+await page.goto("/");
 
 // With options for better reliability
-await page.goto('/', { 
-  waitUntil: 'domcontentloaded',
-  timeout: 30000 
+await page.goto("/", {
+  waitUntil: "domcontentloaded",
+  timeout: 30000,
 });
 ```
 
 ### Mobile Testing
+
 ```typescript
-test('mobile view', async ({ page }) => {
+test("mobile view", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
-  await page.goto('/');
+  await page.goto("/");
   // Mobile-specific assertions
 });
 ```
@@ -76,14 +79,18 @@ test('mobile view', async ({ page }) => {
 For tests to run properly, you need to set up environment variables:
 
 ### Local Development
+
 Create a `.env` file in the project root:
+
 ```bash
 PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_key_here
 ```
 
 ### GitHub Actions
+
 Add the following secret to your repository:
+
 1. Go to Repository Settings → Secrets and variables → Actions
 2. Add `PUBLIC_STRIPE_PUBLISHABLE_KEY` with your Stripe test publishable key
 
-Note: This is a publishable (public) key, so it's safe to share. You can find it in your [Stripe Dashboard](https://dashboard.stripe.com/test/apikeys). 
+Note: This is a publishable (public) key, so it's safe to share. You can find it in your [Stripe Dashboard](https://dashboard.stripe.com/test/apikeys).

@@ -1,8 +1,8 @@
-import { useStore } from '@nanostores/react';
-import { coinCount, hasCollectedCoin } from '../stores/coinStore';
+import { useStore } from "@nanostores/react";
+import { coinCount, hasCollectedCoin } from "../stores/coinStore";
 
 interface Props {
-  alwaysShow?: boolean;  // Optional prop to force showing
+  alwaysShow?: boolean; // Optional prop to force showing
 }
 
 export default function CoinCounter({ alwaysShow = false }: Props) {

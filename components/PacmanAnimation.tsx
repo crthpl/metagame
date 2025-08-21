@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 export default function PacmanAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -8,14 +8,17 @@ export default function PacmanAnimation() {
 
   useEffect(() => {
     // Create intersection observer
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setIsAnimating(true);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsAnimating(true);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
 
     // Start observing the container
     if (containerRef.current) {
@@ -28,20 +31,20 @@ export default function PacmanAnimation() {
   return (
     <div className="relative w-full">
       <div className="pacman-rail"></div>
-      
-      <div 
+
+      <div
         ref={containerRef}
-        className={`pacman-container ${isAnimating ? 'animate' : ''}`}
+        className={`pacman-container ${isAnimating ? "animate" : ""}`}
       >
         <div className="dots">
           <div className="dot-row"></div>
         </div>
-        
+
         <div className="wake"></div>
-        
+
         <div className="pacman"></div>
       </div>
-      
+
       <div className="pacman-rail"></div>
 
       <style jsx>{`
@@ -60,7 +63,7 @@ export default function PacmanAnimation() {
           width: 100%;
           height: 3px;
           background-color: #4a9eff;
-          box-shadow: 
+          box-shadow:
             0 0 5px #4a9eff,
             0 0 10px #4a9eff,
             0 0 15px #4a9eff;
@@ -74,8 +77,9 @@ export default function PacmanAnimation() {
           left: -25px;
         }
 
-        .pacman::before, .pacman::after {
-          content: '';
+        .pacman::before,
+        .pacman::after {
+          content: "";
           display: block;
           width: 30px;
           height: 30px;
@@ -181,7 +185,8 @@ export default function PacmanAnimation() {
           0% {
             transform: scaleX(0);
           }
-          99%, 100% {
+          99%,
+          100% {
             transform: scaleX(1);
           }
         }
@@ -198,4 +203,4 @@ export default function PacmanAnimation() {
       `}</style>
     </div>
   );
-} 
+}

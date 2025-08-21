@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import SetCard from "./SetCard";
@@ -39,7 +39,7 @@ export default function SetAnimation() {
   }, [mounted]);
 
   if (!mounted) {
-    return <div className="w-full h-24" />; // placeholder with same height
+    return <div className="h-24 w-full" />; // placeholder with same height
   }
   const handleCardClick = async (index: number) => {
     if (isExiting) return; // Prevent clicks during animation
@@ -76,15 +76,11 @@ export default function SetAnimation() {
   };
   return (
     <div className="flex flex-col items-center gap-3 py-4" ref={containerRef}>
-      <div className="grid grid-cols-6 md:grid-cols-12 gap-1 md:gap-2 w-full auto-rows-fr">
+      <div className="grid w-full auto-rows-fr grid-cols-6 gap-1 md:grid-cols-12 md:gap-2">
         {setBoard.map((card, index) => (
           <div
             key={`${card.shape}-${card.color}-${card.fill}-${card.number}-${index}`}
-            className={`
-              opacity-0 
-              ${visible ? "animate-fade-in" : ""}
-              ${isExiting && selectedCards.includes(index) ? "animate-fade-out" : ""}
-            `}
+            className={`opacity-0 ${visible ? "animate-fade-in" : ""} ${isExiting && selectedCards.includes(index) ? "animate-fade-out" : ""} `}
             style={{
               animationDelay:
                 isExiting || foundSets > 0 ? "0ms" : `${index * 100}ms`,
@@ -100,19 +96,24 @@ export default function SetAnimation() {
           </div>
         ))}
       </div>
-      {foundSets > 0 && <div className="flex justify-center items-center gap-2 min-h-[4px] animate-fade-in">
-        {Array.from({ length: Math.max(5, foundSets) }).map((_, index) => (
-          <div
-            key={index}
-            className={`size-1 ${index < foundSets ? "bg-white" : "bg-gray-700 "} rounded-full shadow-lg `}
-          ></div>
-        ))}
-      </div>}
-      {foundSets >= 5 && 
-      <Link href="/proset-puzzle" className="animate-fade-in bg-blue-300 text-black text-center max-w-48 md:max-w-full font-semibold px-2 py-1 rounded-md">
-        Want something trickier and more rewarding?
-      </Link>
-      }
+      {foundSets > 0 && (
+        <div className="animate-fade-in flex min-h-[4px] items-center justify-center gap-2">
+          {Array.from({ length: Math.max(5, foundSets) }).map((_, index) => (
+            <div
+              key={index}
+              className={`size-1 ${index < foundSets ? "bg-white" : "bg-gray-700"} rounded-full shadow-lg`}
+            ></div>
+          ))}
+        </div>
+      )}
+      {foundSets >= 5 && (
+        <Link
+          href="/proset-puzzle"
+          className="animate-fade-in max-w-48 rounded-md bg-blue-300 px-2 py-1 text-center font-semibold text-black md:max-w-full"
+        >
+          Want something trickier and more rewarding?
+        </Link>
+      )}
     </div>
   );
 }

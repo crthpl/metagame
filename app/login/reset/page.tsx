@@ -52,7 +52,7 @@ export default function ResetPasswordRequestPage() {
         validatedData.data.email,
         {
           redirectTo: `${window.location.origin}/auth/confirm?type=recovery`,
-        }
+        },
       );
 
       if (error) {
@@ -77,16 +77,16 @@ export default function ResetPasswordRequestPage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md text-center">
-          <h1 className="text-2xl font-bold mb-4">Check Your Email</h1>
-          <p className="text-gray-300 mb-6">
+      <div className="flex min-h-[80vh] items-center justify-center">
+        <div className="bg-dark-400 w-full max-w-md rounded-lg p-8 text-center shadow-lg">
+          <h1 className="mb-4 text-2xl font-bold">Check Your Email</h1>
+          <p className="mb-6 text-gray-300">
             We&apos;ve sent a password reset link to {formData.email}. Please
             check your email and click the link to reset your password.
           </p>
           <Link
             href="/login"
-            className="text-blue-400 hover:text-blue-300 underline"
+            className="text-blue-400 underline hover:text-blue-300"
           >
             Back to login
           </Link>
@@ -96,10 +96,10 @@ export default function ResetPasswordRequestPage() {
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Reset Password</h1>
-        <p className="text-gray-300 mb-6 text-center">
+    <div className="flex min-h-[80vh] items-center justify-center">
+      <div className="bg-dark-400 w-full max-w-md rounded-lg p-8 shadow-lg">
+        <h1 className="mb-6 text-center text-2xl font-bold">Reset Password</h1>
+        <p className="mb-6 text-center text-gray-300">
           Enter your email address and we&apos;ll send you a link to reset your
           password.
         </p>
@@ -107,7 +107,7 @@ export default function ResetPasswordRequestPage() {
           <div className="flex flex-col">
             <label
               htmlFor="email"
-              className="mb-1 font-medium flex gap-1 items-center"
+              className="mb-1 flex items-center gap-1 font-medium"
             >
               <MailIcon className="size-4" />
               Email: <span className="text-red-500">*</span>
@@ -119,17 +119,17 @@ export default function ResetPasswordRequestPage() {
               value={formData.email}
               onChange={handleInputChange}
               required
-              className={`rounded border p-2 dark:bg-gray-700 dark:border-gray-600 ${
+              className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
                 errors.email ? "border-red-500" : ""
               }`}
             />
             {errors.email && (
-              <span className="text-red-500 text-xs mt-1">{errors.email}</span>
+              <span className="mt-1 text-xs text-red-500">{errors.email}</span>
             )}
           </div>
 
           {errors.submit && (
-            <div className="text-red-500 text-sm text-center">
+            <div className="text-center text-sm text-red-500">
               {errors.submit}
             </div>
           )}
@@ -138,13 +138,13 @@ export default function ResetPasswordRequestPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? "Sending..." : "Send Reset Link"}
             </button>
             <Link
               href="/login"
-              className="flex-1 text-center bg-gray-600 text-white rounded py-2 px-4 hover:bg-gray-700 transition-colors"
+              className="flex-1 rounded bg-gray-600 px-4 py-2 text-center text-white transition-colors hover:bg-gray-700"
             >
               Cancel
             </Link>
