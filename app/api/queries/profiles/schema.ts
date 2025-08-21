@@ -17,6 +17,7 @@ export const ProfileSchema = z.object({
   dismissed_info_request: z.boolean(),
   is_admin: z.boolean(),
   minor: z.boolean().nullable(),
+  bringing_kids: z.boolean().nullable(),
 }) satisfies z.ZodType<DbProfile>
 
 export const ProfilesResponseSchema = z.array(ProfileSchema)

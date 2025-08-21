@@ -9,13 +9,14 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { toast } from 'sonner'
-import { CheckIcon, InfoIcon, LinkIcon, XIcon } from 'lucide-react'
+import { CheckIcon, ExternalLinkIcon, InfoIcon, LinkIcon, XIcon } from 'lucide-react'
 import { toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
 import { ProfileFormData, initialProfileFormData, profileFormSchema } from '@/lib/schemas/profile'
-import { ProfileInfoModal } from '@/components/ProfileInfoModal'
+import { ProfileInfoModal } from '@/app/profile/ProfileInfoModal'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { URLS } from '@/utils/urls'
 
 
 export default function Profile() {
@@ -44,7 +45,7 @@ export default function Profile() {
     ) {
       setShowCTAModal(true)
     }
-  }, [currentUserProfile, isEditMode])
+  }, [])
 
   // Profile update mutation
   const updateProfileMutation = useMutation({
@@ -413,6 +414,41 @@ export default function Profile() {
                   <p className="text-lg">
                     {currentUserProfile?.minor ? <XIcon className="w-4 h-4 text-red-500" /> : <CheckIcon className="w-4 h-4 text-green-500" /> }
                   </p>
+                )}
+              </div>
+              {/* Bringing Kids Radio Group */}
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2 items-center">
+                  <label className="block text-sm font-medium">Bringing Kids?</label>
+                  {isEditMode ? (
+                    <RadioGroup
+                      value={formData.bringing_kids === null ? 'null' : formData.bringing_kids ? 'yes' : 'no'}
+                      onValueChange={(value) => {
+                        const newValue = value === 'yes' ? true : value === 'no' ? false : null
+                        setFormData(prev => ({ ...prev, bringing_kids: newValue }))
+                      }}
+                      className="flex"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="yes" id="kids-yes" />
+                        <label htmlFor="kids-yes" className="text-sm">Yes</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="no" id="kids-no" />
+                        <label htmlFor="kids-no" className="text-sm">No</label>
+                      </div>
+                    </RadioGroup>
+                  ) : (
+                    <p className="text-lg">
+                      {currentUserProfile?.bringing_kids ? <CheckIcon className="w-4 h-4 text-green-500" /> : <XIcon className="w-4 h-4 text-red-500" /> }
+                    </p>
+                  )}
+                </div>
+                {formData.bringing_kids && (
+                  <Link className={`w-fit ${buttonVariants({ variant: 'default', size: 'sm' })}`} href={URLS.CHILDREN_REGISTRATION} target="_blank">
+                    If you haven&apos;t, please fill out the children registration form
+                    <ExternalLinkIcon className="w-4 h-4" />
+                  </Link>
                 )}
               </div>
             </div>
