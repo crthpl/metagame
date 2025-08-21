@@ -3,6 +3,7 @@ import { Card } from './Card';
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
 import { DbProfile } from '@/types/database/dbTypeAliases';
+import { urlWithProtocol } from '@/utils/urlFix';
 
 
 
@@ -12,7 +13,6 @@ type SpeakerCardProps = {
 
 export const SpeakerCard: React.FC<SpeakerCardProps> = ({profile}) => {
   const { first_name, last_name, profile_pictures_url, site_name, site_url, site_name_2, site_url_2 } = profile;
-  
   const ExternalLinkIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -66,18 +66,18 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({profile}) => {
         >
           {first_name + ' ' + last_name}
         </h3>
-        <a
-          href={site_name === "METAGAME" ? `/?metagame=true#speakers` : site_url ?? ""  }
+        {site_url && <a
+          href={site_name === "METAGAME" ? `/?metagame=true#speakers` : urlWithProtocol(site_url)  }
           target="_blank"
           rel="noopener noreferrer"
           className="text-secondary-200 text-[10px] sm:text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1 mt-1"
         >
           {site_name}
           <ExternalLinkIcon />
-        </a>
+        </a>}
         {site_name_2 && site_url_2 && (
           <a
-            href={site_name_2 === "METAGAME" ? `/?metagame=true#speakers` : site_url_2}
+            href={site_name_2 === "METAGAME" ? `/?metagame=true#speakers` : urlWithProtocol(site_url_2)}
             target="_blank"
             rel="noopener noreferrer"
             className="text-secondary-200 text-[10px] sm:text-sm font-semibold hover:text-secondary-300 flex items-center justify-center gap-1"
