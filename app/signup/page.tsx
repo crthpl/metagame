@@ -73,8 +73,7 @@ function SignupForm() {
         ticketCode: validatedData.ticketCode,
       });
 
-      // Redirect to home page on success
-      router.push("/");
+      router.push(`/signup/success?email=${validatedData.email}`);
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Record<string, string | string[]> = {};

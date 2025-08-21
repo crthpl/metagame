@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
     case "email_change":
       redirect(`/profile/change-email/success?old_email=${encodeURIComponent(oldEmail || "")}&new_email=${encodeURIComponent(newEmail || "")}`);
     case "signup":
+      redirect(`/signup/success?confirmed=true`);
     case "magiclink":
     case "email":
     default:
