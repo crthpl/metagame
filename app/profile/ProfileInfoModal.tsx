@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Modal } from '@/components/Modal'
@@ -10,6 +10,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateCurrentUserProfile } from '@/app/actions/db/users'
 import { ProfileFormData, profileFormSchema } from '@/lib/schemas/profile'
 import { DbProfile } from '@/types/database/dbTypeAliases'
+import Link from 'next/link'
+import { URLS } from '@/utils/urls'
+import { ExternalLinkIcon } from 'lucide-react'
 
 interface ProfileInfoModalProps {
   onClose: () => void
@@ -78,59 +81,33 @@ export function ProfileInfoModal({
   return (
     <Modal onClose={onClose}>
       <div className="bg-card rounded-lg p-6 max-w-md w-full mx-4">
-        <h2 className="text-2xl font-bold mb-4">Complete Your Profile</h2>
+        <h2 className="text-2xl font-bold mb-1">Complete Your Profile</h2>
         <p className="text-muted-foreground mb-6">
-          Fill out more profile details!
+          We need some basic profile information
         </p>
 
         <div className="space-y-4">
           {/* Name Fields */}
           <div>
-            <label className="block text-sm font-medium mb-2">Name</label>
+            <label className="block text-sm font-medium mb-2">Name<span className="text-red-500 text-lg">*</span></label>
             <div className="grid grid-cols-2 gap-2">
               <Input
-                placeholder="First name"
+                placeholder="First (required)"
                 value={formData.first_name ?? ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value || null}))}
               />
               <Input
-                placeholder="Last name"
+                placeholder="Last"
                 value={formData.last_name ?? ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value || null}))}
               />
             </div>
           </div>
 
-          {/* Discord Handle */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Discord Handle</label>
-            <Input
-              placeholder="Your Discord handle"
-              value={formData.discord_handle ?? ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, discord_handle: e.target.value || null}))}
-            />
-          </div>
-
-          {/* Website */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Website</label>
-            <div className="space-y-2">
-              <Input
-                placeholder="Website name"
-                value={formData.site_name ?? ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, site_name: e.target.value || null}))}
-              />
-              <Input
-                placeholder="Website URL"
-                value={formData.site_url ?? ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, site_url: e.target.value || null}))}
-              />
-            </div>
-          </div>
 
           {/* Homepage Display Radio Group */}
           <div className="space-y-3">
-            <label className="block text-sm font-medium">Allow my profile card to be displayed on the homepage attendee list (opt-in)</label>
+            <label className="block text-sm font-medium">Allow your profile card to be displayed on the homepage attendee list? (opt-in)<span className="text-red-500 text-lg">*</span></label>
             <RadioGroup
               value={formData.opted_in_to_homepage_display === null ? '' : formData.opted_in_to_homepage_display ? 'yes' : 'no'}
               onValueChange={(value) => {
@@ -152,7 +129,7 @@ export function ProfileInfoModal({
 
           {/* Minor Checkbox */}
           <div className="space-y-3">
-            Are you 18 or older?
+            <label className="block text-sm font-medium">Are you 18 or older?<span className="text-red-500 text-lg">*</span></label>
             <RadioGroup
               value={formData.minor === null ? '' : formData.minor ? 'no' : 'yes'}
               onValueChange={(value) => {
@@ -171,6 +148,41 @@ export function ProfileInfoModal({
               </div>
             </RadioGroup>
           </div>
+
+          {/* Kids Radio Group */}
+          <div className="space-y-3">
+            <label className="block text-sm font-medium">Are you bringing any children?<span className="text-red-500 text-lg">*</span></label>
+            <RadioGroup
+              value={formData.bringing_kids === null ? '' : formData.bringing_kids ? 'yes' : 'no'}
+              onValueChange={(value) => {
+                const newValue = value === 'yes' ? true : value === 'no' ? false : null
+                setFormData(prev => ({ ...prev, bringing_kids: newValue }))
+              }}
+              className="flex"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="yes" id="kids-yes-modal" />
+                <label htmlFor="kids-yes-modal" className="text-sm">Yes</label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="no" id="kids-no-modal" />
+                <label htmlFor="kids-no-modal" className="text-sm">No</label>
+              </div>
+            </RadioGroup>
+          </div>
+          
+          {formData.bringing_kids && (
+            <Link
+              className={`whitespace-normal break-words h-auto py-3 text-center ${buttonVariants({ variant: 'default' })}`}
+              href={URLS.CHILDREN_REGISTRATION}
+              target="_blank"
+            >
+              <div className="flex flex-col items-center gap-1">
+                <span>If you haven&apos;t, please fill out</span>
+                <span className="flex items-center gap-1">the children registration form <ExternalLinkIcon className="w-4 h-4 mt-1" /></span>
+              </div>
+            </Link>
+          )}
         </div>
 
         {/* Action Buttons */}
