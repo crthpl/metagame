@@ -64,6 +64,10 @@ export default function LoginPage() {
       });
 
       if (error) {
+        if (error.code === 'email_not_confirmed') {
+          setErrors({ submit: "Email not confirmed. Please check your email for a confirmation link." });
+          return;
+        }
         setErrors({ submit: error.message });
       } else {
         // Invalidate user queries to refresh authentication state
