@@ -343,7 +343,10 @@ export default function Schedule({
                   return (
                     <div key={venue.id} className="bg-dark-500 min-h-[60px] border border-dark-400 relative overflow-visible">
                       {eventsInSlot.map((session) => (
-                        <SessionTooltip key={session.id} tooltip={<SessionDetailsCard session={session}/>}>
+                        <SessionTooltip 
+                        key={session.id} 
+                        tooltip={<SessionDetailsCard session={session} canEdit={editPermissions[session.id!] || false}/>}
+                        >
                           
                           <div
                             onClick={() => handleOpenSessionModal(session.id!)}
