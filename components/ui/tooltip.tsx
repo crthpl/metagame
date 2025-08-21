@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useEffect, useState, useRef, useMemo, useContext } from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
@@ -11,6 +12,9 @@ const TooltipContext = React.createContext<{
   open?: boolean
   setOpen?: (open: boolean) => void
   hoverTimeoutRef?: React.RefObject<NodeJS.Timeout | null>
+  triggerRef?: React.RefObject<HTMLButtonElement | null>
+  contentRef?: React.RefObject<HTMLDivElement | null>
+  isScrolling?: boolean
 }>({ clickable: false })
 
 function TooltipProvider({
@@ -36,16 +40,64 @@ function Tooltip({
   showArrow = true,
   ...props
 }: TooltipProps) {
-  const [open, setOpen] = React.useState(false)
-  const hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+  const [open, setOpen] = useState(false)
+  const [wasOpenBeforeScroll, setWasOpenBeforeScroll] = useState(false)
+  const [isScrolling, setIsScrolling] = useState(false)
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const contentRef = useRef<HTMLDivElement | null>(null)
 
-  const contextValue = React.useMemo(() => ({
+  // Handle scroll behavior for clickable tooltips
+  useEffect(() => {
+    if (!clickable) return
+
+    const handleScroll = () => {
+      // Remember if tooltip was open before scroll
+      if (open && !isScrolling) {
+        setWasOpenBeforeScroll(true)
+      }
+      
+      setIsScrolling(true)
+      setOpen(false) // Always hide immediately when scrolling
+      
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+      
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false)
+        
+        // Reopen if it was open before scroll and mouse is still over trigger
+        if (wasOpenBeforeScroll && triggerRef.current?.matches(':hover')) {
+          setOpen(true)
+        }
+        setWasOpenBeforeScroll(false)
+      }, 250) // 0.25s after scroll stops
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    document.addEventListener('scroll', handleScroll, { passive: true })
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      document.removeEventListener('scroll', handleScroll)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+    }
+  }, [clickable, open, isScrolling, wasOpenBeforeScroll])
+
+  const contextValue = useMemo(() => ({
     clickable,
     open,
     setOpen,
     hoverTimeoutRef,
+    triggerRef,
+    contentRef,
+    isScrolling,
     showArrow
-  }), [clickable, open, showArrow])
+  }), [clickable, open, isScrolling, showArrow])
 
   if (clickable) {
     return (
@@ -77,7 +129,7 @@ function TooltipTrigger({
   onMouseLeave,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  const { clickable, open, setOpen, hoverTimeoutRef } = React.useContext(TooltipContext)
+  const { clickable, open, setOpen, hoverTimeoutRef, triggerRef, isScrolling } = useContext(TooltipContext)
   
   if (clickable && setOpen && hoverTimeoutRef) {
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -92,6 +144,9 @@ function TooltipTrigger({
 
     const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (onMouseEnter) onMouseEnter(e)
+      // Don't open during scroll - let the scroll handler deal with it
+      if (isScrolling) return
+      
       // Clear any pending close timeout
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current)
@@ -102,17 +157,19 @@ function TooltipTrigger({
 
     const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (onMouseLeave) onMouseLeave(e)
+      
       // Set a timeout to close, which can be cancelled if mouse enters content
       hoverTimeoutRef.current = setTimeout(() => {
         setOpen(false)
         hoverTimeoutRef.current = null
-      }, 150) // Short delay to allow moving to content
+      }, 300) // Allow time to move to content
     }
 
     return (
       <TooltipPrimitive.Trigger 
         data-slot="tooltip-trigger" 
         type="button"
+        ref={triggerRef}
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -132,7 +189,7 @@ function TooltipContent({
   onMouseLeave,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content>) {
-  const { clickable, setOpen, hoverTimeoutRef, showArrow } = React.useContext(TooltipContext)
+  const { clickable, setOpen, hoverTimeoutRef, contentRef, showArrow } = useContext(TooltipContext)
 
   if (clickable && setOpen && hoverTimeoutRef) {
     const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -146,11 +203,12 @@ function TooltipContent({
 
     const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
       if (onMouseLeave) onMouseLeave(e)
-      // Set timeout to close when leaving content
+      
+      // Set timeout to close when leaving content  
       hoverTimeoutRef.current = setTimeout(() => {
         setOpen(false)
         hoverTimeoutRef.current = null
-      }, 150)
+      }, 300) // Match the trigger timeout
     }
 
     return (
@@ -158,6 +216,7 @@ function TooltipContent({
         <TooltipPrimitive.Content
           data-slot="tooltip-content"
           sideOffset={sideOffset}
+          ref={contentRef}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           className={cn(
