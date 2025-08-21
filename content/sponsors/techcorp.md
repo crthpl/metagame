@@ -28,4 +28,4 @@ We believe in fostering the gaming community and supporting events that bring de
 
 ### Connect With Us
 
-Stop by our booth to learn about our latest developer tools and career opportunities! 
+Stop by our booth to learn about our latest developer tools and career opportunities!

@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
 
 export interface FAQItem {
   id: number;
@@ -14,67 +14,75 @@ export interface FAQItem {
 function simpleMarkdownToHtml(content: string): string {
   // Split content into paragraphs (separated by double newlines)
   const paragraphs = content.split(/\n\n+/);
-  
+
   return paragraphs
-    .map(paragraph => {
+    .map((paragraph) => {
       // Check if this paragraph is a list
-      const lines = paragraph.trim().split('\n');
-      const isAllListItems = lines.every(line => line.trim().startsWith('- ') || line.trim() === '');
-      
+      const lines = paragraph.trim().split("\n");
+      const isAllListItems = lines.every(
+        (line) => line.trim().startsWith("- ") || line.trim() === "",
+      );
+
       if (isAllListItems) {
         // Convert to HTML list
         const listItems = lines
-          .filter(line => line.trim().startsWith('- '))
-          .map(line => {
+          .filter((line) => line.trim().startsWith("- "))
+          .map((line) => {
             let content = line.substring(2).trim();
             // Convert bold text
-            content = content.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            content = content.replace(
+              /\*\*([^*]+)\*\*/g,
+              "<strong>$1</strong>",
+            );
             return `<li>${content}</li>`;
           })
-          .join('\n');
+          .join("\n");
         return `<ul>${listItems}</ul>`;
       } else {
         // Regular paragraph
         let processed = paragraph.trim();
         // Convert bold text
-        processed = processed.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-        
+        processed = processed.replace(
+          /\*\*([^*]+)\*\*/g,
+          "<strong>$1</strong>",
+        );
+
         // Don't wrap empty strings in p tags
-        if (!processed) return '';
-        
+        if (!processed) return "";
+
         return `<p>${processed}</p>`;
       }
     })
-    .filter(html => html !== '') // Remove empty elements
-    .join('\n');
+    .filter((html) => html !== "") // Remove empty elements
+    .join("\n");
 }
 
 export async function getFAQs(): Promise<FAQItem[]> {
-  const faqDirectory = path.join(process.cwd(), 'content', 'faq');
+  const faqDirectory = path.join(process.cwd(), "content", "faq");
   const fileNames = fs.readdirSync(faqDirectory);
-  
+
   const faqs = fileNames
-    .filter(fileName => fileName.endsWith('.md'))
+    .filter((fileName) => fileName.endsWith(".md"))
     .map((fileName) => {
-      const slug = fileName.replace(/\.md$/, '');
+      const slug = fileName.replace(/\.md$/, "");
       const fullPath = path.join(faqDirectory, fileName);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
+      const fileContents = fs.readFileSync(fullPath, "utf8");
       const { data, content } = matter(fileContents);
-      
+
       // Convert to simple HTML
       const contentHtml = simpleMarkdownToHtml(content);
-      
+
       return {
         id: data.id,
         question: data.question,
         content,
         contentHtml,
-        slug
+        slug,
       };
     });
-  
+
   return faqs.sort((a, b) => a.id - b.id);
-} 
+}
 export interface Partner {
   id: number;
   name: string;
@@ -92,21 +100,23 @@ export interface Partner {
   github?: string;
 }
 
-export async function getPartners(filterFn?: (partner: Partner) => boolean): Promise<Partner[]> {
-  const partnersDirectory = path.join(process.cwd(), 'content', 'partners');
+export async function getPartners(
+  filterFn?: (partner: Partner) => boolean,
+): Promise<Partner[]> {
+  const partnersDirectory = path.join(process.cwd(), "content", "partners");
   const fileNames = fs.readdirSync(partnersDirectory);
-  
+
   const partners = fileNames
-    .filter(fileName => fileName.endsWith('.json'))
+    .filter((fileName) => fileName.endsWith(".json"))
     .map((fileName) => {
       const fullPath = path.join(partnersDirectory, fileName);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
+      const fileContents = fs.readFileSync(fullPath, "utf8");
       const data = JSON.parse(fileContents) as Partner;
       return data;
     });
-  
+
   const sortedPartners = partners.sort((a, b) => a.id - b.id);
-  
+
   return filterFn ? sortedPartners.filter(filterFn) : sortedPartners;
 }
 

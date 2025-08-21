@@ -21,4 +21,4 @@ export type PasswordErrors = Partial<
   Record<keyof PasswordFormData, string | string[]>
 > & {
   submit?: string;
-}; 
+};

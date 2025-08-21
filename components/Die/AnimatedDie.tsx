@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import Die from './Die';
+import { useState, useCallback } from "react";
+import Die from "./Die";
 
 export type DieValue = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -14,7 +14,7 @@ export default function AnimatedDie() {
 
   const animate = useCallback(() => {
     if (isAnimating) return;
-    
+
     setIsAnimating(true);
     const totalFrames = 5;
     const duration = 500; // 500ms total animation
@@ -31,10 +31,10 @@ export default function AnimatedDie() {
       // Calculate which frame we should be on based on progress
       const progress = elapsed / duration;
       const frameIndex = Math.floor(progress * totalFrames);
-      
+
       // Only update value if we've moved to a new frame
       if (frameIndex > lastFrameIndex) {
-        setValue(prev => getNextValue(prev));
+        setValue((prev) => getNextValue(prev));
         lastFrameIndex = frameIndex;
       }
 
@@ -45,12 +45,8 @@ export default function AnimatedDie() {
   }, [isAnimating]);
 
   return (
-    <button 
-      onClick={animate} 
-      disabled={isAnimating}
-      className=""
-    >
+    <button onClick={animate} disabled={isAnimating} className="">
       <Die value={value} />
     </button>
   );
-} 
+}

@@ -1,5 +1,5 @@
-import { z } from "zod"
-import { DbLocation } from "@/types/database/dbTypeAliases"
+import { z } from "zod";
+import { DbLocation } from "@/types/database/dbTypeAliases";
 
 export const LocationSchema = z.object({
   id: z.string(),
@@ -11,9 +11,9 @@ export const LocationSchema = z.object({
   lh_name: z.string().nullable(),
   schedule_display_order: z.number(),
   thumbnail_url: z.string().nullable(),
-}) satisfies z.ZodType<DbLocation>
+}) satisfies z.ZodType<DbLocation>;
 
-export const LocationsResponseSchema = z.array(LocationSchema)
+export const LocationsResponseSchema = z.array(LocationSchema);
 
-export type LocationResponse = z.infer<typeof LocationSchema>
-export type LocationsResponse = z.infer<typeof LocationsResponseSchema>
+export type LocationResponse = z.infer<typeof LocationSchema>;
+export type LocationsResponse = z.infer<typeof LocationsResponseSchema>;

@@ -1,17 +1,23 @@
-import { TicketPurchaseFormData } from '@/lib/schemas/ticket';
-import React from 'react';
+import { TicketPurchaseFormData } from "@/lib/schemas/ticket";
+import React from "react";
 
 interface TicketFormFieldsProps {
   formData: TicketPurchaseFormData;
-  onFormDataChange: (field: keyof TicketFormFieldsProps['formData'], value: string) => void;
+  onFormDataChange: (
+    field: keyof TicketFormFieldsProps["formData"],
+    value: string,
+  ) => void;
   onApplyCoupon: () => void;
-  errors: { name?: string; email?: string; discordHandle?: string; couponCode?: string };
+  errors: {
+    name?: string;
+    email?: string;
+    discordHandle?: string;
+    couponCode?: string;
+  };
   disabled?: boolean;
   isApplyingCoupon?: boolean;
   couponsEnabled?: boolean;
 }
-
-
 
 export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
   formData,
@@ -22,25 +28,27 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
   isApplyingCoupon = false,
   couponsEnabled = true,
 }) => {
-
   // Ensure couponCode is always a string
-  const safeCouponCode = formData.couponCode || '';
+  const safeCouponCode = formData.couponCode || "";
 
   return (
     <div className="space-y-4">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+        <label
+          htmlFor="name"
+          className="mb-2 block text-sm font-medium text-gray-300"
+        >
           Full Name *
         </label>
         <input
           type="text"
           id="name"
           value={formData.name}
-          onChange={(e) => onFormDataChange('name', e.target.value)}
+          onChange={(e) => onFormDataChange("name", e.target.value)}
           disabled={disabled}
-          className={`w-full px-3 py-2 border rounded-md bg-bg-secondary  border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
-            errors.name ? 'border-red-500' : ''
-          } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`bg-bg-secondary focus:border-primary-300 focus:ring-primary-300 w-full rounded-md border border-gray-600 px-3 py-2 transition-colors focus:ring-1 focus:outline-none ${
+            errors.name ? "border-red-500" : ""
+          } ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
           placeholder="Enter your full name"
         />
         {errors.name && (
@@ -49,18 +57,21 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+        <label
+          htmlFor="email"
+          className="mb-2 block text-sm font-medium text-gray-300"
+        >
           Email Address *
         </label>
         <input
           type="email"
           id="email"
           value={formData.email}
-          onChange={(e) => onFormDataChange('email', e.target.value)}
+          onChange={(e) => onFormDataChange("email", e.target.value)}
           disabled={disabled}
-          className={`w-full px-3 py-2 border rounded-md bg-bg-secondary border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
-            errors.email ? 'border-red-500' : ''
-          } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`bg-bg-secondary focus:border-primary-300 focus:ring-primary-300 w-full rounded-md border border-gray-600 px-3 py-2 transition-colors focus:ring-1 focus:outline-none ${
+            errors.email ? "border-red-500" : ""
+          } ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
           placeholder="Enter your email address"
         />
         {errors.email && (
@@ -69,18 +80,21 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
       </div>
 
       <div>
-        <label htmlFor="discordHandle" className="block text-sm font-medium text-gray-300 mb-2">
+        <label
+          htmlFor="discordHandle"
+          className="mb-2 block text-sm font-medium text-gray-300"
+        >
           Discord Handle (Optional)
         </label>
         <input
           type="text"
           id="discordHandle"
           value={formData.discordHandle}
-          onChange={(e) => onFormDataChange('discordHandle', e.target.value)}
+          onChange={(e) => onFormDataChange("discordHandle", e.target.value)}
           disabled={disabled}
-          className={`w-full px-3 py-2 border rounded-md bg-bg-secondary border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
-            errors.discordHandle ? 'border-red-500' : ''
-          } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`bg-bg-secondary focus:border-primary-300 focus:ring-primary-300 w-full rounded-md border border-gray-600 px-3 py-2 transition-colors focus:ring-1 focus:outline-none ${
+            errors.discordHandle ? "border-red-500" : ""
+          } ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
           placeholder="Enter your Discord handle"
         />
         {errors.discordHandle && (
@@ -90,7 +104,10 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
 
       {couponsEnabled && (
         <div>
-          <label htmlFor="couponCode" className="block text-sm font-medium text-gray-300 mb-2">
+          <label
+            htmlFor="couponCode"
+            className="mb-2 block text-sm font-medium text-gray-300"
+          >
             Coupon Code (Optional)
           </label>
           <div className="flex gap-2">
@@ -98,20 +115,22 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
               type="text"
               id="couponCode"
               value={safeCouponCode}
-              onChange={(e) => onFormDataChange('couponCode', e.target.value.toUpperCase())}
+              onChange={(e) =>
+                onFormDataChange("couponCode", e.target.value.toUpperCase())
+              }
               disabled={disabled || isApplyingCoupon}
-              className={`flex-1 px-3 py-2 border rounded-md bg-gray-800  border-gray-600 focus:border-primary-300 focus:ring-1 focus:ring-primary-300 focus:outline-none transition-colors ${
-                errors.couponCode ? 'border-red-500' : ''
-              } ${disabled || isApplyingCoupon ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`focus:border-primary-300 focus:ring-primary-300 flex-1 rounded-md border border-gray-600 bg-gray-800 px-3 py-2 transition-colors focus:ring-1 focus:outline-none ${
+                errors.couponCode ? "border-red-500" : ""
+              } ${disabled || isApplyingCoupon ? "cursor-not-allowed opacity-50" : ""}`}
               placeholder="Enter coupon code"
             />
             <button
               type="button"
               onClick={onApplyCoupon}
               disabled={disabled || isApplyingCoupon || !safeCouponCode.trim()}
-              className="px-4 py-2 bg-blue-600  rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="rounded-md bg-blue-600 px-4 py-2 font-medium transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isApplyingCoupon ? 'Applying...' : 'Apply'}
+              {isApplyingCoupon ? "Applying..." : "Apply"}
             </button>
           </div>
           {errors.couponCode && (
@@ -121,4 +140,4 @@ export const TicketFormFields: React.FC<TicketFormFieldsProps> = ({
       )}
     </div>
   );
-}; 
+};

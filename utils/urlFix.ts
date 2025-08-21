@@ -1,1 +1,2 @@
-export const urlWithProtocol = (url: string) => !(url.startsWith('http')) ? `https://${url}` : url;
+export const urlWithProtocol = (url: string) =>
+  !url.startsWith("http") ? `https://${url}` : url;

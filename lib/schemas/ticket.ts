@@ -1,15 +1,17 @@
-import { TICKET_TYPES_ENUM } from '@/utils/dbUtils';
-import { z } from 'zod';
+import { TICKET_TYPES_ENUM } from "@/utils/dbUtils";
+import { z } from "zod";
 
 // Base ticket purchase schema with required fields
 export const ticketPurchaseSchema = z.object({
-  name: z.string().min(1, 'Name is required').trim(),
-  email: z.email('Please enter a valid email address').trim(),
+  name: z.string().min(1, "Name is required").trim(),
+  email: z.email("Please enter a valid email address").trim(),
   discordHandle: z.string().optional(),
-  couponCode: z.string().optional().transform(val => val?.trim().toUpperCase() || null),
+  couponCode: z
+    .string()
+    .optional()
+    .transform((val) => val?.trim().toUpperCase() || null),
   ticketTypeId: z.string(),
 });
-
 
 // Schema for payment confirmation
 export const paymentConfirmationSchema = z.object({
@@ -29,10 +31,11 @@ export const paymentIntentSchema = z.object({
   couponCode: z.string().optional(),
 });
 
-
-
 // Type exports
-export type TicketPurchaseFormData = Omit<z.infer<typeof ticketPurchaseSchema>, 'ticketTypeId'>;
+export type TicketPurchaseFormData = Omit<
+  z.infer<typeof ticketPurchaseSchema>,
+  "ticketTypeId"
+>;
 export type TicketPurchaseData = z.infer<typeof ticketPurchaseSchema>;
 export type PaymentConfirmationData = z.infer<typeof paymentConfirmationSchema>;
 export type PaymentIntentData = z.infer<typeof paymentIntentSchema>;

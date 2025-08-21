@@ -1,20 +1,26 @@
 import { useEffect } from "react";
 
-
-
-export function Modal({onClose, children, className}: {onClose: () => void, children: React.ReactNode, className?: string}) {
+export function Modal({
+  onClose,
+  children,
+  className,
+}: {
+  onClose: () => void;
+  children: React.ReactNode;
+  className?: string;
+}) {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
-    
-    document.addEventListener('keydown', handleEsc);
-    return () => document.removeEventListener('keydown', handleEsc);
+
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
   return (
-    <div 
-      className="fixed inset-0 z-modal bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" 
+    <div
+      className="z-modal fixed inset-0 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       {/* Prevent clicks on content from closing modal */}
@@ -22,5 +28,5 @@ export function Modal({onClose, children, className}: {onClose: () => void, chil
         {children}
       </div>
     </div>
-  )
+  );
 }

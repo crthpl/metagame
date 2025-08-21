@@ -1,4 +1,3 @@
-
 export const randomId = () =>
   Math.random()
     .toString(36)
@@ -9,7 +8,7 @@ export const typeOutText = (
   blinker: HTMLElement,
   text: string,
   speed: number = 100,
-  reverse = false
+  reverse = false,
 ) => {
   return new Promise<void>((resolve) => {
     typer.textContent = reverse ? text : "";
@@ -22,10 +21,10 @@ export const typeOutText = (
       } else {
         typer.textContent = typer.textContent!.slice(0, -1);
       }
-      
+
       const diff = reverse ? -1 : 1;
       i += diff;
-      
+
       if ((reverse && i < 0) || (!reverse && i >= text.length)) {
         clearInterval(interval);
         resolve();
@@ -39,7 +38,7 @@ export const typeOut = async (
   blinker: HTMLElement,
   texts: string[],
   speed: number = 100,
-  delay = 4000
+  delay = 4000,
 ): Promise<void> => {
   while (texts.length) {
     for (const text of texts) {

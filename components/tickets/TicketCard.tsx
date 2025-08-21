@@ -1,9 +1,13 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react';
-import { TicketPurchaseForm } from './TicketPurchaseForm';
-import { getTicketType, DAY_PASS_OPTIONS, getDayPassTicketType } from '../../config/tickets';
-import { Modal } from '../Modal';
+import React, { useState } from "react";
+import { TicketPurchaseForm } from "./TicketPurchaseForm";
+import {
+  getTicketType,
+  DAY_PASS_OPTIONS,
+  getDayPassTicketType,
+} from "../../config/tickets";
+import { Modal } from "../Modal";
 import {
   Select,
   SelectContent,
@@ -11,18 +15,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PaymentCurrency } from './Tickets';
+import { PaymentCurrency } from "./Tickets";
 
 interface TicketCardProps {
   ticketTypeId: string;
   paymentMethod?: PaymentCurrency;
 }
 
-export const TicketCard: React.FC<TicketCardProps> = ({ 
+export const TicketCard: React.FC<TicketCardProps> = ({
   ticketTypeId,
-  paymentMethod = 'usd',
+  paymentMethod = "usd",
 }) => {
-  const [selectedDayPass, setSelectedDayPass] = useState<typeof DAY_PASS_OPTIONS[0] | null>(null);
+  const [selectedDayPass, setSelectedDayPass] = useState<
+    (typeof DAY_PASS_OPTIONS)[0] | null
+  >(null);
   const [showModal, setShowModal] = useState(false);
 
   const ticketType = getTicketType(ticketTypeId);
@@ -31,64 +37,78 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   }
 
   // For day pass tickets, calculate price range and use selected day's details
-  const isDayPass = ticketTypeId === 'dayPass';
-  const dayPassPrices = DAY_PASS_OPTIONS.map(option => option.priceUSD);
-  const dayPassPricesBTC = DAY_PASS_OPTIONS.map(option => option.priceBTC!);
+  const isDayPass = ticketTypeId === "dayPass";
+  const dayPassPrices = DAY_PASS_OPTIONS.map((option) => option.priceUSD);
+  const dayPassPricesBTC = DAY_PASS_OPTIONS.map((option) => option.priceBTC!);
   const minPrice = Math.min(...dayPassPrices);
   const maxPrice = Math.max(...dayPassPrices);
-  const priceRange = minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-${maxPrice}`;
+  const priceRange =
+    minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-${maxPrice}`;
   const minPriceBTC = Math.min(...dayPassPricesBTC);
   const maxPriceBTC = Math.max(...dayPassPricesBTC);
-  const priceRangeBTC = minPriceBTC === maxPriceBTC ? `₿${minPriceBTC}` : `₿${minPriceBTC}-${maxPriceBTC}`;
-  function getDisplayTicketType(ticketTypeId: string, selectedDayPass: typeof DAY_PASS_OPTIONS[0] | null) {
+  const priceRangeBTC =
+    minPriceBTC === maxPriceBTC
+      ? `₿${minPriceBTC}`
+      : `₿${minPriceBTC}-${maxPriceBTC}`;
+  function getDisplayTicketType(
+    ticketTypeId: string,
+    selectedDayPass: (typeof DAY_PASS_OPTIONS)[0] | null,
+  ) {
     const ticketType = getTicketType(ticketTypeId);
     if (!ticketType) return null;
-  
-    if (ticketTypeId === 'dayPass') {
-      const priceUSD = selectedDayPass?.priceUSD ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceUSD));
-      const priceBTC = selectedDayPass?.priceBTC ?? Math.min(...DAY_PASS_OPTIONS.map(o => o.priceBTC!));
+
+    if (ticketTypeId === "dayPass") {
+      const priceUSD =
+        selectedDayPass?.priceUSD ??
+        Math.min(...DAY_PASS_OPTIONS.map((o) => o.priceUSD));
+      const priceBTC =
+        selectedDayPass?.priceBTC ??
+        Math.min(...DAY_PASS_OPTIONS.map((o) => o.priceBTC!));
       return {
         ...ticketType,
         priceUSD,
         regularPrice: priceUSD,
-        description: selectedDayPass?.description ?? 'Single day pass - choose a day',
-        title: selectedDayPass ? `Day Pass: ${selectedDayPass.title}` : 'Day Pass',
+        description:
+          selectedDayPass?.description ?? "Single day pass - choose a day",
+        title: selectedDayPass
+          ? `Day Pass: ${selectedDayPass.title}`
+          : "Day Pass",
         priceBTC,
       };
     }
-  
-    if (ticketTypeId === 'volunteer') {
+
+    if (ticketTypeId === "volunteer") {
       return {
         ...ticketType,
-        priceUSD: '0+',
-        priceBTC: '0+',
-        regularPrice: null
+        priceUSD: "0+",
+        priceBTC: "0+",
+        regularPrice: null,
       };
     }
-    if (ticketTypeId === 'financialAid') {
+    if (ticketTypeId === "financialAid") {
       return {
         ...ticketType,
-        priceUSD: '0-290',
-        priceBTC: '0-0.002',
-        regularPrice: null
+        priceUSD: "0-290",
+        priceBTC: "0-0.002",
+        regularPrice: null,
       };
     }
-  
+
     return ticketType;
   }
 
   const handleBuyNow = () => {
     // If there's a specific URL for this ticket type, redirect to it
     if (ticketType.ticketUrl) {
-      window.open(ticketType.ticketUrl, '_blank');
+      window.open(ticketType.ticketUrl, "_blank");
       return;
     }
-    
+
     // For day pass, require selection before proceeding
     if (isDayPass && !selectedDayPass) {
       return;
     }
-    
+
     // Otherwise, show the purchase modal
     setShowModal(true);
   };
@@ -98,7 +118,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   };
 
   const handleDayPassChange = (value: string) => {
-    const selected = DAY_PASS_OPTIONS.find(option => option.id === value);
+    const selected = DAY_PASS_OPTIONS.find((option) => option.id === value);
     setSelectedDayPass(selected || null);
   };
 
@@ -106,116 +126,139 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   if (!displayTicketType) {
     return <div>Invalid ticket type</div>;
   }
-  const isBTC = paymentMethod === 'btc';
+  const isBTC = paymentMethod === "btc";
   return (
     <>
-    <div className="relative group transition-all duration-300">
-      <div className="card rounded-md border-amber-400 border-2 transition-all text-center flex flex-col p-6 h-full">
-        {/* Ticket Header */}
-        <div className="flex-grow flex flex-col justify-between">
-          <div>
-            <h3 className="uppercase text-5xl md:text-3xl font-black text-primary-300">
-              {displayTicketType.title}
-            </h3>
-            
-            
-            <p className="mt-3 mb-3 text-cyan-300 font-bold">
-                {displayTicketType.description}
-            </p>
-            {/* Day Pass Dropdown */}
-            {isDayPass && (
-              <div className="mt-3 mb-3 flex justify-center">
-                <Select value={selectedDayPass?.id || ""} onValueChange={handleDayPassChange}>
-                  <SelectTrigger className="w-fit max-w-xs">
-                    <SelectValue placeholder="Choose a day..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {DAY_PASS_OPTIONS.map((option) => (
-                      <SelectItem 
-                        key={option.id} 
-                        value={option.id}
-                      >
-                        {option.title} - {isBTC ? `₿${option.priceBTC}` : `$${option.priceUSD}`}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            {displayTicketType.finePrint && (
-              <ul className="mt-3 mb-3 text-xs text-opacity-80 text-left text-cyan-300 list-disc list-outside pl-4">
-                <li>{displayTicketType.finePrint}</li>
-              </ul>
-            )}
-            {/* Features List */}
-            {displayTicketType.features && displayTicketType.features.length > 0 && (
-              <ul className="my-16 text-lg">
-                {displayTicketType.features.map((feature, index) => (
-                  <li key={index}>{feature}</li>
-                ))}
-              </ul>
-            )}
-          </div>
+      <div className="group relative transition-all duration-300">
+        <div className="card flex h-full flex-col rounded-md border-2 border-amber-400 p-6 text-center transition-all">
+          {/* Ticket Header */}
+          <div className="flex flex-grow flex-col justify-between">
+            <div>
+              <h3 className="text-primary-300 text-5xl font-black uppercase md:text-3xl">
+                {displayTicketType.title}
+              </h3>
 
-          {/* Price Display  */}
-          <div className="">
-            {!isBTC && displayTicketType.regularPrice && displayTicketType.priceUSD !== displayTicketType.regularPrice ? (
-              <div className="text-4xl text-gray-400 relative">
-                ${displayTicketType.regularPrice}
-                <div className="absolute left-7 right-0 mx-auto w-[65px] top-5 border-b-2 -rotate-[33deg] border-secondary-300" />
-              </div>
-            ) : (
-              <div className="text-4xl text-gray-400 h-0" />
-            )}
-            
-            <p className="my-4 text-6xl md:text-3xl lg:text-6xl font-black text-secondary-300">
-              {isBTC
-                ? (
-                  isDayPass && !selectedDayPass
-                    ? <span className="">
-                        {priceRangeBTC}
-                      </span>
-                    : <span className="">
-                        ₿{displayTicketType.priceBTC}
-                      </span>
-                )
-                : (isDayPass && !selectedDayPass ? priceRange : `$${displayTicketType.priceUSD}`)
-              }
-            </p>
+              <p className="mt-3 mb-3 font-bold text-cyan-300">
+                {displayTicketType.description}
+              </p>
+              {/* Day Pass Dropdown */}
+              {isDayPass && (
+                <div className="mt-3 mb-3 flex justify-center">
+                  <Select
+                    value={selectedDayPass?.id || ""}
+                    onValueChange={handleDayPassChange}
+                  >
+                    <SelectTrigger className="w-fit max-w-xs">
+                      <SelectValue placeholder="Choose a day..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DAY_PASS_OPTIONS.map((option) => (
+                        <SelectItem key={option.id} value={option.id}>
+                          {option.title} -{" "}
+                          {isBTC
+                            ? `₿${option.priceBTC}`
+                            : `$${option.priceUSD}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              {displayTicketType.finePrint && (
+                <ul className="text-opacity-80 mt-3 mb-3 list-outside list-disc pl-4 text-left text-xs text-cyan-300">
+                  <li>{displayTicketType.finePrint}</li>
+                </ul>
+              )}
+              {/* Features List */}
+              {displayTicketType.features &&
+                displayTicketType.features.length > 0 && (
+                  <ul className="my-16 text-lg">
+                    {displayTicketType.features.map((feature, index) => (
+                      <li key={index}>{feature}</li>
+                    ))}
+                  </ul>
+                )}
+            </div>
+
+            {/* Price Display  */}
+            <div className="">
+              {!isBTC &&
+              displayTicketType.regularPrice &&
+              displayTicketType.priceUSD !== displayTicketType.regularPrice ? (
+                <div className="relative text-4xl text-gray-400">
+                  ${displayTicketType.regularPrice}
+                  <div className="border-secondary-300 absolute top-5 right-0 left-7 mx-auto w-[65px] -rotate-[33deg] border-b-2" />
+                </div>
+              ) : (
+                <div className="h-0 text-4xl text-gray-400" />
+              )}
+
+              <p className="text-secondary-300 my-4 text-6xl font-black md:text-3xl lg:text-6xl">
+                {isBTC ? (
+                  isDayPass && !selectedDayPass ? (
+                    <span className="">{priceRangeBTC}</span>
+                  ) : (
+                    <span className="">₿{displayTicketType.priceBTC}</span>
+                  )
+                ) : isDayPass && !selectedDayPass ? (
+                  priceRange
+                ) : (
+                  `$${displayTicketType.priceUSD}`
+                )}
+              </p>
+            </div>
           </div>
-        </div>
 
           {/* Buy/Apply Button */}
           <div className="mt-auto pt-3">
-            <div className={`relative inline-block hover:scale-105 transition-all ${
-              ticketType.live ? "opacity-100" : "opacity-50 pointer-events-none"
-            }`}>
-              <div className="bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 absolute top-0 left-0 right-0 bottom-0 -z-10 opacity-30 blur-lg transform translate-y-1 rounded-md transition-all duration-300 hover:scale-110 hover:scale-y-150">
-              </div>
+            <div
+              className={`relative inline-block transition-all hover:scale-105 ${
+                ticketType.live
+                  ? "opacity-100"
+                  : "pointer-events-none opacity-50"
+              }`}
+            >
+              <div className="absolute top-0 right-0 bottom-0 left-0 -z-10 translate-y-1 transform rounded-md bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 opacity-30 blur-lg transition-all duration-300 hover:scale-110 hover:scale-y-150"></div>
               <button
-                onClick={displayTicketType.live && (!isDayPass || selectedDayPass) ? handleBuyNow : undefined}
-                disabled={!displayTicketType.live || (isDayPass && !selectedDayPass)}
-                className={`bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 relative rounded-md p-0.5 font-bold ${
+                onClick={
                   displayTicketType.live && (!isDayPass || selectedDayPass)
-                    ? "transition-all duration-300 bg-[length:200%_200%] bg-[position:-100%_0] hover:bg-[position:100%_0]"
+                    ? handleBuyNow
+                    : undefined
+                }
+                disabled={
+                  !displayTicketType.live || (isDayPass && !selectedDayPass)
+                }
+                className={`relative rounded-md bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 p-0.5 font-bold ${
+                  displayTicketType.live && (!isDayPass || selectedDayPass)
+                    ? "bg-[length:200%_200%] bg-[position:-100%_0] transition-all duration-300 hover:bg-[position:100%_0]"
                     : ""
                 }`}
               >
-                <div className="bg-dark-500 text-white w-full h-full px-12 rounded-md py-3 uppercase transition-all duration-1000 whitespace-nowrap">
-                  {ticketType.live ? ticketType.applicationBased ? 'Apply' : isBTC ? '₿uy Now' : 'Buy Now' : 'Coming Soon'}
+                <div className="bg-dark-500 h-full w-full rounded-md px-12 py-3 whitespace-nowrap text-white uppercase transition-all duration-1000">
+                  {ticketType.live
+                    ? ticketType.applicationBased
+                      ? "Apply"
+                      : isBTC
+                        ? "₿uy Now"
+                        : "Buy Now"
+                    : "Coming Soon"}
                 </div>
               </button>
             </div>
           </div>
         </div>
-    </div>
+      </div>
 
       {/* Purchase Modal */}
       {showModal && (
         <Modal onClose={handleCloseModal} className="w-full max-w-2xl">
-          <div className="bg-dark-500 border border-gray-700 rounded-lg p-6 max-h-[90vh] overflow-y-auto">
+          <div className="bg-dark-500 max-h-[90vh] overflow-y-auto rounded-lg border border-gray-700 p-6">
             <TicketPurchaseForm
-              ticketType={selectedDayPass ? getDayPassTicketType(selectedDayPass.id) ?? ticketType : ticketType}
+              ticketType={
+                selectedDayPass
+                  ? (getDayPassTicketType(selectedDayPass.id) ?? ticketType)
+                  : ticketType
+              }
               paymentMethod={paymentMethod}
               onClose={handleCloseModal}
             />
@@ -224,4 +267,4 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       )}
     </>
   );
-}; 
+};

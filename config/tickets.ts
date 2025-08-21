@@ -1,46 +1,47 @@
-import { URLS } from '@/utils/urls';
-import type { TicketType } from '../lib/types';
+import { URLS } from "@/utils/urls";
+import type { TicketType } from "../lib/types";
 
 // Day pass options for the dropdown
 export const DAY_PASS_OPTIONS: TicketType[] = [
   {
-    id: 'friday',
-    title: 'Friday',
+    id: "friday",
+    title: "Friday",
     priceUSD: 150,
     live: true,
     applicationBased: false,
     priceBTC: 0.0011,
-    description: 'Single day pass for Friday 9/12'
+    description: "Single day pass for Friday 9/12",
   },
   {
-    id: 'saturday', 
-    title: 'Saturday',
+    id: "saturday",
+    title: "Saturday",
     priceUSD: 250,
     priceBTC: 0.0018,
     live: true,
     applicationBased: false,
-    description: 'Single day pass for Saturday 9/13'
+    description: "Single day pass for Saturday 9/13",
   },
   {
-    id: 'sunday', 
-    title: 'Sunday', 
+    id: "sunday",
+    title: "Sunday",
     priceUSD: 250,
     live: true,
     applicationBased: false,
     priceBTC: 0.0018,
-    description: 'Single day pass for Sunday 9/14'
+    description: "Single day pass for Sunday 9/14",
   },
 ];
 
 export const TICKET_TYPES: Record<string, TicketType> = {
   volunteer: {
-    id: 'volunteer',
-    title: 'Volunteer',
+    id: "volunteer",
+    title: "Volunteer",
     priceUSD: 0,
     live: true,
     applicationBased: true,
     ticketUrl: URLS.TICKET_VOLUNTEER,
-    description: 'Volunteer for 1-6 shifts for a free or reduced price ticket. May preclude participation in the megagame.',
+    description:
+      "Volunteer for 1-6 shifts for a free or reduced price ticket. May preclude participation in the megagame.",
     // features: [
     //   'Volunteer for 6 shifts over the weekend',
     //   'Access to all event activities',
@@ -48,14 +49,15 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     // ]
   },
   player: {
-    id: 'player',
-    title: 'Player',
+    id: "player",
+    title: "Player",
     priceUSD: 580,
-    priceBTC: .004,
+    priceBTC: 0.004,
     live: true,
     regularPrice: 580,
     applicationBased: false,
-    description: 'Full access to the event, including participating in the megagame',
+    description:
+      "Full access to the event, including participating in the megagame",
     // features: [
     //   'Full access to all games and activities',
     //   'Event materials and swag',
@@ -63,14 +65,14 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     // ]
   },
   supporter: {
-    id: 'supporter',
-    title: 'Supporter',
+    id: "supporter",
+    title: "Supporter",
     priceUSD: 2048,
-    priceBTC: .016,
+    priceBTC: 0.016,
     regularPrice: 2048,
     applicationBased: false,
     live: true,
-    description: 'We will name a game after you',
+    description: "We will name a game after you",
     // features: [
     //   'All Player benefits',
     //   'We will name a game after you',
@@ -79,45 +81,47 @@ export const TICKET_TYPES: Record<string, TicketType> = {
     // ]
   },
   student: {
-    id: 'student',
-    title: 'Student',
+    id: "student",
+    title: "Student",
     priceUSD: 275,
-    priceBTC: .002,
+    priceBTC: 0.002,
     live: true,
     regularPrice: 275,
     applicationBased: false,
-    description: 'Student ticket',
+    description: "Student ticket",
   },
   dayPass: {
-    id: 'dayPass',
-    title: 'Day Pass',
+    id: "dayPass",
+    title: "Day Pass",
     priceUSD: 150, // Default to Friday price, will be updated based on selection
-    priceBTC: .0011,
+    priceBTC: 0.0011,
     live: true,
     regularPrice: 150,
     applicationBased: false,
-    description: 'Single day pass - choose your day',
+    description: "Single day pass - choose your day",
   },
   financialAid: {
-    id: 'financialAid',
-    title: 'Financial Aid',
+    id: "financialAid",
+    title: "Financial Aid",
     ticketUrl: URLS.TICKET_FINANCIAL_AID,
     priceUSD: 0,
     live: true,
     regularPrice: 0,
     applicationBased: true,
-    description: 'Financial assistance',
-  }
+    description: "Financial assistance",
+  },
 };
 
 export const getTicketType = (id: string): TicketType | null => {
-  return ['friday', 'saturday', 'sunday'].includes(id) ? getDayPassTicketType(id) : TICKET_TYPES[id] || null;
+  return ["friday", "saturday", "sunday"].includes(id)
+    ? getDayPassTicketType(id)
+    : TICKET_TYPES[id] || null;
 };
 
 export const getAllTicketTypes = (): TicketType[] => {
   return Object.values(TICKET_TYPES);
-}; 
+};
 
 export const getDayPassTicketType = (id: string): TicketType | null => {
-  return DAY_PASS_OPTIONS.find(option => option.id === id) || null;
+  return DAY_PASS_OPTIONS.find((option) => option.id === id) || null;
 };

@@ -1,5 +1,5 @@
-import { z } from "zod"
-import { DbProfile } from "@/types/database/dbTypeAliases"
+import { z } from "zod";
+import { DbProfile } from "@/types/database/dbTypeAliases";
 
 export const ProfileSchema = z.object({
   id: z.string(),
@@ -18,9 +18,9 @@ export const ProfileSchema = z.object({
   is_admin: z.boolean(),
   minor: z.boolean().nullable(),
   bringing_kids: z.boolean().nullable(),
-}) satisfies z.ZodType<DbProfile>
+}) satisfies z.ZodType<DbProfile>;
 
-export const ProfilesResponseSchema = z.array(ProfileSchema)
+export const ProfilesResponseSchema = z.array(ProfileSchema);
 
-export type ProfileResponse = z.infer<typeof ProfileSchema>
-export type ProfilesResponse = z.infer<typeof ProfilesResponseSchema>
+export type ProfileResponse = z.infer<typeof ProfileSchema>;
+export type ProfilesResponse = z.infer<typeof ProfilesResponseSchema>;

@@ -3,12 +3,12 @@ import Link from "next/link";
 
 export default function ResetPasswordSuccessPage() {
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="bg-dark-400 p-8 rounded-lg shadow-lg w-full max-w-md text-center">
+    <div className="flex min-h-[80vh] items-center justify-center">
+      <div className="bg-dark-400 w-full max-w-md rounded-lg p-8 text-center shadow-lg">
         <div className="flex flex-col items-center gap-4">
-          <div className="bg-green-600 rounded-full p-3 mb-2">
+          <div className="mb-2 rounded-full bg-green-600 p-3">
             <svg
-              className="w-8 h-8 text-white"
+              className="h-8 w-8 text-white"
               fill="none"
               stroke="currentColor"
               strokeWidth={2.5}
@@ -21,20 +21,20 @@ export default function ResetPasswordSuccessPage() {
               />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold mb-2">Password Changed!</h1>
-          <p className="text-lg text-gray-300 mb-4">
+          <h1 className="mb-2 text-2xl font-bold">Password Changed!</h1>
+          <p className="mb-4 text-lg text-gray-300">
             Your password has been updated successfully.
           </p>
           <div className="flex gap-4">
-              <Link
-                href="/profile"
-                className={buttonVariants({ variant: 'outline' })}
-              >
-                Go to Profile
-              </Link>
-              <Link href="/" className={buttonVariants({ variant: 'outline' })}>
-                Go to Home
-              </Link>
+            <Link
+              href="/profile"
+              className={buttonVariants({ variant: "outline" })}
+            >
+              Go to Profile
+            </Link>
+            <Link href="/" className={buttonVariants({ variant: "outline" })}>
+              Go to Home
+            </Link>
           </div>
         </div>
       </div>

@@ -19,10 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DbSessionAges } from "@/types/database/dbTypeAliases";
-import {
-  getAgesDisplayText,
-  SESSION_AGES,
-} from "@/utils/dbUtils";
+import { getAgesDisplayText, SESSION_AGES } from "@/utils/dbUtils";
 import { XIcon } from "lucide-react";
 import { CONFERENCE_DAYS } from "./Schedule";
 import { dateUtils } from "@/utils/dateUtils";
@@ -108,7 +105,9 @@ export function AddEventModal({
   // Initialize form data when existingSession changes
   useEffect(() => {
     if (existingSession && !sessionLoading) {
-      const startDatePSTParts = dateUtils.getPacificParts(new Date(existingSession.start_time!));
+      const startDatePSTParts = dateUtils.getPacificParts(
+        new Date(existingSession.start_time!),
+      );
       const endDatePSTParts = existingSession.end_time
         ? dateUtils.getPacificParts(new Date(existingSession.end_time))
         : null;
@@ -118,7 +117,7 @@ export function AddEventModal({
         if (!hostId) return null;
         // If profiles aren't loaded (e.g., non-admin view), keep the existing host id as-is
         if (!profiles) return hostId;
-        const profileExists = profiles.some(p => p.id === hostId);
+        const profileExists = profiles.some((p) => p.id === hostId);
         return profileExists ? hostId : null;
       };
 
@@ -127,7 +126,9 @@ export function AddEventModal({
         description: existingSession.description || "",
         day: startDatePSTParts.day,
         startTime: startDatePSTParts.hour + ":" + startDatePSTParts.minute,
-        endTime: endDatePSTParts ? endDatePSTParts.hour + ":" + endDatePSTParts.minute : "10:00",
+        endTime: endDatePSTParts
+          ? endDatePSTParts.hour + ":" + endDatePSTParts.minute
+          : "10:00",
         minCapacity: existingSession.min_capacity,
         maxCapacity: existingSession.max_capacity,
         locationId: existingSession.location_id || null,
@@ -158,7 +159,7 @@ export function AddEventModal({
         ...defaultFormData,
         startTime: prefillData.startTime,
         endTime: endTime,
-        locationId: prefillData.locationId || '',
+        locationId: prefillData.locationId || "",
       });
     } else {
       // Reset to defaults
@@ -166,30 +167,37 @@ export function AddEventModal({
         ...defaultFormData,
       });
     }
-  }, [existingSession, sessionLoading, isEditMode, defaultDay, prefillData, profiles]);
+  }, [
+    existingSession,
+    sessionLoading,
+    isEditMode,
+    defaultDay,
+    prefillData,
+    profiles,
+  ]);
   // Bump up hosts when an earlier host is cleared
   useEffect(() => {
-    if (!formData.host_1_id && !formData.host_2_id && !formData.host_3_id) return;
+    if (!formData.host_1_id && !formData.host_2_id && !formData.host_3_id)
+      return;
     if (!formData.host_1_id) {
-      setFormData(prev => ({ 
-        ...prev, 
+      setFormData((prev) => ({
+        ...prev,
         host_1_id: prev.host_2_id,
         host_2_id: prev.host_3_id,
-        host_3_id: null
+        host_3_id: null,
       }));
     }
   }, [formData.host_1_id]);
 
   useEffect(() => {
     if (!formData.host_2_id) {
-      setFormData(prev => ({ 
-        ...prev, 
+      setFormData((prev) => ({
+        ...prev,
         host_2_id: prev.host_3_id,
-        host_3_id: null
+        host_3_id: null,
       }));
     }
   }, [formData.host_2_id]);
-
 
   const addEventMutation = useMutation({
     mutationFn: adminAddSession,
@@ -252,9 +260,11 @@ export function AddEventModal({
       return;
     }
 
-
-
-    if (formData.minCapacity && formData.maxCapacity && formData.minCapacity > formData.maxCapacity) {
+    if (
+      formData.minCapacity &&
+      formData.maxCapacity &&
+      formData.minCapacity > formData.maxCapacity
+    ) {
       toast.error("Minimum capacity cannot be greater than maximum capacity");
       return;
     }
@@ -264,7 +274,6 @@ export function AddEventModal({
       toast.error("Please select a host for the event");
       return;
     }
-
 
     const startDateTime = dateUtils.dateFromParts({
       year: 2025,
@@ -330,7 +339,7 @@ export function AddEventModal({
     >,
   ) => {
     const { name, value } = e.target;
-    
+
     // Handle number fields
     if (name === "minCapacity" || name === "maxCapacity") {
       const numValue = value === "" ? null : parseInt(value);
@@ -342,7 +351,7 @@ export function AddEventModal({
 
   const hostSelectOptions = () => {
     if (!currentUserProfile?.is_admin) {
-      console.log("non-admin")
+      console.log("non-admin");
       return (
         <SelectItem value="read-only" disabled>
           Hosts are read-only for non-admins
@@ -354,7 +363,7 @@ export function AddEventModal({
         <SelectItem value="loading" disabled>
           Loading profiles...
         </SelectItem>
-      )
+      );
     }
     if (profilesError && currentUserProfile?.is_admin) {
       return (
@@ -368,16 +377,18 @@ export function AddEventModal({
         <SelectItem value="empty" disabled>
           No profiles found
         </SelectItem>
-      )
+      );
     }
     return profiles?.map((profile) => {
       return (
         <SelectItem key={profile.id} value={profile.id}>
-          {profile.first_name ? `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}` : profile.email || profile.id}
+          {profile.first_name
+            ? `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}`
+            : profile.email || profile.id}
         </SelectItem>
       );
-    })
-  }
+    });
+  };
   if (!isOpen) return null;
 
   // Show loading state while fetching session data in edit mode
@@ -455,7 +466,10 @@ export function AddEventModal({
                 </SelectTrigger>
                 <SelectContent className="z-[70]">
                   {CONFERENCE_DAYS.map((day) => (
-                    <SelectItem key={day.date.getDate().toString()} value={day.date.getDate().toString()}>
+                    <SelectItem
+                      key={day.date.getDate().toString()}
+                      value={day.date.getDate().toString()}
+                    >
                       {day.name}
                     </SelectItem>
                   ))}
@@ -475,9 +489,12 @@ export function AddEventModal({
                 disabled={!currentUserProfile?.is_admin}
                 onValueChange={(value) => {
                   if (!value) {
-                    return
+                    return;
                   }
-                  setFormData((prev) => ({ ...prev, locationId: value === "none" ? null : value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    locationId: value === "none" ? null : value,
+                  }));
                 }}
               >
                 <SelectTrigger>
@@ -515,7 +532,7 @@ export function AddEventModal({
                 disabled={!currentUserProfile?.is_admin}
                 value={formData.startTime}
                 onChange={handleInputChange}
-                className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded border p-2 disabled:cursor-not-allowed disabled:text-gray-400 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700"
               />
             </div>
             <div>
@@ -533,19 +550,29 @@ export function AddEventModal({
                 disabled={!currentUserProfile?.is_admin}
                 value={formData.endTime}
                 onChange={handleInputChange}
-                className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded border p-2 disabled:cursor-not-allowed disabled:text-gray-400 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700"
               />
             </div>
           </div>
-          
+
           {/* Host 1 - Required */}
-          { currentUserProfile?.is_admin && 
+          {currentUserProfile?.is_admin && (
             <div>
               <div className="flex gap-2">
-                <label htmlFor="host_1_id" className="mb-1 block text-sm font-medium">
+                <label
+                  htmlFor="host_1_id"
+                  className="mb-1 block text-sm font-medium"
+                >
                   Host 1 <span className="text-red-500">*</span>
                 </label>
-                {formData.host_1_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_1_id: null }))} />}
+                {formData.host_1_id && (
+                  <XIcon
+                    className="size-4 text-red-500"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, host_1_id: null }))
+                    }
+                  />
+                )}
               </div>
               <Select
                 name="host_1_id"
@@ -554,8 +581,8 @@ export function AddEventModal({
                 onValueChange={(value) => {
                   if (!value) return;
                   setFormData((prev) => {
-                    return { ...prev, host_1_id: value }
-                  })
+                    return { ...prev, host_1_id: value };
+                  });
                 }}
               >
                 <SelectTrigger>
@@ -571,28 +598,41 @@ export function AddEventModal({
                 </p>
               )}
             </div>
-          }
+          )}
 
           {/* Host 2 - Optional, only show if Host 1 is selected */}
           {formData.host_1_id && currentUserProfile?.is_admin && (
             <div>
               <div className="flex gap-2">
-                <label htmlFor="host_2_id" className="mb-1 block text-sm font-medium">
-                  Host 2 <span className="text-gray-400">(Optional)</span> 
+                <label
+                  htmlFor="host_2_id"
+                  className="mb-1 block text-sm font-medium"
+                >
+                  Host 2 <span className="text-gray-400">(Optional)</span>
                 </label>
-                {formData.host_2_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_2_id: null }))} />}
-              </div>
-                  <Select
-                    name="host_2_id"
-                    value={formData.host_2_id || ""}
-                    disabled={!currentUserProfile?.is_admin}
-                    onValueChange={(value) =>
-                      setFormData((prev) => ({ ...prev, host_2_id: value === "none" ? null : value }))
+                {formData.host_2_id && (
+                  <XIcon
+                    className="size-4 text-red-500"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, host_2_id: null }))
                     }
-                  >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a second host" />
-                  </SelectTrigger>
+                  />
+                )}
+              </div>
+              <Select
+                name="host_2_id"
+                value={formData.host_2_id || ""}
+                disabled={!currentUserProfile?.is_admin}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    host_2_id: value === "none" ? null : value,
+                  }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a second host" />
+                </SelectTrigger>
                 <SelectContent className="z-[70]">
                   <SelectItem value="none">No second host</SelectItem>
                   {hostSelectOptions()}
@@ -602,32 +642,47 @@ export function AddEventModal({
           )}
 
           {/* Host 3 - Optional, only show if Host 2 is selected */}
-          {formData.host_1_id && formData.host_2_id && currentUserProfile?.is_admin && (
-            <div>
-              <div className="flex gap-2">
-                <label htmlFor="host_3_id" className="mb-1 block text-sm font-medium">
-                  Host 3 <span className="text-gray-400">(Optional)</span>
-                </label>
-                {formData.host_3_id && <XIcon className="size-4 text-red-500" onClick={() => setFormData((prev) => ({ ...prev, host_3_id: null }))} />}
-              </div>
-                      <Select
-                    name="host_3_id"
-                    value={formData.host_3_id || ""}
-                    disabled={!currentUserProfile?.is_admin}
-                    onValueChange={(value) =>
-                      setFormData((prev) => ({ ...prev, host_3_id: value === "none" ? null : value }))
-                    }
+          {formData.host_1_id &&
+            formData.host_2_id &&
+            currentUserProfile?.is_admin && (
+              <div>
+                <div className="flex gap-2">
+                  <label
+                    htmlFor="host_3_id"
+                    className="mb-1 block text-sm font-medium"
                   >
+                    Host 3 <span className="text-gray-400">(Optional)</span>
+                  </label>
+                  {formData.host_3_id && (
+                    <XIcon
+                      className="size-4 text-red-500"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, host_3_id: null }))
+                      }
+                    />
+                  )}
+                </div>
+                <Select
+                  name="host_3_id"
+                  value={formData.host_3_id || ""}
+                  disabled={!currentUserProfile?.is_admin}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      host_3_id: value === "none" ? null : value,
+                    }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a third host" />
                   </SelectTrigger>
-                <SelectContent className="z-[70]">
-                  <SelectItem value="none">No third host</SelectItem>
-                  {hostSelectOptions()}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+                  <SelectContent className="z-[70]">
+                    <SelectItem value="none">No third host</SelectItem>
+                    {hostSelectOptions()}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
           <div className="grid grid-cols-3 gap-4">
             <div>

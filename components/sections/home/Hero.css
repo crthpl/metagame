@@ -7,12 +7,32 @@ html {
 /* Background animation styles moved to globals.css for NextJS compatibility */
 
 .outlines {
-  text-shadow: -1px -1px 0 #4deeea, 1px -1px 0 #4deeea, -1px 1px 0 #4deeea, 1px 1px 0 #4deeea, 0 0 3px #fff, 0 0 5px #34e2e4, 0 0 15px #764ba2, 0 0 20px #764ba2, 0 0 35px #764ba2, 0 0 45px #764ba2;
+  text-shadow:
+    -1px -1px 0 #4deeea,
+    1px -1px 0 #4deeea,
+    -1px 1px 0 #4deeea,
+    1px 1px 0 #4deeea,
+    0 0 3px #fff,
+    0 0 5px #34e2e4,
+    0 0 15px #764ba2,
+    0 0 20px #764ba2,
+    0 0 35px #764ba2,
+    0 0 45px #764ba2;
 }
 
 @media (min-width: 768px) {
   .outlines {
-    text-shadow: -2px -2px 0 #4deeea, 2px -2px 0 #4deeea, -2px 2px 0 #4deeea, 2px 2px 0 #4deeea, 0 0 5px #fff, 0 0 10px #34e2e4, 0 0 25px #764ba2, 0 0 35px #764ba2, 0 0 55px #764ba2, 0 0 65px #764ba2;
+    text-shadow:
+      -2px -2px 0 #4deeea,
+      2px -2px 0 #4deeea,
+      -2px 2px 0 #4deeea,
+      2px 2px 0 #4deeea,
+      0 0 5px #fff,
+      0 0 10px #34e2e4,
+      0 0 25px #764ba2,
+      0 0 35px #764ba2,
+      0 0 55px #764ba2,
+      0 0 65px #764ba2;
   }
 }
 
@@ -45,11 +65,13 @@ html {
   transition: all 0.3s;
 }
 
-.btn-blur, .tickets-btn {
+.btn-blur,
+.tickets-btn {
   background-size: 200% 200%;
   background-position: -100% 0;
 }
 
-.btn-blur:hover, .tickets-btn:hover {
+.btn-blur:hover,
+.tickets-btn:hover {
   background-position: 100% 0;
 }

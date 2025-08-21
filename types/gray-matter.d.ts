@@ -1,4 +1,4 @@
-declare module 'gray-matter' {
+declare module "gray-matter" {
   interface GrayMatterOption {
     excerpt?: boolean | ((file: any, options: any) => void);
     excerpt_separator?: string;
@@ -19,8 +19,8 @@ declare module 'gray-matter' {
 
   function matter<T = any>(
     input: string | Buffer,
-    options?: GrayMatterOption
+    options?: GrayMatterOption,
   ): GrayMatterFile<T>;
 
   export = matter;
-} 
+}

@@ -1,6 +1,6 @@
-import { SOCIAL_LINKS } from '@/utils/urls';
-import { getTicketType } from '@/config/tickets';
-import { Resend } from 'resend';
+import { SOCIAL_LINKS } from "@/utils/urls";
+import { getTicketType } from "@/config/tickets";
+import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -11,7 +11,7 @@ export interface TicketConfirmationEmailData {
   ticketCode: string;
   price: number;
   paymentIntentId?: string;
-  opennodeChargeId?: string
+  opennodeChargeId?: string;
 }
 
 export async function sendTicketConfirmationEmail({
@@ -21,18 +21,26 @@ export async function sendTicketConfirmationEmail({
   ticketCode,
   price,
   paymentIntentId,
-  opennodeChargeId
+  opennodeChargeId,
 }: TicketConfirmationEmailData) {
   try {
     const discordUrl = SOCIAL_LINKS.DISCORD;
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://metagame.games';
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || "https://metagame.games";
     const isBtc = opennodeChargeId !== undefined;
     const { data, error } = await resend.emails.send({
-      from: 'Metagame 2025 <tickets@mail.metagame.games>',
+      from: "Metagame 2025 <tickets@mail.metagame.games>",
       to,
-      bcc: ['ricki.heicklen+metagame@gmail.com', 'briantsmiley42+metagame@gmail.com'],
-      replyTo: ['ricki.heicklen+metagame@gmail.com', 'briantsmiley42+metagame@gmail.com'],
-      subject: 'Action required: Claim your Metagame 2025 ticket and register your profile',
+      bcc: [
+        "ricki.heicklen+metagame@gmail.com",
+        "briantsmiley42+metagame@gmail.com",
+      ],
+      replyTo: [
+        "ricki.heicklen+metagame@gmail.com",
+        "briantsmiley42+metagame@gmail.com",
+      ],
+      subject:
+        "Action required: Claim your Metagame 2025 ticket and register your profile",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333;">Claim your ticket and complete registration</h1>
@@ -73,7 +81,7 @@ export async function sendTicketConfirmationEmail({
             <p><strong>Contact:</strong> <a href="${discordUrl}">Join our Discord!</a></p>
           </div>
           
-          ${isBtc ? `<p>If you believe there has been a mistake, want a 94% refund on your ticket (available until September 1), reply to this email.</p>` : ''}
+          ${isBtc ? `<p>If you believe there has been a mistake, want a 94% refund on your ticket (available until September 1), reply to this email.</p>` : ""}
           
           <p>See you at Metagame 2025!</p>
           
@@ -117,17 +125,17 @@ If you believe there has been a mistake, want a 94% refund on your ticket (avail
 See you at Metagame 2025!
 
 This is not a puzzle.
-      `.trim()
+      `.trim(),
     });
 
     if (error) {
-      console.error('Failed to send email:', error);
+      console.error("Failed to send email:", error);
       throw error;
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error('Error sending ticket confirmation email:', error);
+    console.error("Error sending ticket confirmation email:", error);
     throw error;
   }
 }

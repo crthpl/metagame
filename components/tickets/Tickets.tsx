@@ -1,18 +1,21 @@
-'use client'
+"use client";
 
-import React from 'react';
-import { TicketCard } from './TicketCard';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
-import { InfoIcon } from 'lucide-react';
+import React from "react";
+import { TicketCard } from "./TicketCard";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { InfoIcon } from "lucide-react";
 
-export type PaymentCurrency = 'usd' | 'btc';
+export type PaymentCurrency = "usd" | "btc";
 
 export const Tickets: React.FC = () => {
-  const [paymentMethod, setPaymentMethod] = useLocalStorage<PaymentCurrency>('payment-method', 'usd');
+  const [paymentMethod, setPaymentMethod] = useLocalStorage<PaymentCurrency>(
+    "payment-method",
+    "usd",
+  );
 
   const togglePaymentMethod = () => {
-    setPaymentMethod(prev => (prev === 'usd' ? 'btc' : 'usd'));
+    setPaymentMethod((prev) => (prev === "usd" ? "btc" : "usd"));
   };
 
   return (
@@ -22,9 +25,13 @@ export const Tickets: React.FC = () => {
           <h2 className="text-center text-3xl font-bold">Grab a ticket!</h2>
         </div>
 
-        <div className="flex flex-col items-center mb-6">
-          <div className=" flex items-center gap-3">
-            <span className={`text-xl ${paymentMethod === 'usd' ? 'font-semibold text-green-500' : 'opacity-50'}`}>USD</span>
+        <div className="mb-6 flex flex-col items-center">
+          <div className="flex items-center gap-3">
+            <span
+              className={`text-xl ${paymentMethod === "usd" ? "font-semibold text-green-500" : "opacity-50"}`}
+            >
+              USD
+            </span>
             <button
               type="button"
               onClick={togglePaymentMethod}
@@ -32,14 +39,22 @@ export const Tickets: React.FC = () => {
               aria-label="Toggle payment method"
             >
               <span
-                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ml-1 ${paymentMethod === 'btc' ? 'translate-x-6' : ''}`}
+                className={`ml-1 inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${paymentMethod === "btc" ? "translate-x-6" : ""}`}
               />
             </button>
-            <span className={`text-xl ${paymentMethod === 'btc' ? 'font-semibold text-yellow-500' : 'opacity-50'}`}>BTC</span>
+            <span
+              className={`text-xl ${paymentMethod === "btc" ? "font-semibold text-yellow-500" : "opacity-50"}`}
+            >
+              BTC
+            </span>
           </div>
-          {paymentMethod === 'btc' ? (
+          {paymentMethod === "btc" ? (
             <span className="">
-              <span>*Bitcoin purchases are <span className="font-extrabold underline">non-refundable</span> for logistical reasons.</span>
+              <span>
+                *Bitcoin purchases are{" "}
+                <span className="font-extrabold underline">non-refundable</span>{" "}
+                for logistical reasons.
+              </span>
             </span>
           ) : (
             <div className="flex items-center gap-2">
@@ -49,7 +64,11 @@ export const Tickets: React.FC = () => {
                   <InfoIcon className="size-3" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-base font-semibold max-w-lg">Bitcoin prices are fixed and their relationship to USD prices will vary depending on the exchange rate at the time of purchase.</p>
+                  <p className="max-w-lg text-base font-semibold">
+                    Bitcoin prices are fixed and their relationship to USD
+                    prices will vary depending on the exchange rate at the time
+                    of purchase.
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -61,7 +80,10 @@ export const Tickets: React.FC = () => {
           <TicketCard ticketTypeId="dayPass" paymentMethod={paymentMethod} />
           <TicketCard ticketTypeId="volunteer" paymentMethod={paymentMethod} />
           <TicketCard ticketTypeId="student" paymentMethod={paymentMethod} />
-          <TicketCard ticketTypeId="financialAid" paymentMethod={paymentMethod} />
+          <TicketCard
+            ticketTypeId="financialAid"
+            paymentMethod={paymentMethod}
+          />
           <TicketCard ticketTypeId="supporter" paymentMethod={paymentMethod} />
         </div>
       </div>
@@ -70,5 +92,3 @@ export const Tickets: React.FC = () => {
 };
 
 export default Tickets;
-
-

@@ -1,39 +1,46 @@
-import { DbCoupon, DbTicketType } from '@/types/database/dbTypeAliases';
-import { getTicketType } from '@/config/tickets';
-import { couponsService } from './db/coupons';
-import z from 'zod';
+import { DbCoupon, DbTicketType } from "@/types/database/dbTypeAliases";
+import { getTicketType } from "@/config/tickets";
+import { couponsService } from "./db/coupons";
+import z from "zod";
 
-export const applyCouponDiscount = (originalPrice: number, coupon: DbCoupon): number => {
+export const applyCouponDiscount = (
+  originalPrice: number,
+  coupon: DbCoupon,
+): number => {
   const discountedPrice = originalPrice - coupon.discount_amount_cents;
   return Math.max(discountedPrice, 50);
-}; 
+};
 
-export const isTicketTypeEligibleForCoupons = (ticketTypeId: DbTicketType): boolean => {
+export const isTicketTypeEligibleForCoupons = (
+  ticketTypeId: DbTicketType,
+): boolean => {
   // Only player tickets are eligible for coupons currently
-  return ticketTypeId === 'player';
-}; 
+  return ticketTypeId === "player";
+};
 
-export const validateCouponResultSchema = z.discriminatedUnion('valid', [
-    z.object({
-      valid: z.literal(true),
-      coupon: z.object({
-        code: z.string(),
-        discountAmountCents: z.number(),
-        description: z.string(),
-      }),
-      originalPriceCents: z.number(),
-      newPriceCents: z.number(),
-      savingsCents: z.number(),
+export const validateCouponResultSchema = z.discriminatedUnion("valid", [
+  z.object({
+    valid: z.literal(true),
+    coupon: z.object({
+      code: z.string(),
+      discountAmountCents: z.number(),
+      description: z.string(),
     }),
-    z.object({
-      valid: z.literal(false),
-      error: z.string(),
-    })
-  ]
-)
+    originalPriceCents: z.number(),
+    newPriceCents: z.number(),
+    savingsCents: z.number(),
+  }),
+  z.object({
+    valid: z.literal(false),
+    error: z.string(),
+  }),
+]);
 
 export type ValidateCouponResult = z.infer<typeof validateCouponResultSchema>;
-export type ValidatedCoupon = Extract<ValidateCouponResult, { valid: true }>['coupon'];
+export type ValidatedCoupon = Extract<
+  ValidateCouponResult,
+  { valid: true }
+>["coupon"];
 /**
  * Validates a coupon for purchase and returns pricing details
  * @param couponCode - The coupon code to validate
@@ -44,16 +51,16 @@ export type ValidatedCoupon = Extract<ValidateCouponResult, { valid: true }>['co
 export const validateCouponForPurchase = async (
   couponCode: string,
   purchaserEmail: string | undefined,
-  ticketTypeId: string
+  ticketTypeId: string,
 ): Promise<ValidateCouponResult> => {
   try {
     // Validate coupon exists
     const coupon = await couponsService.getByCode({ couponCode });
-    
+
     if (!coupon) {
       return validateCouponResultSchema.parse({
         valid: false,
-        error: 'Invalid coupon code'
+        error: "Invalid coupon code",
       });
     }
 
@@ -62,20 +69,25 @@ export const validateCouponForPurchase = async (
       if (!purchaserEmail) {
         return validateCouponResultSchema.parse({
           valid: false,
-          error: 'Coupon is limited to specific purchaser emails, but no email was provided'
+          error:
+            "Coupon is limited to specific purchaser emails, but no email was provided",
         });
       }
-      const couponCheck = await couponsService.checkEmailAuthorization({ couponId: coupon.id, email: purchaserEmail })
+      const couponCheck = await couponsService.checkEmailAuthorization({
+        couponId: coupon.id,
+        email: purchaserEmail,
+      });
       if (!couponCheck) {
         return validateCouponResultSchema.parse({
           valid: false,
-          error: 'Coupon is not enabled for this email address'
+          error: "Coupon is not enabled for this email address",
         });
       }
       if (couponCheck.uses >= couponCheck.max_uses) {
         return validateCouponResultSchema.parse({
           valid: false,
-          error: 'Coupon has reached its maximum number of uses for this email address'
+          error:
+            "Coupon has reached its maximum number of uses for this email address",
         });
       }
     }
@@ -85,7 +97,7 @@ export const validateCouponForPurchase = async (
     if (!ticketType) {
       return validateCouponResultSchema.parse({
         valid: false,
-        error: 'Invalid ticket type'
+        error: "Invalid ticket type",
       });
     }
 
@@ -93,29 +105,32 @@ export const validateCouponForPurchase = async (
     if (!isTicketTypeEligibleForCoupons(ticketTypeId as DbTicketType)) {
       return validateCouponResultSchema.parse({
         valid: false,
-        error: 'Coupons are not available for this ticket type'
+        error: "Coupons are not available for this ticket type",
       });
     }
 
     const originalPriceInCents = ticketType.priceUSD * 100;
-    const discountedPriceInCents = applyCouponDiscount(originalPriceInCents, coupon);
+    const discountedPriceInCents = applyCouponDiscount(
+      originalPriceInCents,
+      coupon,
+    );
 
     return validateCouponResultSchema.parse({
       valid: true,
-        originalPriceCents: originalPriceInCents,
-        newPriceCents: discountedPriceInCents,
-        savingsCents: originalPriceInCents - discountedPriceInCents,
-        coupon: {
-          code: coupon.coupon_code,
-          discountAmountCents: coupon.discount_amount_cents,
-        description: coupon.description || '',
+      originalPriceCents: originalPriceInCents,
+      newPriceCents: discountedPriceInCents,
+      savingsCents: originalPriceInCents - discountedPriceInCents,
+      coupon: {
+        code: coupon.coupon_code,
+        discountAmountCents: coupon.discount_amount_cents,
+        description: coupon.description || "",
       },
     });
   } catch (error) {
-    console.error('Error validating coupon for purchase:', error);
+    console.error("Error validating coupon for purchase:", error);
     return validateCouponResultSchema.parse({
       valid: false,
-      error: 'Unknown error'
+      error: "Unknown error",
     });
   }
-}; 
+};

@@ -1,26 +1,33 @@
-'use server'
-import { sessionsService } from "@/lib/db/sessions"
-import { DbSession, DbSessionUpdate } from "@/types/database/dbTypeAliases"
-import { createClient } from "@/utils/supabase/server"
-import { usersService } from "@/lib/db/users"
-import z from "zod"
-import { SESSION_AGES } from "@/utils/dbUtils"
+"use server";
+import { sessionsService } from "@/lib/db/sessions";
+import { DbSession, DbSessionUpdate } from "@/types/database/dbTypeAliases";
+import { createClient } from "@/utils/supabase/server";
+import { usersService } from "@/lib/db/users";
+import z from "zod";
+import { SESSION_AGES } from "@/utils/dbUtils";
 
-export async function userCanEditSession({userId, sessionId}: {userId: string, sessionId: string}) {
+export async function userCanEditSession({
+  userId,
+  sessionId,
+}: {
+  userId: string;
+  sessionId: string;
+}) {
   //Admins can edit any session
-  if (await usersService.getUserAdminStatus({userId})) {
-    return true
+  if (await usersService.getUserAdminStatus({ userId })) {
+    return true;
   }
 
-  const session = await sessionsService.getSessionById({sessionId})
+  const session = await sessionsService.getSessionById({ sessionId });
 
   //Hosts can edit sessions
-  if ([session.host_1_id, session.host_2_id, session.host_3_id].includes(userId)) {
-    return true
+  if (
+    [session.host_1_id, session.host_2_id, session.host_3_id].includes(userId)
+  ) {
+    return true;
   }
 
-
-  return false
+  return false;
 }
 
 // Fields that users can update on sessions; for admins editing sessinos more generally, we use adminUpdateSession
@@ -29,60 +36,75 @@ const sessionUpdateSchema = z.object({
   description: z.string().min(1),
   min_capacity: z.number().min(1),
   max_capacity: z.number().min(1),
-  ages: z.enum(SESSION_AGES)
-})
-export async function userEditSession(
-  {
-    sessionId,
-    sessionUpdate
-  }:{
-    sessionId: DbSession["id"],
-    sessionUpdate: DbSessionUpdate
-  }) {
-    const supabase = await createClient()
-    const {data: {user: currentUser}, error: currentUserError } = await supabase.auth.getUser()
-    if (currentUserError || !currentUser) {
-      throw new Error("User not authenticated")
-    }
-    
-    // Check permissions using the efficient method
-    const permissions = await getUserEditPermissionsForSessions({
-      userId: currentUser.id,
-      sessionIds: [sessionId]
-    })
-    
-    if (!permissions[sessionId]) {
-      throw new Error("Unauthorized")
-    }
-    
-    const validatedSessionUpdate = sessionUpdateSchema.parse(sessionUpdate)
-    await sessionsService.updateSession({sessionId, payload: validatedSessionUpdate})
+  ages: z.enum(SESSION_AGES),
+});
+export async function userEditSession({
+  sessionId,
+  sessionUpdate,
+}: {
+  sessionId: DbSession["id"];
+  sessionUpdate: DbSessionUpdate;
+}) {
+  const supabase = await createClient();
+  const {
+    data: { user: currentUser },
+    error: currentUserError,
+  } = await supabase.auth.getUser();
+  if (currentUserError || !currentUser) {
+    throw new Error("User not authenticated");
   }
 
-export async function getUserEditPermissionsForSessions({userId, sessionIds}: {userId: string, sessionIds: string[]}) {
-  
+  // Check permissions using the efficient method
+  const permissions = await getUserEditPermissionsForSessions({
+    userId: currentUser.id,
+    sessionIds: [sessionId],
+  });
+
+  if (!permissions[sessionId]) {
+    throw new Error("Unauthorized");
+  }
+
+  const validatedSessionUpdate = sessionUpdateSchema.parse(sessionUpdate);
+  await sessionsService.updateSession({
+    sessionId,
+    payload: validatedSessionUpdate,
+  });
+}
+
+export async function getUserEditPermissionsForSessions({
+  userId,
+  sessionIds,
+}: {
+  userId: string;
+  sessionIds: string[];
+}) {
   // If no sessions, return empty object
-  if (!sessionIds.length) return {}
-  
+  if (!sessionIds.length) return {};
+
   // Check if user is admin first
-  const userIsAdmin = await usersService.getUserAdminStatus({userId})
+  const userIsAdmin = await usersService.getUserAdminStatus({ userId });
   if (userIsAdmin) {
     // Admin can edit all sessions
-    return sessionIds.reduce((acc, sessionId) => {
-      acc[sessionId] = true
-      return acc
-    }, {} as Record<string, boolean>)
+    return sessionIds.reduce(
+      (acc, sessionId) => {
+        acc[sessionId] = true;
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    );
   }
 
   // For non-admins, get all sessions they host
-  const hostedSessions = await sessionsService.getUsersHostedSessions({userId})
-  const hostedSessionIds = new Set(hostedSessions.map(session => session.id))
-  
+  const hostedSessions = await sessionsService.getUsersHostedSessions({
+    userId,
+  });
+  const hostedSessionIds = new Set(hostedSessions.map((session) => session.id));
+
   // Create permissions object
-  const permissions: Record<string, boolean> = {}
+  const permissions: Record<string, boolean> = {};
   for (const sessionId of sessionIds) {
-    permissions[sessionId] = hostedSessionIds.has(sessionId)
+    permissions[sessionId] = hostedSessionIds.has(sessionId);
   }
-  
-  return permissions
+
+  return permissions;
 }

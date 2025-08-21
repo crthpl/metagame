@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { SessionResponse } from "@/app/api/queries/sessions/schema";
 import SessionDetailsCard from "./SessionModalCard";
 
@@ -10,9 +14,16 @@ interface SmartSessionTooltipProps {
   children: React.ReactNode;
 }
 
-export function SmartSessionTooltip({ session, children }: SmartSessionTooltipProps) {
-  const [tooltipSide, setTooltipSide] = useState<'top' | 'bottom' | 'left' | 'right'>('top');
-  const [tooltipAlign, setTooltipAlign] = useState<'start' | 'center' | 'end'>('center');
+export function SmartSessionTooltip({
+  session,
+  children,
+}: SmartSessionTooltipProps) {
+  const [tooltipSide, setTooltipSide] = useState<
+    "top" | "bottom" | "left" | "right"
+  >("top");
+  const [tooltipAlign, setTooltipAlign] = useState<"start" | "center" | "end">(
+    "center",
+  );
   const triggerRef = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = (e: React.MouseEvent) => {
@@ -30,8 +41,8 @@ export function SmartSessionTooltip({ session, children }: SmartSessionTooltipPr
     const spaceRight = windowWidth - mouseX;
 
     // Determine the best side to show the tooltip
-    let side: 'top' | 'bottom' | 'left' | 'right' = 'top';
-    let align: 'start' | 'center' | 'end' = 'center';
+    let side: "top" | "bottom" | "left" | "right" = "top";
+    let align: "start" | "center" | "end" = "center";
 
     // Check if we're near the edges
     const isNearLeft = mouseX < 300;
@@ -40,20 +51,45 @@ export function SmartSessionTooltip({ session, children }: SmartSessionTooltipPr
     const isNearBottom = mouseY > windowHeight - 200;
 
     if (isNearRight && spaceLeft > spaceRight) {
-      side = 'left';
-      align = mouseY < windowHeight / 2 ? 'start' : mouseY > windowHeight * 0.8 ? 'end' : 'center';
+      side = "left";
+      align =
+        mouseY < windowHeight / 2
+          ? "start"
+          : mouseY > windowHeight * 0.8
+            ? "end"
+            : "center";
     } else if (isNearLeft && spaceRight > spaceLeft) {
-      side = 'right';
-      align = mouseY < windowHeight / 2 ? 'start' : mouseY > windowHeight * 0.8 ? 'end' : 'center';
+      side = "right";
+      align =
+        mouseY < windowHeight / 2
+          ? "start"
+          : mouseY > windowHeight * 0.8
+            ? "end"
+            : "center";
     } else if (isNearBottom && spaceAbove > spaceBelow) {
-      side = 'top';
-      align = mouseX < windowWidth / 2 ? 'start' : mouseX > windowWidth * 0.8 ? 'end' : 'center';
+      side = "top";
+      align =
+        mouseX < windowWidth / 2
+          ? "start"
+          : mouseX > windowWidth * 0.8
+            ? "end"
+            : "center";
     } else if (isNearTop && spaceBelow > spaceAbove) {
-      side = 'bottom';
-      align = mouseX < windowWidth / 2 ? 'start' : mouseX > windowWidth * 0.8 ? 'end' : 'center';
+      side = "bottom";
+      align =
+        mouseX < windowWidth / 2
+          ? "start"
+          : mouseX > windowWidth * 0.8
+            ? "end"
+            : "center";
     } else {
-      side = 'bottom';
-      align = mouseX < windowWidth / 2 ? 'start' : mouseX > windowWidth * 0.8 ? 'end' : 'center';
+      side = "bottom";
+      align =
+        mouseX < windowWidth / 2
+          ? "start"
+          : mouseX > windowWidth * 0.8
+            ? "end"
+            : "center";
     }
 
     setTooltipSide(side);
@@ -67,10 +103,10 @@ export function SmartSessionTooltip({ session, children }: SmartSessionTooltipPr
           {children}
         </div>
       </TooltipTrigger>
-      <TooltipContent 
-        side={tooltipSide} 
+      <TooltipContent
+        side={tooltipSide}
         align={tooltipAlign}
-        className="bg-transparent border-none shadow-none p-0"
+        className="border-none bg-transparent p-0 shadow-none"
         sideOffset={8}
       >
         <SessionDetailsCard session={session} />

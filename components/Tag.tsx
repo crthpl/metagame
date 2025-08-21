@@ -117,7 +117,7 @@ export default function Tag({
   const handleTextMouseover = (e: React.MouseEvent) => {
     e.stopPropagation();
     setHasEntered(true);
-  }
+  };
 
   // Start chasing after leaving outer boundary area
   const handlePaddedMouseLeave = (e: React.MouseEvent) => {
@@ -136,7 +136,7 @@ export default function Tag({
   const handlePaddedMouseEnter = (e: React.MouseEvent) => {
     e.stopPropagation();
     debouncedSetIsChasing.cancel();
-  }
+  };
 
   // Add cleanup effect
   useEffect(() => {
@@ -151,8 +151,8 @@ export default function Tag({
 
   return (
     <span className="relative">
-      <div 
-        className="absolute cursor-default" 
+      <div
+        className="absolute cursor-default"
         onMouseLeave={handlePaddedMouseLeave}
         onMouseEnter={handlePaddedMouseEnter}
         style={{
@@ -160,24 +160,14 @@ export default function Tag({
           left: `-${outsetDistance}px`,
           right: `-${outsetDistance}px`,
           bottom: `-${outsetDistance}px`,
-        }} />
+        }}
+      />
       {/* When chasing, render an invisible placeholder for spacing */}
-      <span 
-        className={`${isChasing ? "opacity-0" : "hidden"}`}
-      >
-        {text}
-      </span>
+      <span className={`${isChasing ? "opacity-0" : "hidden"}`}>{text}</span>
       <span
         ref={tagRef}
         onMouseEnter={handleTextMouseover}
-        className={`
-        group 
-        inline-block 
-        relative 
-        cursor-pointer 
-        select-none 
-        ${className}
-      `}
+        className={`group relative inline-block cursor-pointer select-none ${className} `}
         style={{
           position: isChasing ? "fixed" : "relative",
           left: isChasing ? `${textPosition.x}px` : "auto",

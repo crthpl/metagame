@@ -4,7 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 @plugin "daisyui" {
-  themes: synthwave --default, dark --prefersdark;
+  themes:
+    synthwave --default,
+    dark --prefersdark;
 }
 @theme {
   --z-index-content: 5;
@@ -14,41 +16,51 @@
   --z-index-modal: 60;
   --z-index-navbar: 50;
   --z-index-toast: 70;
-  --color-dark-50: #D3D1FF;
-  --color-dark-100: #A19EFF;
-  --color-dark-200: #4942FF;
-  --color-dark-300: #0700E0;
+  --color-dark-50: #d3d1ff;
+  --color-dark-100: #a19eff;
+  --color-dark-200: #4942ff;
+  --color-dark-300: #0700e0;
   --color-dark-400: #1f1d38;
   --color-dark-500: #010020;
   --color-dark-600: #010019;
   --color-dark-700: #010014;
-  --color-dark-800: #01000F;
+  --color-dark-800: #01000f;
   --color-dark-900: #000005;
   --color-dark-950: #000005;
 
   /* Semantic Background Colors */
-  --color-bg-primary: var(--color-dark-500);     /* Main app background */
-  --color-bg-secondary: var(--color-dark-400);   /* Cards, modals, elevated surfaces */
-  --color-bg-tertiary: var(--color-dark-300);    /* Hover states, subtle highlights */
-  --color-bg-surface: var(--color-dark-600);     /* Alternative surface color */
+  --color-bg-primary: var(--color-dark-500); /* Main app background */
+  --color-bg-secondary: var(
+    --color-dark-400
+  ); /* Cards, modals, elevated surfaces */
+  --color-bg-tertiary: var(
+    --color-dark-300
+  ); /* Hover states, subtle highlights */
+  --color-bg-surface: var(--color-dark-600); /* Alternative surface color */
 
   /* Semantic Text Colors */
-  --color-text-primary: #ffffff;                 /* Main body text */
-  --color-text-secondary: var(--color-primary-100); /* Secondary text, captions */
-  --color-text-muted: var(--color-primary-200);  /* Placeholder text, disabled */
-  --color-text-inverse: var(--color-dark-900);   /* Text on light backgrounds */
+  --color-text-primary: #ffffff; /* Main body text */
+  --color-text-secondary: var(
+    --color-primary-100
+  ); /* Secondary text, captions */
+  --color-text-muted: var(--color-primary-200); /* Placeholder text, disabled */
+  --color-text-inverse: var(--color-dark-900); /* Text on light backgrounds */
 
   /* Semantic Interactive Colors */
-  --color-interactive-primary: var(--color-secondary-500);   /* Primary buttons, links */
-  --color-interactive-hover: var(--color-secondary-400);     /* Hover states */
-  --color-interactive-accent: var(--color-primary-500);      /* Accent actions */
-  --color-interactive-muted: var(--color-secondary-600);     /* Muted interactive elements */
+  --color-interactive-primary: var(
+    --color-secondary-500
+  ); /* Primary buttons, links */
+  --color-interactive-hover: var(--color-secondary-400); /* Hover states */
+  --color-interactive-accent: var(--color-primary-500); /* Accent actions */
+  --color-interactive-muted: var(
+    --color-secondary-600
+  ); /* Muted interactive elements */
 
   /* Semantic Border Colors */
-  --color-border-primary: var(--color-dark-100);    /* Main borders */
-  --color-border-secondary: var(--color-dark-200);  /* Secondary borders */
+  --color-border-primary: var(--color-dark-100); /* Main borders */
+  --color-border-secondary: var(--color-dark-200); /* Secondary borders */
   --color-border-accent: var(--color-secondary-500); /* Accent borders */
-  --color-border-muted: var(--color-dark-400);      /* Subtle borders */
+  --color-border-muted: var(--color-dark-400); /* Subtle borders */
 
   --color-secondary-50: #fdfde9;
   --color-secondary-100: #fdfbc4;
@@ -75,7 +87,9 @@
   --color-primary-950: #4b0736;
 
   /* Font family - this sets Jura as the default sans-serif font */
-  --font-sans: Jura, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    Jura, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   /* Keyframes */
   --animate-coin-pop: coin-pop 0.6s ease-out;
@@ -100,20 +114,20 @@
 }
 
 @keyframes fade-in {
-  0% { 
-    opacity: 0; 
+  0% {
+    opacity: 0;
   }
-  100% { 
-    opacity: 1; 
+  100% {
+    opacity: 1;
   }
 }
 
 @keyframes fade-out {
-  0% { 
-    opacity: 1; 
+  0% {
+    opacity: 1;
   }
-  100% { 
-    opacity: 0; 
+  100% {
+    opacity: 0;
   }
 }
 
@@ -270,12 +284,14 @@
   transition: all 0.3s;
 }
 
-.btn-blur, .tickets-btn {
+.btn-blur,
+.tickets-btn {
   background-size: 200% 200%;
   background-position: -100% 0;
 }
 
-.btn-blur:hover, .tickets-btn:hover {
+.btn-blur:hover,
+.tickets-btn:hover {
   background-position: 100% 0;
 }
 
@@ -289,7 +305,7 @@
   --c6: hsl(213, 96%, 11%);
   --c2hsl: 319, 100%, 60%;
   --radius: 0.625rem;
-  
+
   /* Alias shadcn colors to our semantic color system */
   --background: var(--color-bg-primary);
   --foreground: var(--color-text-primary);
@@ -447,14 +463,25 @@ html::before {
   );
   --darker: #010020;
   --lighter: rgba(11, 11, 17, 0.4);
-  background: linear-gradient(
+  background:
+    linear-gradient(
       0deg,
       var(--darker) 0%,
       var(--darker) 10%,
       var(--lighter) 100%
     ),
-    var(--lgDepth), var(--lgh), var(--lg0), var(--lg1), var(--lg2), var(--lg3),
-    var(--lg4), var(--lg5), var(--lg6), var(--lg7), var(--lg8), var(--lg9),
+    var(--lgDepth),
+    var(--lgh),
+    var(--lg0),
+    var(--lg1),
+    var(--lg2),
+    var(--lg3),
+    var(--lg4),
+    var(--lg5),
+    var(--lg6),
+    var(--lg7),
+    var(--lg8),
+    var(--lg9),
     repeating-linear-gradient(90deg, transparent 0px 2px, var(--c3) 1px 4px),
     radial-gradient(
       circle at center,

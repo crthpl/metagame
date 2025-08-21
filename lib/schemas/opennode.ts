@@ -1,5 +1,5 @@
-import { TICKET_TYPES_ENUM } from '@/utils/dbUtils';
-import { z } from 'zod';
+import { TICKET_TYPES_ENUM } from "@/utils/dbUtils";
+import { z } from "zod";
 
 export const ticketPurchaseDetailsSchema = z.object({
   ticketType: z.enum(TICKET_TYPES_ENUM),
