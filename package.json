@@ -3,17 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "playwright test",
-    "format": "prettier --write",
+    "dev": "next dev",
     "fmt": "pnpm format",
-    "format:check": "prettier --check",
     "fmt:check": "pnpm format:check",
-    "types:supabase": "npx supabase gen types typescript --project-id fkarmpoupazxnshofaeg --schema public > types/database/supabase.types.ts",
-    "prepare": "husky install"
+    "format": "prettier --write",
+    "format:check": "prettier --check",
+    "lint": "next lint",
+    "prepare": "husky install",
+    "start": "next start",
+    "test": "playwright test",
+    "types:supabase": "npx supabase gen types typescript --project-id fkarmpoupazxnshofaeg --schema public > types/database/supabase.types.ts"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,cjs,mjs}": [
