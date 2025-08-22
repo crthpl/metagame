@@ -12,12 +12,7 @@ export const profileFormSchema = z.object({
   last_name: nullableTextFromForm,
   discord_handle: nullableTextFromForm,
   site_name: nullableTextFromForm,
-  site_url: z
-    .url()
-    .trim()
-    .or(z.literal(""))
-    .transform((v) => (v === "" ? null : v))
-    .nullable(),
+  site_url: nullableTextFromForm,
   opted_in_to_homepage_display: z.boolean().nullable(),
   minor: z.boolean().nullable(),
   bringing_kids: z.boolean().nullable(),
