@@ -1,6 +1,8 @@
-import ScheduleProvider from '@/app/schedule/ScheduleProvider'
-import { Button } from '@/components/Button'
 import { URLS } from '@/utils/urls'
+
+import { Button } from '@/components/Button'
+
+import ScheduleProvider from '@/app/schedule/ScheduleProvider'
 
 export default function ScheduleSection() {
   return (

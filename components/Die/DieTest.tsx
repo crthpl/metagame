@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import type { Face } from './DiceUtils'
+
 import { CustomDie } from './CustomDie'
+import type { Face } from './DiceUtils'
 
 export function DieTest() {
   const [isAutoCycle, setIsAutoCycle] = useState(true)

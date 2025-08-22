@@ -1,6 +1,7 @@
-import { getAllSessions } from '@/app/actions/db/sessions'
-import { NextResponse } from 'next/server'
 import { SessionsResponseSchema } from './schema'
+import { NextResponse } from 'next/server'
+
+import { getAllSessions } from '@/app/actions/db/sessions'
 
 export async function GET() {
   try {

@@ -1,6 +1,7 @@
-import { getCurrentUserRsvps } from '@/app/actions/db/sessions'
-import { NextResponse } from 'next/server'
 import { RsvpsResponseSchema } from './schema'
+import { NextResponse } from 'next/server'
+
+import { getCurrentUserRsvps } from '@/app/actions/db/sessions'
 
 export async function GET() {
   try {

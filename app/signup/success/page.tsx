@@ -1,7 +1,8 @@
-import { createClient } from '@/utils/supabase/server'
 import { ArrowLeft, ArrowRightIcon, CheckCircle, Mail } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+
+import { createClient } from '@/utils/supabase/server'
 
 export default async function SignupSuccess({
   searchParams,

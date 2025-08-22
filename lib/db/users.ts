@@ -1,7 +1,9 @@
+import { storageService } from '@/lib/db/storage'
+
 import { createClient } from '@/utils/supabase/server'
 import { createServiceClient } from '@/utils/supabase/service'
+
 import { DbProfileUpdate } from '@/types/database/dbTypeAliases'
-import { storageService } from '@/lib/db/storage'
 
 export const usersService = {
   /** Get the current authenticated user */

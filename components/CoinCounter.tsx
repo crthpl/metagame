@@ -1,5 +1,5 @@
-import { useStore } from '@nanostores/react'
 import { coinCount, hasCollectedCoin } from '../stores/coinStore'
+import { useStore } from '@nanostores/react'
 
 interface Props {
   alwaysShow?: boolean // Optional prop to force showing

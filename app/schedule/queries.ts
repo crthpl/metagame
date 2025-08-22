@@ -1,12 +1,4 @@
 import {
-  SessionsResponse,
-  SessionsResponseSchema,
-} from '@/app/api/queries/sessions/schema'
-import {
-  RsvpsResponse,
-  RsvpsResponseSchema,
-} from '@/app/api/queries/rsvps/schema'
-import {
   LocationsResponse,
   LocationsResponseSchema,
 } from '@/app/api/queries/locations/schema'
@@ -14,6 +6,14 @@ import {
   ProfilesResponse,
   ProfilesResponseSchema,
 } from '@/app/api/queries/profiles/schema'
+import {
+  RsvpsResponse,
+  RsvpsResponseSchema,
+} from '@/app/api/queries/rsvps/schema'
+import {
+  SessionsResponse,
+  SessionsResponseSchema,
+} from '@/app/api/queries/sessions/schema'
 import {
   SessionResponse,
   SessionSchema,

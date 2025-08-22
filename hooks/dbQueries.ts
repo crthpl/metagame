@@ -1,5 +1,6 @@
-import { getCurrentUser, getCurrentUserProfile } from '@/app/actions/db/users'
 import { useQuery } from '@tanstack/react-query'
+
+import { getCurrentUser, getCurrentUserProfile } from '@/app/actions/db/users'
 
 export const useUser = () => {
   const {

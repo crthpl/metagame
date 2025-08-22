@@ -1,8 +1,9 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { OpenNodeChargeWebhook } from 'opennode/dist/types/v1'
+
 import { opennodeDbService } from '@/lib/db/opennode'
 import { ticketsService } from '@/lib/db/tickets'
 import { opennode } from '@/lib/opennode'
-import { NextRequest, NextResponse } from 'next/server'
-import { OpenNodeChargeWebhook } from 'opennode/dist/types/v1'
 
 export async function POST(req: NextRequest) {
   const body: OpenNodeChargeWebhook = await req.json()

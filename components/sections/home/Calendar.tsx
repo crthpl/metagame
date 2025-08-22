@@ -1,5 +1,5 @@
-import MyCrossword from '@/components/MyCrossword'
 import Coincidence from '@/components/Coincidence'
+import MyCrossword from '@/components/MyCrossword'
 
 export default function Calendar() {
   return (

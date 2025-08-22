@@ -1,7 +1,8 @@
 import React from 'react'
-import { Card } from '../../Card'
-import { Button } from '../../Button'
+
 import { URLS } from '../../../utils/urls'
+import { Button } from '../../Button'
+import { Card } from '../../Card'
 
 export const ContactUs: React.FC = () => {
   return (

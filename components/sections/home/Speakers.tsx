@@ -1,10 +1,12 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { SpeakerCard } from '../../SpeakerCard'
+import React, { useEffect, useState } from 'react'
+
 import { MetagamePopup } from '../../MetagamePopup'
-import { getSpeakersFromProfiles } from '@/app/actions/db/profiles/queries'
+import { SpeakerCard } from '../../SpeakerCard'
 import { useQuery } from '@tanstack/react-query'
+
+import { getSpeakersFromProfiles } from '@/app/actions/db/profiles/queries'
 
 export default function Speakers() {
   const [showMetagamePopup, setShowMetagamePopup] = useState(false)

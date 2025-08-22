@@ -1,6 +1,8 @@
 'use server'
-import { sessionsService } from '@/lib/db/sessions'
+
 import { adminExportWrapper, currentUserWrapper } from './auth'
+
+import { sessionsService } from '@/lib/db/sessions'
 
 /* Mutations */
 export const rsvpCurrentUserToSession = currentUserWrapper(

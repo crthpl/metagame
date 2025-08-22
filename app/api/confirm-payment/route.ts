@@ -1,10 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '../../../lib/stripe'
 import { createTicketRecord, formatAirtableRecord } from '../../../lib/airtable'
 import { paymentConfirmationSchema } from '../../../lib/schemas/ticket'
+import { stripe } from '../../../lib/stripe'
+import { NextRequest, NextResponse } from 'next/server'
+import { ZodError } from 'zod'
+
 import { ticketsService } from '@/lib/db/tickets'
 import { sendTicketConfirmationEmail } from '@/lib/email'
-import { ZodError } from 'zod'
 
 export async function POST(request: NextRequest) {
   try {

@@ -1,34 +1,36 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
+import { AddEventModal } from './EditEventModal'
+import SessionDetailsCard from './SessionModalCard'
+import { SessionTooltip } from './SessionTooltip'
+import { fetchCurrentUserRsvps, fetchLocations, fetchSessions } from './queries'
+import { useQuery } from '@tanstack/react-query'
 import {
   CheckIcon,
   ChevronLeft,
   ChevronRight,
   FilterIcon,
+  PlusIcon,
   User2Icon,
   UserIcon,
-  PlusIcon,
 } from 'lucide-react'
-import { SessionResponse } from '@/app/api/queries/sessions/schema'
 import Image from 'next/image'
-import SessionDetailsCard from './SessionModalCard'
 import { useRouter } from 'next/navigation'
-import { dbGetHostsFromSession, SESSION_AGES } from '@/utils/dbUtils'
+import { usePathname } from 'next/navigation'
+import { toast } from 'sonner'
+
+import { dateUtils } from '@/utils/dateUtils'
+import { dbGetHostsFromSession } from '@/utils/dbUtils'
+
+import { BloodDrippingFrame } from '@/components/BloodDrippingFrame'
 import { Modal } from '@/components/Modal'
+import { SessionTitle } from '@/components/SessionTitle'
+
+import { SessionResponse } from '@/app/api/queries/sessions/schema'
 
 import { useUser } from '@/hooks/dbQueries'
-import { toast } from 'sonner'
-import { AddEventModal } from './EditEventModal'
-import { BloodDrippingFrame } from '@/components/BloodDrippingFrame'
-import { dateUtils } from '@/utils/dateUtils'
-import { usePathname } from 'next/navigation'
-import { SessionTitle } from '@/components/SessionTitle'
-import { SessionTooltip } from './SessionTooltip'
-import { useQuery } from '@tanstack/react-query'
-import { fetchSessions, fetchCurrentUserRsvps, fetchLocations } from './queries'
-import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const SCHEDULE_START_TIMES = [14, 9, 9]
 const SCHEDULE_END_TIMES = [22, 22, 22]

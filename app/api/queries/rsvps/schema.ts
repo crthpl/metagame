@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { DbSessionRsvp } from '@/types/database/dbTypeAliases'
 
 export const RsvpSchema = z.object({

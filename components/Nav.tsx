@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+
+import AccountButton from './AccountButton'
+import CoinCounter from './CoinCounter'
 import AnimatedCustomDie from './Die/AnimatedCustomDie'
 import Tag from './Tag'
-import CoinCounter from './CoinCounter'
-import AccountButton from './AccountButton'
+import Link from 'next/link'
 
 const STARTING_DIE_IDENTIFIER = {
   left: 2,

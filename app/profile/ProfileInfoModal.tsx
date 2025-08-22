@@ -1,22 +1,28 @@
 'use client'
 
 import { useState } from 'react'
+
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { ExternalLinkIcon } from 'lucide-react'
+import Link from 'next/link'
+import { toast } from 'sonner'
+
+import {
+  ProfileFormData,
+  initialProfileFormData,
+  profileFormSchema,
+} from '@/lib/schemas/profile'
+
+import { URLS } from '@/utils/urls'
+
+import { Modal } from '@/components/Modal'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Modal } from '@/components/Modal'
-import { toast } from 'sonner'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+
 import { updateCurrentUserProfile } from '@/app/actions/db/users'
-import {
-  initialProfileFormData,
-  ProfileFormData,
-  profileFormSchema,
-} from '@/lib/schemas/profile'
+
 import { DbProfile } from '@/types/database/dbTypeAliases'
-import Link from 'next/link'
-import { URLS } from '@/utils/urls'
-import { ExternalLinkIcon } from 'lucide-react'
 
 interface ProfileInfoModalProps {
   onClose: () => void

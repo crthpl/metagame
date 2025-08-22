@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
-import { createClient } from '@/utils/supabase/client'
-import { z } from 'zod'
+
 import { MailIcon } from 'lucide-react'
+import Link from 'next/link'
+import { z } from 'zod'
+
+import { createClient } from '@/utils/supabase/client'
 
 const resetSchema = z.object({
   email: z.email('Please enter a valid email'),

@@ -1,6 +1,8 @@
-import { SOCIAL_LINKS } from '@/utils/urls'
-import { getTicketType } from '@/config/tickets'
 import { Resend } from 'resend'
+
+import { SOCIAL_LINKS } from '@/utils/urls'
+
+import { getTicketType } from '@/config/tickets'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 

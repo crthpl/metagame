@@ -1,10 +1,12 @@
 import { useState } from 'react'
+
+import { CustomDie } from './CustomDie'
 import {
-  generateRandomDieIdentifier,
   type DieGenerationOptions,
   type Face,
+  generateRandomDieIdentifier,
 } from './DiceUtils'
-import { CustomDie } from './CustomDie'
+
 import { cn } from '@/utils/cn'
 
 type AnimatedCustomDieProps = {

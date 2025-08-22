@@ -1,8 +1,8 @@
 import {
+  Enums,
   Tables,
   TablesInsert,
   TablesUpdate,
-  Enums,
 } from '@/types/database/supabase.types'
 
 export type DbSession = Tables<'sessions'>

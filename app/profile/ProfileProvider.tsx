@@ -1,11 +1,12 @@
-import { createClient } from '@/utils/supabase/server'
+import { getCurrentUser, getCurrentUserProfile } from '../actions/db/users'
+import Profile from './Profile'
 import {
   HydrationBoundary,
   QueryClient,
   dehydrate,
 } from '@tanstack/react-query'
-import Profile from './Profile'
-import { getCurrentUser, getCurrentUserProfile } from '../actions/db/users'
+
+import { createClient } from '@/utils/supabase/server'
 
 export default async function ProfileProvider() {
   const queryClient = new QueryClient()

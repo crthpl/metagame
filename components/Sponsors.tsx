@@ -1,6 +1,7 @@
-import { getSponsors } from '@/lib/content'
 import PartnerCard from './PartnerCard'
 import Image from 'next/image'
+
+import { getSponsors } from '@/lib/content'
 
 export default async function Sponsors() {
   const sponsors = await getSponsors()

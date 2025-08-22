@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import Image from 'next/image'
-import { Button } from './Button'
+
 import { SOCIAL_LINKS } from '../utils/urls'
+import { Button } from './Button'
+import Image from 'next/image'
 
 export default function ContributeContent() {
   useEffect(() => {

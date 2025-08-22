@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
+
 import { typeOut } from '../utils/typer'
 
 interface TyperProps {

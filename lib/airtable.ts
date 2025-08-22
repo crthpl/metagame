@@ -1,5 +1,5 @@
-import Airtable from 'airtable'
 import type { AirtableRecord } from './types'
+import Airtable from 'airtable'
 
 // Initialize Airtable with Personal Access Token (PAT)
 const AIRTABLE_PAT = process.env.AIRTABLE_PAT

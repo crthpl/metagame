@@ -1,7 +1,8 @@
-import { DbCoupon, DbTicketType } from '@/types/database/dbTypeAliases'
-import { getTicketType } from '@/config/tickets'
 import { couponsService } from './db/coupons'
 import z from 'zod'
+
+import { getTicketType } from '@/config/tickets'
+import { DbCoupon, DbTicketType } from '@/types/database/dbTypeAliases'
 
 export const applyCouponDiscount = (
   originalPrice: number,

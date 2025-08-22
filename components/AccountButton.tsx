@@ -1,9 +1,10 @@
 'use client'
 
-import { useUser } from '@/hooks/dbQueries'
+import { NavItem } from './Nav'
 import { useQuery } from '@tanstack/react-query'
-import { getCurrentUserProfile } from '@/app/actions/db/users'
 import Image from 'next/image'
+import Link from 'next/link'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import Link from 'next/link'
+
+import { getCurrentUserProfile } from '@/app/actions/db/users'
+
+import { useUser } from '@/hooks/dbQueries'
 import { useLogout } from '@/hooks/useLogout'
-import { NavItem } from './Nav'
 
 export default function AccountButton({
   closeMenu,

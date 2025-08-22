@@ -1,13 +1,16 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useRef, useState } from 'react'
+
+import SessionDetailsCard from './SessionModalCard'
+
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+
 import { SessionResponse } from '@/app/api/queries/sessions/schema'
-import SessionDetailsCard from './SessionModalCard'
 
 interface SmartSessionTooltipProps {
   session: SessionResponse

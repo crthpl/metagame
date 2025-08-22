@@ -1,31 +1,36 @@
 'use client'
 
 import React, { useState } from 'react'
-import { loadStripe } from '@stripe/stripe-js'
+
 import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements,
-} from '@stripe/react-stripe-js'
-import { TicketFormFields } from './TicketFormFields'
+  type TicketPurchaseFormData,
+  paymentConfirmationSchema,
+  paymentIntentSchema,
+  ticketPurchaseSchema,
+} from '../../lib/schemas/ticket'
 import type { TicketType } from '../../lib/types'
 import { SOCIAL_LINKS } from '../../utils/urls'
-import {
-  ticketPurchaseSchema,
-  type TicketPurchaseFormData,
-  paymentIntentSchema,
-  paymentConfirmationSchema,
-} from '../../lib/schemas/ticket'
-import { ZodError } from 'zod'
+import { TicketFormFields } from './TicketFormFields'
 import { PaymentCurrency } from './Tickets'
-import { getHostedCheckoutUrl } from '@/utils/opennode'
-import { getDayPassTicketType } from '@/config/tickets'
-import { isTicketTypeEligibleForCoupons, ValidatedCoupon } from '@/lib/coupons'
-import { DbTicketType } from '@/types/database/dbTypeAliases'
-import { validateCouponBodySchema } from '@/app/api/validate-coupon/reqSchema'
-import { validateCouponResultSchema } from '@/lib/coupons'
+import {
+  CardElement,
+  Elements,
+  useElements,
+  useStripe,
+} from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 import { XIcon } from 'lucide-react'
+import { ZodError } from 'zod'
+
+import { ValidatedCoupon, isTicketTypeEligibleForCoupons } from '@/lib/coupons'
+import { validateCouponResultSchema } from '@/lib/coupons'
+
+import { getHostedCheckoutUrl } from '@/utils/opennode'
+
+import { validateCouponBodySchema } from '@/app/api/validate-coupon/reqSchema'
+
+import { getDayPassTicketType } from '@/config/tickets'
+import { DbTicketType } from '@/types/database/dbTypeAliases'
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY

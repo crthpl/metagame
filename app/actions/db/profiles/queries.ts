@@ -1,4 +1,5 @@
 'use server'
+
 import { createServiceClient } from '@/utils/supabase/service'
 
 export async function getSpeakersFromProfiles() {

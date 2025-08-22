@@ -1,9 +1,10 @@
+import { dbGetHostsFromSession } from '@/utils/dbUtils'
 import { createServiceClient } from '@/utils/supabase/service'
+
 import {
   DbSessionInsert,
   DbSessionUpdate,
 } from '@/types/database/dbTypeAliases'
-import { dbGetHostsFromSession } from '@/utils/dbUtils'
 
 export const sessionsService = {
   getSessionById: async ({ sessionId }: { sessionId: string }) => {

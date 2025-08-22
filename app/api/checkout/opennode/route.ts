@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createChargeRaw } from '@/lib/opennode'
-import {
-  opennodeChargeSchema,
-  TicketPurchaseDetails,
-} from '@/lib/schemas/opennode'
-import { v4 as uuidv4 } from 'uuid'
-import { opennodeDbService } from '@/lib/db/opennode'
-import { getTicketType } from '@/config/tickets'
 import { OpenNodeCharge } from 'opennode/dist/types/v1'
 import { Resend } from 'resend'
+import { v4 as uuidv4 } from 'uuid'
+
+import { opennodeDbService } from '@/lib/db/opennode'
+import { createChargeRaw } from '@/lib/opennode'
+import {
+  TicketPurchaseDetails,
+  opennodeChargeSchema,
+} from '@/lib/schemas/opennode'
+
 import { getHostedCheckoutUrl } from '@/utils/opennode'
+
+import { getTicketType } from '@/config/tickets'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 

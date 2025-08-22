@@ -1,6 +1,8 @@
 'use server'
+
 import { ticketsService } from '@/lib/db/tickets'
 import { usersService } from '@/lib/db/users'
+
 import { createServiceClient } from '@/utils/supabase/service'
 
 export const signupByTicketCode = async ({

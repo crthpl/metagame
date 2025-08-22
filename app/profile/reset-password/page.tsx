@@ -1,11 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
+
+import { LockIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
-import { LockIcon } from 'lucide-react'
-import { passwordSchema, type PasswordErrors } from '@/lib/schemas/password'
+
+import { type PasswordErrors, passwordSchema } from '@/lib/schemas/password'
+
+import { createClient } from '@/utils/supabase/client'
+
 import { Input } from '@/components/ui/input'
 
 export default function ResetPasswordPage() {

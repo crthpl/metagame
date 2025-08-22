@@ -1,6 +1,7 @@
-import { getOrderedScheduleLocations } from '@/app/actions/db/locations'
-import { NextResponse } from 'next/server'
 import { LocationsResponseSchema } from './schema'
+import { NextResponse } from 'next/server'
+
+import { getOrderedScheduleLocations } from '@/app/actions/db/locations'
 
 export async function GET() {
   try {

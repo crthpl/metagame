@@ -1,9 +1,10 @@
 'use client'
 
+import { Suspense } from 'react'
+
+import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { AlertCircle } from 'lucide-react'
-import { Suspense } from 'react'
 
 function ErrorMessage() {
   const searchParams = useSearchParams()

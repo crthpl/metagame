@@ -1,10 +1,11 @@
+import { validateCouponBodySchema } from './reqSchema'
 import { NextRequest, NextResponse } from 'next/server'
+
 import {
-  validateCouponForPurchase,
   ValidateCouponResult,
+  validateCouponForPurchase,
   validateCouponResultSchema,
 } from '@/lib/coupons'
-import { validateCouponBodySchema } from './reqSchema'
 
 // Simple in-memory rate limiting (for production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>()

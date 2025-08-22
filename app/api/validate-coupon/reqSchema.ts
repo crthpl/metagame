@@ -1,5 +1,6 @@
-import { TICKET_TYPES_ENUM } from '@/utils/dbUtils'
 import z from 'zod'
+
+import { TICKET_TYPES_ENUM } from '@/utils/dbUtils'
 
 export const validateCouponBodySchema = z.object({
   couponCode: z

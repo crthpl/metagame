@@ -1,6 +1,8 @@
 import { z } from 'zod'
-import { DbSession } from '@/types/database/dbTypeAliases'
+
 import { SESSION_AGES } from '@/utils/dbUtils'
+
+import { DbSession } from '@/types/database/dbTypeAliases'
 
 export const SessionSchema = z.object({
   id: z.string(),

@@ -1,10 +1,14 @@
 'use server'
-import { sessionsService } from '@/lib/db/sessions'
-import { DbSession, DbSessionUpdate } from '@/types/database/dbTypeAliases'
-import { createClient } from '@/utils/supabase/server'
-import { usersService } from '@/lib/db/users'
+
 import z from 'zod'
+
+import { sessionsService } from '@/lib/db/sessions'
+import { usersService } from '@/lib/db/users'
+
 import { SESSION_AGES } from '@/utils/dbUtils'
+import { createClient } from '@/utils/supabase/server'
+
+import { DbSession, DbSessionUpdate } from '@/types/database/dbTypeAliases'
 
 export async function userCanEditSession({
   userId,

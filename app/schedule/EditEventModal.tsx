@@ -1,16 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Modal } from '@/components/Modal'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  adminAddSession,
-  adminUpdateSession,
-  adminDeleteSession,
-} from '@/app/actions/db/sessions'
+import { useEffect, useState } from 'react'
+
+import { CONFERENCE_DAYS } from './Schedule'
+import { userEditSession } from './actions'
 import { fetchLocations, fetchProfiles, fetchSessionById } from './queries'
-import { useUser } from '@/hooks/dbQueries'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { XIcon } from 'lucide-react'
 import { toast } from 'sonner'
+
+import { dateUtils } from '@/utils/dateUtils'
+import { SESSION_AGES, getAgesDisplayText } from '@/utils/dbUtils'
+
+import { Modal } from '@/components/Modal'
 import {
   Select,
   SelectContent,
@@ -18,12 +20,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+
+import {
+  adminAddSession,
+  adminDeleteSession,
+  adminUpdateSession,
+} from '@/app/actions/db/sessions'
+
+import { useUser } from '@/hooks/dbQueries'
 import { DbSessionAges } from '@/types/database/dbTypeAliases'
-import { getAgesDisplayText, SESSION_AGES } from '@/utils/dbUtils'
-import { XIcon } from 'lucide-react'
-import { CONFERENCE_DAYS } from './Schedule'
-import { dateUtils } from '@/utils/dateUtils'
-import { userEditSession } from './actions'
+
 interface AddEventModalProps {
   isOpen: boolean
   onClose: () => void

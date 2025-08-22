@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect } from 'react'
+
 import { Button } from '../../Button'
 import { Typer } from '../../Typer'
 import './Hero.css'

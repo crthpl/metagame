@@ -1,20 +1,25 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { LinkIcon, UserIcon, EditIcon, CheckIcon } from 'lucide-react'
-import { SessionResponse } from '@/app/api/queries/sessions/schema'
-import { RsvpResponse } from '@/app/api/queries/rsvps/schema'
-import { dbGetHostsFromSession } from '@/utils/dbUtils'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { AddEventModal } from './EditEventModal'
 import { fetchCurrentUserRsvps } from './queries'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { CheckIcon, EditIcon, LinkIcon, UserIcon } from 'lucide-react'
+
+import { dateUtils } from '@/utils/dateUtils'
+import { dbGetHostsFromSession } from '@/utils/dbUtils'
+
+import { SessionTitle } from '@/components/SessionTitle'
+
 import {
   rsvpCurrentUserToSession,
   unrsvpCurrentUserFromSession,
 } from '@/app/actions/db/sessions'
+import { RsvpResponse } from '@/app/api/queries/rsvps/schema'
+import { SessionResponse } from '@/app/api/queries/sessions/schema'
+
 import { useUser } from '@/hooks/dbQueries'
-import { AddEventModal } from './EditEventModal'
-import { SessionTitle } from '@/components/SessionTitle'
-import { dateUtils } from '@/utils/dateUtils'
 
 export default function SessionDetailsCard({
   session,

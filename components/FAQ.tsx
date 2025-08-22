@@ -1,5 +1,5 @@
-import { Button } from './Button'
 import { URLS } from '../utils/urls'
+import { Button } from './Button'
 
 interface FAQ {
   id: number

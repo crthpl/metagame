@@ -1,15 +1,17 @@
+import { getAllLocations } from '../actions/db/locations'
+import { getAllSessions, getCurrentUserRsvps } from '../actions/db/sessions'
+import Schedule from './Schedule'
 import { getUserEditPermissionsForSessions } from './actions'
-import { createClient } from '@/utils/supabase/server'
 import {
   HydrationBoundary,
   QueryClient,
   dehydrate,
 } from '@tanstack/react-query'
+
+import { createClient } from '@/utils/supabase/server'
+
 // import { fetchSessions, fetchCurrentUserRsvps, fetchLocations } from "./queries"
 import { SessionResponse } from '@/app/api/queries/sessions/schema'
-import Schedule from './Schedule'
-import { getAllSessions, getCurrentUserRsvps } from '../actions/db/sessions'
-import { getAllLocations } from '../actions/db/locations'
 
 export default async function ScheduleProvider({
   sessionId,

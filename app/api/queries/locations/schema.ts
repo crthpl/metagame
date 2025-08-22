@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { DbLocation } from '@/types/database/dbTypeAliases'
 
 export const LocationSchema = z.object({
