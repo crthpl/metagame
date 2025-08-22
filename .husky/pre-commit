@@ -1,4 +1,12 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm lint-staged
+echo "✨ Running package.json sorting..."
+pnpm sort-package-json
+
+echo "✨ Running lint-staged with prettier and eslint..."
+pnpm lint-staged --verbose || {
+  echo "❌ lint-staged failed"
+  echo "Go to command output for log"
+  exit 1
+}
