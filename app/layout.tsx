@@ -88,7 +88,7 @@ export default function RootLayout({
             <Footer />
           </KbarApp>
         </QueryProvider>
-        <Toaster />
+        <Toaster richColors closeButton/>
         <Analytics />
       </body>
     </html>
