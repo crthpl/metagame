@@ -76,7 +76,7 @@ export default function Profile() {
     ) {
       setShowCTAModal(true);
     }
-  }, [currentUserProfile, isEditMode]);
+  }, []);
 
   // Profile update mutation
   const updateProfileMutation = useMutation({
