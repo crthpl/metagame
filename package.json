@@ -71,6 +71,7 @@
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/react-query-devtools": "^5.83.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/lodash": "^4.17.20",
     "@types/node": "^20",
     "@types/react": "^19",
