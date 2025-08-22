@@ -16,6 +16,9 @@
     "types:supabase": "npx supabase gen types typescript --project-id fkarmpoupazxnshofaeg --schema public > types/database/supabase.types.ts"
   },
   "lint-staged": {
+    "package.json": [
+      "sort-package-json"
+    ],
     "*.{ts,tsx,js,jsx,cjs,mjs}": [
       "eslint --fix --cache --max-warnings=0"
     ],
