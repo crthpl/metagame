@@ -1,9 +1,9 @@
 ---
 id: 12
-name: "Myles Nye"
-image: "/images/myles_nye.jpg"
-gameName: "Wise Guys Events"
-gameUrl: "https://www.teambuildingandtraining.com/"
+name: 'Myles Nye'
+image: '/images/myles_nye.jpg'
+gameName: 'Wise Guys Events'
+gameUrl: 'https://www.teambuildingandtraining.com/'
 title: lorem ipsum
 ---
 

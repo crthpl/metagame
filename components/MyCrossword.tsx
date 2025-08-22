@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import React, {
   useCallback,
@@ -6,184 +6,184 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from "react";
+} from 'react'
 import {
   ThemeProvider,
   CrosswordProvider,
   CrosswordContext,
   CrosswordGrid,
   type CrosswordProviderImperative,
-} from "@jaredreisinger/react-crossword";
-import { RotateCcw } from "lucide-react";
+} from '@jaredreisinger/react-crossword'
+import { RotateCcw } from 'lucide-react'
 
 const themeContext = {
   allowNonSquare: true,
-  columnBreakpoint: "black",
-  gridBackground: "black",
-  cellBackground: "#ffe",
-  cellBorder: "black",
-  textColor: "black",
-  numberColor: "black",
-  focusBackground: "darkgrey",
-  highlightBackground: "lightgrey",
+  columnBreakpoint: 'black',
+  gridBackground: 'black',
+  cellBackground: '#ffe',
+  cellBorder: 'black',
+  textColor: 'black',
+  numberColor: 'black',
+  focusBackground: 'darkgrey',
+  highlightBackground: 'lightgrey',
   // columnBreakpoint: '768px',
-};
+}
 
 /** Defines an overlay for a grid cell that either displays a circle or a number */
 type CellOverlay = {
-  type: "number" | "circle";
-  value?: string;
-};
+  type: 'number' | 'circle'
+  value?: string
+}
 // Cell overlays for this specific grid
 const cellOverlays: Record<string, CellOverlay[]> = {
-  "1-1": [{ type: "number", value: "8" }],
-  "1-2": [{ type: "number", value: "9" }],
-  "1-3": [{ type: "number", value: "10" }],
-  "1-4": [{ type: "number", value: "11" }],
-  "1-5": [{ type: "number", value: "12" }, { type: "circle" }],
-  "1-6": [{ type: "number", value: "13" }, { type: "circle" }],
-  "2-0": [{ type: "circle" }],
-  "2-1": [{ type: "number", value: "15" }],
-  "2-2": [{ type: "number", value: "16" }],
-  "2-3": [{ type: "number", value: "17" }],
-  "2-4": [{ type: "number", value: "18" }],
-  "2-5": [{ type: "number", value: "19" }],
-  "2-6": [{ type: "number", value: "20" }],
-  "3-1": [{ type: "number", value: "22" }],
-  "3-2": [{ type: "number", value: "23" }],
-  "3-3": [{ type: "number", value: "24" }],
-  "3-4": [{ type: "number", value: "25" }],
-  "3-5": [{ type: "number", value: "26" }],
-  "3-6": [{ type: "number", value: "27" }],
-  "4-1": [{ type: "number", value: "29" }],
-  "4-2": [{ type: "number", value: "30" }],
-};
+  '1-1': [{ type: 'number', value: '8' }],
+  '1-2': [{ type: 'number', value: '9' }],
+  '1-3': [{ type: 'number', value: '10' }],
+  '1-4': [{ type: 'number', value: '11' }],
+  '1-5': [{ type: 'number', value: '12' }, { type: 'circle' }],
+  '1-6': [{ type: 'number', value: '13' }, { type: 'circle' }],
+  '2-0': [{ type: 'circle' }],
+  '2-1': [{ type: 'number', value: '15' }],
+  '2-2': [{ type: 'number', value: '16' }],
+  '2-3': [{ type: 'number', value: '17' }],
+  '2-4': [{ type: 'number', value: '18' }],
+  '2-5': [{ type: 'number', value: '19' }],
+  '2-6': [{ type: 'number', value: '20' }],
+  '3-1': [{ type: 'number', value: '22' }],
+  '3-2': [{ type: 'number', value: '23' }],
+  '3-3': [{ type: 'number', value: '24' }],
+  '3-4': [{ type: 'number', value: '25' }],
+  '3-5': [{ type: 'number', value: '26' }],
+  '3-6': [{ type: 'number', value: '27' }],
+  '4-1': [{ type: 'number', value: '29' }],
+  '4-2': [{ type: 'number', value: '30' }],
+}
 
 const data = {
   across: {
     1: {
-      clue: "Better environment?",
-      answer: "CASINO",
+      clue: 'Better environment?',
+      answer: 'CASINO',
       row: 0,
       col: 1,
     },
     7: {
-      clue: "Places to play Skee Ball",
-      answer: "ARCADES",
+      clue: 'Places to play Skee Ball',
+      answer: 'ARCADES',
       row: 1,
       col: 0,
     },
     14: {
-      clue: "High fashion",
-      answer: "COUTURE",
+      clue: 'High fashion',
+      answer: 'COUTURE',
       row: 2,
       col: 0,
     },
     21: {
-      clue: "Aims",
-      answer: "INTENDS",
+      clue: 'Aims',
+      answer: 'INTENDS',
       row: 3,
       col: 0,
     },
     28: {
-      clue: "Go blue",
-      answer: "DYE",
+      clue: 'Go blue',
+      answer: 'DYE',
       row: 4,
       col: 0,
     },
   },
   down: {
     1: {
-      clue: "Sidekick",
-      answer: "CRONY",
+      clue: 'Sidekick',
+      answer: 'CRONY',
       row: 0,
       col: 1,
     },
     2: {
-      clue: "6 degrees, maybe",
-      answer: "ACUTE",
+      clue: '6 degrees, maybe',
+      answer: 'ACUTE',
       row: 0,
       col: 2,
     },
     3: {
-      clue: "Fill fully",
-      answer: "SATE",
+      clue: 'Fill fully',
+      answer: 'SATE',
       row: 0,
       col: 3,
     },
     4: {
-      clue: "Norse goddess of spring",
-      answer: "IDUN",
+      clue: 'Norse goddess of spring',
+      answer: 'IDUN',
       row: 0,
       col: 4,
     },
     5: {
-      clue: "Self description for a gamer, maybe",
-      answer: "NERD",
+      clue: 'Self description for a gamer, maybe',
+      answer: 'NERD',
       row: 0,
       col: 5,
     },
     6: {
-      clue: "Sweet suffixes",
-      answer: "OSES",
+      clue: 'Sweet suffixes',
+      answer: 'OSES',
       row: 0,
       col: 6,
     },
     7: {
-      clue: "Something taken for a trip",
-      answer: "ACID",
+      clue: 'Something taken for a trip',
+      answer: 'ACID',
       row: 1,
       col: 0,
     },
   },
-};
+}
 
 interface Dimensions {
-  gridSize: number;
-  cellSize: number;
-  cellPadding: number;
-  cellInner: number;
-  cellHalf: number;
-  offsetTop: number;
-  offsetLeft: number;
+  gridSize: number
+  cellSize: number
+  cellPadding: number
+  cellInner: number
+  cellHalf: number
+  offsetTop: number
+  offsetLeft: number
 }
 
 interface OverlaysContainerProps {
-  gridRef: React.RefObject<HTMLDivElement | null>;
+  gridRef: React.RefObject<HTMLDivElement | null>
 }
 
 const OverlaysContainer = ({ gridRef }: OverlaysContainerProps) => {
-  const [showOverlays, setShowOverlays] = useState(false);
-  const [dimensions, setDimensions] = useState<Dimensions | null>(null);
+  const [showOverlays, setShowOverlays] = useState(false)
+  const [dimensions, setDimensions] = useState<Dimensions | null>(null)
 
   const calculateDimensions = useCallback(() => {
     if (!gridRef.current) {
-      return;
+      return
     }
 
     // Get the SVG element that contains the grid
-    const gridElement = gridRef.current.querySelector(".crossword.grid svg");
-    const gridRect = gridElement?.getBoundingClientRect();
-    const parentRect = gridRef.current.getBoundingClientRect();
+    const gridElement = gridRef.current.querySelector('.crossword.grid svg')
+    const gridRect = gridElement?.getBoundingClientRect()
+    const parentRect = gridRef.current.getBoundingClientRect()
 
     if (!gridElement || !gridRect || gridRect.width === 0) {
-      return;
+      return
     }
 
     // The viewBox is "0 0 70 50" from the SVG
-    const viewBoxWidth = 70;
-    const cellWidth = 9.75; // From the rect width in the SVG
+    const viewBoxWidth = 70
+    const cellWidth = 9.75 // From the rect width in the SVG
 
     // Calculate the actual size of cells based on the rendered grid size
-    const gridSize = gridRect.width;
-    const cellSize = gridSize * (cellWidth / viewBoxWidth);
-    const cellPadding = 0;
-    const cellInner = cellSize - 2 * cellPadding;
-    const cellHalf = cellInner / 2;
+    const gridSize = gridRect.width
+    const cellSize = gridSize * (cellWidth / viewBoxWidth)
+    const cellPadding = 0
+    const cellInner = cellSize - 2 * cellPadding
+    const cellHalf = cellInner / 2
 
     // Calculate offset from the grid position
-    const offsetTop = gridRect.top - parentRect.top;
-    const offsetLeft = gridRect.left - parentRect.left;
+    const offsetTop = gridRect.top - parentRect.top
+    const offsetLeft = gridRect.left - parentRect.left
 
     setDimensions({
       gridSize,
@@ -193,52 +193,52 @@ const OverlaysContainer = ({ gridRef }: OverlaysContainerProps) => {
       cellHalf,
       offsetTop,
       offsetLeft,
-    });
-    setShowOverlays(true);
-  }, [gridRef]);
+    })
+    setShowOverlays(true)
+  }, [gridRef])
 
   useEffect(() => {
     // Add a small delay to ensure the grid is rendered
     const timer = setTimeout(() => {
-      calculateDimensions();
-    }, 100);
+      calculateDimensions()
+    }, 100)
 
     // Add resize observer
     const observer = new ResizeObserver(() => {
-      calculateDimensions();
-    });
+      calculateDimensions()
+    })
 
     if (gridRef.current) {
-      observer.observe(gridRef.current);
+      observer.observe(gridRef.current)
     }
 
     // Cleanup
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timer)
       if (gridRef.current) {
-        observer.unobserve(gridRef.current);
+        observer.unobserve(gridRef.current)
       }
-    };
-  }, [calculateDimensions]);
+    }
+  }, [calculateDimensions])
 
   if (!showOverlays || !dimensions) {
-    return null;
+    return null
   }
 
   return (
     <div
       style={{
-        position: "absolute",
+        position: 'absolute',
         top: dimensions?.offsetTop || 0,
         left: dimensions?.offsetLeft || 0,
         width: dimensions?.gridSize, // Explicitly set width
         height: dimensions?.gridSize, // Explicitly set height
-        pointerEvents: "none",
+        pointerEvents: 'none',
         zIndex: 1,
       }}
     >
       {Object.entries(cellOverlays).map(([pos, overlays]) => {
-        const [row, col] = pos.split("-").map(Number);
+        const [row, col] = pos.split('-').map(Number)
         return overlays.map((overlay, index) => (
           <CellOverlay
             key={`${pos}-${index}`}
@@ -247,21 +247,21 @@ const OverlaysContainer = ({ gridRef }: OverlaysContainerProps) => {
             overlay={overlay}
             {...dimensions}
           />
-        ));
+        ))
       })}
     </div>
-  );
-};
+  )
+}
 
 interface CellOverlayProps {
-  row: number;
-  col: number;
-  overlay: CellOverlay;
-  gridSize: number;
-  cellSize: number;
-  cellInner: number;
-  cellPadding: number;
-  cellHalf: number;
+  row: number
+  col: number
+  overlay: CellOverlay
+  gridSize: number
+  cellSize: number
+  cellInner: number
+  cellPadding: number
+  cellHalf: number
 }
 
 const CellOverlay = ({
@@ -274,19 +274,19 @@ const CellOverlay = ({
   cellHalf,
 }: CellOverlayProps) => {
   // Calculate position
-  const left = (col * gridSize) / 7;
-  const top = (row * gridSize) / 7;
+  const left = (col * gridSize) / 7
+  const top = (row * gridSize) / 7
 
-  if (overlay.type === "circle") {
+  if (overlay.type === 'circle') {
     return (
       <svg
         style={{
-          position: "absolute",
+          position: 'absolute',
           left: left + cellPadding,
           top: top + cellPadding,
           width: cellInner,
           height: cellInner,
-          pointerEvents: "none",
+          pointerEvents: 'none',
         }}
       >
         <circle
@@ -298,107 +298,107 @@ const CellOverlay = ({
           strokeWidth="3"
         />
       </svg>
-    );
+    )
   }
 
-  if (overlay.type === "number") {
+  if (overlay.type === 'number') {
     return (
       <div
         style={{
-          position: "absolute",
+          position: 'absolute',
           left: left + cellPadding,
           top: top + cellPadding,
           width: cellInner,
           height: cellInner,
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
           fontSize: `${cellInner * 0.34}px`,
-          color: "black",
-          pointerEvents: "none",
-          lineHeight: "1",
-          paddingTop: "1px",
-          paddingLeft: "4px",
+          color: 'black',
+          pointerEvents: 'none',
+          lineHeight: '1',
+          paddingTop: '1px',
+          paddingLeft: '4px',
         }}
       >
-        {" "}
+        {' '}
         {overlay.value}
       </div>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 
 const CurrentClue = () => {
   const { selectedDirection, selectedNumber, clues } =
-    useContext(CrosswordContext);
-  const [hasInteracted, setHasInteracted] = useState(false);
+    useContext(CrosswordContext)
+  const [hasInteracted, setHasInteracted] = useState(false)
 
   // Add click event listener to detect real user interaction
   useEffect(() => {
     const handleClick = (event: Event) => {
       if (event.target instanceof Element) {
-        const isCell = event.target.closest(".clue-cell") !== null;
+        const isCell = event.target.closest('.clue-cell') !== null
         if (isCell) {
-          setHasInteracted(true);
+          setHasInteracted(true)
         }
       }
-    };
+    }
 
     const gridContainer = document.querySelector(
       '[data-testid="grid-container"]',
-    );
+    )
 
     if (gridContainer) {
-      gridContainer.addEventListener("click", handleClick);
+      gridContainer.addEventListener('click', handleClick)
     }
 
     // Cleanup
     return () => {
       if (gridContainer) {
-        gridContainer.removeEventListener("click", handleClick);
+        gridContainer.removeEventListener('click', handleClick)
       }
-    };
-  }, []);
+    }
+  }, [])
 
   // Return empty message if user hasn't clicked yet
   if (!hasInteracted) {
-    return <div className="p-4 text-center"></div>;
+    return <div className="p-4 text-center"></div>
   }
 
   const getCurrentClue = () => {
     // Get all clues for the selected direction (across/down)
-    const cluesForDirection = clues?.[selectedDirection];
+    const cluesForDirection = clues?.[selectedDirection]
 
     if (!cluesForDirection) {
-      return null;
+      return null
     }
 
     // Convert clues object into array of [number, clueData] pairs
-    const clueEntries = Object.entries(cluesForDirection);
+    const clueEntries = Object.entries(cluesForDirection)
 
     // Find the entry where the clue number matches our selected number
     const matchingClueEntry = clueEntries.find((entry) => {
-      const clueNumber = entry[1].number; // This is the number (as string)
-      return clueNumber === selectedNumber.toString();
-    });
+      const clueNumber = entry[1].number // This is the number (as string)
+      return clueNumber === selectedNumber.toString()
+    })
 
     // Return the clue data (second element of the pair) if found, otherwise null
-    return matchingClueEntry ? matchingClueEntry[1] : null;
-  };
+    return matchingClueEntry ? matchingClueEntry[1] : null
+  }
 
-  const currentClue = getCurrentClue();
+  const currentClue = getCurrentClue()
 
   if (!currentClue) {
-    return <div className="p-4 text-center">No clue found</div>;
+    return <div className="p-4 text-center">No clue found</div>
   }
 
   return (
     <div className="w-full">
       {hasInteracted && (
         <div className="mt-2 text-end text-sm text-gray-500">
-          Crossword calendar concept courtesy of{" "}
+          Crossword calendar concept courtesy of{' '}
           <a
             href="https://crosswordcal.com/products/2025-crossword-calendar"
             className="hover:underline"
@@ -411,20 +411,20 @@ const CurrentClue = () => {
         {hasInteracted ? (
           <>
             <span className="font-bold">
-              {selectedNumber} {selectedDirection}:{" "}
+              {selectedNumber} {selectedDirection}:{' '}
             </span>
             {currentClue?.clue}
           </>
         ) : (
-          ""
+          ''
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const DayLabels = () => {
-  const days = ["S", "M", "T", "W", "Th", "F", "S"];
+  const days = ['S', 'M', 'T', 'W', 'Th', 'F', 'S']
   return (
     <div className="mb-2 flex w-full">
       {days.map((day, index) => (
@@ -433,58 +433,58 @@ const DayLabels = () => {
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
 export default function MyCrossword() {
-  const crosswordRef = useRef<CrosswordProviderImperative>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [escapeHoldCompleted, setEscapeHoldCompleted] = useState(false);
-  const [showReset, setShowReset] = useState(false);
+  const crosswordRef = useRef<CrosswordProviderImperative>(null)
+  const gridRef = useRef<HTMLDivElement>(null)
+  const [isCompleted, setIsCompleted] = useState(false)
+  const [isCorrect, setIsCorrect] = useState(false)
+  const [escapeHoldCompleted, setEscapeHoldCompleted] = useState(false)
+  const [showReset, setShowReset] = useState(false)
   const [couponInfo, setCouponInfo] = useState<{
-    name: string;
-    code: string;
-    discount: string;
-    description: string;
-  } | null>(null);
+    name: string
+    code: string
+    discount: string
+    description: string
+  } | null>(null)
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout | null = null;
+    let timeoutId: NodeJS.Timeout | null = null
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!(isCompleted && isCorrect)) return;
-      if (e.key === "Escape") {
+      if (!(isCompleted && isCorrect)) return
+      if (e.key === 'Escape') {
         timeoutId = setTimeout(() => {
-          setEscapeHoldCompleted(true);
-        }, 2000);
+          setEscapeHoldCompleted(true)
+        }, 2000)
       }
-    };
+    }
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && timeoutId) {
-        clearTimeout(timeoutId);
-        timeoutId = null;
+      if (e.key === 'Escape' && timeoutId) {
+        clearTimeout(timeoutId)
+        timeoutId = null
       }
-    };
+    }
 
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [isCompleted, isCorrect]);
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+      if (timeoutId) clearTimeout(timeoutId)
+    }
+  }, [isCompleted, isCorrect])
 
   const onCrosswordComplete = useCallback((correct: boolean) => {
-    setIsCompleted(true);
-    setIsCorrect(correct);
+    setIsCompleted(true)
+    setIsCorrect(correct)
     if (correct) {
-      fetchCouponInfo();
+      fetchCouponInfo()
     }
-  }, []);
+  }, [])
 
   // const onAnswerCorrect = (
   //   direction: Direction,
@@ -503,42 +503,42 @@ export default function MyCrossword() {
   // };
 
   const onCellChange = () => {
-    setShowReset(true);
-  };
+    setShowReset(true)
+  }
 
   const fetchCouponInfo = async () => {
     try {
-      const response = await fetch("/api/get-coupon-display", {
-        method: "POST",
+      const response = await fetch('/api/get-coupon-display', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           puzzleSolved: true,
-          couponName: "CROSSWORD",
+          couponName: 'CROSSWORD',
         }),
-      });
+      })
 
       if (response.ok) {
-        const data = await response.json();
-        setCouponInfo(data);
+        const data = await response.json()
+        setCouponInfo(data)
       } else {
-        console.error("Failed to fetch coupon info:", response.status);
+        console.error('Failed to fetch coupon info:', response.status)
       }
     } catch (error) {
-      console.error("Failed to fetch coupon info:", error);
+      console.error('Failed to fetch coupon info:', error)
     }
-  };
+  }
 
   return (
     <div
       style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
       <div className="p-4 text-center text-5xl">September 2025</div>
@@ -554,9 +554,9 @@ export default function MyCrossword() {
             ref={gridRef}
             data-testid="grid-container"
             style={{
-              position: "relative",
-              width: "500px",
-              maxWidth: "100%",
+              position: 'relative',
+              width: '500px',
+              maxWidth: '100%',
             }}
           >
             <DayLabels />
@@ -566,10 +566,10 @@ export default function MyCrossword() {
                 <button
                   className="absolute right-1 bottom-1"
                   onClick={() => {
-                    crosswordRef.current?.reset();
-                    setIsCompleted(false);
-                    setIsCorrect(false);
-                    setShowReset(false);
+                    crosswordRef.current?.reset()
+                    setIsCompleted(false)
+                    setIsCorrect(false)
+                    setShowReset(false)
                   }}
                 >
                   <RotateCcw className="text-foreground size-4" />
@@ -599,5 +599,5 @@ export default function MyCrossword() {
         </CrosswordProvider>
       </ThemeProvider>
     </div>
-  );
+  )
 }

@@ -1,22 +1,22 @@
-import { useEffect } from "react";
+import { useEffect } from 'react'
 
 export function Modal({
   onClose,
   children,
   className,
 }: {
-  onClose: () => void;
-  children: React.ReactNode;
-  className?: string;
+  onClose: () => void
+  children: React.ReactNode
+  className?: string
 }) {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
+      if (e.key === 'Escape') onClose()
+    }
 
-    document.addEventListener("keydown", handleEsc);
-    return () => document.removeEventListener("keydown", handleEsc);
-  }, [onClose]);
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
+  }, [onClose])
 
   return (
     <div
@@ -28,5 +28,5 @@ export function Modal({
         {children}
       </div>
     </div>
-  );
+  )
 }

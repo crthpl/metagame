@@ -1,9 +1,9 @@
 ---
 id: 5
-name: "Amy Schneider"
-image: "/images/amy_schneider.jpg"
-gameName: "Jeopardy"
-gameUrl: "https://en.wikipedia.org/wiki/Amy_Schneider"
+name: 'Amy Schneider'
+image: '/images/amy_schneider.jpg'
+gameName: 'Jeopardy'
+gameUrl: 'https://en.wikipedia.org/wiki/Amy_Schneider'
 title: lorem ipsum
 ---
 

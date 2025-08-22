@@ -2,8 +2,8 @@
 id: 10
 name: Nolen Royalty
 image: /images/nolen_royalty.jpg
-gameName: "eieio games"
-gameUrl: "https://eieio.games/"
+gameName: 'eieio games'
+gameUrl: 'https://eieio.games/'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

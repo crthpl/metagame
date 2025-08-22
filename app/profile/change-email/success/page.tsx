@@ -1,29 +1,29 @@
-import { createClient } from "@/utils/supabase/server";
-import { ArrowLeft, CheckCircle } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { createClient } from '@/utils/supabase/server'
+import { ArrowLeft, CheckCircle } from 'lucide-react'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 export default async function EmailChangeSuccess({
   searchParams,
 }: {
-  searchParams: Promise<{ old_email?: string; new_email?: string }>;
+  searchParams: Promise<{ old_email?: string; new_email?: string }>
 }) {
-  const { old_email, new_email } = await searchParams;
+  const { old_email, new_email } = await searchParams
 
   if (!old_email || !new_email) {
-    redirect("/profile");
+    redirect('/profile')
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient()
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/login");
+    redirect('/login')
   }
 
-  const isEmailChangeComplete = user.email === new_email;
+  const isEmailChangeComplete = user.email === new_email
 
   return (
     <div className="container mx-auto max-w-md px-4 py-8">
@@ -95,5 +95,5 @@ export default async function EmailChangeSuccess({
         )}
       </div>
     </div>
-  );
+  )
 }

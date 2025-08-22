@@ -1,13 +1,13 @@
-import { getSponsors } from "@/lib/content";
-import PartnerCard from "./PartnerCard";
-import Image from "next/image";
+import { getSponsors } from '@/lib/content'
+import PartnerCard from './PartnerCard'
+import Image from 'next/image'
 
 export default async function Sponsors() {
-  const sponsors = await getSponsors();
+  const sponsors = await getSponsors()
 
-  const platinumSponsors = sponsors.filter((s) => s.tier === "platinum");
-  const goldSponsors = sponsors.filter((s) => s.tier === "gold");
-  const silverSponsors = sponsors.filter((s) => s.tier === "silver");
+  const platinumSponsors = sponsors.filter((s) => s.tier === 'platinum')
+  const goldSponsors = sponsors.filter((s) => s.tier === 'gold')
+  const silverSponsors = sponsors.filter((s) => s.tier === 'silver')
   return (
     <section className="mb-20 flex flex-col" id="sponsors">
       <div className="flex w-full flex-col items-center justify-center">
@@ -55,8 +55,8 @@ export default async function Sponsors() {
               <div
                 className={`grid gap-12 ${
                   goldSponsors.length === 1
-                    ? "max-w-3xl grid-cols-1"
-                    : "max-w-4xl grid-cols-1 md:grid-cols-2"
+                    ? 'max-w-3xl grid-cols-1'
+                    : 'max-w-4xl grid-cols-1 md:grid-cols-2'
                 }`}
               >
                 {goldSponsors
@@ -80,10 +80,10 @@ export default async function Sponsors() {
               <div
                 className={`grid md:gap-16 ${
                   silverSponsors.length === 1
-                    ? "max-w-md grid-cols-1"
+                    ? 'max-w-md grid-cols-1'
                     : silverSponsors.length === 2
-                      ? "max-w-4xl grid-cols-1 md:grid-cols-2"
-                      : "max-w-5xl grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                      ? 'max-w-4xl grid-cols-1 md:grid-cols-2'
+                      : 'max-w-5xl grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                 }`}
               >
                 {silverSponsors
@@ -101,5 +101,5 @@ export default async function Sponsors() {
         </div>
       </div>
     </section>
-  );
+  )
 }

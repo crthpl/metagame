@@ -1,7 +1,7 @@
-import React from "react";
-import { Card } from "../../Card";
-import { Button } from "../../Button";
-import { URLS } from "../../../utils/urls";
+import React from 'react'
+import { Card } from '../../Card'
+import { Button } from '../../Button'
+import { URLS } from '../../../utils/urls'
 
 export const ContactUs: React.FC = () => {
   return (
@@ -27,5 +27,5 @@ export const ContactUs: React.FC = () => {
         </Card>
       </div>
     </section>
-  );
-};
+  )
+}

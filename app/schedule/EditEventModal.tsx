@@ -1,55 +1,55 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { Modal } from "@/components/Modal";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from 'react'
+import { Modal } from '@/components/Modal'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   adminAddSession,
   adminUpdateSession,
   adminDeleteSession,
-} from "@/app/actions/db/sessions";
-import { fetchLocations, fetchProfiles, fetchSessionById } from "./queries";
-import { useUser } from "@/hooks/dbQueries";
-import { toast } from "sonner";
+} from '@/app/actions/db/sessions'
+import { fetchLocations, fetchProfiles, fetchSessionById } from './queries'
+import { useUser } from '@/hooks/dbQueries'
+import { toast } from 'sonner'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { DbSessionAges } from "@/types/database/dbTypeAliases";
-import { getAgesDisplayText, SESSION_AGES } from "@/utils/dbUtils";
-import { XIcon } from "lucide-react";
-import { CONFERENCE_DAYS } from "./Schedule";
-import { dateUtils } from "@/utils/dateUtils";
-import { userEditSession } from "./actions";
+} from '@/components/ui/select'
+import { DbSessionAges } from '@/types/database/dbTypeAliases'
+import { getAgesDisplayText, SESSION_AGES } from '@/utils/dbUtils'
+import { XIcon } from 'lucide-react'
+import { CONFERENCE_DAYS } from './Schedule'
+import { dateUtils } from '@/utils/dateUtils'
+import { userEditSession } from './actions'
 interface AddEventModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  defaultDay?: string;
+  isOpen: boolean
+  onClose: () => void
+  defaultDay?: string
   prefillData?: {
-    startTime: string;
-    locationId: string;
-  } | null;
-  existingSessionId?: string | null;
-  canEdit?: boolean;
+    startTime: string
+    locationId: string
+  } | null
+  existingSessionId?: string | null
+  canEdit?: boolean
 }
 
 type FormData = {
-  title: string;
-  description: string;
-  day: string;
-  startTime: string;
-  endTime: string;
-  minCapacity: number | null;
-  maxCapacity: number | null;
-  locationId: string | null;
-  ages: DbSessionAges;
-  host_1_id: string | null;
-  host_2_id: string | null;
-  host_3_id: string | null;
-};
+  title: string
+  description: string
+  day: string
+  startTime: string
+  endTime: string
+  minCapacity: number | null
+  maxCapacity: number | null
+  locationId: string | null
+  ages: DbSessionAges
+  host_1_id: string | null
+  host_2_id: string | null
+  host_3_id: string | null
+}
 export function AddEventModal({
   isOpen,
   onClose,
@@ -58,15 +58,15 @@ export function AddEventModal({
   existingSessionId,
   canEdit = false,
 }: AddEventModalProps) {
-  const queryClient = useQueryClient();
-  const { currentUserProfile } = useUser();
-  const isEditMode = !!existingSessionId;
+  const queryClient = useQueryClient()
+  const { currentUserProfile } = useUser()
+  const isEditMode = !!existingSessionId
   const defaultFormData = {
-    title: "",
-    description: "",
+    title: '',
+    description: '',
     day: defaultDay || CONFERENCE_DAYS[0].date.getDate().toString(),
-    startTime: "09:00",
-    endTime: "09:30",
+    startTime: '09:00',
+    endTime: '09:30',
     minCapacity: null,
     maxCapacity: null,
     locationId: null,
@@ -74,61 +74,61 @@ export function AddEventModal({
     host_1_id: null,
     host_2_id: null,
     host_3_id: null,
-  };
+  }
   const {
     data: profiles,
     isLoading: profilesLoading,
     error: profilesError,
   } = useQuery({
-    queryKey: ["profiles", "all"],
+    queryKey: ['profiles', 'all'],
     queryFn: fetchProfiles,
     enabled: !!currentUserProfile?.is_admin && !!isOpen,
     staleTime: 1000 * 60 * 5,
-  });
+  })
 
   const { data: locations = [], isLoading: locationsLoading } = useQuery({
-    queryKey: ["locations"],
+    queryKey: ['locations'],
     queryFn: fetchLocations,
     enabled: !!isOpen,
     staleTime: 1000 * 60 * 5,
-  });
+  })
 
   // Fetch the existing session data if in edit mode
   const { data: existingSession, isLoading: sessionLoading } = useQuery({
-    queryKey: ["sessions", existingSessionId],
+    queryKey: ['sessions', existingSessionId],
     queryFn: () => fetchSessionById(existingSessionId!),
     enabled: !!isEditMode && !!existingSessionId && !!isOpen,
     staleTime: 1000 * 60 * 5,
-  });
+  })
 
-  const [formData, setFormData] = useState<FormData>(defaultFormData);
+  const [formData, setFormData] = useState<FormData>(defaultFormData)
   // Initialize form data when existingSession changes
   useEffect(() => {
     if (existingSession && !sessionLoading) {
       const startDatePSTParts = dateUtils.getPacificParts(
         new Date(existingSession.start_time!),
-      );
+      )
       const endDatePSTParts = existingSession.end_time
         ? dateUtils.getPacificParts(new Date(existingSession.end_time))
-        : null;
+        : null
 
       // Check if the host IDs exist in the profiles before setting them
       const validateHostId = (hostId: string | null) => {
-        if (!hostId) return null;
+        if (!hostId) return null
         // If profiles aren't loaded (e.g., non-admin view), keep the existing host id as-is
-        if (!profiles) return hostId;
-        const profileExists = profiles.some((p) => p.id === hostId);
-        return profileExists ? hostId : null;
-      };
+        if (!profiles) return hostId
+        const profileExists = profiles.some((p) => p.id === hostId)
+        return profileExists ? hostId : null
+      }
 
       const newFormData = {
-        title: existingSession.title || "",
-        description: existingSession.description || "",
+        title: existingSession.title || '',
+        description: existingSession.description || '',
         day: startDatePSTParts.day,
-        startTime: startDatePSTParts.hour + ":" + startDatePSTParts.minute,
+        startTime: startDatePSTParts.hour + ':' + startDatePSTParts.minute,
         endTime: endDatePSTParts
-          ? endDatePSTParts.hour + ":" + endDatePSTParts.minute
-          : "10:00",
+          ? endDatePSTParts.hour + ':' + endDatePSTParts.minute
+          : '10:00',
         minCapacity: existingSession.min_capacity,
         maxCapacity: existingSession.max_capacity,
         locationId: existingSession.location_id || null,
@@ -136,36 +136,36 @@ export function AddEventModal({
         host_1_id: validateHostId(existingSession.host_1_id),
         host_2_id: validateHostId(existingSession.host_2_id),
         host_3_id: validateHostId(existingSession.host_3_id),
-      };
-      setFormData(newFormData);
+      }
+      setFormData(newFormData)
     } else if (prefillData) {
       // The prefillData.startTime is already the exact time of the slot (e.g., "14:30")
       // End time should be 30 minutes later (next half-hour slot)
       const [startHour, startMinute] = prefillData.startTime
-        .split(":")
-        .map(Number);
-      let endHour = startHour;
-      let endMinute = startMinute + 30;
+        .split(':')
+        .map(Number)
+      let endHour = startHour
+      let endMinute = startMinute + 30
 
       // Handle hour rollover
       if (endMinute >= 60) {
-        endHour += 1;
-        endMinute = 0;
+        endHour += 1
+        endMinute = 0
       }
 
-      const endTime = `${endHour.toString().padStart(2, "0")}:${endMinute.toString().padStart(2, "0")}`;
+      const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`
 
       setFormData({
         ...defaultFormData,
         startTime: prefillData.startTime,
         endTime: endTime,
-        locationId: prefillData.locationId || "",
-      });
+        locationId: prefillData.locationId || '',
+      })
     } else {
       // Reset to defaults
       setFormData({
         ...defaultFormData,
-      });
+      })
     }
   }, [
     existingSession,
@@ -174,20 +174,20 @@ export function AddEventModal({
     defaultDay,
     prefillData,
     profiles,
-  ]);
+  ])
   // Bump up hosts when an earlier host is cleared
   useEffect(() => {
     if (!formData.host_1_id && !formData.host_2_id && !formData.host_3_id)
-      return;
+      return
     if (!formData.host_1_id) {
       setFormData((prev) => ({
         ...prev,
         host_1_id: prev.host_2_id,
         host_2_id: prev.host_3_id,
         host_3_id: null,
-      }));
+      }))
     }
-  }, [formData.host_1_id]);
+  }, [formData.host_1_id])
 
   useEffect(() => {
     if (!formData.host_2_id) {
@@ -195,69 +195,69 @@ export function AddEventModal({
         ...prev,
         host_2_id: prev.host_3_id,
         host_3_id: null,
-      }));
+      }))
     }
-  }, [formData.host_2_id]);
+  }, [formData.host_2_id])
 
   const addEventMutation = useMutation({
     mutationFn: adminAddSession,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sessions"] });
-      toast.success("Event created successfully!");
-      onClose();
+      queryClient.invalidateQueries({ queryKey: ['sessions'] })
+      toast.success('Event created successfully!')
+      onClose()
       // Reset form
       setFormData({
         ...defaultFormData,
-      });
+      })
     },
     onError: (error) => {
-      toast.error(`Failed to create event: ${error.message}`);
+      toast.error(`Failed to create event: ${error.message}`)
     },
-  });
+  })
 
   const userEditSessionMutation = useMutation({
     mutationFn: userEditSession,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sessions"] });
-      toast.success("Event updated successfully!");
-      onClose();
+      queryClient.invalidateQueries({ queryKey: ['sessions'] })
+      toast.success('Event updated successfully!')
+      onClose()
     },
     onError: (error) => {
-      toast.error(`Failed to update event: ${error.message}`);
+      toast.error(`Failed to update event: ${error.message}`)
     },
-  });
+  })
 
   const updateEventMutation = useMutation({
     mutationFn: adminUpdateSession,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sessions"] });
-      toast.success("Event updated successfully!");
-      onClose();
+      queryClient.invalidateQueries({ queryKey: ['sessions'] })
+      toast.success('Event updated successfully!')
+      onClose()
     },
     onError: (error) => {
-      toast.error(`Failed to update event: ${error.message}`);
+      toast.error(`Failed to update event: ${error.message}`)
     },
-  });
+  })
 
   const deleteEventMutation = useMutation({
     mutationFn: adminDeleteSession,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sessions"] });
-      toast.success("Event deleted successfully!");
-      onClose();
+      queryClient.invalidateQueries({ queryKey: ['sessions'] })
+      toast.success('Event deleted successfully!')
+      onClose()
     },
     onError: (error) => {
-      toast.error(`Failed to delete event: ${error.message}`);
+      toast.error(`Failed to delete event: ${error.message}`)
     },
-  });
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     // Validate times
     if (formData.startTime >= formData.endTime) {
-      toast.error("End time must be after start time");
-      return;
+      toast.error('End time must be after start time')
+      return
     }
 
     if (
@@ -265,14 +265,14 @@ export function AddEventModal({
       formData.maxCapacity &&
       formData.minCapacity > formData.maxCapacity
     ) {
-      toast.error("Minimum capacity cannot be greater than maximum capacity");
-      return;
+      toast.error('Minimum capacity cannot be greater than maximum capacity')
+      return
     }
 
     // Validate host selection
     if (!formData.host_1_id) {
-      toast.error("Please select a host for the event");
-      return;
+      toast.error('Please select a host for the event')
+      return
     }
 
     const startDateTime = dateUtils.dateFromParts({
@@ -280,13 +280,13 @@ export function AddEventModal({
       month: 9,
       day: formData.day,
       time: formData.startTime,
-    });
+    })
     const endDateTime = dateUtils.dateFromParts({
       year: 2025,
       month: 9,
       day: formData.day,
       time: formData.endTime,
-    });
+    })
     const payload = {
       title: formData.title,
       description: formData.description || null,
@@ -299,97 +299,97 @@ export function AddEventModal({
       host_2_id: formData.host_2_id,
       host_3_id: formData.host_3_id,
       ages: formData.ages,
-    };
+    }
 
     if (isEditMode && existingSessionId) {
       if (currentUserProfile?.is_admin) {
         updateEventMutation.mutate({
           sessionId: existingSessionId,
           payload,
-        });
+        })
       } else if (canEdit) {
         userEditSessionMutation.mutate({
           sessionId: existingSessionId,
           sessionUpdate: payload,
-        });
+        })
       } else {
-        toast.error("You don't have permission to edit this event");
-        return;
+        toast.error("You don't have permission to edit this event")
+        return
       }
     } else {
-      addEventMutation.mutate(payload);
+      addEventMutation.mutate(payload)
     }
-  };
+  }
 
   const handleDelete = () => {
-    if (!existingSessionId) return;
+    if (!existingSessionId) return
 
     if (
       confirm(
-        "Are you sure you want to delete this event? This action cannot be undone.",
+        'Are you sure you want to delete this event? This action cannot be undone.',
       )
     ) {
-      deleteEventMutation.mutate({ sessionId: existingSessionId });
+      deleteEventMutation.mutate({ sessionId: existingSessionId })
     }
-  };
+  }
 
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
 
     // Handle number fields
-    if (name === "minCapacity" || name === "maxCapacity") {
-      const numValue = value === "" ? null : parseInt(value);
-      setFormData((prev) => ({ ...prev, [name]: numValue }));
+    if (name === 'minCapacity' || name === 'maxCapacity') {
+      const numValue = value === '' ? null : parseInt(value)
+      setFormData((prev) => ({ ...prev, [name]: numValue }))
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }))
     }
-  };
+  }
 
   const hostSelectOptions = () => {
     if (!currentUserProfile?.is_admin) {
-      console.log("non-admin");
+      console.log('non-admin')
       return (
         <SelectItem value="read-only" disabled>
           Hosts are read-only for non-admins
         </SelectItem>
-      );
+      )
     }
     if (profilesLoading) {
       return (
         <SelectItem value="loading" disabled>
           Loading profiles...
         </SelectItem>
-      );
+      )
     }
     if (profilesError && currentUserProfile?.is_admin) {
       return (
         <SelectItem value="error" disabled>
           Error loading profiles: {profilesError.message}
         </SelectItem>
-      );
+      )
     }
     if (profiles && profiles.length === 0) {
       return (
         <SelectItem value="empty" disabled>
           No profiles found
         </SelectItem>
-      );
+      )
     }
     return profiles?.map((profile) => {
       return (
         <SelectItem key={profile.id} value={profile.id}>
           {profile.first_name
-            ? `${profile.first_name} ${profile.last_name ?? ""} - ${profile.email || profile.id}`
+            ? `${profile.first_name} ${profile.last_name ?? ''} - ${profile.email || profile.id}`
             : profile.email || profile.id}
         </SelectItem>
-      );
-    });
-  };
-  if (!isOpen) return null;
+      )
+    })
+  }
+  if (!isOpen) return null
 
   // Show loading state while fetching session data in edit mode
   if (isEditMode && sessionLoading) {
@@ -406,14 +406,14 @@ export function AddEventModal({
           </div>
         </div>
       </Modal>
-    );
+    )
   }
 
   return (
     <Modal onClose={onClose}>
       <div className="bg-dark-400 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg p-8 shadow-lg">
         <h2 className="mb-6 text-2xl font-bold">
-          {isEditMode ? "Edit Event" : "Add New Event"}
+          {isEditMode ? 'Edit Event' : 'Add New Event'}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -485,16 +485,16 @@ export function AddEventModal({
               </label>
               <Select
                 name="locationId"
-                value={formData.locationId || ""}
+                value={formData.locationId || ''}
                 disabled={!currentUserProfile?.is_admin}
                 onValueChange={(value) => {
                   if (!value) {
-                    return;
+                    return
                   }
                   setFormData((prev) => ({
                     ...prev,
-                    locationId: value === "none" ? null : value,
-                  }));
+                    locationId: value === 'none' ? null : value,
+                  }))
                 }}
               >
                 <SelectTrigger>
@@ -576,13 +576,13 @@ export function AddEventModal({
               </div>
               <Select
                 name="host_1_id"
-                value={formData.host_1_id || ""}
+                value={formData.host_1_id || ''}
                 disabled={!currentUserProfile?.is_admin}
                 onValueChange={(value) => {
-                  if (!value) return;
+                  if (!value) return
                   setFormData((prev) => {
-                    return { ...prev, host_1_id: value };
-                  });
+                    return { ...prev, host_1_id: value }
+                  })
                 }}
               >
                 <SelectTrigger>
@@ -621,12 +621,12 @@ export function AddEventModal({
               </div>
               <Select
                 name="host_2_id"
-                value={formData.host_2_id || ""}
+                value={formData.host_2_id || ''}
                 disabled={!currentUserProfile?.is_admin}
                 onValueChange={(value) =>
                   setFormData((prev) => ({
                     ...prev,
-                    host_2_id: value === "none" ? null : value,
+                    host_2_id: value === 'none' ? null : value,
                   }))
                 }
               >
@@ -664,12 +664,12 @@ export function AddEventModal({
                 </div>
                 <Select
                   name="host_3_id"
-                  value={formData.host_3_id || ""}
+                  value={formData.host_3_id || ''}
                   disabled={!currentUserProfile?.is_admin}
                   onValueChange={(value) =>
                     setFormData((prev) => ({
                       ...prev,
-                      host_3_id: value === "none" ? null : value,
+                      host_3_id: value === 'none' ? null : value,
                     }))
                   }
                 >
@@ -697,7 +697,7 @@ export function AddEventModal({
                 name="minCapacity"
                 type="number"
                 min="0"
-                value={formData.minCapacity || ""}
+                value={formData.minCapacity || ''}
                 onChange={handleInputChange}
                 className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
               />
@@ -714,7 +714,7 @@ export function AddEventModal({
                 name="maxCapacity"
                 type="number"
                 min="0"
-                value={formData.maxCapacity || ""}
+                value={formData.maxCapacity || ''}
                 onChange={handleInputChange}
                 className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
               />
@@ -754,11 +754,11 @@ export function AddEventModal({
             >
               {addEventMutation.isPending || updateEventMutation.isPending
                 ? isEditMode
-                  ? "Updating..."
-                  : "Creating..."
+                  ? 'Updating...'
+                  : 'Creating...'
                 : isEditMode
-                  ? "Update Event"
-                  : "Create Event"}
+                  ? 'Update Event'
+                  : 'Create Event'}
             </button>
             <button
               type="button"
@@ -777,12 +777,12 @@ export function AddEventModal({
                 disabled={deleteEventMutation.isPending}
                 className="w-full rounded bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {deleteEventMutation.isPending ? "Deleting..." : "Delete Event"}
+                {deleteEventMutation.isPending ? 'Deleting...' : 'Delete Event'}
               </button>
             </div>
           )}
         </form>
       </div>
     </Modal>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import { buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
+import { buttonVariants } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default function ResetPasswordSuccessPage() {
   return (
@@ -28,16 +28,16 @@ export default function ResetPasswordSuccessPage() {
           <div className="flex gap-4">
             <Link
               href="/profile"
-              className={buttonVariants({ variant: "outline" })}
+              className={buttonVariants({ variant: 'outline' })}
             >
               Go to Profile
             </Link>
-            <Link href="/" className={buttonVariants({ variant: "outline" })}>
+            <Link href="/" className={buttonVariants({ variant: 'outline' })}>
               Go to Home
             </Link>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

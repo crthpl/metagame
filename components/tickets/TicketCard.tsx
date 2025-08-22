@@ -1,132 +1,132 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import { TicketPurchaseForm } from "./TicketPurchaseForm";
+import React, { useState } from 'react'
+import { TicketPurchaseForm } from './TicketPurchaseForm'
 import {
   getTicketType,
   DAY_PASS_OPTIONS,
   getDayPassTicketType,
-} from "../../config/tickets";
-import { Modal } from "../Modal";
+} from '../../config/tickets'
+import { Modal } from '../Modal'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { PaymentCurrency } from "./Tickets";
+} from '@/components/ui/select'
+import { PaymentCurrency } from './Tickets'
 
 interface TicketCardProps {
-  ticketTypeId: string;
-  paymentMethod?: PaymentCurrency;
+  ticketTypeId: string
+  paymentMethod?: PaymentCurrency
 }
 
 export const TicketCard: React.FC<TicketCardProps> = ({
   ticketTypeId,
-  paymentMethod = "usd",
+  paymentMethod = 'usd',
 }) => {
   const [selectedDayPass, setSelectedDayPass] = useState<
     (typeof DAY_PASS_OPTIONS)[0] | null
-  >(null);
-  const [showModal, setShowModal] = useState(false);
+  >(null)
+  const [showModal, setShowModal] = useState(false)
 
-  const ticketType = getTicketType(ticketTypeId);
+  const ticketType = getTicketType(ticketTypeId)
   if (!ticketType) {
-    return <div>Invalid ticket type</div>;
+    return <div>Invalid ticket type</div>
   }
 
   // For day pass tickets, calculate price range and use selected day's details
-  const isDayPass = ticketTypeId === "dayPass";
-  const dayPassPrices = DAY_PASS_OPTIONS.map((option) => option.priceUSD);
-  const dayPassPricesBTC = DAY_PASS_OPTIONS.map((option) => option.priceBTC!);
-  const minPrice = Math.min(...dayPassPrices);
-  const maxPrice = Math.max(...dayPassPrices);
+  const isDayPass = ticketTypeId === 'dayPass'
+  const dayPassPrices = DAY_PASS_OPTIONS.map((option) => option.priceUSD)
+  const dayPassPricesBTC = DAY_PASS_OPTIONS.map((option) => option.priceBTC!)
+  const minPrice = Math.min(...dayPassPrices)
+  const maxPrice = Math.max(...dayPassPrices)
   const priceRange =
-    minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-${maxPrice}`;
-  const minPriceBTC = Math.min(...dayPassPricesBTC);
-  const maxPriceBTC = Math.max(...dayPassPricesBTC);
+    minPrice === maxPrice ? `$${minPrice}` : `$${minPrice}-${maxPrice}`
+  const minPriceBTC = Math.min(...dayPassPricesBTC)
+  const maxPriceBTC = Math.max(...dayPassPricesBTC)
   const priceRangeBTC =
     minPriceBTC === maxPriceBTC
       ? `₿${minPriceBTC}`
-      : `₿${minPriceBTC}-${maxPriceBTC}`;
+      : `₿${minPriceBTC}-${maxPriceBTC}`
   function getDisplayTicketType(
     ticketTypeId: string,
     selectedDayPass: (typeof DAY_PASS_OPTIONS)[0] | null,
   ) {
-    const ticketType = getTicketType(ticketTypeId);
-    if (!ticketType) return null;
+    const ticketType = getTicketType(ticketTypeId)
+    if (!ticketType) return null
 
-    if (ticketTypeId === "dayPass") {
+    if (ticketTypeId === 'dayPass') {
       const priceUSD =
         selectedDayPass?.priceUSD ??
-        Math.min(...DAY_PASS_OPTIONS.map((o) => o.priceUSD));
+        Math.min(...DAY_PASS_OPTIONS.map((o) => o.priceUSD))
       const priceBTC =
         selectedDayPass?.priceBTC ??
-        Math.min(...DAY_PASS_OPTIONS.map((o) => o.priceBTC!));
+        Math.min(...DAY_PASS_OPTIONS.map((o) => o.priceBTC!))
       return {
         ...ticketType,
         priceUSD,
         regularPrice: priceUSD,
         description:
-          selectedDayPass?.description ?? "Single day pass - choose a day",
+          selectedDayPass?.description ?? 'Single day pass - choose a day',
         title: selectedDayPass
           ? `Day Pass: ${selectedDayPass.title}`
-          : "Day Pass",
+          : 'Day Pass',
         priceBTC,
-      };
+      }
     }
 
-    if (ticketTypeId === "volunteer") {
+    if (ticketTypeId === 'volunteer') {
       return {
         ...ticketType,
-        priceUSD: "0+",
-        priceBTC: "0+",
+        priceUSD: '0+',
+        priceBTC: '0+',
         regularPrice: null,
-      };
+      }
     }
-    if (ticketTypeId === "financialAid") {
+    if (ticketTypeId === 'financialAid') {
       return {
         ...ticketType,
-        priceUSD: "0-290",
-        priceBTC: "0-0.002",
+        priceUSD: '0-290',
+        priceBTC: '0-0.002',
         regularPrice: null,
-      };
+      }
     }
 
-    return ticketType;
+    return ticketType
   }
 
   const handleBuyNow = () => {
     // If there's a specific URL for this ticket type, redirect to it
     if (ticketType.ticketUrl) {
-      window.open(ticketType.ticketUrl, "_blank");
-      return;
+      window.open(ticketType.ticketUrl, '_blank')
+      return
     }
 
     // For day pass, require selection before proceeding
     if (isDayPass && !selectedDayPass) {
-      return;
+      return
     }
 
     // Otherwise, show the purchase modal
-    setShowModal(true);
-  };
+    setShowModal(true)
+  }
 
   const handleCloseModal = () => {
-    setShowModal(false);
-  };
+    setShowModal(false)
+  }
 
   const handleDayPassChange = (value: string) => {
-    const selected = DAY_PASS_OPTIONS.find((option) => option.id === value);
-    setSelectedDayPass(selected || null);
-  };
-
-  const displayTicketType = getDisplayTicketType(ticketTypeId, selectedDayPass);
-  if (!displayTicketType) {
-    return <div>Invalid ticket type</div>;
+    const selected = DAY_PASS_OPTIONS.find((option) => option.id === value)
+    setSelectedDayPass(selected || null)
   }
-  const isBTC = paymentMethod === "btc";
+
+  const displayTicketType = getDisplayTicketType(ticketTypeId, selectedDayPass)
+  if (!displayTicketType) {
+    return <div>Invalid ticket type</div>
+  }
+  const isBTC = paymentMethod === 'btc'
   return (
     <>
       <div className="group relative transition-all duration-300">
@@ -145,7 +145,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
               {isDayPass && (
                 <div className="mt-3 mb-3 flex justify-center">
                   <Select
-                    value={selectedDayPass?.id || ""}
+                    value={selectedDayPass?.id || ''}
                     onValueChange={handleDayPassChange}
                   >
                     <SelectTrigger className="w-fit max-w-xs">
@@ -154,7 +154,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                     <SelectContent>
                       {DAY_PASS_OPTIONS.map((option) => (
                         <SelectItem key={option.id} value={option.id}>
-                          {option.title} -{" "}
+                          {option.title} -{' '}
                           {isBTC
                             ? `₿${option.priceBTC}`
                             : `$${option.priceUSD}`}
@@ -214,8 +214,8 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             <div
               className={`relative inline-block transition-all hover:scale-105 ${
                 ticketType.live
-                  ? "opacity-100"
-                  : "pointer-events-none opacity-50"
+                  ? 'opacity-100'
+                  : 'pointer-events-none opacity-50'
               }`}
             >
               <div className="absolute top-0 right-0 bottom-0 left-0 -z-10 translate-y-1 transform rounded-md bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 opacity-30 blur-lg transition-all duration-300 hover:scale-110 hover:scale-y-150"></div>
@@ -230,18 +230,18 @@ export const TicketCard: React.FC<TicketCardProps> = ({
                 }
                 className={`relative rounded-md bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500 p-0.5 font-bold ${
                   displayTicketType.live && (!isDayPass || selectedDayPass)
-                    ? "bg-[length:200%_200%] bg-[position:-100%_0] transition-all duration-300 hover:bg-[position:100%_0]"
-                    : ""
+                    ? 'bg-[length:200%_200%] bg-[position:-100%_0] transition-all duration-300 hover:bg-[position:100%_0]'
+                    : ''
                 }`}
               >
                 <div className="bg-dark-500 h-full w-full rounded-md px-12 py-3 whitespace-nowrap text-white uppercase transition-all duration-1000">
                   {ticketType.live
                     ? ticketType.applicationBased
-                      ? "Apply"
+                      ? 'Apply'
                       : isBTC
-                        ? "₿uy Now"
-                        : "Buy Now"
-                    : "Coming Soon"}
+                        ? '₿uy Now'
+                        : 'Buy Now'
+                    : 'Coming Soon'}
                 </div>
               </button>
             </div>
@@ -266,5 +266,5 @@ export const TicketCard: React.FC<TicketCardProps> = ({
         </Modal>
       )}
     </>
-  );
-};
+  )
+}

@@ -1,5 +1,5 @@
-"use client";
-import { useState, useEffect } from "react";
+'use client'
+import { useState, useEffect } from 'react'
 import {
   KBarProvider,
   KBarPortal,
@@ -8,30 +8,30 @@ import {
   KBarSearch,
   KBarResults,
   useMatches,
-} from "kbar";
-import { staticActions } from "@/config/kbarActions";
+} from 'kbar'
+import { staticActions } from '@/config/kbarActions'
 
 function RenderResults() {
-  const { results } = useMatches();
+  const { results } = useMatches()
 
   return (
     <KBarResults
       items={results}
       onRender={({ item, active }) => {
         // Handle section items
-        if (typeof item === "string") {
+        if (typeof item === 'string') {
           return (
             <div className="text-primary-400 bg-dark-600 px-4 py-2 text-sm font-bold">
               {item}
             </div>
-          );
+          )
         }
 
         // Render action items
         return (
           <div
             className={`flex cursor-pointer items-center justify-between px-4 py-2 ${
-              active ? "bg-primary-600 text-white" : "text-gray-200"
+              active ? 'bg-primary-600 text-white' : 'text-gray-200'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -42,7 +42,7 @@ function RenderResults() {
                 <div className="font-medium">{item.name}</div>
                 {item.subtitle && (
                   <span
-                    className={`text-sm ${active ? "text-gray-200" : "text-gray-400"}`}
+                    className={`text-sm ${active ? 'text-gray-200' : 'text-gray-400'}`}
                   >
                     {item.subtitle}
                   </span>
@@ -55,7 +55,7 @@ function RenderResults() {
                   <kbd
                     key={sc}
                     className={`rounded px-2 py-1 text-xs ${
-                      active ? "bg-primary-700" : "bg-gray-700"
+                      active ? 'bg-primary-700' : 'bg-gray-700'
                     }`}
                   >
                     {sc}
@@ -64,47 +64,47 @@ function RenderResults() {
               </div>
             ) : null}
           </div>
-        );
+        )
       }}
     />
-  );
+  )
 }
 
 export function KbarApp({ children }: { children: React.ReactNode }) {
-  const [actions, setActions] = useState(staticActions);
+  const [actions, setActions] = useState(staticActions)
 
   useEffect(() => {
     // Add dynamic actions based on current route
-    const path = window.location.pathname;
-    const dynamicActions = [];
+    const path = window.location.pathname
+    const dynamicActions = []
 
     // Game-specific actions
-    if (path.startsWith("/games/")) {
+    if (path.startsWith('/games/')) {
       dynamicActions.push({
-        id: "restart-game",
-        name: "Restart Game",
-        icon: "🔄",
-        section: "Game Controls",
-        shortcut: ["r"],
+        id: 'restart-game',
+        name: 'Restart Game',
+        icon: '🔄',
+        section: 'Game Controls',
+        shortcut: ['r'],
         perform: () => window.location.reload(),
-      });
+      })
     }
 
     // Session-specific actions
-    if (path.startsWith("/sessions/")) {
+    if (path.startsWith('/sessions/')) {
       dynamicActions.push({
-        id: "add-to-calendar",
-        name: "Add to Calendar",
-        icon: "📅",
-        section: "Session Actions",
-        shortcut: ["c"],
-        perform: () => console.log("Add to calendar"),
-      });
+        id: 'add-to-calendar',
+        name: 'Add to Calendar',
+        icon: '📅',
+        section: 'Session Actions',
+        shortcut: ['c'],
+        perform: () => console.log('Add to calendar'),
+      })
     }
 
     // Update actions with dynamic ones
-    setActions([...staticActions, ...dynamicActions]);
-  }, []);
+    setActions([...staticActions, ...dynamicActions])
+  }, [])
 
   return (
     <KBarProvider actions={actions}>
@@ -123,5 +123,5 @@ export function KbarApp({ children }: { children: React.ReactNode }) {
       </KBarPortal>
       {children}
     </KBarProvider>
-  );
+  )
 }

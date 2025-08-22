@@ -2,8 +2,8 @@
 id: 16
 name: Justin Kuiper
 image: /images/justin_kuiper.jpg
-gameName: "Idol Manager"
-gameUrl: "https://kineticliterature.com/games/"
+gameName: 'Idol Manager'
+gameUrl: 'https://kineticliterature.com/games/'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

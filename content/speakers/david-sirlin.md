@@ -1,9 +1,9 @@
 ---
 id: 5
-name: "David Sirlin"
-image: "/images/david_sirlin.jpg"
-gameName: "Sirlin Games"
-gameUrl: "https://www.sirlingames.com/"
+name: 'David Sirlin'
+image: '/images/david_sirlin.jpg'
+gameName: 'Sirlin Games'
+gameUrl: 'https://www.sirlingames.com/'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

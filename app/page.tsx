@@ -1,14 +1,14 @@
-import SetAnimation from "@/components/Set/SetAnimation";
-import Tickets from "@/components/tickets/Tickets";
-import Sponsors from "@/components/Sponsors";
-import { Hero } from "@/components/sections/home/Hero";
-import Calendar from "@/components/sections/home/Calendar";
-import GetInvolved from "@/components/sections/home/GetInvolved";
-import Speakers from "@/components/sections/home/Speakers";
-import { ContactUs } from "@/components/sections/home/ContactUs";
-import HomePageWrapper from "@/components/HomePageWrapper";
-import PacmanAnimation from "@/components/PacmanAnimation";
-import ScheduleSection from "@/components/sections/home/ScheduleSection";
+import SetAnimation from '@/components/Set/SetAnimation'
+import Tickets from '@/components/tickets/Tickets'
+import Sponsors from '@/components/Sponsors'
+import { Hero } from '@/components/sections/home/Hero'
+import Calendar from '@/components/sections/home/Calendar'
+import GetInvolved from '@/components/sections/home/GetInvolved'
+import Speakers from '@/components/sections/home/Speakers'
+import { ContactUs } from '@/components/sections/home/ContactUs'
+import HomePageWrapper from '@/components/HomePageWrapper'
+import PacmanAnimation from '@/components/PacmanAnimation'
+import ScheduleSection from '@/components/sections/home/ScheduleSection'
 
 export default function Home() {
   return (
@@ -32,5 +32,5 @@ export default function Home() {
         </div>
       </main>
     </HomePageWrapper>
-  );
+  )
 }

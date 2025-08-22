@@ -1,11 +1,11 @@
-import { pipPaths } from "./DiceUtils";
-import type { Face } from "./DiceUtils";
+import { pipPaths } from './DiceUtils'
+import type { Face } from './DiceUtils'
 
 interface CustomDieProps {
-  dieIdentifier?: Record<Face, number>;
-  fill?: string;
-  stroke?: string;
-  size?: number;
+  dieIdentifier?: Record<Face, number>
+  fill?: string
+  stroke?: string
+  size?: number
 }
 
 /**
@@ -22,17 +22,17 @@ export function CustomDie({
     top: 1,
     right: 4,
   },
-  fill = "#ff57ff",
-  stroke = "#aa33ff",
+  fill = '#ff57ff',
+  stroke = '#aa33ff',
   size = 512,
 }: CustomDieProps) {
   const renderFacePips = (face: Face) => {
-    const pipNumber = dieIdentifier[face];
-    const paths = pipPaths[face][pipNumber];
+    const pipNumber = dieIdentifier[face]
+    const paths = pipPaths[face][pipNumber]
     return paths?.map((path, index) => (
       <path key={`${face}-${pipNumber}-${index}`} className="st0" d={path} />
-    ));
-  };
+    ))
+  }
 
   return (
     <svg
@@ -70,11 +70,11 @@ export function CustomDie({
             c-5.397,3.236-11.292,5.203-17.32,5.948V260.246l196.328-117.76c2.282,5.37,3.518,11.211,3.518,17.233V352.281z"
           />
           {/* Render pips for each face */}
-          {renderFacePips("left")}
-          {renderFacePips("top")}
-          {renderFacePips("right")}
+          {renderFacePips('left')}
+          {renderFacePips('top')}
+          {renderFacePips('right')}
         </g>
       </g>
     </svg>
-  );
+  )
 }

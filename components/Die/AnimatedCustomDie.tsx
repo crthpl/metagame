@@ -1,20 +1,20 @@
-import { useState } from "react";
+import { useState } from 'react'
 import {
   generateRandomDieIdentifier,
   type DieGenerationOptions,
   type Face,
-} from "./DiceUtils";
-import { CustomDie } from "./CustomDie";
-import { cn } from "@/utils/cn";
+} from './DiceUtils'
+import { CustomDie } from './CustomDie'
+import { cn } from '@/utils/cn'
 
 type AnimatedCustomDieProps = {
-  startingDieIdentifier?: Record<Face, number>; //default starting die if you dont want a random one on load
-  dieGenerationOptions?: DieGenerationOptions; // options for generating the die; whether to allow repeats, 7 sum, zero/blank
-  duration?: number; // duration of the animation
-  totalFrames?: number; // number of frames (different dice)
-  className?: string; // class to apply to the die button
-  scaleAnimation?: boolean; // scale the die when animating
-};
+  startingDieIdentifier?: Record<Face, number> //default starting die if you dont want a random one on load
+  dieGenerationOptions?: DieGenerationOptions // options for generating the die; whether to allow repeats, 7 sum, zero/blank
+  duration?: number // duration of the animation
+  totalFrames?: number // number of frames (different dice)
+  className?: string // class to apply to the die button
+  scaleAnimation?: boolean // scale the die when animating
+}
 
 export default function AnimatedCustomDie({
   startingDieIdentifier,
@@ -22,69 +22,69 @@ export default function AnimatedCustomDie({
   duration = 500,
   totalFrames = 8,
   scaleAnimation = true,
-  className = "",
+  className = '',
 }: AnimatedCustomDieProps) {
   const [dieIdentifier, setDieIdentifier] = useState(
     startingDieIdentifier ?? generateRandomDieIdentifier(dieGenerationOptions),
-  );
-  const [isAnimating, setIsAnimating] = useState(false);
+  )
+  const [isAnimating, setIsAnimating] = useState(false)
 
   const animate = () => {
-    if (isAnimating) return;
+    if (isAnimating) return
 
-    setIsAnimating(true);
-    const startTime = performance.now();
-    let lastFrameIndex = -1;
+    setIsAnimating(true)
+    const startTime = performance.now()
+    let lastFrameIndex = -1
 
     const animateFrame = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
+      const elapsed = currentTime - startTime
       if (elapsed >= duration) {
-        setIsAnimating(false);
-        return;
+        setIsAnimating(false)
+        return
       }
 
       // Calculate which frame we should be on based on progress
-      const progress = elapsed / duration;
-      const frameIndex = Math.floor(progress * totalFrames);
+      const progress = elapsed / duration
+      const frameIndex = Math.floor(progress * totalFrames)
 
       // Only update value if we've moved to a new frame
       if (frameIndex > lastFrameIndex) {
         setDieIdentifier((prev) => {
-          const next = generateRandomDieIdentifier(dieGenerationOptions);
+          const next = generateRandomDieIdentifier(dieGenerationOptions)
           // Ensure we don't get the same values
           return next.left === prev.left &&
             next.top === prev.top &&
             next.right === prev.right
             ? generateRandomDieIdentifier(dieGenerationOptions)
-            : next;
-        });
-        lastFrameIndex = frameIndex;
+            : next
+        })
+        lastFrameIndex = frameIndex
       }
 
-      requestAnimationFrame(animateFrame);
-    };
+      requestAnimationFrame(animateFrame)
+    }
 
-    requestAnimationFrame(animateFrame);
-  };
+    requestAnimationFrame(animateFrame)
+  }
 
   return (
     <button
       onClick={animate}
       disabled={isAnimating}
       className={cn(
-        "relative inline-flex size-10 items-center justify-center transition-transform duration-500",
+        'relative inline-flex size-10 items-center justify-center transition-transform duration-500',
         className,
       )}
       style={
         scaleAnimation
           ? {
-              transform: isAnimating ? "scale(0.92)" : "scale(1)",
-              transition: "transform 0.1s ease-in-out",
+              transform: isAnimating ? 'scale(0.92)' : 'scale(1)',
+              transition: 'transform 0.1s ease-in-out',
             }
           : {}
       }
     >
       <CustomDie dieIdentifier={dieIdentifier} size={40} />
     </button>
-  );
+  )
 }

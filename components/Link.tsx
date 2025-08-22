@@ -1,20 +1,20 @@
-import NextLink from "next/link";
-import { ReactNode } from "react";
+import NextLink from 'next/link'
+import { ReactNode } from 'react'
 
 type Props = {
-  href: string;
-  rel?: string;
-  target?: string;
-  children: ReactNode;
-  className?: string;
-};
+  href: string
+  rel?: string
+  target?: string
+  children: ReactNode
+  className?: string
+}
 
 export default function Link({
   href,
   rel,
   target,
   children,
-  className = "",
+  className = '',
 }: Props) {
   return (
     <NextLink
@@ -25,5 +25,5 @@ export default function Link({
     >
       {children}
     </NextLink>
-  );
+  )
 }

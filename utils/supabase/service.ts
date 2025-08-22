@@ -1,10 +1,10 @@
-import { Database } from "@/types/database/supabase.types";
-import { createClient } from "@supabase/supabase-js";
+import { Database } from '@/types/database/supabase.types'
+import { createClient } from '@supabase/supabase-js'
 
-const serviceRoleSecret = process.env.SUPABASE_SECRET_KEY;
+const serviceRoleSecret = process.env.SUPABASE_SECRET_KEY
 export function createServiceClient() {
   if (!serviceRoleSecret) {
-    throw new Error("SUPABASE_SECRET_KEY is not set");
+    throw new Error('SUPABASE_SECRET_KEY is not set')
   }
   return createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,5 +16,5 @@ export function createServiceClient() {
         detectSessionInUrl: false,
       },
     },
-  );
+  )
 }

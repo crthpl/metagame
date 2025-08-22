@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { AlertCircle } from "lucide-react";
-import { Suspense } from "react";
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { AlertCircle } from 'lucide-react'
+import { Suspense } from 'react'
 
 function ErrorMessage() {
-  const searchParams = useSearchParams();
-  const error = searchParams.get("error");
+  const searchParams = useSearchParams()
+  const error = searchParams.get('error')
 
   return (
     <p className="mb-6 text-gray-300">
-      {error || "An error occurred during authentication. Please try again."}
+      {error || 'An error occurred during authentication. Please try again.'}
     </p>
-  );
+  )
 }
 
 export default function AuthErrorPage() {
@@ -49,5 +49,5 @@ export default function AuthErrorPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

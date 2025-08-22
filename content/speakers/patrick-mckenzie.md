@@ -1,9 +1,9 @@
 ---
 id: 6
-name: "Patrick McKenzie"
-image: "/images/patio11.jpg"
-gameName: "Starfighter"
-gameUrl: "https://www.kalzumeus.com/2015/03/09/announcing-starfighter/"
+name: 'Patrick McKenzie'
+image: '/images/patio11.jpg'
+gameName: 'Starfighter'
+gameUrl: 'https://www.kalzumeus.com/2015/03/09/announcing-starfighter/'
 title: lorem ipsum
 ---
 

@@ -254,125 +254,119 @@
     </div>
 
     <script>
-      let currentLogoPath = "dice/die_words_logo.svg";
-      let currentLogoName = "Die Words Logo";
+      let currentLogoPath = 'dice/die_words_logo.svg'
+      let currentLogoName = 'Die Words Logo'
 
       // Initialize with the first logo
       window.onload = function () {
-        loadLogo(currentLogoPath, currentLogoName);
-      };
+        loadLogo(currentLogoPath, currentLogoName)
+      }
 
       function changeBackground(color, name, isLight = false) {
-        document.getElementById("svgContainer").style.backgroundColor = color;
-        document.getElementById("currentBg").textContent = `${name} (${color})`;
+        document.getElementById('svgContainer').style.backgroundColor = color
+        document.getElementById('currentBg').textContent = `${name} (${color})`
 
         // Toggle light mode class on body
         if (isLight) {
-          document.body.classList.add("light-mode");
+          document.body.classList.add('light-mode')
         } else {
-          document.body.classList.remove("light-mode");
+          document.body.classList.remove('light-mode')
         }
 
         // Update button states
-        document.querySelectorAll(".control-group button").forEach((btn) => {
+        document.querySelectorAll('.control-group button').forEach((btn) => {
           if (
             btn.textContent === name &&
-            !btn.classList.contains("logo-button")
+            !btn.classList.contains('logo-button')
           ) {
-            btn.classList.add("active");
-          } else if (!btn.classList.contains("logo-button")) {
-            btn.classList.remove("active");
+            btn.classList.add('active')
+          } else if (!btn.classList.contains('logo-button')) {
+            btn.classList.remove('active')
           }
-        });
+        })
       }
 
       function loadLogo(path, name) {
         // Don't reload if it's the same logo
         if (currentLogoPath === path) {
-          return;
+          return
         }
 
-        currentLogoPath = path;
-        currentLogoName = name;
+        currentLogoPath = path
+        currentLogoName = name
 
-        const container = document.getElementById("svgContainer");
-        const loadingIndicator = document.getElementById("loadingIndicator");
+        const container = document.getElementById('svgContainer')
+        const loadingIndicator = document.getElementById('loadingIndicator')
 
         // Update logo button states
-        document.querySelectorAll(".logo-button").forEach((btn) => {
+        document.querySelectorAll('.logo-button').forEach((btn) => {
           if (btn.textContent === name) {
-            btn.classList.add("active");
+            btn.classList.add('active')
           } else {
-            btn.classList.remove("active");
+            btn.classList.remove('active')
           }
-        });
+        })
 
         // Try using an img tag first (often works better than object for SVGs)
-        const img = document.createElement("img");
-        img.src = path;
-        img.style.maxWidth = "100%";
-        img.style.height = "auto";
+        const img = document.createElement('img')
+        img.src = path
+        img.style.maxWidth = '100%'
+        img.style.height = 'auto'
 
         img.onload = function () {
           // Remove any existing logo (but keep the loading indicator in DOM)
-          const existingContent = container.querySelector(
-            "img, object, .error",
-          );
+          const existingContent = container.querySelector('img, object, .error')
           if (existingContent) {
-            existingContent.remove();
+            existingContent.remove()
           }
-          container.appendChild(img);
-          updateInfo(name, path);
-        };
+          container.appendChild(img)
+          updateInfo(name, path)
+        }
 
         img.onerror = function () {
           // If img fails, try object tag
-          const object = document.createElement("object");
-          object.data = path;
-          object.type = "image/svg+xml";
-          object.style.maxWidth = "100%";
-          object.style.height = "auto";
+          const object = document.createElement('object')
+          object.data = path
+          object.type = 'image/svg+xml'
+          object.style.maxWidth = '100%'
+          object.style.height = 'auto'
 
           // Remove any existing logo
-          const existingContent = container.querySelector(
-            "img, object, .error",
-          );
+          const existingContent = container.querySelector('img, object, .error')
           if (existingContent) {
-            existingContent.remove();
+            existingContent.remove()
           }
 
-          container.appendChild(object);
-          updateInfo(name, path);
+          container.appendChild(object)
+          updateInfo(name, path)
 
           // Check if object actually loaded after a short delay
           setTimeout(() => {
             if (!object.contentDocument && !object.getSVGDocument()) {
-              object.remove();
-              const errorDiv = document.createElement("div");
-              errorDiv.className = "error";
-              errorDiv.textContent = `Failed to load ${path}. Please check if the file exists.`;
-              container.appendChild(errorDiv);
+              object.remove()
+              const errorDiv = document.createElement('div')
+              errorDiv.className = 'error'
+              errorDiv.textContent = `Failed to load ${path}. Please check if the file exists.`
+              container.appendChild(errorDiv)
             }
-          }, 500);
-        };
+          }, 500)
+        }
       }
 
       function updateInfo(name, path) {
-        document.getElementById("currentLogo").textContent = name;
-        document.getElementById("filePath").textContent = path;
+        document.getElementById('currentLogo').textContent = name
+        document.getElementById('filePath').textContent = path
       }
 
       // Keyboard shortcuts
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "1")
-          loadLogo("dice/die_words_logo.svg", "Die Words Logo");
-        if (e.key === "2")
-          loadLogo("logos/metagame_logo_square.svg", "Square Logo");
-        if (e.key === "3")
-          loadLogo("logos/metagame_logo_wide.svg", "Wide Logo");
-        if (e.key === "d") changeBackground("#1a1a1a", "Dark");
-        if (e.key === "l") changeBackground("#f5f5f5", "Light Gray", true);
-      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === '1') loadLogo('dice/die_words_logo.svg', 'Die Words Logo')
+        if (e.key === '2')
+          loadLogo('logos/metagame_logo_square.svg', 'Square Logo')
+        if (e.key === '3') loadLogo('logos/metagame_logo_wide.svg', 'Wide Logo')
+        if (e.key === 'd') changeBackground('#1a1a1a', 'Dark')
+        if (e.key === 'l') changeBackground('#f5f5f5', 'Light Gray', true)
+      })
     </script>
   </body>
 </html>

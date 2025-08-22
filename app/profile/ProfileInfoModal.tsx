@@ -1,23 +1,27 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Modal } from "@/components/Modal";
-import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateCurrentUserProfile } from "@/app/actions/db/users";
-import { initialProfileFormData, ProfileFormData, profileFormSchema } from "@/lib/schemas/profile";
-import { DbProfile } from "@/types/database/dbTypeAliases";
-import Link from "next/link";
-import { URLS } from "@/utils/urls";
-import { ExternalLinkIcon } from "lucide-react";
+import { useState } from 'react'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Modal } from '@/components/Modal'
+import { toast } from 'sonner'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { updateCurrentUserProfile } from '@/app/actions/db/users'
+import {
+  initialProfileFormData,
+  ProfileFormData,
+  profileFormSchema,
+} from '@/lib/schemas/profile'
+import { DbProfile } from '@/types/database/dbTypeAliases'
+import Link from 'next/link'
+import { URLS } from '@/utils/urls'
+import { ExternalLinkIcon } from 'lucide-react'
 
 interface ProfileInfoModalProps {
-  onClose: () => void;
-  currentProfile: DbProfile | null | undefined;
-  currentUserId?: string;
+  onClose: () => void
+  currentProfile: DbProfile | null | undefined
+  currentUserId?: string
 }
 
 export function ProfileInfoModal({
@@ -25,26 +29,26 @@ export function ProfileInfoModal({
   currentProfile,
   currentUserId,
 }: ProfileInfoModalProps) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const [formData, setFormData] = useState<ProfileFormData>(
     currentProfile ?? initialProfileFormData,
-  );
+  )
 
   // Profile update mutation
   const updateProfileMutation = useMutation({
     mutationFn: updateCurrentUserProfile,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["users", "profile", currentUserId],
-      });
-      toast.success("Profile updated successfully!");
-      onClose();
+        queryKey: ['users', 'profile', currentUserId],
+      })
+      toast.success('Profile updated successfully!')
+      onClose()
     },
     onError: (error) => {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile");
+      console.error('Error updating profile:', error)
+      toast.error('Failed to update profile')
     },
-  });
+  })
 
   // Dismiss modal mutation
   const dismissModalMutation = useMutation({
@@ -54,35 +58,35 @@ export function ProfileInfoModal({
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["users", "profile", currentUserId],
-      });
-      toast.success("You won't be prompted again");
-      onClose();
+        queryKey: ['users', 'profile', currentUserId],
+      })
+      toast.success("You won't be prompted again")
+      onClose()
     },
     onError: (error) => {
-      console.error("Error dismissing modal:", error);
-      toast.error("Failed to dismiss modal");
+      console.error('Error dismissing modal:', error)
+      toast.error('Failed to dismiss modal')
     },
-  });
+  })
 
   const handleSave = () => {
-    const result = profileFormSchema.safeParse(formData);
+    const result = profileFormSchema.safeParse(formData)
     if (!result.success) {
-      toast.error("Error saving profile: " + result.error.message);
-      return;
+      toast.error('Error saving profile: ' + result.error.message)
+      return
     }
 
     updateProfileMutation.mutate({
       data: result.data,
-    });
-  };
+    })
+  }
 
   const handleDismiss = () => {
-    dismissModalMutation.mutate();
-  };
+    dismissModalMutation.mutate()
+  }
 
   const isSaving =
-    updateProfileMutation.isPending || dismissModalMutation.isPending;
+    updateProfileMutation.isPending || dismissModalMutation.isPending
 
   return (
     <Modal onClose={onClose}>
@@ -101,7 +105,7 @@ export function ProfileInfoModal({
             <div className="grid grid-cols-2 gap-2">
               <Input
                 placeholder="First (required)"
-                value={formData.first_name ?? ""}
+                value={formData.first_name ?? ''}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
@@ -111,7 +115,7 @@ export function ProfileInfoModal({
               />
               <Input
                 placeholder="Last"
-                value={formData.last_name ?? ""}
+                value={formData.last_name ?? ''}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
@@ -131,18 +135,18 @@ export function ProfileInfoModal({
             <RadioGroup
               value={
                 formData.opted_in_to_homepage_display === null
-                  ? ""
+                  ? ''
                   : formData.opted_in_to_homepage_display
-                    ? "yes"
-                    : "no"
+                    ? 'yes'
+                    : 'no'
               }
               onValueChange={(value) => {
                 const newValue =
-                  value === "yes" ? true : value === "no" ? false : null;
+                  value === 'yes' ? true : value === 'no' ? false : null
                 setFormData((prev) => ({
                   ...prev,
                   opted_in_to_homepage_display: newValue,
-                }));
+                }))
               }}
               className="flex"
             >
@@ -169,12 +173,12 @@ export function ProfileInfoModal({
             </label>
             <RadioGroup
               value={
-                formData.minor === null ? "" : formData.minor ? "no" : "yes"
+                formData.minor === null ? '' : formData.minor ? 'no' : 'yes'
               }
               onValueChange={(value) => {
                 const newValue =
-                  value === "yes" ? false : value === "no" ? true : null;
-                setFormData((prev) => ({ ...prev, minor: newValue }));
+                  value === 'yes' ? false : value === 'no' ? true : null
+                setFormData((prev) => ({ ...prev, minor: newValue }))
               }}
               className="flex"
             >
@@ -202,15 +206,15 @@ export function ProfileInfoModal({
             <RadioGroup
               value={
                 formData.bringing_kids === null
-                  ? ""
+                  ? ''
                   : formData.bringing_kids
-                    ? "yes"
-                    : "no"
+                    ? 'yes'
+                    : 'no'
               }
               onValueChange={(value) => {
                 const newValue =
-                  value === "yes" ? true : value === "no" ? false : null;
-                setFormData((prev) => ({ ...prev, bringing_kids: newValue }));
+                  value === 'yes' ? true : value === 'no' ? false : null
+                setFormData((prev) => ({ ...prev, bringing_kids: newValue }))
               }}
               className="flex"
             >
@@ -231,14 +235,14 @@ export function ProfileInfoModal({
 
           {formData.bringing_kids && (
             <Link
-              className={`h-auto py-3 text-center break-words whitespace-normal ${buttonVariants({ variant: "default" })}`}
+              className={`h-auto py-3 text-center break-words whitespace-normal ${buttonVariants({ variant: 'default' })}`}
               href={URLS.CHILDREN_REGISTRATION}
               target="_blank"
             >
               <div className="flex flex-col items-center gap-1">
                 <span>If you haven&apos;t, please fill out</span>
                 <span className="flex items-center gap-1">
-                  the children registration form{" "}
+                  the children registration form{' '}
                   <ExternalLinkIcon className="mt-1 h-4 w-4" />
                 </span>
               </div>
@@ -249,7 +253,7 @@ export function ProfileInfoModal({
         {/* Action Buttons */}
         <div className="mt-6 flex flex-col gap-2">
           <Button onClick={handleSave} disabled={isSaving} className="w-full">
-            {updateProfileMutation.isPending ? "Saving..." : "Save Profile"}
+            {updateProfileMutation.isPending ? 'Saving...' : 'Save Profile'}
           </Button>
 
           <Button
@@ -259,8 +263,8 @@ export function ProfileInfoModal({
             className="w-full"
           >
             {dismissModalMutation.isPending
-              ? "Dismissing..."
-              : "Stop prompting me for this"}
+              ? 'Dismissing...'
+              : 'Stop prompting me for this'}
           </Button>
 
           <Button
@@ -274,5 +278,5 @@ export function ProfileInfoModal({
         </div>
       </div>
     </Modal>
-  );
+  )
 }

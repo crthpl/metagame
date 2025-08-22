@@ -1,8 +1,8 @@
-import Link from "./Link";
-import { SOCIAL_LINKS } from "@/utils/urls";
+import Link from './Link'
+import { SOCIAL_LINKS } from '@/utils/urls'
 
 export default function Footer() {
-  const year = new Date().getFullYear();
+  const year = new Date().getFullYear()
 
   return (
     <footer className="flex flex-col gap-4 px-6 py-9">
@@ -30,15 +30,15 @@ export default function Footer() {
         </div>
       </div>
       <div className="md:text-righ text-center text-sm font-light">
-        Website design taken from{" "}
+        Website design taken from{' '}
         <Link href="https://wts.sh" target="_blank" rel="noopener noreferrer">
           WhatTheStack
         </Link>
-        , by courteous permission of{" "}
+        , by courteous permission of{' '}
         <Link href="https://darko.io" target="_blank" rel="noopener noreferrer">
           Darko
         </Link>
       </div>
     </footer>
-  );
+  )
 }

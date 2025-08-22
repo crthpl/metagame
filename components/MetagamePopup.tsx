@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react'
 
 interface MetagamePopupProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
 export const MetagamePopup: React.FC<MetagamePopupProps> = ({
@@ -13,30 +13,30 @@ export const MetagamePopup: React.FC<MetagamePopupProps> = ({
 }) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
+      if (event.key === 'Escape') {
+        onClose()
       }
-    };
+    }
 
     if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener('keydown', handleKeyDown)
       // Prevent body scroll when modal is open
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden'
     }
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen, onClose]);
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen, onClose])
 
   const handleOverlayClick = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
-      onClose();
+      onClose()
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div
@@ -66,5 +66,5 @@ export const MetagamePopup: React.FC<MetagamePopupProps> = ({
         </button>
       </div>
     </div>
-  );
-};
+  )
+}

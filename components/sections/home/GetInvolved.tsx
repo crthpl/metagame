@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import React from "react";
-import { Button } from "../../Button";
-import Image from "next/image";
+import React from 'react'
+import { Button } from '../../Button'
+import Image from 'next/image'
 
 export default function GetInvolved() {
   return (
@@ -49,5 +49,5 @@ export default function GetInvolved() {
         </div>
       </section>
     </>
-  );
+  )
 }

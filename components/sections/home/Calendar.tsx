@@ -1,5 +1,5 @@
-import MyCrossword from "@/components/MyCrossword";
-import Coincidence from "@/components/Coincidence";
+import MyCrossword from '@/components/MyCrossword'
+import Coincidence from '@/components/Coincidence'
 
 export default function Calendar() {
   return (
@@ -28,7 +28,7 @@ export default function Calendar() {
             designed by attendees.
             <br />
             <br />
-            This is not a <Coincidence />, because nothing is ever a{" "}
+            This is not a <Coincidence />, because nothing is ever a{' '}
             <Coincidence />.
           </p>
         </div>
@@ -37,5 +37,5 @@ export default function Calendar() {
         </div>
       </div>
     </section>
-  );
+  )
 }

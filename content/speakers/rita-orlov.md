@@ -2,8 +2,8 @@
 id: 7
 name: Rita Orlov
 image: /images/rita_orlov.jpeg
-gameName: "PostCurious"
-gameUrl: "https://getpostcurious.com"
+gameName: 'PostCurious'
+gameUrl: 'https://getpostcurious.com'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

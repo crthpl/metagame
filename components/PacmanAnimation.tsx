@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react'
 
 export default function PacmanAnimation() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
     // Create intersection observer
@@ -12,21 +12,21 @@ export default function PacmanAnimation() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setIsAnimating(true);
-            observer.unobserve(entry.target);
+            setIsAnimating(true)
+            observer.unobserve(entry.target)
           }
-        });
+        })
       },
       { threshold: 0.1 },
-    );
+    )
 
     // Start observing the container
     if (containerRef.current) {
-      observer.observe(containerRef.current);
+      observer.observe(containerRef.current)
     }
 
-    return () => observer.disconnect();
-  }, []);
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className="relative w-full">
@@ -34,7 +34,7 @@ export default function PacmanAnimation() {
 
       <div
         ref={containerRef}
-        className={`pacman-container ${isAnimating ? "animate" : ""}`}
+        className={`pacman-container ${isAnimating ? 'animate' : ''}`}
       >
         <div className="dots">
           <div className="dot-row"></div>
@@ -79,7 +79,7 @@ export default function PacmanAnimation() {
 
         .pacman::before,
         .pacman::after {
-          content: "";
+          content: '';
           display: block;
           width: 30px;
           height: 30px;
@@ -202,5 +202,5 @@ export default function PacmanAnimation() {
         }
       `}</style>
     </div>
-  );
+  )
 }

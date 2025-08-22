@@ -2,8 +2,8 @@
 id: 9
 name: Tyler Hinman
 image: /images/tyler_hinman.png
-gameName: "ACPT Youngest Winner"
-gameUrl: "https://en.wikipedia.org/wiki/Tyler_Hinman"
+gameName: 'ACPT Youngest Winner'
+gameUrl: 'https://en.wikipedia.org/wiki/Tyler_Hinman'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

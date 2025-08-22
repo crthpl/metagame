@@ -1,28 +1,28 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createChargeRaw } from "@/lib/opennode";
+import { NextRequest, NextResponse } from 'next/server'
+import { createChargeRaw } from '@/lib/opennode'
 import {
   opennodeChargeSchema,
   TicketPurchaseDetails,
-} from "@/lib/schemas/opennode";
-import { v4 as uuidv4 } from "uuid";
-import { opennodeDbService } from "@/lib/db/opennode";
-import { getTicketType } from "@/config/tickets";
-import { OpenNodeCharge } from "opennode/dist/types/v1";
-import { Resend } from "resend";
-import { getHostedCheckoutUrl } from "@/utils/opennode";
+} from '@/lib/schemas/opennode'
+import { v4 as uuidv4 } from 'uuid'
+import { opennodeDbService } from '@/lib/db/opennode'
+import { getTicketType } from '@/config/tickets'
+import { OpenNodeCharge } from 'opennode/dist/types/v1'
+import { Resend } from 'resend'
+import { getHostedCheckoutUrl } from '@/utils/opennode'
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(req: NextRequest) {
   const { amountBtc, ticketDetails } = opennodeChargeSchema.parse(
     await req.json(),
-  );
-  const callback = `${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout/opennode/webhook`;
-  const metagameOrderId = uuidv4();
+  )
+  const callback = `${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout/opennode/webhook`
+  const metagameOrderId = uuidv4()
 
-  const amountSatoshis = Math.round(amountBtc * 100000000);
+  const amountSatoshis = Math.round(amountBtc * 100000000)
 
-  const ticketTitle = getTicketType(ticketDetails.ticketType)?.title;
+  const ticketTitle = getTicketType(ticketDetails.ticketType)?.title
   const charge = await createChargeRaw({
     amount: amountSatoshis,
     description: `Metagame ${ticketTitle} ticket for ${ticketDetails.purchaserEmail}`,
@@ -31,41 +31,41 @@ export async function POST(req: NextRequest) {
     order_id: metagameOrderId,
     callback_url: callback,
     success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/status/${metagameOrderId}`,
-  });
+  })
 
-  await opennodeDbService.createCharge({ charge, ticketDetails });
+  await opennodeDbService.createCharge({ charge, ticketDetails })
 
   // Send email to purchaser with payment link
   try {
-    await sendChargeCreationEmail(charge, ticketDetails);
+    await sendChargeCreationEmail(charge, ticketDetails)
   } catch (error) {
-    console.error("Failed to send charge creation email:", error);
+    console.error('Failed to send charge creation email:', error)
     // Don't fail the request if email fails
   }
 
-  return NextResponse.json({ charge });
+  return NextResponse.json({ charge })
 }
 
 function sendChargeCreationEmail(
   charge: OpenNodeCharge,
   ticketDetails: TicketPurchaseDetails,
 ) {
-  const ticketTitle = getTicketType(ticketDetails.ticketType)?.title;
-  const amountBtc = (charge.amount / 100000000).toFixed(6);
-  const hostedUrl = getHostedCheckoutUrl(charge.id);
+  const ticketTitle = getTicketType(ticketDetails.ticketType)?.title
+  const amountBtc = (charge.amount / 100000000).toFixed(6)
+  const hostedUrl = getHostedCheckoutUrl(charge.id)
 
   return resend.emails.send({
-    from: "Metagame 2025 <tickets@mail.metagame.games>",
+    from: 'Metagame 2025 <tickets@mail.metagame.games>',
     to: ticketDetails.purchaserEmail,
     bcc: [
-      "ricki.heicklen+metagame@gmail.com",
-      "briantsmiley42+metagame@gmail.com",
+      'ricki.heicklen+metagame@gmail.com',
+      'briantsmiley42+metagame@gmail.com',
     ],
     replyTo: [
-      "ricki.heicklen+metagame@gmail.com",
-      "briantsmiley42+metagame@gmail.com",
+      'ricki.heicklen+metagame@gmail.com',
+      'briantsmiley42+metagame@gmail.com',
     ],
-    subject: "Complete your Metagame 2025 ticket payment",
+    subject: 'Complete your Metagame 2025 ticket payment',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h1 style="color: #333;">Complete your Metagame 2025 ticket payment</h1>
@@ -118,5 +118,5 @@ See you at Metagame 2025!
 
 This is not a puzzle.
     `.trim(),
-  });
+  })
 }

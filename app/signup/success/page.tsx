@@ -1,27 +1,27 @@
-import { createClient } from "@/utils/supabase/server";
-import { ArrowLeft, ArrowRightIcon, CheckCircle, Mail } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { createClient } from '@/utils/supabase/server'
+import { ArrowLeft, ArrowRightIcon, CheckCircle, Mail } from 'lucide-react'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 export default async function SignupSuccess({
   searchParams,
 }: {
-  searchParams: Promise<{ confirmed?: string; email?: string }>;
+  searchParams: Promise<{ confirmed?: string; email?: string }>
 }) {
-  const { confirmed, email } = await searchParams;
+  const { confirmed, email } = await searchParams
 
-  const supabase = await createClient();
+  const supabase = await createClient()
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getUser()
 
   // For confirmed signups, we should have a user
   // For initial signups, we might not have a user yet (they need to confirm email)
-  const isConfirmed = confirmed === "true" || user?.email_confirmed_at;
+  const isConfirmed = confirmed === 'true' || user?.email_confirmed_at
 
   // If this is a confirmed signup but no user, redirect to login
   if (isConfirmed && !user) {
-    redirect("/login");
+    redirect('/login')
   }
 
   return (
@@ -99,13 +99,13 @@ export default async function SignupSuccess({
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/20">
                 <p className="text-sm text-blue-700 dark:text-blue-300">
                   <strong>Didn&apos;t receive the email?</strong> Check your
-                  spam folder or{" "}
+                  spam folder or{' '}
                   <a
                     className="underline"
                     href="mailto:ricki.heicklen+metagame@gmail.com, briantsmiley42+metagame@gmail.com"
                   >
                     contact us
-                  </a>{" "}
+                  </a>{' '}
                   if you need help.
                 </p>
               </div>
@@ -120,5 +120,5 @@ export default async function SignupSuccess({
         )}
       </div>
     </div>
-  );
+  )
 }

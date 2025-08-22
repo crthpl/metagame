@@ -2,8 +2,8 @@
 id: 11
 name: Matthew Stein
 image: /images/matthew_stein.jpeg
-gameName: "imakepuzzles.com"
-gameUrl: "http://imakepuzzles.com"
+gameName: 'imakepuzzles.com'
+gameUrl: 'http://imakepuzzles.com'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

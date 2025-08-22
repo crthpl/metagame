@@ -1,45 +1,45 @@
-"use client";
+'use client'
 
-import React, { useState, useEffect } from "react";
-import { SpeakerCard } from "../../SpeakerCard";
-import { MetagamePopup } from "../../MetagamePopup";
-import { getSpeakersFromProfiles } from "@/app/actions/db/profiles/queries";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState, useEffect } from 'react'
+import { SpeakerCard } from '../../SpeakerCard'
+import { MetagamePopup } from '../../MetagamePopup'
+import { getSpeakersFromProfiles } from '@/app/actions/db/profiles/queries'
+import { useQuery } from '@tanstack/react-query'
 
 export default function Speakers() {
-  const [showMetagamePopup, setShowMetagamePopup] = useState(false);
+  const [showMetagamePopup, setShowMetagamePopup] = useState(false)
   const { data: speakers, isLoading: speakersLoading } = useQuery({
-    queryKey: ["speakers"],
+    queryKey: ['speakers'],
     queryFn: getSpeakersFromProfiles,
-  });
+  })
 
   useEffect(() => {
     // Check for metagame URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const isMetagame = urlParams.get("metagame") === "true";
+    const urlParams = new URLSearchParams(window.location.search)
+    const isMetagame = urlParams.get('metagame') === 'true'
 
     if (isMetagame) {
       // Scroll to speakers section
-      const speakersSection = document.getElementById("speakers");
+      const speakersSection = document.getElementById('speakers')
       if (speakersSection) {
-        speakersSection.scrollIntoView({ behavior: "smooth" });
+        speakersSection.scrollIntoView({ behavior: 'smooth' })
       }
 
       // Show popup after a short delay to allow scroll to complete
       setTimeout(() => {
-        setShowMetagamePopup(true);
-      }, 1000);
+        setShowMetagamePopup(true)
+      }, 1000)
 
       // Remove the metagame parameter from URL without reloading
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("metagame");
-      window.history.replaceState({}, "", newUrl.toString());
+      const newUrl = new URL(window.location.href)
+      newUrl.searchParams.delete('metagame')
+      window.history.replaceState({}, '', newUrl.toString())
     }
-  }, []);
+  }, [])
 
   const closeMetagamePopup = () => {
-    setShowMetagamePopup(false);
-  };
+    setShowMetagamePopup(false)
+  }
 
   return (
     <>
@@ -61,5 +61,5 @@ export default function Speakers() {
 
       <MetagamePopup isOpen={showMetagamePopup} onClose={closeMetagamePopup} />
     </>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import ProfileProvider from "./ProfileProvider";
+import ProfileProvider from './ProfileProvider'
 
 export default function ProfilePage() {
-  return <ProfileProvider />;
+  return <ProfileProvider />
 }

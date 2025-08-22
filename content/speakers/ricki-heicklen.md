@@ -2,7 +2,7 @@
 id: 14
 name: Ricki Heicklen
 image: /images/ricki_pinball.jpg
-gameName: "METAGAME"
+gameName: 'METAGAME'
 gameUrl: /#speakers
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---

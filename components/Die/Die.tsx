@@ -1,5 +1,5 @@
-import Image from "next/image";
-import { type DieValue } from "./AnimatedDie";
+import Image from 'next/image'
+import { type DieValue } from './AnimatedDie'
 
 export default function Die({ value }: { value: DieValue }) {
   return (
@@ -8,5 +8,5 @@ export default function Die({ value }: { value: DieValue }) {
       alt={`Dice showing ${value}`}
       className="size-10"
     />
-  );
+  )
 }

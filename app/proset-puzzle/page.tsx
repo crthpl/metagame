@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import Image from "next/image";
+import type { Metadata } from 'next'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "A Blind Game of Projective Set",
+  title: 'A Blind Game of Projective Set',
   description:
-    "Projective Set puzzle by Eric Neyman - solve for a discount on your Metagame ticket",
-};
+    'Projective Set puzzle by Eric Neyman - solve for a discount on your Metagame ticket',
+}
 
 export default function ProsetPuzzlePage() {
   return (
@@ -55,5 +55,5 @@ export default function ProsetPuzzlePage() {
         </div>
       </main>
     </>
-  );
+  )
 }

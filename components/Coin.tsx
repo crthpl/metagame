@@ -1,58 +1,58 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useRef } from "react";
-import { incrementCoins } from "../stores/coinStore";
+import { useState, useEffect, useRef } from 'react'
+import { incrementCoins } from '../stores/coinStore'
 
 interface Props {
-  text: string;
-  className?: string;
+  text: string
+  className?: string
 }
 
-export default function Coin({ text, className = "" }: Props) {
-  const [isCoinCollected, setIsCoinCollected] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+export default function Coin({ text, className = '' }: Props) {
+  const [isCoinCollected, setIsCoinCollected] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [isAudioEnabled, setIsAudioEnabled] = useState(false)
 
   useEffect(() => {
     // Initialize audio only on client side
-    const audio = new Audio("/sounds_coin.wav");
-    audio.preload = "auto";
-    audio.addEventListener("error", (e) => {
-      console.error("Error loading audio:", e);
-    });
-    audioRef.current = audio;
+    const audio = new Audio('/sounds_coin.wav')
+    audio.preload = 'auto'
+    audio.addEventListener('error', (e) => {
+      console.error('Error loading audio:', e)
+    })
+    audioRef.current = audio
 
     // Enable audio on any document interaction
     const enableAudio = () => {
-      setIsAudioEnabled(true);
-      document.removeEventListener("click", enableAudio);
-    };
-    document.addEventListener("click", enableAudio);
+      setIsAudioEnabled(true)
+      document.removeEventListener('click', enableAudio)
+    }
+    document.addEventListener('click', enableAudio)
 
     return () => {
       if (audioRef.current) {
-        audioRef.current.remove();
+        audioRef.current.remove()
       }
-      document.removeEventListener("click", enableAudio);
-    };
-  }, []);
+      document.removeEventListener('click', enableAudio)
+    }
+  }, [])
 
   const handleMouseEnter = async () => {
-    console.log("Mouse entered");
+    console.log('Mouse entered')
     if (!isCoinCollected && audioRef.current && isAudioEnabled) {
       try {
-        audioRef.current.currentTime = 0;
-        await audioRef.current.play();
-        setIsCoinCollected(true);
-        incrementCoins();
+        audioRef.current.currentTime = 0
+        await audioRef.current.play()
+        setIsCoinCollected(true)
+        incrementCoins()
       } catch (err) {
-        console.error("Error playing audio:", err);
+        console.error('Error playing audio:', err)
       }
     } else if (!isCoinCollected) {
       // If audio isn't enabled yet, still collect the coin
-      setIsCoinCollected(true);
+      setIsCoinCollected(true)
     }
-  };
+  }
 
   return (
     <span
@@ -63,10 +63,10 @@ export default function Coin({ text, className = "" }: Props) {
         🟡
       </span>
       <span
-        className={`transition-colors duration-300 group-hover:text-amber-400 ${isCoinCollected ? "text-amber-400" : ""}`}
+        className={`transition-colors duration-300 group-hover:text-amber-400 ${isCoinCollected ? 'text-amber-400' : ''}`}
       >
         {text}
       </span>
     </span>
-  );
+  )
 }

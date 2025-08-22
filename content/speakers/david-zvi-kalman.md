@@ -2,8 +2,8 @@
 id: 19
 name: David Zvi Kalman
 image: /images/david_zvi_painting.jpeg
-gameName: "Dreidel20"
-gameUrl: "https://davidzvi.com/dreidels/"
+gameName: 'Dreidel20'
+gameUrl: 'https://davidzvi.com/dreidels/'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

@@ -2,8 +2,8 @@
 id: 15
 name: Gamel James
 image: /images/gamel_james.jpeg
-gameName: "Unified Pieces"
-gameUrl: "https://unifiedpieces.com"
+gameName: 'Unified Pieces'
+gameUrl: 'https://unifiedpieces.com'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

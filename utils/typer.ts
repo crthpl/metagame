@@ -1,7 +1,7 @@
 export const randomId = () =>
   Math.random()
     .toString(36)
-    .substring(2, 2 + 9);
+    .substring(2, 2 + 9)
 
 export const typeOutText = (
   typer: HTMLElement,
@@ -11,27 +11,27 @@ export const typeOutText = (
   reverse = false,
 ) => {
   return new Promise<void>((resolve) => {
-    typer.textContent = reverse ? text : "";
-    blinker.style.opacity = "1";
+    typer.textContent = reverse ? text : ''
+    blinker.style.opacity = '1'
 
-    let i = reverse ? text.length - 1 : 0;
+    let i = reverse ? text.length - 1 : 0
     const interval = setInterval(() => {
       if (!reverse) {
-        typer.textContent += text.charAt(i);
+        typer.textContent += text.charAt(i)
       } else {
-        typer.textContent = typer.textContent!.slice(0, -1);
+        typer.textContent = typer.textContent!.slice(0, -1)
       }
 
-      const diff = reverse ? -1 : 1;
-      i += diff;
+      const diff = reverse ? -1 : 1
+      i += diff
 
       if ((reverse && i < 0) || (!reverse && i >= text.length)) {
-        clearInterval(interval);
-        resolve();
+        clearInterval(interval)
+        resolve()
       }
-    }, speed);
-  });
-};
+    }, speed)
+  })
+}
 
 export const typeOut = async (
   typer: HTMLElement,
@@ -42,15 +42,15 @@ export const typeOut = async (
 ): Promise<void> => {
   while (texts.length) {
     for (const text of texts) {
-      await typeOutText(typer, blinker, text, speed);
+      await typeOutText(typer, blinker, text, speed)
       if (texts.length === 1) {
-        break;
+        break
       }
-      await new Promise<void>((resolve) => setTimeout(resolve, delay));
-      await typeOutText(typer, blinker, text, speed * 0.5, true);
+      await new Promise<void>((resolve) => setTimeout(resolve, delay))
+      await typeOutText(typer, blinker, text, speed * 0.5, true)
     }
     if (texts.length === 1) {
-      break;
+      break
     }
   }
-};
+}

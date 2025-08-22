@@ -1,31 +1,31 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
-import { AuthError } from "@supabase/supabase-js";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
+import { ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import { createClient } from '@/utils/supabase/client'
+import { AuthError } from '@supabase/supabase-js'
 
 export default function ChangeEmail() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    newEmail: "",
-    confirmEmail: "",
-    currentPassword: "",
-  });
+    newEmail: '',
+    confirmEmail: '',
+    currentPassword: '',
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     // Validation
     if (formData.newEmail !== formData.confirmEmail) {
-      toast.error("Email addresses do not match");
-      return;
+      toast.error('Email addresses do not match')
+      return
     }
 
     if (
@@ -33,34 +33,34 @@ export default function ChangeEmail() {
       !formData.confirmEmail ||
       !formData.currentPassword
     ) {
-      toast.error("Please fill in all fields");
-      return;
+      toast.error('Please fill in all fields')
+      return
     }
 
     if (formData.newEmail === formData.confirmEmail) {
-      setIsLoading(true);
+      setIsLoading(true)
 
       try {
-        const supabase = createClient();
+        const supabase = createClient()
         const { error } = await supabase.auth.updateUser({
           email: formData.newEmail,
-        });
-        if (error) throw error;
+        })
+        if (error) throw error
         toast.success(
-          "Email change initiated! You will need to confirm the change by clicking a link in both your old and new email.",
+          'Email change initiated! You will need to confirm the change by clicking a link in both your old and new email.',
           { duration: 10000 },
-        );
-        router.push("/profile");
+        )
+        router.push('/profile')
       } catch (error) {
-        console.error("Error changing email:", error);
+        console.error('Error changing email:', error)
         toast.error(
-          error instanceof AuthError ? error.message : "Failed to change email",
-        );
+          error instanceof AuthError ? error.message : 'Failed to change email',
+        )
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
-  };
+  }
 
   return (
     <div className="container mx-auto max-w-md px-4 py-8">
@@ -143,7 +143,7 @@ export default function ChangeEmail() {
 
           <div className="pt-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Changing Email..." : "Change Email"}
+              {isLoading ? 'Changing Email...' : 'Change Email'}
             </Button>
           </div>
         </form>
@@ -157,5 +157,5 @@ export default function ChangeEmail() {
         </div>
       </div>
     </div>
-  );
+  )
 }
