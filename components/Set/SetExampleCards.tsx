@@ -1,4 +1,5 @@
 import SetCard from './SetCard'
+
 export default function SetExampleCards() {
   return (
     <div className="grid grid-cols-3 gap-4">

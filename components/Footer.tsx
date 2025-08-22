@@ -1,4 +1,5 @@
 import Link from './Link'
+
 import { SOCIAL_LINKS } from '@/utils/urls'
 
 export default function Footer() {

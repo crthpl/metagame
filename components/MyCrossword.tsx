@@ -7,12 +7,13 @@ import React, {
   useRef,
   useState,
 } from 'react'
+
 import {
-  ThemeProvider,
-  CrosswordProvider,
   CrosswordContext,
   CrosswordGrid,
+  CrosswordProvider,
   type CrosswordProviderImperative,
+  ThemeProvider,
 } from '@jaredreisinger/react-crossword'
 import { RotateCcw } from 'lucide-react'
 

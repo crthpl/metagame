@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
+
 import Die from './Die'
 
 export type DieValue = 1 | 2 | 3 | 4 | 5 | 6

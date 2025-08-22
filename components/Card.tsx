@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
+
 import { cn } from '@/utils/cn'
 
 interface CardProps {

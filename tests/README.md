@@ -17,7 +17,7 @@ tests/
 Create new test files in `tests/e2e/` with the `.spec.ts` extension:
 
 ```typescript
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test.describe('Feature Name', () => {
   test('should do something', async ({ page }) => {

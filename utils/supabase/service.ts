@@ -1,5 +1,6 @@
-import { Database } from '@/types/database/supabase.types'
 import { createClient } from '@supabase/supabase-js'
+
+import { Database } from '@/types/database/supabase.types'
 
 const serviceRoleSecret = process.env.SUPABASE_SECRET_KEY
 export function createServiceClient() {

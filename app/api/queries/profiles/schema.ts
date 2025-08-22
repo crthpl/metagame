@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { DbProfile } from '@/types/database/dbTypeAliases'
 
 export const ProfileSchema = z.object({

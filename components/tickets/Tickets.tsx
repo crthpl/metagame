@@ -1,10 +1,12 @@
 'use client'
 
 import React from 'react'
-import { TicketCard } from './TicketCard'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
+
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { TicketCard } from './TicketCard'
 import { InfoIcon } from 'lucide-react'
+
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 
 export type PaymentCurrency = 'usd' | 'btc'
 

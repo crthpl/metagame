@@ -1,5 +1,6 @@
-import { Partner } from '@/lib/content'
 import Image from 'next/image'
+
+import { Partner } from '@/lib/content'
 
 interface PartnerCardProps {
   partner: Partner

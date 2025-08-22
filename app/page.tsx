@@ -1,14 +1,14 @@
-import SetAnimation from '@/components/Set/SetAnimation'
-import Tickets from '@/components/tickets/Tickets'
-import Sponsors from '@/components/Sponsors'
-import { Hero } from '@/components/sections/home/Hero'
-import Calendar from '@/components/sections/home/Calendar'
-import GetInvolved from '@/components/sections/home/GetInvolved'
-import Speakers from '@/components/sections/home/Speakers'
-import { ContactUs } from '@/components/sections/home/ContactUs'
 import HomePageWrapper from '@/components/HomePageWrapper'
 import PacmanAnimation from '@/components/PacmanAnimation'
+import SetAnimation from '@/components/Set/SetAnimation'
+import Sponsors from '@/components/Sponsors'
+import Calendar from '@/components/sections/home/Calendar'
+import { ContactUs } from '@/components/sections/home/ContactUs'
+import GetInvolved from '@/components/sections/home/GetInvolved'
+import { Hero } from '@/components/sections/home/Hero'
 import ScheduleSection from '@/components/sections/home/ScheduleSection'
+import Speakers from '@/components/sections/home/Speakers'
+import Tickets from '@/components/tickets/Tickets'
 
 export default function Home() {
   return (

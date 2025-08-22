@@ -1,5 +1,6 @@
-import { DbTicketInsert } from '@/types/database/dbTypeAliases'
 import { createServiceClient } from '@/utils/supabase/service'
+
+import { DbTicketInsert } from '@/types/database/dbTypeAliases'
 
 export const ticketsService = {
   createTicket: async ({

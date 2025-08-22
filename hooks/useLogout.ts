@@ -1,9 +1,11 @@
 'use client'
 
-import { logout } from '@/app/actions/auth/logout'
+import { useState } from 'react'
+
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+
+import { logout } from '@/app/actions/auth/logout'
 
 export function useLogout() {
   const queryClient = useQueryClient()

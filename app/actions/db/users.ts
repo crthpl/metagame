@@ -1,7 +1,8 @@
 'use server'
 
+import { adminExportWrapper, currentUserWrapper } from './auth'
+
 import { usersService } from '@/lib/db/users'
-import { currentUserWrapper, adminExportWrapper } from './auth'
 
 /* Queries */
 export const getCurrentUser = usersService.getCurrentUser

@@ -1,14 +1,17 @@
 'use client'
-import { useState, useEffect } from 'react'
+
+import { useEffect, useState } from 'react'
+
 import {
-  KBarProvider,
+  KBarAnimator,
   KBarPortal,
   KBarPositioner,
-  KBarAnimator,
-  KBarSearch,
+  KBarProvider,
   KBarResults,
+  KBarSearch,
   useMatches,
 } from 'kbar'
+
 import { staticActions } from '@/config/kbarActions'
 
 function RenderResults() {

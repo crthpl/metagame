@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createPaymentIntent } from '../../../lib/stripe'
 import { getTicketType } from '../../../config/tickets'
 import { validateCouponForPurchase } from '../../../lib/coupons'
 import { paymentIntentSchema } from '../../../lib/schemas/ticket'
+import { createPaymentIntent } from '../../../lib/stripe'
+import { NextRequest, NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 
 export async function POST(request: NextRequest) {

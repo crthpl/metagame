@@ -1,5 +1,6 @@
-import { URLS } from '@/utils/urls'
 import type { TicketType } from '../lib/types'
+
+import { URLS } from '@/utils/urls'
 
 // Day pass options for the dropdown
 export const DAY_PASS_OPTIONS: TicketType[] = [

@@ -1,5 +1,6 @@
-import { TICKET_TYPES_ENUM } from '@/utils/dbUtils'
 import { z } from 'zod'
+
+import { TICKET_TYPES_ENUM } from '@/utils/dbUtils'
 
 // Base ticket purchase schema with required fields
 export const ticketPurchaseSchema = z.object({

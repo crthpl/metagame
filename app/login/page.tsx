@@ -1,12 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+
+import { useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
-import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
+
+import { createClient } from '@/utils/supabase/client'
+
 import { useUser } from '@/hooks/dbQueries'
-import { useQueryClient } from '@tanstack/react-query'
 
 const loginSchema = z.object({
   email: z.email('Please enter a valid email'),

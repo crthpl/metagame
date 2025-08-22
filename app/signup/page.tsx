@@ -1,16 +1,20 @@
 'use client'
 
-import { Suspense, useState, useEffect } from 'react'
+import { Suspense, useEffect, useState } from 'react'
+
+import { InfoIcon, LockIcon, MailIcon, TicketIcon } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
-import { InfoIcon, LockIcon, MailIcon, TicketIcon } from 'lucide-react'
+
 import { passwordSchema } from '@/lib/schemas/password'
-import { signupByTicketCode } from '@/app/actions/db/tickets'
+
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+
+import { signupByTicketCode } from '@/app/actions/db/tickets'
 
 const signupSchema = z.object({
   email: z.email('Please enter a valid email address'),

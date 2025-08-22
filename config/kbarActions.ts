@@ -1,6 +1,6 @@
-import type { Action } from 'kbar'
-import { SOCIAL_LINKS } from '../utils/urls'
 import { coinCount } from '../stores/coinStore'
+import { SOCIAL_LINKS } from '../utils/urls'
+import type { Action } from 'kbar'
 
 // Define our custom action type
 interface CustomAction extends Action {

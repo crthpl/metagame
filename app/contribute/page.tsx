@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+
 import ContributeContent from '@/components/ContributeContent'
 
 export const metadata: Metadata = {

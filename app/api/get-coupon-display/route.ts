@@ -1,5 +1,6 @@
-import { couponsService } from '@/lib/db/coupons'
 import { NextRequest, NextResponse } from 'next/server'
+
+import { couponsService } from '@/lib/db/coupons'
 
 export async function POST(request: NextRequest) {
   try {

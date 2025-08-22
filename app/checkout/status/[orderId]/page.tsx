@@ -1,11 +1,12 @@
 'use client'
 
-import { notFound } from 'next/navigation'
-import { getOrderStatus } from '@/app/actions/db/opennode'
-import Image from 'next/image'
-import { ExternalLinkIcon } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
+import { ExternalLinkIcon } from 'lucide-react'
+import Image from 'next/image'
+import { notFound } from 'next/navigation'
 import { useParams } from 'next/navigation'
+
+import { getOrderStatus } from '@/app/actions/db/opennode'
 
 export default function CheckoutStatusPage() {
   const params = useParams()

@@ -1,18 +1,8 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import Image from 'next/image'
-import {
-  updateCurrentUserProfile,
-  deleteCurrentUserProfilePicture,
-  getCurrentUser,
-  getCurrentUserProfile,
-} from '@/app/actions/db/users'
-import { getCurrentUserProfilePictureUploadUrl } from '@/app/actions/db/storage'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { toast } from 'sonner'
+import { useEffect, useRef, useState } from 'react'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   CheckIcon,
   ExternalLinkIcon,
@@ -20,21 +10,36 @@ import {
   LinkIcon,
   XIcon,
 } from 'lucide-react'
-import { toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
+import Image from 'next/image'
 import Link from 'next/link'
+import { toast } from 'sonner'
+
 import {
   ProfileFormData,
   initialProfileFormData,
   profileFormSchema,
 } from '@/lib/schemas/profile'
-import { ProfileInfoModal } from '@/app/profile/ProfileInfoModal'
+import { toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
+
+import { URLS } from '@/utils/urls'
+
+import { Button, buttonVariants } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { URLS } from '@/utils/urls'
+
+import { getCurrentUserProfilePictureUploadUrl } from '@/app/actions/db/storage'
+import {
+  deleteCurrentUserProfilePicture,
+  getCurrentUser,
+  getCurrentUserProfile,
+  updateCurrentUserProfile,
+} from '@/app/actions/db/users'
+import { ProfileInfoModal } from '@/app/profile/ProfileInfoModal'
 
 export default function Profile() {
   const queryClient = useQueryClient()

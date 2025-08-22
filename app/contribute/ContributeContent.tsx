@@ -1,5 +1,5 @@
-import type { Metadata } from 'next'
 import ContributeContent from './ContributeContent'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Get Involved',

@@ -1,6 +1,7 @@
-import { adminGetAllProfiles } from '@/app/actions/db/users'
-import { NextResponse } from 'next/server'
 import { ProfilesResponseSchema } from './schema'
+import { NextResponse } from 'next/server'
+
+import { adminGetAllProfiles } from '@/app/actions/db/users'
 
 export async function GET() {
   try {

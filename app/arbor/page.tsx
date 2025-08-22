@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+
 import ArborContent from '@/components/ArborContent'
 
 export const metadata: Metadata = {

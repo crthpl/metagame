@@ -1,5 +1,6 @@
-import { DbProfileUpdate } from '@/types/database/dbTypeAliases'
 import { z } from 'zod'
+
+import { DbProfileUpdate } from '@/types/database/dbTypeAliases'
 
 const nullableTextFromForm = z
   .string()

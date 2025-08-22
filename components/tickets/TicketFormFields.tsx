@@ -1,5 +1,6 @@
-import { TicketPurchaseFormData } from '@/lib/schemas/ticket'
 import React from 'react'
+
+import { TicketPurchaseFormData } from '@/lib/schemas/ticket'
 
 interface TicketFormFieldsProps {
   formData: TicketPurchaseFormData

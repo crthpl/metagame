@@ -1,9 +1,12 @@
 import React from 'react'
+
 import { Card } from './Card'
-import { cn } from '@/utils/cn'
 import Image from 'next/image'
-import { DbProfile } from '@/types/database/dbTypeAliases'
+
+import { cn } from '@/utils/cn'
 import { urlWithProtocol } from '@/utils/urlFix'
+
+import { DbProfile } from '@/types/database/dbTypeAliases'
 
 type SpeakerCardProps = {
   profile: Partial<DbProfile>

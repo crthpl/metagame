@@ -1,5 +1,6 @@
-import { getSessionById } from '@/app/actions/db/sessions'
 import { NextResponse } from 'next/server'
+
+import { getSessionById } from '@/app/actions/db/sessions'
 import { SessionSchema } from '@/app/api/queries/sessions/schema'
 
 export async function GET(

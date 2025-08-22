@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
 import SetCard from './SetCard'
 import { generateSetBoard, isSet, refilledBoard } from './SetSet'
 import Link from 'next/link'

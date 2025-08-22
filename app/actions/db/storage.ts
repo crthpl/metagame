@@ -1,7 +1,8 @@
 'use server'
 
-import { storageService } from '@/lib/db/storage'
 import { currentUserWrapper } from './auth'
+
+import { storageService } from '@/lib/db/storage'
 
 /* Queries */
 export const getCurrentUserProfilePictureUploadUrl = currentUserWrapper(

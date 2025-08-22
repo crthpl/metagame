@@ -1,13 +1,16 @@
 'use client'
 
 import React, { useState } from 'react'
-import { TicketPurchaseForm } from './TicketPurchaseForm'
+
 import {
-  getTicketType,
   DAY_PASS_OPTIONS,
   getDayPassTicketType,
+  getTicketType,
 } from '../../config/tickets'
 import { Modal } from '../Modal'
+import { TicketPurchaseForm } from './TicketPurchaseForm'
+import { PaymentCurrency } from './Tickets'
+
 import {
   Select,
   SelectContent,
@@ -15,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { PaymentCurrency } from './Tickets'
 
 interface TicketCardProps {
   ticketTypeId: string
