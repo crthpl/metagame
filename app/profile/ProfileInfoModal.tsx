@@ -8,7 +8,7 @@ import { Modal } from "@/components/Modal";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateCurrentUserProfile } from "@/app/actions/db/users";
-import { ProfileFormData, profileFormSchema } from "@/lib/schemas/profile";
+import { initialProfileFormData, ProfileFormData, profileFormSchema } from "@/lib/schemas/profile";
 import { DbProfile } from "@/types/database/dbTypeAliases";
 import Link from "next/link";
 import { URLS } from "@/utils/urls";
@@ -26,8 +26,8 @@ export function ProfileInfoModal({
   currentUserId,
 }: ProfileInfoModalProps) {
   const queryClient = useQueryClient();
-  const [formData, setFormData] = useState<ProfileFormData>(() =>
-    profileFormSchema.parse(currentProfile),
+  const [formData, setFormData] = useState<ProfileFormData>(
+    currentProfile ?? initialProfileFormData,
   );
 
   // Profile update mutation
@@ -68,7 +68,7 @@ export function ProfileInfoModal({
   const handleSave = () => {
     const result = profileFormSchema.safeParse(formData);
     if (!result.success) {
-      toast.error("Please check your form data");
+      toast.error("Error saving profile: " + result.error.message);
       return;
     }
 
