@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import Link from "next/link";
-import AnimatedCustomDie from "./Die/AnimatedCustomDie";
-import Tag from "./Tag";
-import CoinCounter from "./CoinCounter";
-import AccountButton from "./AccountButton";
+import { useState } from 'react'
+import Link from 'next/link'
+import AnimatedCustomDie from './Die/AnimatedCustomDie'
+import Tag from './Tag'
+import CoinCounter from './CoinCounter'
+import AccountButton from './AccountButton'
 
 const STARTING_DIE_IDENTIFIER = {
   left: 2,
   top: 5,
   right: 3,
-};
+}
 
 interface NavItemProps {
-  href: string;
-  children: React.ReactNode;
-  closeMenu: () => void;
+  href: string
+  children: React.ReactNode
+  closeMenu: () => void
 }
 
 export function NavItem({ href, children, closeMenu }: NavItemProps) {
@@ -30,12 +30,12 @@ export function NavItem({ href, children, closeMenu }: NavItemProps) {
         [{children}]
       </Link>
     </li>
-  );
+  )
 }
 
 export default function Nav() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const closeMenu = () => setIsMenuOpen(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const closeMenu = () => setIsMenuOpen(false)
   return (
     <div className="z-navbar fixed w-full shadow-[0px_4px_8px_0px_#8b1d6d]">
       <nav className="bg-bg-primary">
@@ -79,7 +79,7 @@ export default function Nav() {
           </button>
 
           <div
-            className={`${isMenuOpen ? "block" : "hidden"} w-full lg:block lg:w-auto`}
+            className={`${isMenuOpen ? 'block' : 'hidden'} w-full lg:block lg:w-auto`}
             id="navbar-default"
           >
             <ul className="mt-4 flex flex-col items-center p-2 font-medium lg:mt-0 lg:flex-row lg:gap-x-5 lg:p-0 rtl:space-x-reverse">
@@ -136,5 +136,5 @@ export default function Nav() {
         }
       `}</style>
     </div>
-  );
+  )
 }

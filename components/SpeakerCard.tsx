@@ -1,13 +1,13 @@
-import React from "react";
-import { Card } from "./Card";
-import { cn } from "@/utils/cn";
-import Image from "next/image";
-import { DbProfile } from "@/types/database/dbTypeAliases";
-import { urlWithProtocol } from "@/utils/urlFix";
+import React from 'react'
+import { Card } from './Card'
+import { cn } from '@/utils/cn'
+import Image from 'next/image'
+import { DbProfile } from '@/types/database/dbTypeAliases'
+import { urlWithProtocol } from '@/utils/urlFix'
 
 type SpeakerCardProps = {
-  profile: Partial<DbProfile>;
-};
+  profile: Partial<DbProfile>
+}
 
 export const SpeakerCard: React.FC<SpeakerCardProps> = ({ profile }) => {
   const {
@@ -18,7 +18,7 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({ profile }) => {
     site_url,
     site_name_2,
     site_url_2,
-  } = profile;
+  } = profile
   const ExternalLinkIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -36,20 +36,20 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({ profile }) => {
       <polyline points="15 3 21 3 21 9"></polyline>
       <line x1="10" y1="14" x2="21" y2="3"></line>
     </svg>
-  );
+  )
 
   // Handle different image URL formats
   const getImageSrc = (imageUrl: string | null) => {
-    if (!imageUrl) return "/images/incognito.svg";
+    if (!imageUrl) return '/images/incognito.svg'
 
     // If it's already a full URL (from Supabase), use it directly
-    if (imageUrl.startsWith("http")) {
-      return imageUrl;
+    if (imageUrl.startsWith('http')) {
+      return imageUrl
     }
 
     // If it's a relative path, treat it as before (fallback for markdown data)
-    return `/images/${imageUrl.split("/").pop()}`;
-  };
+    return `/images/${imageUrl.split('/').pop()}`
+  }
 
   return (
     <Card
@@ -57,10 +57,10 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({ profile }) => {
       padless
     >
       <Image
-        alt={first_name + " " + last_name || "YOU?"}
+        alt={first_name + ' ' + last_name || 'YOU?'}
         className={cn(
-          "glitch mb-2 aspect-square h-20 w-20 rounded sm:h-28 sm:w-28 md:h-40 md:w-40",
-          profile_pictures_url ? "object-cover" : "object-fill",
+          'glitch mb-2 aspect-square h-20 w-20 rounded sm:h-28 sm:w-28 md:h-40 md:w-40',
+          profile_pictures_url ? 'object-cover' : 'object-fill',
         )}
         src={getImageSrc(profile_pictures_url ?? null)}
         height="160"
@@ -69,18 +69,18 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({ profile }) => {
       <div className="mx-1 flex-grow">
         <h3
           className={cn(
-            "text-xs font-bold",
-            (first_name + " " + last_name).length > 20
-              ? "md:text-sm"
-              : "md:text-base",
+            'text-xs font-bold',
+            (first_name + ' ' + last_name).length > 20
+              ? 'md:text-sm'
+              : 'md:text-base',
           )}
         >
-          {first_name + " " + last_name}
+          {first_name + ' ' + last_name}
         </h3>
         {site_url && (
           <a
             href={
-              site_name === "METAGAME"
+              site_name === 'METAGAME'
                 ? `/?metagame=true#speakers`
                 : urlWithProtocol(site_url)
             }
@@ -95,7 +95,7 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({ profile }) => {
         {site_name_2 && site_url_2 && (
           <a
             href={
-              site_name_2 === "METAGAME"
+              site_name_2 === 'METAGAME'
                 ? `/?metagame=true#speakers`
                 : urlWithProtocol(site_url_2)
             }
@@ -109,5 +109,5 @@ export const SpeakerCard: React.FC<SpeakerCardProps> = ({ profile }) => {
         )}
       </div>
     </Card>
-  );
-};
+  )
+}

@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: "Arbor",
+  title: 'Arbor',
   description:
-    "Learn about the Arbor team - curious about markets, pedagogy, and game design",
-};
+    'Learn about the Arbor team - curious about markets, pedagogy, and game design',
+}
 
 export default function ArborContent() {
   return (
@@ -20,7 +20,7 @@ export default function ArborContent() {
         <section className="mx-auto mb-16 max-w-3xl">
           <div className="p-8 text-xl">
             Arbor is a team of people curious about markets, pedagogy, and game
-            design, run by{" "}
+            design, run by{' '}
             <a
               href="https://rickiheicklen.com"
               target="_blank"
@@ -37,7 +37,7 @@ export default function ArborContent() {
               <li className="flex items-start">
                 <span className="text-secondary-200 mr-3">•</span>
                 <span>
-                  A{" "}
+                  A{' '}
                   <a
                     href="https://trading.camp"
                     target="_blank"
@@ -53,7 +53,7 @@ export default function ArborContent() {
               <li className="flex items-start">
                 <span className="text-secondary-200 mr-3">•</span>
                 <span>
-                  A{" "}
+                  A{' '}
                   <a
                     href="https://arborsummer.camp/incubator"
                     target="_blank"
@@ -69,13 +69,13 @@ export default function ArborContent() {
               <li className="flex items-start">
                 <span className="text-secondary-200 mr-3">•</span>
                 <span>
-                  A{" "}
+                  A{' '}
                   <Link
                     href="/?arbor-metagame=true"
                     className="text-secondary-500 transition-colors hover:text-fuchsia-500 hover:underline"
                   >
                     game design conference
-                  </Link>{" "}
+                  </Link>{' '}
                   in Berkeley, CA this September
                 </span>
               </li>
@@ -97,5 +97,5 @@ export default function ArborContent() {
         </section> */}
       </div>
     </main>
-  );
+  )
 }

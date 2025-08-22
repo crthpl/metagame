@@ -1,33 +1,33 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["metagame.games", "fkarmpoupazxnshofaeg.supabase.co"],
+    domains: ['metagame.games', 'fkarmpoupazxnshofaeg.supabase.co'],
   },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      "@": "./src",
-    };
-    return config;
+      '@': './src',
+    }
+    return config
   },
-  distDir: "dist",
+  distDir: 'dist',
   // Redirects configuration
   // the proset-poster is hardcoded into QR code in the poster version but should also lead here
   async redirects() {
     return [
       {
-        source: "/proset-poster",
-        destination: "/proset-puzzle",
+        source: '/proset-poster',
+        destination: '/proset-puzzle',
         permanent: true, // This creates a 308 permanent redirect
       },
       {
-        source: "/recon", // for the RECON sponsorship QR code
-        destination: "/proset-puzzle",
+        source: '/recon', // for the RECON sponsorship QR code
+        destination: '/proset-puzzle',
         permanent: true, // This creates a 308 permanent redirect
       },
-    ];
+    ]
   },
   // Environment variables
   env: {
@@ -41,6 +41,6 @@ const nextConfig: NextConfig = {
     PUBLIC_CALL_FOR_VOLUNTEERS: process.env.PUBLIC_CALL_FOR_VOLUNTEERS,
     PUBLIC_CALL_FOR_SPONSORS: process.env.PUBLIC_CALL_FOR_SPONSORS,
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

@@ -1,69 +1,69 @@
-"use client";
+'use client'
 
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
+import { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 import {
   updateCurrentUserProfile,
   deleteCurrentUserProfilePicture,
   getCurrentUser,
   getCurrentUserProfile,
-} from "@/app/actions/db/users";
-import { getCurrentUserProfilePictureUploadUrl } from "@/app/actions/db/storage";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from "sonner";
+} from '@/app/actions/db/users'
+import { getCurrentUserProfilePictureUploadUrl } from '@/app/actions/db/storage'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { toast } from 'sonner'
 import {
   CheckIcon,
   ExternalLinkIcon,
   InfoIcon,
   LinkIcon,
   XIcon,
-} from "lucide-react";
-import { toExternalLink, uploadFileWithSignedUrl } from "@/lib/utils";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+} from 'lucide-react'
+import { toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
+import Link from 'next/link'
 import {
   ProfileFormData,
   initialProfileFormData,
   profileFormSchema,
-} from "@/lib/schemas/profile";
-import { ProfileInfoModal } from "@/app/profile/ProfileInfoModal";
+} from '@/lib/schemas/profile'
+import { ProfileInfoModal } from '@/app/profile/ProfileInfoModal'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { URLS } from "@/utils/urls";
+} from '@/components/ui/tooltip'
+import { URLS } from '@/utils/urls'
 
 export default function Profile() {
-  const queryClient = useQueryClient();
-  
+  const queryClient = useQueryClient()
+
   const { data: currentUser, isLoading: currentUserLoading } = useQuery({
-    queryKey: ["users", "current"],
+    queryKey: ['users', 'current'],
     queryFn: getCurrentUser,
-  });
-  
+  })
+
   const { data: currentUserProfile } = useQuery({
-    queryKey: ["users", "profile", currentUser?.id],
+    queryKey: ['users', 'profile', currentUser?.id],
     queryFn: () => getCurrentUserProfile({}),
     enabled: !!currentUser?.id,
-  });
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [showCTAModal, setShowCTAModal] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  })
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [showCTAModal, setShowCTAModal] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Form state using shared schema
   const [formData, setFormData] = useState<ProfileFormData>(
     initialProfileFormData,
-  );
+  )
 
   // Update form data when profile loads
   useEffect(() => {
     if (currentUserProfile && !isEditMode) {
-      setFormData(currentUserProfile);
+      setFormData(currentUserProfile)
     }
-  }, [currentUserProfile, isEditMode]);
+  }, [currentUserProfile, isEditMode])
 
   // Check if modal should be shown
   useEffect(() => {
@@ -74,78 +74,78 @@ export default function Profile() {
       (!currentUserProfile.first_name ||
         currentUserProfile.opted_in_to_homepage_display === null)
     ) {
-      setShowCTAModal(true);
+      setShowCTAModal(true)
     }
-  }, []);
+  }, [])
 
   // Profile update mutation
   const updateProfileMutation = useMutation({
     mutationFn: updateCurrentUserProfile,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["users", "profile", currentUser?.id],
-      });
-      setIsEditMode(false);
-      toast.success("Profile updated successfully!");
+        queryKey: ['users', 'profile', currentUser?.id],
+      })
+      setIsEditMode(false)
+      toast.success('Profile updated successfully!')
     },
     onError: (error) => {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile");
+      console.error('Error updating profile:', error)
+      toast.error('Failed to update profile')
     },
-  });
+  })
 
   // Profile picture upload mutation
   const uploadPictureMutation = useMutation({
     mutationFn: async (file: File) => {
       // Get signed URL from server
       if (!currentUser?.id) {
-        throw new Error("User not found");
+        throw new Error('User not found')
       }
 
       // Extract file extension from the uploaded file
-      const fileExtension = file.name.split(".").pop()?.toLowerCase() || null;
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() || null
 
       const { signedUrl, storageUrl } =
-        await getCurrentUserProfilePictureUploadUrl({ fileExtension });
+        await getCurrentUserProfilePictureUploadUrl({ fileExtension })
       // Upload file directly to storage using signed URL
-      await uploadFileWithSignedUrl(signedUrl, file);
+      await uploadFileWithSignedUrl(signedUrl, file)
 
       // Update profile with new picture URL directly without triggering the profile update mutation
       await updateCurrentUserProfile({
         data: {
-          profile_pictures_url: storageUrl + "?v=" + Date.now(),
+          profile_pictures_url: storageUrl + '?v=' + Date.now(),
         },
-      });
-      return { success: true };
+      })
+      return { success: true }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["users", "profile", currentUser?.id],
-      });
-      toast.success("Profile picture updated successfully!");
+        queryKey: ['users', 'profile', currentUser?.id],
+      })
+      toast.success('Profile picture updated successfully!')
     },
     onError: (error) => {
-      console.error("Error uploading image:", error);
-      toast.error("Failed to upload profile picture");
+      console.error('Error uploading image:', error)
+      toast.error('Failed to upload profile picture')
     },
-  });
+  })
 
   // Profile picture delete mutation
   const deletePictureMutation = useMutation({
     mutationFn: async () => {
-      await deleteCurrentUserProfilePicture();
+      await deleteCurrentUserProfilePicture()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["users", "profile", currentUser?.id],
-      });
-      toast.success("Profile picture removed successfully!");
+        queryKey: ['users', 'profile', currentUser?.id],
+      })
+      toast.success('Profile picture removed successfully!')
     },
     onError: (error) => {
-      console.error("Error removing image:", error);
-      toast.error("Failed to remove profile picture");
+      console.error('Error removing image:', error)
+      toast.error('Failed to remove profile picture')
     },
-  });
+  })
 
   if (currentUserLoading) {
     return (
@@ -162,7 +162,7 @@ export default function Profile() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!currentUser) {
@@ -175,57 +175,57 @@ export default function Profile() {
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   const handleSave = () => {
-    const result = profileFormSchema.safeParse(formData);
+    const result = profileFormSchema.safeParse(formData)
     if (!result.success) {
       toast.error(
         <div>
           <p>Error savinsg profile:</p>
-          <ul className="list-disc ml-4">
+          <ul className="ml-4 list-disc">
             {result.error.issues.map((issue, i) => (
               <li key={i}>
-                {issue.path.join(".")}: {issue.message}
+                {issue.path.join('.')}: {issue.message}
               </li>
             ))}
           </ul>
-        </div>
-      );
-      return;
+        </div>,
+      )
+      return
     }
 
     updateProfileMutation.mutate({
       data: result.data,
-    });
-  };
+    })
+  }
 
   const handleCancel = () => {
-    setFormData(profileFormSchema.parse(currentUserProfile));
-    setIsEditMode(false);
-  };
+    setFormData(profileFormSchema.parse(currentUserProfile))
+    setIsEditMode(false)
+  }
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const file = event.target.files?.[0]
+    if (!file) return
 
-    uploadPictureMutation.mutate(file);
-  };
+    uploadPictureMutation.mutate(file)
+  }
 
   const handleRemoveImage = async () => {
-    deletePictureMutation.mutate();
-  };
+    deletePictureMutation.mutate()
+  }
 
   const fullName =
-    `${currentUserProfile?.first_name || ""} ${currentUserProfile?.last_name || ""}`.trim() ||
-    "No name set";
+    `${currentUserProfile?.first_name || ''} ${currentUserProfile?.last_name || ''}`.trim() ||
+    'No name set'
   const isSaving =
     updateProfileMutation.isPending ||
     uploadPictureMutation.isPending ||
-    deletePictureMutation.isPending;
+    deletePictureMutation.isPending
 
   return (
     <>
@@ -252,7 +252,7 @@ export default function Profile() {
                 Cancel
               </Button>
               <Button onClick={handleSave} disabled={isSaving}>
-                {isSaving ? "Saving..." : "Save Changes"}
+                {isSaving ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
           )}
@@ -278,7 +278,7 @@ export default function Profile() {
                         ?.charAt(0)
                         ?.toUpperCase() ||
                         currentUser?.email?.charAt(0)?.toUpperCase() ||
-                        "?"}
+                        '?'}
                     </span>
                   </div>
                 )}
@@ -324,7 +324,7 @@ export default function Profile() {
                   <div className="grid grid-cols-2 gap-2">
                     <Input
                       placeholder="First name"
-                      value={formData.first_name ?? ""}
+                      value={formData.first_name ?? ''}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -334,7 +334,7 @@ export default function Profile() {
                     />
                     <Input
                       placeholder="Last name"
-                      value={formData.last_name ?? ""}
+                      value={formData.last_name ?? ''}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -356,7 +356,7 @@ export default function Profile() {
                 {isEditMode ? (
                   <Input
                     placeholder="Your Discord handle"
-                    value={formData.discord_handle ?? ""}
+                    value={formData.discord_handle ?? ''}
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
@@ -366,7 +366,7 @@ export default function Profile() {
                   />
                 ) : (
                   <p className="text-lg">
-                    {currentUserProfile?.discord_handle || "Not set"}
+                    {currentUserProfile?.discord_handle || 'Not set'}
                   </p>
                 )}
               </div>
@@ -380,7 +380,7 @@ export default function Profile() {
                   <div className="space-y-2">
                     <Input
                       placeholder="Website name"
-                      value={formData.site_name ?? ""}
+                      value={formData.site_name ?? ''}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -390,7 +390,7 @@ export default function Profile() {
                     />
                     <Input
                       placeholder="Website URL"
-                      value={formData.site_url ?? ""}
+                      value={formData.site_url ?? ''}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -433,8 +433,8 @@ export default function Profile() {
                   <Link href="/profile/change-email">
                     <div
                       className={buttonVariants({
-                        variant: "outline",
-                        size: "sm",
+                        variant: 'outline',
+                        size: 'sm',
                       })}
                     >
                       Change Email
@@ -442,7 +442,7 @@ export default function Profile() {
                   </Link>
                 )}
               </div>
-              <div className={`flex gap-4 ${isEditMode ? "flex-col" : ""}`}>
+              <div className={`flex gap-4 ${isEditMode ? 'flex-col' : ''}`}>
                 {/* Homepage Display Radio Group */}
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1">
@@ -463,22 +463,18 @@ export default function Profile() {
                     <RadioGroup
                       value={
                         formData.opted_in_to_homepage_display === null
-                          ? ""
+                          ? ''
                           : formData.opted_in_to_homepage_display
-                            ? "yes"
-                            : "no"
+                            ? 'yes'
+                            : 'no'
                       }
                       onValueChange={(value) => {
                         const newValue =
-                          value === "yes"
-                            ? true
-                            : value === "no"
-                              ? false
-                              : null;
+                          value === 'yes' ? true : value === 'no' ? false : null
                         setFormData((prev) => ({
                           ...prev,
                           opted_in_to_homepage_display: newValue,
-                        }));
+                        }))
                       }}
                       className="flex"
                     >
@@ -499,7 +495,7 @@ export default function Profile() {
                     <p className="text-lg">
                       {currentUserProfile?.opted_in_to_homepage_display ===
                       null ? (
-                        "Default opted out"
+                        'Default opted out'
                       ) : currentUserProfile?.opted_in_to_homepage_display ? (
                         <CheckIcon className="h-4 w-4 text-green-500" />
                       ) : (
@@ -515,19 +511,15 @@ export default function Profile() {
                     <RadioGroup
                       value={
                         formData.minor === null
-                          ? ""
+                          ? ''
                           : formData.minor
-                            ? "no"
-                            : "yes"
+                            ? 'no'
+                            : 'yes'
                       }
                       onValueChange={(value) => {
                         const newValue =
-                          value === "yes"
-                            ? false
-                            : value === "no"
-                              ? true
-                              : null;
-                        setFormData((prev) => ({ ...prev, minor: newValue }));
+                          value === 'yes' ? false : value === 'no' ? true : null
+                        setFormData((prev) => ({ ...prev, minor: newValue }))
                       }}
                       className="flex"
                     >
@@ -564,22 +556,22 @@ export default function Profile() {
                       <RadioGroup
                         value={
                           formData.bringing_kids === null
-                            ? "null"
+                            ? 'null'
                             : formData.bringing_kids
-                              ? "yes"
-                              : "no"
+                              ? 'yes'
+                              : 'no'
                         }
                         onValueChange={(value) => {
                           const newValue =
-                            value === "yes"
+                            value === 'yes'
                               ? true
-                              : value === "no"
+                              : value === 'no'
                                 ? false
-                                : null;
+                                : null
                           setFormData((prev) => ({
                             ...prev,
                             bringing_kids: newValue,
-                          }));
+                          }))
                         }}
                         className="flex"
                       >
@@ -608,7 +600,7 @@ export default function Profile() {
                   </div>
                   {formData.bringing_kids && (
                     <Link
-                      className={`w-fit ${buttonVariants({ variant: "default", size: "sm" })}`}
+                      className={`w-fit ${buttonVariants({ variant: 'default', size: 'sm' })}`}
                       href={URLS.CHILDREN_REGISTRATION}
                       target="_blank"
                     >
@@ -633,5 +625,5 @@ export default function Profile() {
         </div>
       </div>
     </>
-  );
+  )
 }

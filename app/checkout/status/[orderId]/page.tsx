@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { notFound } from "next/navigation";
-import { getOrderStatus } from "@/app/actions/db/opennode";
-import Image from "next/image";
-import { ExternalLinkIcon } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { notFound } from 'next/navigation'
+import { getOrderStatus } from '@/app/actions/db/opennode'
+import Image from 'next/image'
+import { ExternalLinkIcon } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { useParams } from 'next/navigation'
 
 export default function CheckoutStatusPage() {
-  const params = useParams();
-  const orderId = params.orderId as string;
+  const params = useParams()
+  const orderId = params.orderId as string
 
   // Use React Query with polling
   const {
@@ -17,17 +17,17 @@ export default function CheckoutStatusPage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["order-status", orderId],
+    queryKey: ['order-status', orderId],
     queryFn: () => getOrderStatus({ orderId }),
     enabled: !!orderId,
     refetchInterval: 10000,
     refetchIntervalInBackground: true,
     retry: 3,
     retryDelay: 5000,
-  });
+  })
 
   if (!orderId) {
-    notFound();
+    notFound()
   }
 
   if (error) {
@@ -39,7 +39,7 @@ export default function CheckoutStatusPage() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (isLoading || !orderStatus) {
@@ -53,12 +53,12 @@ export default function CheckoutStatusPage() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   const messageButtonThing = () => {
     switch (orderStatus.status) {
-      case "unpaid":
+      case 'unpaid':
         return (
           <a
             className="btn btn-primary flex w-fit items-center gap-2"
@@ -66,54 +66,54 @@ export default function CheckoutStatusPage() {
           >
             Complete payment <ExternalLinkIcon className="h-4 w-4" />
           </a>
-        );
-      case "expired":
+        )
+      case 'expired':
         return (
           <div className="alert alert-error mt-4 w-fit">
             <span>
               Payment expired. Please start a new ticket purchase and try again.
             </span>
           </div>
-        );
-      case "processing":
+        )
+      case 'processing':
         return (
           <div className="alert alert-info mt-4 w-fit">
             <span>Payment sent and being processed!</span>
           </div>
-        );
-      case "paid":
+        )
+      case 'paid':
         return (
           <div className="alert alert-success mt-4 w-fit">
             <span>Payment received! Check your email for your ticket!</span>
           </div>
-        );
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   const badgeClass = () => {
     switch (orderStatus.status) {
-      case "unpaid":
-        return "badge-primary";
-      case "expired":
-        return "badge-error";
-      case "processing":
-        return "badge-info";
-      case "paid":
-        return "badge-success";
+      case 'unpaid':
+        return 'badge-primary'
+      case 'expired':
+        return 'badge-error'
+      case 'processing':
+        return 'badge-info'
+      case 'paid':
+        return 'badge-success'
       default:
-        return "badge-neutral";
+        return 'badge-neutral'
     }
-  };
+  }
 
   return (
     <div className="mx-auto max-w-2xl p-6">
       <div className="border-base-300 bg-base-200 rounded-xl border p-6">
         <div className="mb-2 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Bitcoin Checkout Status</h1>
-          {orderStatus.status !== "paid" &&
-            orderStatus.status !== "expired" && (
+          {orderStatus.status !== 'paid' &&
+            orderStatus.status !== 'expired' && (
               <div className="flex items-center gap-2 text-sm opacity-70">
                 <div className="loading loading-spinner loading-xs"></div>
                 Auto-refreshing...
@@ -127,13 +127,13 @@ export default function CheckoutStatusPage() {
 
         <div className="mb-4">
           <div className="text-lg">
-            Status:{" "}
+            Status:{' '}
             <span className={`badge badge-lg px-3 ${badgeClass()}`}>
               {orderStatus.status}
             </span>
           </div>
           <div className="mt-2 opacity-80">
-            Amount: ₿{" "}
+            Amount: ₿{' '}
             <span className="font-mono">{orderStatus.amount / 100000000}</span>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function CheckoutStatusPage() {
               width={12}
               height={12}
             />
-            OpenNode Charge ID:{" "}
+            OpenNode Charge ID:{' '}
             <a
               href={orderStatus.hostedUrl}
               className="underline"
@@ -164,5 +164,5 @@ export default function CheckoutStatusPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

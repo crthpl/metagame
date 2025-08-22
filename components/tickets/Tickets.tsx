@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import React from "react";
-import { TicketCard } from "./TicketCard";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { InfoIcon } from "lucide-react";
+import React from 'react'
+import { TicketCard } from './TicketCard'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { InfoIcon } from 'lucide-react'
 
-export type PaymentCurrency = "usd" | "btc";
+export type PaymentCurrency = 'usd' | 'btc'
 
 export const Tickets: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useLocalStorage<PaymentCurrency>(
-    "payment-method",
-    "usd",
-  );
+    'payment-method',
+    'usd',
+  )
 
   const togglePaymentMethod = () => {
-    setPaymentMethod((prev) => (prev === "usd" ? "btc" : "usd"));
-  };
+    setPaymentMethod((prev) => (prev === 'usd' ? 'btc' : 'usd'))
+  }
 
   return (
     <section className="mt-4 mb-8" id="tickets">
@@ -28,7 +28,7 @@ export const Tickets: React.FC = () => {
         <div className="mb-6 flex flex-col items-center">
           <div className="flex items-center gap-3">
             <span
-              className={`text-xl ${paymentMethod === "usd" ? "font-semibold text-green-500" : "opacity-50"}`}
+              className={`text-xl ${paymentMethod === 'usd' ? 'font-semibold text-green-500' : 'opacity-50'}`}
             >
               USD
             </span>
@@ -39,20 +39,20 @@ export const Tickets: React.FC = () => {
               aria-label="Toggle payment method"
             >
               <span
-                className={`ml-1 inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${paymentMethod === "btc" ? "translate-x-6" : ""}`}
+                className={`ml-1 inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${paymentMethod === 'btc' ? 'translate-x-6' : ''}`}
               />
             </button>
             <span
-              className={`text-xl ${paymentMethod === "btc" ? "font-semibold text-yellow-500" : "opacity-50"}`}
+              className={`text-xl ${paymentMethod === 'btc' ? 'font-semibold text-yellow-500' : 'opacity-50'}`}
             >
               BTC
             </span>
           </div>
-          {paymentMethod === "btc" ? (
+          {paymentMethod === 'btc' ? (
             <span className="">
               <span>
-                *Bitcoin purchases are{" "}
-                <span className="font-extrabold underline">non-refundable</span>{" "}
+                *Bitcoin purchases are{' '}
+                <span className="font-extrabold underline">non-refundable</span>{' '}
                 for logistical reasons.
               </span>
             </span>
@@ -88,7 +88,7 @@ export const Tickets: React.FC = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Tickets;
+export default Tickets

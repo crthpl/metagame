@@ -1,116 +1,116 @@
-"use client";
+'use client'
 
-import { Suspense, useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { z } from "zod";
-import { InfoIcon, LockIcon, MailIcon, TicketIcon } from "lucide-react";
-import { passwordSchema } from "@/lib/schemas/password";
-import { signupByTicketCode } from "@/app/actions/db/tickets";
+import { Suspense, useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { z } from 'zod'
+import { InfoIcon, LockIcon, MailIcon, TicketIcon } from 'lucide-react'
+import { passwordSchema } from '@/lib/schemas/password'
+import { signupByTicketCode } from '@/app/actions/db/tickets'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip'
 
 const signupSchema = z.object({
-  email: z.email("Please enter a valid email address"),
+  email: z.email('Please enter a valid email address'),
   ticketCode: z
     .string()
-    .min(1, "Ticket code from purchase confirmation is required for signup")
+    .min(1, 'Ticket code from purchase confirmation is required for signup')
     .toUpperCase(),
   ...passwordSchema.shape,
-});
+})
 
-type SignupFormData = z.infer<typeof signupSchema>;
+type SignupFormData = z.infer<typeof signupSchema>
 type SignupErrors = Partial<Record<keyof SignupFormData, string | string[]>> & {
-  submit?: string;
-};
+  submit?: string
+}
 
 function SignupForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
   const [formData, setFormData] = useState<SignupFormData>({
-    email: "",
-    ticketCode: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [errors, setErrors] = useState<SignupErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
+    email: '',
+    ticketCode: '',
+    password: '',
+    confirmPassword: '',
+  })
+  const [errors, setErrors] = useState<SignupErrors>({})
+  const [isLoading, setIsLoading] = useState(false)
 
   // Pre-fill form with URL parameters
   useEffect(() => {
-    const email = searchParams.get("email");
-    const ticketCode = searchParams.get("ticketCode");
+    const email = searchParams.get('email')
+    const ticketCode = searchParams.get('ticketCode')
 
     if (email) {
-      setFormData((prev) => ({ ...prev, email }));
+      setFormData((prev) => ({ ...prev, email }))
     }
     if (ticketCode) {
       setFormData((prev) => ({
         ...prev,
         ticketCode: ticketCode.toUpperCase(),
-      }));
+      }))
     }
-  }, [searchParams]);
+  }, [searchParams])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const processedValue = name === "ticketCode" ? value.toUpperCase() : value;
+    const { name, value } = e.target
+    const processedValue = name === 'ticketCode' ? value.toUpperCase() : value
 
-    setFormData((prev) => ({ ...prev, [name]: processedValue }));
+    setFormData((prev) => ({ ...prev, [name]: processedValue }))
 
     // Clear errors when user starts typing
     if (errors[name as keyof SignupErrors]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: '' }))
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrors({});
+    e.preventDefault()
+    setIsLoading(true)
+    setErrors({})
 
     try {
-      const validatedData = signupSchema.parse(formData);
+      const validatedData = signupSchema.parse(formData)
 
       await signupByTicketCode({
         email: validatedData.email,
         password: validatedData.password,
         ticketCode: validatedData.ticketCode,
-      });
+      })
 
-      router.push(`/signup/success?email=${validatedData.email}`);
+      router.push(`/signup/success?email=${validatedData.email}`)
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const fieldErrors: Record<string, string | string[]> = {};
+        const fieldErrors: Record<string, string | string[]> = {}
 
         // Group password errors to show all requirements
-        const passwordErrors: string[] = [];
+        const passwordErrors: string[] = []
 
         error.issues.forEach((issue) => {
-          if (issue.path[0] === "password") {
-            passwordErrors.push(issue.message);
+          if (issue.path[0] === 'password') {
+            passwordErrors.push(issue.message)
           } else if (issue.path[0]) {
-            fieldErrors[issue.path[0] as string] = issue.message;
+            fieldErrors[issue.path[0] as string] = issue.message
           }
-        });
+        })
 
         if (passwordErrors.length > 0) {
-          fieldErrors.password = passwordErrors;
+          fieldErrors.password = passwordErrors
         }
 
-        setErrors(fieldErrors);
+        setErrors(fieldErrors)
       } else if (error instanceof Error) {
-        setErrors({ submit: error.message });
+        setErrors({ submit: error.message })
       } else {
-        setErrors({ submit: "An unexpected error occurred" });
+        setErrors({ submit: 'An unexpected error occurred' })
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center">
@@ -124,7 +124,7 @@ function SignupForm() {
               htmlFor="email"
               className="mb-1 flex items-center gap-1 font-medium"
             >
-              <MailIcon className="size-4" /> Email:{" "}
+              <MailIcon className="size-4" /> Email:{' '}
               <span className="text-red-500">*</span>
             </label>
             <input
@@ -135,7 +135,7 @@ function SignupForm() {
               onChange={handleInputChange}
               required
               className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
-                errors.email ? "border-red-500" : ""
+                errors.email ? 'border-red-500' : ''
               }`}
             />
             {errors.email && (
@@ -149,7 +149,7 @@ function SignupForm() {
                 htmlFor="ticketCode"
                 className="mb-1 flex items-center gap-1 font-medium"
               >
-                <TicketIcon className="size-4" /> Ticket Code:{" "}
+                <TicketIcon className="size-4" /> Ticket Code:{' '}
                 <span className="text-red-500">*</span>
               </label>
               <Tooltip clickable>
@@ -160,13 +160,13 @@ function SignupForm() {
                   <p>
                     Enter the code that was sent with your ticket purchase
                     confirmation email. If you didn&apos;t get one but believe
-                    you should be able to make an account,{" "}
+                    you should be able to make an account,{' '}
                     <a
                       href="mailto:ricki.heicklen+metagame@gmail.com, briantsmiley42+metagame@gmail.com"
                       className="font-bold underline"
                     >
                       contact us
-                    </a>{" "}
+                    </a>{' '}
                     so we can or issue you an account.
                   </p>
                 </TooltipContent>
@@ -181,7 +181,7 @@ function SignupForm() {
               required
               placeholder="Enter your ticket code"
               className={`rounded border p-2 uppercase dark:border-gray-600 dark:bg-gray-700 ${
-                errors.ticketCode ? "border-red-500" : ""
+                errors.ticketCode ? 'border-red-500' : ''
               }`}
             />
             {errors.ticketCode && (
@@ -196,7 +196,7 @@ function SignupForm() {
               htmlFor="password"
               className="mb-1 flex items-center gap-1 font-medium"
             >
-              <LockIcon className="size-4" /> Password:{" "}
+              <LockIcon className="size-4" /> Password:{' '}
               <span className="text-red-500">*</span>
             </label>
             <input
@@ -207,7 +207,7 @@ function SignupForm() {
               onChange={handleInputChange}
               required
               className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
-                errors.password ? "border-red-500" : ""
+                errors.password ? 'border-red-500' : ''
               }`}
             />
             <div className="mt-1 text-xs text-gray-500">
@@ -236,7 +236,7 @@ function SignupForm() {
               htmlFor="confirmPassword"
               className="mb-1 flex items-center gap-1 font-medium"
             >
-              <LockIcon className="size-4" /> Confirm Password:{" "}
+              <LockIcon className="size-4" /> Confirm Password:{' '}
               <span className="text-red-500">*</span>
             </label>
             <input
@@ -247,7 +247,7 @@ function SignupForm() {
               onChange={handleInputChange}
               required
               className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
-                errors.confirmPassword ? "border-red-500" : ""
+                errors.confirmPassword ? 'border-red-500' : ''
               }`}
             />
             {errors.confirmPassword && (
@@ -268,12 +268,12 @@ function SignupForm() {
             disabled={isLoading}
             className="w-full rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isLoading ? "Creating account..." : "Create Account"}
+            {isLoading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
       </div>
     </div>
-  );
+  )
 }
 
 export default function SignupPage() {
@@ -291,5 +291,5 @@ export default function SignupPage() {
     >
       <SignupForm />
     </Suspense>
-  );
+  )
 }

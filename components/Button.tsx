@@ -1,23 +1,23 @@
-import React from "react";
+import React from 'react'
 
 interface ButtonProps {
-  link?: string;
-  target?: string;
-  children: React.ReactNode;
-  className?: string;
-  background?: string;
+  link?: string
+  target?: string
+  children: React.ReactNode
+  className?: string
+  background?: string
 }
 
 export const Button: React.FC<ButtonProps> = ({
   link,
   target,
   children,
-  className = "",
+  className = '',
   background,
 }) => {
   const bg =
     background ??
-    "bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500";
+    'bg-gradient-to-r from-fuchsia-500 via-amber-500 to-fuchsia-500'
 
   return (
     <a
@@ -36,5 +36,5 @@ export const Button: React.FC<ButtonProps> = ({
         </div>
       </div>
     </a>
-  );
-};
+  )
+}

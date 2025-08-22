@@ -1,5 +1,5 @@
-import { URLS } from "@/utils/urls";
-import Link from "next/link";
+import { URLS } from '@/utils/urls'
+import Link from 'next/link'
 
 export default function RFPCTA() {
   return (
@@ -12,5 +12,5 @@ export default function RFPCTA() {
         <span className="text-base">Click here for submission form</span>
       </Link>
     </div>
-  );
+  )
 }

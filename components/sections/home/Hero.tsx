@@ -1,51 +1,51 @@
-"use client";
+'use client'
 
-import React, { useEffect } from "react";
-import { Button } from "../../Button";
-import { Typer } from "../../Typer";
-import "./Hero.css";
-import RFPCTA from "./RFPCTA";
+import React, { useEffect } from 'react'
+import { Button } from '../../Button'
+import { Typer } from '../../Typer'
+import './Hero.css'
+import RFPCTA from './RFPCTA'
 
 const gameNames = [
-  "board games",
-  "card games",
-  "puzzle hunts",
-  "LARPS",
-  "video games",
-  "escape rooms",
-  "RPGs",
-  "calvinball",
-];
+  'board games',
+  'card games',
+  'puzzle hunts',
+  'LARPS',
+  'video games',
+  'escape rooms',
+  'RPGs',
+  'calvinball',
+]
 
 export const Hero: React.FC = () => {
   useEffect(() => {
     // Only run animation on non-mobile devices
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const isMobile = window.matchMedia('(max-width: 768px)').matches
 
     if (!isMobile) {
-      const r = document.querySelector(":root") as HTMLElement;
+      const r = document.querySelector(':root') as HTMLElement
 
-      let dt = 0;
-      let prevtime = 0;
-      let outrun = 0;
+      let dt = 0
+      let prevtime = 0
+      let outrun = 0
 
       function doAnimationStep(timeStamp: DOMHighResTimeStamp) {
-        dt = (timeStamp - prevtime) / 1000;
-        prevtime = timeStamp;
-        outrun = (outrun + dt) % 1;
+        dt = (timeStamp - prevtime) / 1000
+        prevtime = timeStamp
+        outrun = (outrun + dt) % 1
 
-        r.style.setProperty("--outrun", `${outrun}`);
-        requestAnimationFrame(doAnimationStep);
+        r.style.setProperty('--outrun', `${outrun}`)
+        requestAnimationFrame(doAnimationStep)
       }
 
-      const animationId = requestAnimationFrame(doAnimationStep);
+      const animationId = requestAnimationFrame(doAnimationStep)
 
       // Cleanup function
       return () => {
-        cancelAnimationFrame(animationId);
-      };
+        cancelAnimationFrame(animationId)
+      }
     }
-  }, []);
+  }, [])
 
   return (
     <section
@@ -74,5 +74,5 @@ export const Hero: React.FC = () => {
         <RFPCTA />
       </div>
     </section>
-  );
-};
+  )
+}

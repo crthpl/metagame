@@ -1,11 +1,11 @@
 ---
 id: 4
 speakerId: [4]
-title: "Designing for Inclusivity: Beyond Accessibility"
+title: 'Designing for Inclusivity: Beyond Accessibility'
 format: panel
 duration: 60
 date: 2025-09-06
-time: "16:00"
+time: '16:00'
 venue: Design Studio
 stage: 3
 tags: [UX Design, Accessibility, Inclusive Design]

@@ -1,61 +1,58 @@
-import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "../../../lib/stripe";
-import {
-  createTicketRecord,
-  formatAirtableRecord,
-} from "../../../lib/airtable";
-import { paymentConfirmationSchema } from "../../../lib/schemas/ticket";
-import { ticketsService } from "@/lib/db/tickets";
-import { sendTicketConfirmationEmail } from "@/lib/email";
-import { ZodError } from "zod";
+import { NextRequest, NextResponse } from 'next/server'
+import { stripe } from '../../../lib/stripe'
+import { createTicketRecord, formatAirtableRecord } from '../../../lib/airtable'
+import { paymentConfirmationSchema } from '../../../lib/schemas/ticket'
+import { ticketsService } from '@/lib/db/tickets'
+import { sendTicketConfirmationEmail } from '@/lib/email'
+import { ZodError } from 'zod'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json()
 
     // Validate input using Zod schema
-    const validatedData = paymentConfirmationSchema.parse(body);
-    console.log("VALIDATEDDATA", validatedData);
+    const validatedData = paymentConfirmationSchema.parse(body)
+    console.log('VALIDATEDDATA', validatedData)
     const { paymentIntentId, name, email, discordHandle, ticketType } =
-      validatedData;
+      validatedData
 
     // Retrieve payment intent from Stripe to check its status
     const paymentIntent = await stripe.paymentIntents.retrieve(
       paymentIntentId,
       {
-        expand: ["charges"],
+        expand: ['charges'],
       },
-    );
-    const price = paymentIntent.amount / 100;
-    const success = paymentIntent.status === "succeeded";
+    )
+    const price = paymentIntent.amount / 100
+    const success = paymentIntent.status === 'succeeded'
 
     if (!success) {
       return NextResponse.json({
         success: false,
         error: `Payment not succeeded. Status: ${paymentIntent.status}`,
         paymentIntentId,
-      });
+      })
     }
 
     // Get the Stripe processing fee from the payment intent
-    let stripeFee: number | undefined;
+    let stripeFee: number | undefined
     const expandedPaymentIntent = paymentIntent as {
       charges?: {
         data: Array<{
-          fee?: number;
-          [key: string]: unknown;
-        }>;
-      };
-    } & typeof paymentIntent;
+          fee?: number
+          [key: string]: unknown
+        }>
+      }
+    } & typeof paymentIntent
 
     if (
       expandedPaymentIntent.charges &&
       expandedPaymentIntent.charges.data.length > 0
     ) {
-      const charge = expandedPaymentIntent.charges.data[0];
+      const charge = expandedPaymentIntent.charges.data[0]
       if (charge.fee) {
         // Convert from cents to dollars
-        stripeFee = charge.fee / 100;
+        stripeFee = charge.fee / 100
       }
     }
 
@@ -66,27 +63,27 @@ export async function POST(request: NextRequest) {
         const charges = await stripe.charges.list({
           payment_intent: paymentIntentId,
           limit: 1,
-        });
+        })
 
         if (charges.data.length > 0) {
-          const charge = charges.data[0];
+          const charge = charges.data[0]
           // Access fee property using bracket notation to avoid type issues
-          const fee = (charge as unknown as { fee?: number }).fee;
+          const fee = (charge as unknown as { fee?: number }).fee
           if (fee) {
-            stripeFee = fee / 100;
+            stripeFee = fee / 100
           }
         }
       } catch (error) {
-        console.log("Error retrieving charge directly:", error);
+        console.log('Error retrieving charge directly:', error)
       }
     }
 
     // Fallback: Calculate fee if not provided by Stripe
     // Stripe's standard fee is 2.9% + $0.30 for US cards
     if (stripeFee === undefined) {
-      const amountInDollars = paymentIntent.amount / 100;
+      const amountInDollars = paymentIntent.amount / 100
       // Calculate 2.9% + $0.30
-      stripeFee = amountInDollars * 0.029 + 0.3;
+      stripeFee = amountInDollars * 0.029 + 0.3
     }
 
     // Create Airtable record
@@ -99,9 +96,9 @@ export async function POST(request: NextRequest) {
       success,
       discordHandle,
       stripeFee,
-    );
+    )
 
-    const airtableResult = await createTicketRecord(airtableRecord);
+    const airtableResult = await createTicketRecord(airtableRecord)
 
     const supabaseTicketRecord = {
       stripe_payment_id: paymentIntentId,
@@ -109,12 +106,12 @@ export async function POST(request: NextRequest) {
       ticket_type: ticketType,
       price_paid: price,
       coupons_used: [paymentIntent.metadata.couponCode],
-      is_test: process.env.STRIPE_SECRET_KEY?.startsWith("sk_test") ?? false,
-    };
+      is_test: process.env.STRIPE_SECRET_KEY?.startsWith('sk_test') ?? false,
+    }
 
     const createdTicket = await ticketsService.createTicket({
       ticket: supabaseTicketRecord,
-    });
+    })
 
     // Send confirmation email
     try {
@@ -125,10 +122,10 @@ export async function POST(request: NextRequest) {
         ticketCode: createdTicket.ticket_code,
         price: price,
         paymentIntentId: paymentIntentId,
-      });
+      })
     } catch (emailError) {
       // Log email error but don't fail the purchase
-      console.error("Failed to send confirmation email:", emailError);
+      console.error('Failed to send confirmation email:', emailError)
       // You might want to track this in your error monitoring service
     }
 
@@ -137,28 +134,28 @@ export async function POST(request: NextRequest) {
       paymentIntentId,
       airtableRecordId: airtableResult.recordId,
       message:
-        "Payment successful! Your ticket has been purchased. Check your email for confirmation.",
-    });
+        'Payment successful! Your ticket has been purchased. Check your email for confirmation.',
+    })
   } catch (error) {
-    console.error("Error in confirm-payment:", error);
+    console.error('Error in confirm-payment:', error)
 
     // Handle Zod validation errors
     if (error instanceof ZodError) {
       return NextResponse.json(
         {
           success: false,
-          error: error.issues?.[0]?.message || "Invalid input data",
+          error: error.issues?.[0]?.message || 'Invalid input data',
         },
         { status: 400 },
-      );
+      )
     }
 
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Internal server error",
+        error: error instanceof Error ? error.message : 'Internal server error',
       },
       { status: 500 },
-    );
+    )
   }
 }

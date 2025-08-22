@@ -1,26 +1,26 @@
-"use client";
+'use client'
 
-import React, { useEffect, useRef } from "react";
-import { typeOut } from "../utils/typer";
+import React, { useEffect, useRef } from 'react'
+import { typeOut } from '../utils/typer'
 
 interface TyperProps {
-  texts?: string[];
-  speed?: number;
-  delay?: number;
-  blinkerClass?: string;
-  textClass?: string;
+  texts?: string[]
+  speed?: number
+  delay?: number
+  blinkerClass?: string
+  textClass?: string
 }
 
 export const Typer: React.FC<TyperProps> = ({
   texts = [],
   speed = 80,
   delay = 2000,
-  blinkerClass = "",
-  textClass = "",
+  blinkerClass = '',
+  textClass = '',
 }) => {
-  const typerRef = useRef<HTMLSpanElement>(null);
-  const blinkerRef = useRef<HTMLSpanElement>(null);
-  const isRunningRef = useRef(false);
+  const typerRef = useRef<HTMLSpanElement>(null)
+  const blinkerRef = useRef<HTMLSpanElement>(null)
+  const isRunningRef = useRef(false)
 
   useEffect(() => {
     if (
@@ -29,9 +29,9 @@ export const Typer: React.FC<TyperProps> = ({
       texts.length > 0 &&
       !isRunningRef.current
     ) {
-      isRunningRef.current = true;
+      isRunningRef.current = true
       // Clear any existing content
-      typerRef.current.textContent = "";
+      typerRef.current.textContent = ''
 
       typeOut(
         typerRef.current,
@@ -40,10 +40,10 @@ export const Typer: React.FC<TyperProps> = ({
         speed,
         delay,
       ).finally(() => {
-        isRunningRef.current = false;
-      });
+        isRunningRef.current = false
+      })
     }
-  }, [texts, speed, delay]);
+  }, [texts, speed, delay])
 
   return (
     <>
@@ -55,5 +55,5 @@ export const Typer: React.FC<TyperProps> = ({
         |
       </span>
     </>
-  );
-};
+  )
+}

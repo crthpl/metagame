@@ -5,7 +5,7 @@ title: Mastering Web Performance Optimization
 format: talk
 duration: 30
 date: 2025-09-05
-time: "10:00"
+time: '10:00'
 venue: Main Hall
 stage: 1
 tags: [Web Performance, JavaScript, Optimization]

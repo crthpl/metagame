@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { DbSession } from "@/types/database/dbTypeAliases";
-import { SESSION_AGES } from "@/utils/dbUtils";
+import { z } from 'zod'
+import { DbSession } from '@/types/database/dbTypeAliases'
+import { SESSION_AGES } from '@/utils/dbUtils'
 
 export const SessionSchema = z.object({
   id: z.string(),
@@ -27,9 +27,9 @@ export const SessionSchema = z.object({
   host_3_last_name: z.string().nullable(),
   ages: z.enum(SESSION_AGES).nullable(),
   megagame: z.boolean(),
-}) satisfies z.ZodType<DbSession>;
+}) satisfies z.ZodType<DbSession>
 
-export const SessionsResponseSchema = z.array(SessionSchema);
+export const SessionsResponseSchema = z.array(SessionSchema)
 
-export type SessionResponse = z.infer<typeof SessionSchema>;
-export type SessionsResponse = z.infer<typeof SessionsResponseSchema>;
+export type SessionResponse = z.infer<typeof SessionSchema>
+export type SessionsResponse = z.infer<typeof SessionsResponseSchema>

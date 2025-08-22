@@ -1,47 +1,47 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
+import React, { useState } from 'react'
+import { loadStripe } from '@stripe/stripe-js'
 import {
   Elements,
   CardElement,
   useStripe,
   useElements,
-} from "@stripe/react-stripe-js";
-import { TicketFormFields } from "./TicketFormFields";
-import type { TicketType } from "../../lib/types";
-import { SOCIAL_LINKS } from "../../utils/urls";
+} from '@stripe/react-stripe-js'
+import { TicketFormFields } from './TicketFormFields'
+import type { TicketType } from '../../lib/types'
+import { SOCIAL_LINKS } from '../../utils/urls'
 import {
   ticketPurchaseSchema,
   type TicketPurchaseFormData,
   paymentIntentSchema,
   paymentConfirmationSchema,
-} from "../../lib/schemas/ticket";
-import { ZodError } from "zod";
-import { PaymentCurrency } from "./Tickets";
-import { getHostedCheckoutUrl } from "@/utils/opennode";
-import { getDayPassTicketType } from "@/config/tickets";
-import { isTicketTypeEligibleForCoupons, ValidatedCoupon } from "@/lib/coupons";
-import { DbTicketType } from "@/types/database/dbTypeAliases";
-import { validateCouponBodySchema } from "@/app/api/validate-coupon/reqSchema";
-import { validateCouponResultSchema } from "@/lib/coupons";
-import { XIcon } from "lucide-react";
+} from '../../lib/schemas/ticket'
+import { ZodError } from 'zod'
+import { PaymentCurrency } from './Tickets'
+import { getHostedCheckoutUrl } from '@/utils/opennode'
+import { getDayPassTicketType } from '@/config/tickets'
+import { isTicketTypeEligibleForCoupons, ValidatedCoupon } from '@/lib/coupons'
+import { DbTicketType } from '@/types/database/dbTypeAliases'
+import { validateCouponBodySchema } from '@/app/api/validate-coupon/reqSchema'
+import { validateCouponResultSchema } from '@/lib/coupons'
+import { XIcon } from 'lucide-react'
 
 // Load Stripe outside of component to avoid recreating on every render
-const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
 if (!stripeKey) {
-  throw new Error("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not set");
+  throw new Error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not set')
 }
 
-const stripePromise = loadStripe(stripeKey);
+const stripePromise = loadStripe(stripeKey)
 
 interface PaymentFormProps {
-  ticketType: TicketType;
-  onClose: () => void;
-  paymentMethod: PaymentCurrency;
-  selectedUsdPrice?: number;
-  selectedBtcPrice?: number;
+  ticketType: TicketType
+  onClose: () => void
+  paymentMethod: PaymentCurrency
+  selectedUsdPrice?: number
+  selectedBtcPrice?: number
 }
 
 const PaymentForm: React.FC<PaymentFormProps> = ({
@@ -51,32 +51,32 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   selectedUsdPrice,
   selectedBtcPrice,
 }) => {
-  const stripe = useStripe();
-  const elements = useElements();
+  const stripe = useStripe()
+  const elements = useElements()
 
   const [formData, setFormData] = useState<TicketPurchaseFormData>({
-    name: "",
-    email: "",
-    discordHandle: "",
-    couponCode: "",
-  });
+    name: '',
+    email: '',
+    discordHandle: '',
+    couponCode: '',
+  })
   const [errors, setErrors] = useState<
     Partial<Record<keyof TicketPurchaseFormData, string>>
-  >({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
-  const [message, setMessage] = useState("");
-  const [showSuccess, setShowSuccess] = useState(false);
+  >({})
+  const [isLoading, setIsLoading] = useState(false)
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false)
+  const [message, setMessage] = useState('')
+  const [showSuccess, setShowSuccess] = useState(false)
   const [appliedCoupon, setAppliedCoupon] = useState<ValidatedCoupon | null>(
     null,
-  );
+  )
   const [finalPrice, setFinalPrice] = useState(
     selectedUsdPrice ?? ticketType.priceUSD,
-  );
-  const isBtc = paymentMethod === "btc";
-  const btcAmount = selectedBtcPrice ?? ticketType.priceBTC;
+  )
+  const isBtc = paymentMethod === 'btc'
+  const btcAmount = selectedBtcPrice ?? ticketType.priceBTC
   const couponsEnabled =
-    isTicketTypeEligibleForCoupons(ticketType.id as DbTicketType) && !isBtc;
+    isTicketTypeEligibleForCoupons(ticketType.id as DbTicketType) && !isBtc
 
   const validateForm = (): boolean => {
     try {
@@ -84,49 +84,49 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       ticketPurchaseSchema.parse({
         ...formData,
         ticketTypeId: ticketType.id,
-      });
-      setErrors({});
-      return true;
+      })
+      setErrors({})
+      return true
     } catch (error) {
       if (error instanceof ZodError) {
-        const newErrors: Record<string, string> = {};
+        const newErrors: Record<string, string> = {}
         error.issues.forEach((err) => {
-          const fieldName = String(err.path[0]);
+          const fieldName = String(err.path[0])
           // Skip ticketTypeId errors since it's not a form field
-          if (fieldName !== "ticketTypeId") {
-            newErrors[fieldName] = err.message;
+          if (fieldName !== 'ticketTypeId') {
+            newErrors[fieldName] = err.message
           }
-        });
-        setErrors(newErrors);
+        })
+        setErrors(newErrors)
       }
-      return false;
+      return false
     }
-  };
+  }
 
   const handleApplyCoupon = async () => {
     if (!couponsEnabled) {
       setErrors((prev) => ({
         ...prev,
-        couponCode: "Coupons are not available for this ticket type",
-      }));
-      return;
+        couponCode: 'Coupons are not available for this ticket type',
+      }))
+      return
     }
 
     if (!formData.couponCode?.trim()) {
       setErrors((prev) => ({
         ...prev,
-        couponCode: "Please enter a coupon code",
-      }));
-      return;
+        couponCode: 'Please enter a coupon code',
+      }))
+      return
     }
 
-    setIsApplyingCoupon(true);
+    setIsApplyingCoupon(true)
     setErrors((prev) => {
       return {
         ...prev,
-        couponCode: "",
-      };
-    });
+        couponCode: '',
+      }
+    })
 
     try {
       // Prepare coupon data
@@ -135,145 +135,145 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           couponCode: formData.couponCode,
           ticketTypeId: ticketType.id,
           userEmail: formData.email || undefined,
-        });
+        })
       if (couponError) {
         setErrors((prev) => ({
           ...prev,
           couponCode: couponError.issues
             .map((issue) => issue.message)
-            .join(", "),
-        }));
-        return;
+            .join(', '),
+        }))
+        return
       }
-      const response = await fetch("/api/validate-coupon", {
-        method: "POST",
+      const response = await fetch('/api/validate-coupon', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(couponData),
-      });
+      })
 
       if (!response.ok) {
-        const responseText = await response.text();
+        const responseText = await response.text()
 
-        let errorData: { error?: string } | null = null;
+        let errorData: { error?: string } | null = null
         try {
-          errorData = JSON.parse(responseText);
+          errorData = JSON.parse(responseText)
         } catch (e) {
-          console.error(e);
+          console.error(e)
         }
 
         setErrors((prev) => ({
           ...prev,
           couponCode: errorData?.error || `API error (${response.status})`,
-        }));
-        setAppliedCoupon(null);
-        setFinalPrice(ticketType.priceUSD);
-        return;
+        }))
+        setAppliedCoupon(null)
+        setFinalPrice(ticketType.priceUSD)
+        return
       }
 
-      const data = await response.json();
-      const parsedData = validateCouponResultSchema.parse(data);
+      const data = await response.json()
+      const parsedData = validateCouponResultSchema.parse(data)
       if (!parsedData.valid) {
         setErrors((prev) => ({
           ...prev,
-          couponCode: parsedData.error || "Invalid coupon code",
-        }));
-        setAppliedCoupon(null);
-        setFinalPrice(ticketType.priceUSD);
-        return;
+          couponCode: parsedData.error || 'Invalid coupon code',
+        }))
+        setAppliedCoupon(null)
+        setFinalPrice(ticketType.priceUSD)
+        return
       }
 
       // Apply the coupon
-      setAppliedCoupon(parsedData.coupon);
-      setFinalPrice(parsedData.newPriceCents / 100);
+      setAppliedCoupon(parsedData.coupon)
+      setFinalPrice(parsedData.newPriceCents / 100)
       setErrors((prev) => ({
         ...prev,
-        couponCode: "",
-      }));
+        couponCode: '',
+      }))
     } catch (error) {
-      console.error("Error applying coupon:", error);
+      console.error('Error applying coupon:', error)
       setErrors((prev) => ({
         ...prev,
         couponCode: `Failed to validate coupon: ${error}`,
-      }));
+      }))
     } finally {
-      setIsApplyingCoupon(false);
+      setIsApplyingCoupon(false)
     }
-  };
+  }
 
   const handleRemoveCoupon = () => {
-    setAppliedCoupon(null);
-    setFinalPrice(ticketType.priceUSD);
+    setAppliedCoupon(null)
+    setFinalPrice(ticketType.priceUSD)
     setErrors((prev) => ({
       ...prev,
-      couponCode: "",
-    }));
-  };
+      couponCode: '',
+    }))
+  }
 
   const handlePurchaseFiat = async () => {
-    console.log("handlePurchase");
+    console.log('handlePurchase')
     if (!stripe || !elements || !validateForm()) {
-      return;
+      return
     }
 
-    setIsLoading(true);
-    setMessage("");
+    setIsLoading(true)
+    setMessage('')
 
     try {
-      console.log("creating payment intent");
+      console.log('creating payment intent')
       // Prepare payment intent data using schema
       const paymentIntentData = paymentIntentSchema.parse({
         ticketTypeId: ticketType.id,
         name: formData.name,
         email: formData.email,
         discordHandle: formData.discordHandle,
-        couponCode: appliedCoupon?.code || "",
-      });
+        couponCode: appliedCoupon?.code || '',
+      })
 
       // Step 1: Create payment intent
 
-      const paymentIntentResponse = await fetch("/api/create-payment-intent", {
-        method: "POST",
+      const paymentIntentResponse = await fetch('/api/create-payment-intent', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(paymentIntentData),
-      });
+      })
       if (!paymentIntentResponse.ok) {
-        const responseText = await paymentIntentResponse.text();
+        const responseText = await paymentIntentResponse.text()
 
-        let errorData;
+        let errorData
         try {
-          errorData = JSON.parse(responseText);
+          errorData = JSON.parse(responseText)
         } catch (e) {
-          console.error(e);
+          console.error(e)
           throw new Error(
             `API returned HTML instead of JSON. Status: ${paymentIntentResponse.status}. Response: ${responseText.substring(0, 200)}...`,
-          );
+          )
         }
 
-        throw new Error(errorData.error || "Failed to create payment intent");
+        throw new Error(errorData.error || 'Failed to create payment intent')
       }
 
-      const responseText = await paymentIntentResponse.text();
+      const responseText = await paymentIntentResponse.text()
 
-      let responseData;
+      let responseData
       try {
-        responseData = JSON.parse(responseText);
+        responseData = JSON.parse(responseText)
       } catch (e) {
-        console.error(e);
+        console.error(e)
         throw new Error(
           `API returned invalid JSON. Response: ${responseText.substring(0, 200)}...`,
-        );
+        )
       }
 
-      const { clientSecret, paymentIntentId: intentId } = responseData;
+      const { clientSecret, paymentIntentId: intentId } = responseData
 
       // Step 2: Confirm payment with Stripe
-      const cardElement = elements.getElement(CardElement);
+      const cardElement = elements.getElement(CardElement)
       if (!cardElement) {
-        throw new Error("Card element not found");
+        throw new Error('Card element not found')
       }
 
       const { error: stripeError, paymentIntent } =
@@ -285,13 +285,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
               email: formData.email,
             },
           },
-        });
+        })
 
       if (stripeError) {
-        throw new Error(stripeError.message || "Payment failed");
+        throw new Error(stripeError.message || 'Payment failed')
       }
 
-      if (paymentIntent?.status === "succeeded") {
+      if (paymentIntent?.status === 'succeeded') {
         // Step 3: Confirm payment and create Airtable record
         const confirmData = paymentConfirmationSchema.parse({
           paymentIntentId: intentId,
@@ -300,125 +300,123 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           discordHandle: formData.discordHandle,
           ticketType: ticketType.id,
           price: finalPrice,
-        });
+        })
 
-        const confirmResponse = await fetch("/api/confirm-payment", {
-          method: "POST",
+        const confirmResponse = await fetch('/api/confirm-payment', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(confirmData),
-        });
+        })
 
-        const confirmResponseData = await confirmResponse.json();
+        const confirmResponseData = await confirmResponse.json()
 
         if (!confirmResponse.ok) {
           throw new Error(
-            `Failed to confirm payment: ${confirmResponseData.error || "Unknown error"}`,
-          );
+            `Failed to confirm payment: ${confirmResponseData.error || 'Unknown error'}`,
+          )
         }
 
         if (!confirmResponseData.success) {
           throw new Error(
-            confirmResponseData.error || "Payment confirmation failed",
-          );
+            confirmResponseData.error || 'Payment confirmation failed',
+          )
         }
 
         setMessage(
           `Payment successful! Your ticket has been purchased. Ticket confirmation details and information for making your account on Metagame will be emailed to ${formData.email}. Join our Discord, where all future communication will take place!`,
-        );
-        setShowSuccess(true);
+        )
+        setShowSuccess(true)
       } else {
         throw new Error(
           `Payment was not successful. Status: ${paymentIntent?.status}`,
-        );
+        )
       }
     } catch (error) {
       setMessage(
-        error instanceof Error ? error.message : "An unexpected error occurred",
-      );
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+      )
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handlePurchaseBtc = async () => {
     if (!validateForm()) {
-      return;
+      return
     }
-    setIsLoading(true);
-    setMessage("");
+    setIsLoading(true)
+    setMessage('')
 
     try {
       if (!btcAmount) {
-        throw new Error(
-          "No BTC amount found for ticket type: " + ticketType.id,
-        );
+        throw new Error('No BTC amount found for ticket type: ' + ticketType.id)
       }
-      const amountBtc = Number(btcAmount.toFixed(6));
+      const amountBtc = Number(btcAmount.toFixed(6))
       // const isTest = (process.env.NEXT_PUBLIC_OPENNODE_ENV || 'dev') !== 'live';
-      const response = await fetch("/api/checkout/opennode", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/checkout/opennode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amountBtc,
           ticketDetails: {
             ticketType: ticketType.id,
-            isTest: process.env.NEXT_PUBLIC_OPENNODE_ENV === "dev",
+            isTest: process.env.NEXT_PUBLIC_OPENNODE_ENV === 'dev',
             purchaserEmail: formData.email,
           },
         }),
-      });
+      })
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Failed to create Bitcoin charge");
+        const errorText = await response.text()
+        throw new Error(errorText || 'Failed to create Bitcoin charge')
       }
 
-      const data = await response.json();
-      const charge = data.charge || data?.data || data; // defensive
+      const data = await response.json()
+      const charge = data.charge || data?.data || data // defensive
 
-      const hostedUrl = getHostedCheckoutUrl(charge.id);
+      const hostedUrl = getHostedCheckoutUrl(charge.id)
 
       if (!hostedUrl) {
-        throw new Error("Failed to get OpenNode checkout URL");
+        throw new Error('Failed to get OpenNode checkout URL')
       }
 
-      window.location.href = hostedUrl;
+      window.location.href = hostedUrl
     } catch (error) {
       setMessage(
-        error instanceof Error ? error.message : "An unexpected error occurred",
-      );
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+      )
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleCloseSuccess = () => {
-    setShowSuccess(false);
-    setMessage("");
-  };
+    setShowSuccess(false)
+    setMessage('')
+  }
 
   const cardElementOptions = {
     style: {
       base: {
-        fontSize: "16px",
-        color: "#ffffff",
-        "::placeholder": {
-          color: "#aab7c4",
+        fontSize: '16px',
+        color: '#ffffff',
+        '::placeholder': {
+          color: '#aab7c4',
         },
-        backgroundColor: "transparent",
+        backgroundColor: 'transparent',
       },
       invalid: {
-        color: "#fa755a",
-        iconColor: "#fa755a",
+        color: '#fa755a',
+        iconColor: '#fa755a',
       },
     },
-  };
+  }
   const headerTicketType =
-    ticketType.id === "dayPass"
+    ticketType.id === 'dayPass'
       ? (getDayPassTicketType(ticketType.id) ?? ticketType)
-      : ticketType;
+      : ticketType
   return (
     <div className="flex flex-col gap-6">
       <div className="mb-2 flex flex-col items-center gap-2">
@@ -508,7 +506,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           <div className="flex items-center justify-between rounded-lg bg-gray-800 p-2">
             <span className="text-gray-300">Amount:</span>
             <span className="font-semibold">
-              {btcAmount?.toFixed(6) ?? "?"} BTC
+              {btcAmount?.toFixed(6) ?? '?'} BTC
             </span>
           </div>
           <p className="rounded-lg bg-gray-800 p-2 text-sm text-gray-400">
@@ -524,9 +522,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       {message && (
         <div
           className={`relative flex flex-col items-center rounded-md p-3 ${
-            message.includes("successful")
-              ? "border border-green-700 bg-green-900 text-green-200"
-              : "border border-red-700 bg-red-900 text-red-200"
+            message.includes('successful')
+              ? 'border border-green-700 bg-green-900 text-green-200'
+              : 'border border-red-700 bg-red-900 text-red-200'
           }`}
         >
           {showSuccess && (
@@ -551,7 +549,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             </button>
           )}
           <div className="mb-3">{message}</div>
-          {message.includes("successful") && (
+          {message.includes('successful') && (
             <a
               href={SOCIAL_LINKS.DISCORD}
               target="_blank"
@@ -578,7 +576,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             disabled={isLoading}
             className="bg-primary-600 hover:bg-primary-700 flex-1 rounded-md px-4 py-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isLoading ? "Processing..." : `Continue`}
+            {isLoading ? 'Processing...' : `Continue`}
           </button>
         ) : (
           <button
@@ -586,18 +584,18 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             disabled={isLoading || !stripe}
             className="bg-primary-600 hover:bg-primary-700 flex-1 rounded-md px-4 py-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isLoading ? "Processing..." : `Purchase $${finalPrice.toFixed(2)}`}
+            {isLoading ? 'Processing...' : `Purchase $${finalPrice.toFixed(2)}`}
           </button>
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 export const TicketPurchaseForm: React.FC<PaymentFormProps> = ({
   ticketType,
   onClose,
-  paymentMethod = "usd",
+  paymentMethod = 'usd',
   selectedUsdPrice,
   selectedBtcPrice,
 }) => {
@@ -611,5 +609,5 @@ export const TicketPurchaseForm: React.FC<PaymentFormProps> = ({
         selectedBtcPrice={selectedBtcPrice}
       />
     </Elements>
-  );
-};
+  )
+}

@@ -1,53 +1,53 @@
-import { useState, useEffect, useRef } from "react";
-import { useDebounce } from "@/utils/useDebounce";
+import { useState, useEffect, useRef } from 'react'
+import { useDebounce } from '@/utils/useDebounce'
 
 interface TagProps {
-  text?: string;
-  speed?: number;
-  catchDistance?: number;
-  outsetDistance?: number;
-  className?: string;
+  text?: string
+  speed?: number
+  catchDistance?: number
+  outsetDistance?: number
+  className?: string
 }
 
 export default function Tag({
-  text = "tag",
+  text = 'tag',
   speed = 0.05,
   catchDistance = 50,
   outsetDistance = 50,
-  className = "",
+  className = '',
 }: TagProps) {
-  const [isChasing, setIsChasing] = useState(false);
-  const [isCaught, setIsCaught] = useState(false);
-  const [hasEntered, setHasEntered] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [textPosition, setTextPosition] = useState({ x: 0, y: 0 });
-  const tagRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<number>(null);
+  const [isChasing, setIsChasing] = useState(false)
+  const [isCaught, setIsCaught] = useState(false)
+  const [hasEntered, setHasEntered] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [textPosition, setTextPosition] = useState({ x: 0, y: 0 })
+  const tagRef = useRef<HTMLDivElement>(null)
+  const frameRef = useRef<number>(null)
 
   // Track mouse position
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
+      setMousePosition({ x: e.clientX, y: e.clientY })
+    }
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
   // Animation loop
   useEffect(() => {
-    if (!isChasing || !tagRef.current) return;
+    if (!isChasing || !tagRef.current) return
 
     const animate = () => {
       setTextPosition((prevPosition) => {
-        const dx = mousePosition.x - prevPosition.x;
-        const dy = mousePosition.y - prevPosition.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const dx = mousePosition.x - prevPosition.x
+        const dy = mousePosition.y - prevPosition.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
 
         // Check if caught
         if (distance < catchDistance && !isCaught) {
-          setIsCaught(true);
-          setIsChasing(false);
+          setIsCaught(true)
+          setIsChasing(false)
           const cursorStyle = `
             * {
               cursor: none !important;
@@ -64,79 +64,79 @@ export default function Tag({
               z-index: 9999;
               transform: translate(calc(var(--x, 0) * 1px - 50%), calc(var(--y, 0) * 1px - 50%));
             }
-          `;
-          const styleSheet = document.createElement("style");
-          styleSheet.textContent = cursorStyle;
-          document.head.appendChild(styleSheet);
+          `
+          const styleSheet = document.createElement('style')
+          styleSheet.textContent = cursorStyle
+          document.head.appendChild(styleSheet)
 
           // Set initial position immediately using current mousePosition
-          document.body.style.setProperty("--x", mousePosition.x.toString());
-          document.body.style.setProperty("--y", mousePosition.y.toString());
+          document.body.style.setProperty('--x', mousePosition.x.toString())
+          document.body.style.setProperty('--y', mousePosition.y.toString())
 
           // Add mousemove handler to update emoji position
           const updateCursor = (e: MouseEvent) => {
-            document.body.style.setProperty("--x", e.clientX.toString());
-            document.body.style.setProperty("--y", e.clientY.toString());
-          };
-          window.addEventListener("mousemove", updateCursor);
+            document.body.style.setProperty('--x', e.clientX.toString())
+            document.body.style.setProperty('--y', e.clientY.toString())
+          }
+          window.addEventListener('mousemove', updateCursor)
 
           // Store the event listener for cleanup
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (tagRef.current as any).cursorCleanup = () => {
-            window.removeEventListener("mousemove", updateCursor);
-            styleSheet.remove();
-            document.body.style.cursor = "default";
-          };
+          ;(tagRef.current as any).cursorCleanup = () => {
+            window.removeEventListener('mousemove', updateCursor)
+            styleSheet.remove()
+            document.body.style.cursor = 'default'
+          }
 
-          return prevPosition;
+          return prevPosition
         }
 
         return {
           x: prevPosition.x + dx * speed * 3,
           y: prevPosition.y + dy * speed * 3,
-        };
-      });
+        }
+      })
 
-      frameRef.current = requestAnimationFrame(animate);
-    };
+      frameRef.current = requestAnimationFrame(animate)
+    }
 
-    frameRef.current = requestAnimationFrame(animate);
+    frameRef.current = requestAnimationFrame(animate)
 
     return () => {
       if (frameRef.current) {
-        cancelAnimationFrame(frameRef.current);
+        cancelAnimationFrame(frameRef.current)
       }
-    };
-  }, [isChasing, mousePosition, speed, catchDistance, isCaught]);
+    }
+  }, [isChasing, mousePosition, speed, catchDistance, isCaught])
 
   const debouncedSetIsChasing = useDebounce(() => setIsChasing(true), 1000, {
     leading: false,
-  });
+  })
 
   // Track whether we've touched the inner span where the text is
   const handleTextMouseover = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setHasEntered(true);
-  };
+    e.stopPropagation()
+    setHasEntered(true)
+  }
 
   // Start chasing after leaving outer boundary area
   const handlePaddedMouseLeave = (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation()
     //if the mouse hasnt entered the trigger area, dont chase
-    if (!hasEntered || isCaught) return;
+    if (!hasEntered || isCaught) return
     if (!isChasing) {
-      const rect = tagRef.current?.getBoundingClientRect();
+      const rect = tagRef.current?.getBoundingClientRect()
       if (rect) {
-        setTextPosition({ x: rect.left, y: rect.top });
+        setTextPosition({ x: rect.left, y: rect.top })
       }
-      debouncedSetIsChasing();
+      debouncedSetIsChasing()
     }
-  };
+  }
 
   const handlePaddedMouseEnter = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    debouncedSetIsChasing.cancel();
-  };
+    e.stopPropagation()
+    debouncedSetIsChasing.cancel()
+  }
 
   // Add cleanup effect
   useEffect(() => {
@@ -144,10 +144,10 @@ export default function Tag({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (tagRef.current && (tagRef.current as any).cursorCleanup) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (tagRef.current as any).cursorCleanup();
+        ;(tagRef.current as any).cursorCleanup()
       }
-    };
-  }, []);
+    }
+  }, [])
 
   return (
     <span className="relative">
@@ -163,22 +163,22 @@ export default function Tag({
         }}
       />
       {/* When chasing, render an invisible placeholder for spacing */}
-      <span className={`${isChasing ? "opacity-0" : "hidden"}`}>{text}</span>
+      <span className={`${isChasing ? 'opacity-0' : 'hidden'}`}>{text}</span>
       <span
         ref={tagRef}
         onMouseEnter={handleTextMouseover}
         className={`group relative inline-block cursor-pointer select-none ${className} `}
         style={{
-          position: isChasing ? "fixed" : "relative",
-          left: isChasing ? `${textPosition.x}px` : "auto",
-          top: isChasing ? `${textPosition.y}px` : "auto",
-          transition: isChasing ? "none" : "color 0.3s ease",
-          color: isChasing || isCaught ? "gold" : "inherit",
+          position: isChasing ? 'fixed' : 'relative',
+          left: isChasing ? `${textPosition.x}px` : 'auto',
+          top: isChasing ? `${textPosition.y}px` : 'auto',
+          transition: isChasing ? 'none' : 'color 0.3s ease',
+          color: isChasing || isCaught ? 'gold' : 'inherit',
           zIndex: 1000,
         }}
       >
         {text}
       </span>
     </span>
-  );
+  )
 }

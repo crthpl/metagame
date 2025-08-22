@@ -1,14 +1,14 @@
-import { memo } from "react";
+import { memo } from 'react'
 
 interface SetCardMinProps {
-  size?: "sm" | "md";
+  size?: 'sm' | 'md'
 }
 
-export default memo(function SetCardMin({ size = "md" }: SetCardMinProps) {
+export default memo(function SetCardMin({ size = 'md' }: SetCardMinProps) {
   const sizeClass = {
-    sm: "w-24 h-16",
-    md: "w-40 h-24",
-  }[size];
+    sm: 'w-24 h-16',
+    md: 'w-40 h-24',
+  }[size]
 
   return (
     <div
@@ -30,5 +30,5 @@ export default memo(function SetCardMin({ size = "md" }: SetCardMinProps) {
         </svg>
       </div>
     </div>
-  );
-});
+  )
+})

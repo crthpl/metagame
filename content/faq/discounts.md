@@ -1,6 +1,6 @@
 ---
 id: 4
-question: "Do you offer any discounts?"
+question: 'Do you offer any discounts?'
 ---
 
 Yes, we offer several discount options:

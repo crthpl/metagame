@@ -1,33 +1,33 @@
-"use client";
+'use client'
 
-import React, { useEffect } from "react";
-import Image from "next/image";
-import { Button } from "./Button";
-import { SOCIAL_LINKS } from "../utils/urls";
+import React, { useEffect } from 'react'
+import Image from 'next/image'
+import { Button } from './Button'
+import { SOCIAL_LINKS } from '../utils/urls'
 
 export default function ContributeContent() {
   useEffect(() => {
     // Audio effect for any coin containers (if they exist)
-    const audio = new Audio("/sounds_coin.wav");
-    const coinContainers = document.querySelectorAll(".coin-container");
+    const audio = new Audio('/sounds_coin.wav')
+    const coinContainers = document.querySelectorAll('.coin-container')
 
     const handleMouseEnter = () => {
-      audio.currentTime = 0;
+      audio.currentTime = 0
       audio.play().catch(() => {
         // Ignore audio play errors (e.g., no user interaction yet)
-      });
-    };
+      })
+    }
 
     coinContainers.forEach((container) => {
-      container.addEventListener("mouseenter", handleMouseEnter);
-    });
+      container.addEventListener('mouseenter', handleMouseEnter)
+    })
 
     return () => {
       coinContainers.forEach((container) => {
-        container.removeEventListener("mouseenter", handleMouseEnter);
-      });
-    };
-  }, []);
+        container.removeEventListener('mouseenter', handleMouseEnter)
+      })
+    }
+  }, [])
 
   return (
     <div className="">
@@ -58,21 +58,21 @@ export default function ContributeContent() {
             <li>
               <span className="text-primary-300">
                 Gradient descent themed escape room
-              </span>{" "}
+              </span>{' '}
               - We provide the physical space, you design and run the room over
               the course of the conference.
             </li>
             <li>
               <span className="text-primary-300">Game design hackathon</span> -
-              We (civilization as a whole) have the pieces for games like{" "}
+              We (civilization as a whole) have the pieces for games like{' '}
               <a
                 target="_blank"
                 href="https://en.wikipedia.org/wiki/Senet"
                 rel="noopener noreferrer"
               >
                 Senet
-              </a>{" "}
-              and{" "}
+              </a>{' '}
+              and{' '}
               <a
                 target="_blank"
                 href="https://en.wikipedia.org/wiki/Ludus_latrunculorum"
@@ -87,14 +87,14 @@ export default function ContributeContent() {
             <li>
               <span className="text-primary-300">
                 Trading-based Survivor variant
-              </span>{" "}
+              </span>{' '}
               - What if Survivor had live markets, with trading based rounds
               between tribal councils?
             </li>
           </ul>
 
           <p>
-            The easiest way to get involved is to{" "}
+            The easiest way to get involved is to{' '}
             <a
               target="_blank"
               href={SOCIAL_LINKS.DISCORD}
@@ -117,7 +117,7 @@ export default function ContributeContent() {
           <p>
             That&apos;s the thing you&apos;re looking at right now. There are
             games hidden all over, with coupon codes attached in many cases. You
-            can add your own games, coupons, and easter eggs{" "}
+            can add your own games, coupons, and easter eggs{' '}
             <a
               target="_blank"
               href="https://github.com/RickiHeicklen/metagame"
@@ -140,5 +140,5 @@ export default function ContributeContent() {
         </div>
       </div>
     </div>
-  );
+  )
 }

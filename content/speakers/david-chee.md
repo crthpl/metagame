@@ -1,9 +1,9 @@
 ---
 id: 21
-name: "David Chee"
-image: "/images/david_chee.jpg"
-gameName: "SirSalty"
-gameUrl: "https://www.twitch.tv/sirsalty"
+name: 'David Chee'
+image: '/images/david_chee.jpg'
+gameName: 'SirSalty'
+gameUrl: 'https://www.twitch.tv/sirsalty'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

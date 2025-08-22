@@ -1,9 +1,9 @@
-import { useState } from "react";
-import SetCard from "./SetCard";
-import { generateSetBoard } from "./SetSet";
+import { useState } from 'react'
+import SetCard from './SetCard'
+import { generateSetBoard } from './SetSet'
 
 export default function SetAnimationMin() {
-  const [board] = useState(generateSetBoard("atLeastOne"));
+  const [board] = useState(generateSetBoard('atLeastOne'))
 
   return (
     <div className="flex flex-col items-center gap-3 py-4">
@@ -17,5 +17,5 @@ export default function SetAnimationMin() {
         ))}
       </div>
     </div>
-  );
+  )
 }

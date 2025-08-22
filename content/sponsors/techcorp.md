@@ -1,14 +1,14 @@
 ---
 id: 1
-name: "TechCorp"
-logo: "/logos/techcorp.svg"
-website: "https://techcorp.example.com"
-tier: "gold"
-tagline: "Powering the Future of Gaming"
-industry: "Gaming Technology"
-twitter: "https://twitter.com/techcorp"
-linkedin: "https://linkedin.com/company/techcorp"
-github: "https://github.com/techcorp"
+name: 'TechCorp'
+logo: '/logos/techcorp.svg'
+website: 'https://techcorp.example.com'
+tier: 'gold'
+tagline: 'Powering the Future of Gaming'
+industry: 'Gaming Technology'
+twitter: 'https://twitter.com/techcorp'
+linkedin: 'https://linkedin.com/company/techcorp'
+github: 'https://github.com/techcorp'
 featured: true
 ---
 

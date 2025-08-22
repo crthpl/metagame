@@ -1,50 +1,50 @@
-import { createServiceClient } from "@/utils/supabase/service";
+import { createServiceClient } from '@/utils/supabase/service'
 
 export const couponsService = {
   getByCode: async ({ couponCode }: { couponCode: string }) => {
-    const supabase = createServiceClient();
-    console.log();
+    const supabase = createServiceClient()
+    console.log()
     const { data, error } = await supabase
-      .from("coupons")
-      .select("*")
-      .eq("coupon_code", couponCode)
-      .maybeSingle();
+      .from('coupons')
+      .select('*')
+      .eq('coupon_code', couponCode)
+      .maybeSingle()
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error.message)
     }
-    return data;
+    return data
   },
   getAll: async (
     { enabledOnly }: { enabledOnly: boolean } = { enabledOnly: true },
   ) => {
-    const supabase = createServiceClient();
+    const supabase = createServiceClient()
     const { data, error } = await supabase
-      .from("coupons")
-      .select("*")
-      .eq("enabled", enabledOnly);
+      .from('coupons')
+      .select('*')
+      .eq('enabled', enabledOnly)
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error.message)
     }
-    return data;
+    return data
   },
   /** Check all coupon email authoriation for a given email address */
   checkEmailAuthorization: async ({
     couponId,
     email,
   }: {
-    couponId: string;
-    email: string;
+    couponId: string
+    email: string
   }) => {
-    const supabase = createServiceClient();
+    const supabase = createServiceClient()
     const { data, error } = await supabase
-      .from("coupon_emails")
+      .from('coupon_emails')
       .select()
-      .eq("coupon_id", couponId)
-      .eq("email", email)
-      .maybeSingle();
+      .eq('coupon_id', couponId)
+      .eq('email', email)
+      .maybeSingle()
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error.message)
     }
-    return data;
+    return data
   },
-};
+}

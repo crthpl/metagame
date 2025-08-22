@@ -1,9 +1,9 @@
-import FAQ from "@/components/FAQ";
+import FAQ from '@/components/FAQ'
 
 export const metadata = {
-  title: "FAQ - Metagame",
-  description: "Frequently Asked Questions about Metagame",
-};
+  title: 'FAQ - Metagame',
+  description: 'Frequently Asked Questions about Metagame',
+}
 
 export default async function FAQPage() {
   return (
@@ -25,5 +25,5 @@ export default async function FAQPage() {
         <FAQ />
       </main>
     </>
-  );
+  )
 }

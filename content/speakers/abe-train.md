@@ -1,11 +1,11 @@
 ---
 id: 20
-name: "Abe Train"
-image: "/images/abe_train.jpg"
-gameName: "Trainwreck Labs"
-gameUrl: "https://trainwrecklabs.com"
-gameName2: "Metazooa"
-gameUrl2: "https://metazooa.com/"
+name: 'Abe Train'
+image: '/images/abe_train.jpg'
+gameName: 'Trainwreck Labs'
+gameUrl: 'https://trainwrecklabs.com'
+gameName2: 'Metazooa'
+gameUrl2: 'https://metazooa.com/'
 title: Senior Developer at Tech Corp, Expert in Web Technologies
 ---
 

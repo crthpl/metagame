@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import ContributeContent from "@/components/ContributeContent";
+import type { Metadata } from 'next'
+import ContributeContent from '@/components/ContributeContent'
 
 export const metadata: Metadata = {
-  title: "Get Involved",
+  title: 'Get Involved',
   description:
-    "Run something at Metagame 2025 - experimental games, hackathons, and more",
-};
+    'Run something at Metagame 2025 - experimental games, hackathons, and more',
+}
 
 export default function ContributePage() {
   return (
@@ -25,5 +25,5 @@ export default function ContributePage() {
       />
       <ContributeContent />
     </>
-  );
+  )
 }

@@ -1,16 +1,16 @@
-import { Button } from "./Button";
-import { URLS } from "../utils/urls";
+import { Button } from './Button'
+import { URLS } from '../utils/urls'
 
 interface FAQ {
-  id: number;
-  question: string;
-  contentHtml: React.ReactNode;
+  id: number
+  question: string
+  contentHtml: React.ReactNode
 }
 
 const faqs: FAQ[] = [
   {
     id: 1,
-    question: "Who is organizing this event?",
+    question: 'Who is organizing this event?',
     contentHtml: (
       <p>
         Ricki Heicklen and the <a href="/arbor">Arbor</a> team, as well as many,
@@ -20,7 +20,7 @@ const faqs: FAQ[] = [
   },
   {
     id: 2,
-    question: "Where will it be?",
+    question: 'Where will it be?',
     contentHtml: (
       <>
         <p>
@@ -35,7 +35,7 @@ const faqs: FAQ[] = [
   },
   {
     id: 3,
-    question: "What time does Metagame start and end?",
+    question: 'What time does Metagame start and end?',
     contentHtml: (
       <p>
         The registration desk opens at 2pm Friday, September 12th, and will stay
@@ -46,17 +46,17 @@ const faqs: FAQ[] = [
   },
   {
     id: 4,
-    question: "Do you offer any discounts?",
+    question: 'Do you offer any discounts?',
     contentHtml: (
       <>
         <p>Yes, we offer several discount options:</p>
         <ul>
           <li>
             <strong>Volunteer tickets</strong>: Applications for volunteer
-            tickets can be found{" "}
+            tickets can be found{' '}
             <a href={URLS.TICKET_VOLUNTEER} target="_blank">
               here
-            </a>{" "}
+            </a>{' '}
             and will be evaluated on a rolling basis. Volunteers work up to 6
             credits (with most 4-hour shifts worth between 1 and 3 credits)
             during or in advance of the conference, in exchange for a free or
@@ -69,7 +69,7 @@ const faqs: FAQ[] = [
             ticket price ($580) is prohibitive but a 50% off ticket would be
             doable, you can use the discount code <strong>HALFPRICE</strong> to
             get a $290 ticket, on the honor system. For a reduction in ticket
-            price beyond that or to apply for travel assistance, please fill out{" "}
+            price beyond that or to apply for travel assistance, please fill out{' '}
             <a href={URLS.TICKET_FINANCIAL_AID} target="_blank">
               this form
             </a>
@@ -92,7 +92,7 @@ const faqs: FAQ[] = [
   },
   {
     id: 5,
-    question: "Are children welcome at Metagame?",
+    question: 'Are children welcome at Metagame?',
     contentHtml: (
       <>
         <p>
@@ -126,10 +126,10 @@ const faqs: FAQ[] = [
           </li>
         </ul>
         <p>
-          See the{" "}
+          See the{' '}
           <a href="/schedule" target="_blank">
             schedule
-          </a>{" "}
+          </a>{' '}
           for more details.
         </p>
         <div className="mt-4 text-center">
@@ -146,23 +146,23 @@ const faqs: FAQ[] = [
   },
   {
     id: 6,
-    question: "What is the refund policy?",
+    question: 'What is the refund policy?',
     contentHtml: (
       <p>
         Metagame tickets purchased in dollars are 94% refundable if requested by
         September 1st. After that point, we will not be able to issue refunds.
         Tickets purchased in Bitcoin are not refundable. You can also transfer
-        your ticket to someone else by September 1st by emailing{" "}
+        your ticket to someone else by September 1st by emailing{' '}
         <a href="mailto:metagame@arbor.tech">ricki.heicklen@gmail.com</a>.
       </p>
     ),
   },
   {
     id: 7,
-    question: "I have another question",
+    question: 'I have another question',
     contentHtml: (
       <p>
-        Let us know{" "}
+        Let us know{' '}
         <a href={URLS.INTEREST_FORM} target="_blank">
           here
         </a>
@@ -170,7 +170,7 @@ const faqs: FAQ[] = [
       </p>
     ),
   },
-];
+]
 
 export default function FAQ() {
   return (
@@ -190,5 +190,5 @@ export default function FAQ() {
         </div>
       ))}
     </div>
-  );
+  )
 }

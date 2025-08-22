@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from 'react'
 import {
   CheckIcon,
   ChevronLeft,
@@ -9,153 +9,149 @@ import {
   User2Icon,
   UserIcon,
   PlusIcon,
-} from "lucide-react";
-import { SessionResponse } from "@/app/api/queries/sessions/schema";
-import Image from "next/image";
-import SessionDetailsCard from "./SessionModalCard";
-import { useRouter } from "next/navigation";
-import { dbGetHostsFromSession, SESSION_AGES } from "@/utils/dbUtils";
-import { Modal } from "@/components/Modal";
+} from 'lucide-react'
+import { SessionResponse } from '@/app/api/queries/sessions/schema'
+import Image from 'next/image'
+import SessionDetailsCard from './SessionModalCard'
+import { useRouter } from 'next/navigation'
+import { dbGetHostsFromSession, SESSION_AGES } from '@/utils/dbUtils'
+import { Modal } from '@/components/Modal'
 
-import { useUser } from "@/hooks/dbQueries";
-import { toast } from "sonner";
-import { AddEventModal } from "./EditEventModal";
-import { BloodDrippingFrame } from "@/components/BloodDrippingFrame";
-import { dateUtils } from "@/utils/dateUtils";
-import { usePathname } from "next/navigation";
-import { SessionTitle } from "@/components/SessionTitle";
-import { SessionTooltip } from "./SessionTooltip";
-import { useQuery } from "@tanstack/react-query";
-import {
-  fetchSessions,
-  fetchCurrentUserRsvps,
-  fetchLocations,
-} from "./queries";
+import { useUser } from '@/hooks/dbQueries'
+import { toast } from 'sonner'
+import { AddEventModal } from './EditEventModal'
+import { BloodDrippingFrame } from '@/components/BloodDrippingFrame'
+import { dateUtils } from '@/utils/dateUtils'
+import { usePathname } from 'next/navigation'
+import { SessionTitle } from '@/components/SessionTitle'
+import { SessionTooltip } from './SessionTooltip'
+import { useQuery } from '@tanstack/react-query'
+import { fetchSessions, fetchCurrentUserRsvps, fetchLocations } from './queries'
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-const SCHEDULE_START_TIMES = [14, 9, 9];
-const SCHEDULE_END_TIMES = [22, 22, 22];
+const SCHEDULE_START_TIMES = [14, 9, 9]
+const SCHEDULE_END_TIMES = [22, 22, 22]
 // Fixed conference days - create Date objects representing midnight in Pacific Time
 export const CONFERENCE_DAYS = [
-  { date: new Date("2025-09-12T00:00:00-07:00"), name: "Friday" },
-  { date: new Date("2025-09-13T00:00:00-07:00"), name: "Saturday" },
-  { date: new Date("2025-09-14T00:00:00-07:00"), name: "Sunday" },
-];
+  { date: new Date('2025-09-12T00:00:00-07:00'), name: 'Friday' },
+  { date: new Date('2025-09-13T00:00:00-07:00'), name: 'Saturday' },
+  { date: new Date('2025-09-14T00:00:00-07:00'), name: 'Sunday' },
+]
 
 // Generate time slots from 9:00 to 22:00 in 30-minute intervals
 const generateTimeSlots = (dayIndex: number) => {
-  const slots = [];
+  const slots = []
   for (
     let hour = SCHEDULE_START_TIMES[dayIndex];
     hour <= SCHEDULE_END_TIMES[dayIndex];
     hour++
   ) {
-    slots.push(`${hour.toString().padStart(2, "0")}:00`);
+    slots.push(`${hour.toString().padStart(2, '0')}:00`)
     if (hour < SCHEDULE_END_TIMES[dayIndex]) {
-      slots.push(`${hour.toString().padStart(2, "0")}:30`);
+      slots.push(`${hour.toString().padStart(2, '0')}:30`)
     }
   }
-  return slots;
-};
+  return slots
+}
 
 // Color options for events
 const locationEventColors = [
-  "bg-blue-200 border-blue-300",
-  "bg-purple-200 border-purple-300",
-  "bg-orange-200 border-orange-300",
-  "bg-cyan-100 border-cyan-200",
-  "bg-pink-200 border-pink-300",
-  "bg-yellow-200 border-yellow-300",
-  "bg-red-200 border-red-300",
-  "bg-indigo-200 border-indigo-300",
-  "bg-teal-200 border-teal-300",
-];
+  'bg-blue-200 border-blue-300',
+  'bg-purple-200 border-purple-300',
+  'bg-orange-200 border-orange-300',
+  'bg-cyan-100 border-cyan-200',
+  'bg-pink-200 border-pink-300',
+  'bg-yellow-200 border-yellow-300',
+  'bg-red-200 border-red-300',
+  'bg-indigo-200 border-indigo-300',
+  'bg-teal-200 border-teal-300',
+]
 
 const locationEventRSVPdColors = [
-  "bg-blue-500 border-blue-600",
-  "bg-purple-500 border-purple-600",
-  "bg-orange-500 border-orange-600",
-  "bg-cyan-400 border-cyan-500",
-  "bg-pink-500 border-pink-600",
-  "bg-yellow-500 border-yellow-600",
-  "bg-red-500 border-red-600",
-  "bg-indigo-500 border-indigo-600",
-  "bg-teal-500 border-teal-600",
-];
+  'bg-blue-500 border-blue-600',
+  'bg-purple-500 border-purple-600',
+  'bg-orange-500 border-orange-600',
+  'bg-cyan-400 border-cyan-500',
+  'bg-pink-500 border-pink-600',
+  'bg-yellow-500 border-yellow-600',
+  'bg-red-500 border-red-600',
+  'bg-indigo-500 border-indigo-600',
+  'bg-teal-500 border-teal-600',
+]
 
 // Updated slot checking - PST based
 const eventStartsInSlot = (session: SessionResponse, slotTime: string) => {
-  if (!session.start_time) return false;
+  if (!session.start_time) return false
 
-  const sessionStartMinutes = dateUtils.getPSTMinutes(session.start_time);
-  const [slotHour, slotMinute] = slotTime.split(":").map(Number);
-  const slotStartMinutes = slotHour * 60 + slotMinute;
-  const slotEndMinutes = slotStartMinutes + 30;
+  const sessionStartMinutes = dateUtils.getPSTMinutes(session.start_time)
+  const [slotHour, slotMinute] = slotTime.split(':').map(Number)
+  const slotStartMinutes = slotHour * 60 + slotMinute
+  const slotEndMinutes = slotStartMinutes + 30
 
   return (
     sessionStartMinutes >= slotStartMinutes &&
     sessionStartMinutes < slotEndMinutes
-  );
-};
+  )
+}
 
 // Updated offset calculation - PST based
 const getEventOffsetMinutes = (session: SessionResponse, slotTime: string) => {
-  if (!session.start_time) return 0;
+  if (!session.start_time) return 0
 
-  const sessionStartMinutes = dateUtils.getPSTMinutes(session.start_time);
-  const [slotHour, slotMinute] = slotTime.split(":").map(Number);
-  const slotStartMinutes = slotHour * 60 + slotMinute;
+  const sessionStartMinutes = dateUtils.getPSTMinutes(session.start_time)
+  const [slotHour, slotMinute] = slotTime.split(':').map(Number)
+  const slotStartMinutes = slotHour * 60 + slotMinute
 
-  return Math.max(0, sessionStartMinutes - slotStartMinutes);
-};
+  return Math.max(0, sessionStartMinutes - slotStartMinutes)
+}
 
 // Updated duration calculation - PST based
 const getEventDurationMinutes = (session: SessionResponse) => {
-  if (!session.start_time || !session.end_time) return 30;
+  if (!session.start_time || !session.end_time) return 30
 
-  const startMinutes = dateUtils.getPSTMinutes(session.start_time);
-  const endMinutes = dateUtils.getPSTMinutes(session.end_time);
-  return endMinutes - startMinutes;
-};
+  const startMinutes = dateUtils.getPSTMinutes(session.start_time)
+  const endMinutes = dateUtils.getPSTMinutes(session.end_time)
+  return endMinutes - startMinutes
+}
 
 export default function Schedule({
   sessionId,
   dayIndex,
   editPermissions,
 }: {
-  sessionId?: string;
-  dayIndex?: number;
-  editPermissions: Record<string, boolean>;
+  sessionId?: string
+  dayIndex?: number
+  editPermissions: Record<string, boolean>
 }) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const { currentUserProfile } = useUser();
+  const pathname = usePathname()
+  const router = useRouter()
+  const { currentUserProfile } = useUser()
 
   // Use queries to fetch data
   const { data: sessions = [] } = useQuery({
-    queryKey: ["sessions"],
+    queryKey: ['sessions'],
     queryFn: fetchSessions,
-  });
+  })
 
   const { data: currentUserRsvps = [] } = useQuery({
-    queryKey: ["rsvps", "current-user"],
+    queryKey: ['rsvps', 'current-user'],
     queryFn: fetchCurrentUserRsvps,
-  });
+  })
 
   const { data: allLocations = [] } = useQuery({
-    queryKey: ["locations"],
+    queryKey: ['locations'],
     queryFn: fetchLocations,
-  });
+  })
 
   // Filter and sort locations for schedule display
   const locations = useMemo(() => {
     return allLocations
       .filter((location) => location.display_in_schedule) // Only show locations that should be displayed in schedule
-      .sort((a, b) => a.schedule_display_order - b.schedule_display_order); // Sort by display order
-  }, [allLocations]);
+      .sort((a, b) => a.schedule_display_order - b.schedule_display_order) // Sort by display order
+  }, [allLocations])
 
-  const [filterForUserEvents, setFilterForUserEvents] = useState(false);
+  const [filterForUserEvents, setFilterForUserEvents] = useState(false)
 
   // Group sessions by the 3 fixed conference days
   const days = useMemo(() => {
@@ -163,130 +159,130 @@ export default function Schedule({
       [], // Day 0: Friday 9/12
       [], // Day 1: Saturday 9/13
       [], // Day 2: Sunday 9/14
-    ] as SessionResponse[][];
+    ] as SessionResponse[][]
     const filterSessionForUser = (session: SessionResponse) => {
-      if (!currentUserProfile) return true;
+      if (!currentUserProfile) return true
       if (currentUserRsvps.some((rsvp) => rsvp.session_id === session.id!)) {
-        return true;
+        return true
       }
       const sessionHostIds = [
         session.host_1_id,
         session.host_2_id,
         session.host_3_id,
-      ].filter(Boolean);
-      return sessionHostIds.some((hostId) => currentUserProfile?.id === hostId);
-    };
+      ].filter(Boolean)
+      return sessionHostIds.some((hostId) => currentUserProfile?.id === hostId)
+    }
     const maybeFilteredSessions = filterForUserEvents
       ? sessions.filter(filterSessionForUser)
-      : sessions;
+      : sessions
     maybeFilteredSessions.forEach((session) => {
       const [sessionStart, sessionEnd] = [
         session.start_time,
         session.end_time,
-      ].filter(Boolean);
-      if (!sessionStart || !sessionEnd || !session.title) return;
+      ].filter(Boolean)
+      if (!sessionStart || !sessionEnd || !session.title) return
 
       const dayIndex = CONFERENCE_DAYS.findIndex((day) => {
         if (
           dateUtils.getPacificParts(day.date).day ===
           dateUtils.getPacificParts(new Date(sessionStart)).day
         ) {
-          return true;
+          return true
         }
-        return false;
-      });
+        return false
+      })
       if (dayIndex >= 0) {
-        dayEvents[dayIndex].push(session);
+        dayEvents[dayIndex].push(session)
       }
-    });
+    })
 
     // Create the final days array
     return CONFERENCE_DAYS.map((confDay, index) => ({
       date: confDay.date,
       displayName: `${confDay.name} (${dateUtils.getYYYYMMDD(confDay.date)})`,
       events: dayEvents[index].sort((a, b) =>
-        (a.start_time || "").localeCompare(b.start_time || ""),
+        (a.start_time || '').localeCompare(b.start_time || ''),
       ),
-    }));
-  }, [sessions, filterForUserEvents]);
-  const [currentDayIndex, setCurrentDayIndex] = useState(dayIndex ?? 0);
+    }))
+  }, [sessions, filterForUserEvents])
+  const [currentDayIndex, setCurrentDayIndex] = useState(dayIndex ?? 0)
   const [openedSessionId, setOpenedSessionId] = useState<
-    SessionResponse["id"] | null
-  >(sessionId ?? null);
-  const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
+    SessionResponse['id'] | null
+  >(sessionId ?? null)
+  const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false)
   const [addEventPrefill, setAddEventPrefill] = useState<{
-    startTime: string;
-    locationId: string;
-  } | null>(null);
+    startTime: string
+    locationId: string
+  } | null>(null)
 
   // Sync URL parameters with state changes
   useEffect(() => {
-    if (!pathname.startsWith("/schedule")) return;
-    const params = new URLSearchParams();
-    if (currentDayIndex !== 0) params.set("day", currentDayIndex.toString());
-    if (openedSessionId) params.set("session", openedSessionId);
+    if (!pathname.startsWith('/schedule')) return
+    const params = new URLSearchParams()
+    if (currentDayIndex !== 0) params.set('day', currentDayIndex.toString())
+    if (openedSessionId) params.set('session', openedSessionId)
 
     const newUrl = params.toString()
       ? `?${params.toString()}`
-      : window.location.pathname;
-    router.replace(newUrl, { scroll: false });
-  }, [currentDayIndex, openedSessionId, router]);
+      : window.location.pathname
+    router.replace(newUrl, { scroll: false })
+  }, [currentDayIndex, openedSessionId, router])
   const currentDay = days[currentDayIndex] || {
-    date: "",
-    displayName: "No Events",
+    date: '',
+    displayName: 'No Events',
     events: [],
-  };
+  }
 
   const nextDay = () => {
-    setCurrentDayIndex((prev) => Math.min(days.length - 1, prev + 1));
-  };
+    setCurrentDayIndex((prev) => Math.min(days.length - 1, prev + 1))
+  }
 
   const prevDay = () => {
-    setCurrentDayIndex((prev) => Math.max(0, prev - 1));
-  };
+    setCurrentDayIndex((prev) => Math.max(0, prev - 1))
+  }
 
   const handleOpenSessionModal = (sessionId: string) => {
-    setOpenedSessionId(sessionId);
-  };
+    setOpenedSessionId(sessionId)
+  }
 
   const handleEmptySlotClick = (time: string, locationId: string) => {
-    if (!currentUserProfile?.is_admin) return;
+    if (!currentUserProfile?.is_admin) return
 
     setAddEventPrefill({
       startTime: time,
       locationId: locationId,
-    });
-    setIsAddEventModalOpen(true);
-  };
+    })
+    setIsAddEventModalOpen(true)
+  }
 
   const handleToggleFilterForUserEvents = () => {
     setFilterForUserEvents((prev) => {
-      const newFilter = !prev;
+      const newFilter = !prev
       toast.info(
-        `Now displaying ${newFilter ? "only your hosted/rsvp'd events" : "all events"}`,
-      );
-      return newFilter;
-    });
-  };
+        `Now displaying ${newFilter ? "only your hosted/rsvp'd events" : 'all events'}`,
+      )
+      return newFilter
+    })
+  }
   // Helper function to get event color
   const getEventColor = (session: SessionResponse) => {
     const userIsRsvpd = currentUserRsvps.some(
       (rsvp) => rsvp.session_id === session.id!,
-    );
+    )
     if (session.megagame) {
       return userIsRsvpd
-        ? "bg-[repeating-linear-gradient(45deg,#f97316,#f97316_10px,#a855f7_10px,#a855f7_20px)]"
-        : "bg-[repeating-linear-gradient(45deg,#fb923c,#fb923c_10px,#c084fc_10px,#c084fc_20px)]";
+        ? 'bg-[repeating-linear-gradient(45deg,#f97316,#f97316_10px,#a855f7_10px,#a855f7_20px)]'
+        : 'bg-[repeating-linear-gradient(45deg,#fb923c,#fb923c_10px,#c084fc_10px,#c084fc_20px)]'
     }
     const locationIndex = locations.findIndex(
       (l) => l.id === session.location_id,
-    );
+    )
     return userIsRsvpd
       ? locationEventRSVPdColors[
           locationIndex % locationEventRSVPdColors.length
         ]
-      : locationEventColors[locationIndex % locationEventColors.length];
-  };
+      : locationEventColors[locationIndex % locationEventColors.length]
+  }
 
   return (
     <div className="bg-dark-500 flex flex-col rounded-2xl font-serif">
@@ -354,7 +350,7 @@ export default function Schedule({
                 key={location.id}
                 className="bg-dark-600 border-secondary-300 border p-3"
               >
-                {location.name === "The Clocktower" ? (
+                {location.name === 'The Clocktower' ? (
                   <BloodDrippingFrame className="z-1 h-24 w-full">
                     {location.thumbnail_url ? (
                       <Image
@@ -394,7 +390,7 @@ export default function Schedule({
               <div className="text-secondary-300 sticky flex size-full items-center justify-center gap-1 text-sm font-medium">
                 {currentUserProfile?.id && (
                   <button
-                    className={`${filterForUserEvents ? "opacity-100" : "opacity-50"} bg-dark-200 hover:bg-dark-300 cursor-pointer rounded-sm p-2 transition-colors`}
+                    className={`${filterForUserEvents ? 'opacity-100' : 'opacity-50'} bg-dark-200 hover:bg-dark-300 cursor-pointer rounded-sm p-2 transition-colors`}
                     title="Filter for events I am rsvp'd to or hosting"
                     onClick={handleToggleFilterForUserEvents}
                   >
@@ -450,7 +446,7 @@ export default function Schedule({
                     (session) =>
                       session.location_id === venue.id &&
                       eventStartsInSlot(session, time),
-                  );
+                  )
                   return (
                     <div
                       key={venue.id}
@@ -472,8 +468,8 @@ export default function Schedule({
                             style={{
                               top: `${getEventOffsetMinutes(session, time) * 2}px`, // 2px per minute
                               height: `${getEventDurationMinutes(session) * 2}px`, // 2px per minute
-                              left: "0px",
-                              right: "0px",
+                              left: '0px',
+                              right: '0px',
                             }}
                           >
                             <div className="relative flex size-full flex-col">
@@ -481,7 +477,7 @@ export default function Schedule({
                                 <SessionTitle title={session.title} />
                               </div>
                               <div className="font-sans text-xs">
-                                {dbGetHostsFromSession(session).join(", ")}
+                                {dbGetHostsFromSession(session).join(', ')}
                               </div>
 
                               <div className="absolute right-0 bottom-0 flex items-center gap-1 font-sans text-xs opacity-80">
@@ -520,8 +516,8 @@ export default function Schedule({
                                 <UserIcon className="size-3" />
                                 {currentUserProfile?.id
                                   ? session.max_capacity
-                                    ? `${session.rsvp_count ?? "0"} / ${session.max_capacity}`
-                                    : `${session.rsvp_count ?? "0"}`
+                                    ? `${session.rsvp_count ?? '0'} / ${session.max_capacity}`
+                                    : `${session.rsvp_count ?? '0'}`
                                   : session.min_capacity && session.max_capacity
                                     ? `${session.min_capacity} - ${session.max_capacity}`
                                     : null}
@@ -547,7 +543,7 @@ export default function Schedule({
                           </div>
                         )}
                     </div>
-                  );
+                  )
                 })}
               </div>
             ))}
@@ -560,10 +556,10 @@ export default function Schedule({
           onClose={() => {
             const sessionDayIndex = days.findIndex((day) =>
               day.events.some((event) => event.id === openedSessionId),
-            );
-            setOpenedSessionId(null);
+            )
+            setOpenedSessionId(null)
             if (sessionDayIndex >= 0) {
-              setCurrentDayIndex(sessionDayIndex);
+              setCurrentDayIndex(sessionDayIndex)
             }
           }}
         >
@@ -577,8 +573,8 @@ export default function Schedule({
       <AddEventModal
         isOpen={isAddEventModalOpen}
         onClose={() => {
-          setIsAddEventModalOpen(false);
-          setAddEventPrefill(null);
+          setIsAddEventModalOpen(false)
+          setAddEventPrefill(null)
         }}
         defaultDay={
           dateUtils.getPacificParts(CONFERENCE_DAYS[currentDayIndex]?.date).day
@@ -587,7 +583,7 @@ export default function Schedule({
       />
 
       {/* Floating Action Button - Admin Only - Only on /schedule route */}
-      {currentUserProfile?.is_admin && pathname.startsWith("/schedule") && (
+      {currentUserProfile?.is_admin && pathname.startsWith('/schedule') && (
         <button
           className="bg-primary-500 hover:bg-primary-600 fixed right-6 bottom-6 z-[9999] rounded-full p-3 text-white shadow-lg transition-all duration-200 hover:shadow-xl"
           title="Add new event"
@@ -597,5 +593,5 @@ export default function Schedule({
         </button>
       )}
     </div>
-  );
+  )
 }

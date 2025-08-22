@@ -1,88 +1,88 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { LockIcon } from "lucide-react";
-import { passwordSchema, type PasswordErrors } from "@/lib/schemas/password";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react'
+import { createClient } from '@/utils/supabase/client'
+import { useRouter } from 'next/navigation'
+import { z } from 'zod'
+import { LockIcon } from 'lucide-react'
+import { passwordSchema, type PasswordErrors } from '@/lib/schemas/password'
+import { Input } from '@/components/ui/input'
 
 export default function ResetPasswordPage() {
-  const router = useRouter();
+  const router = useRouter()
   const [formData, setFormData] = useState({
-    password: "",
-    confirmPassword: "",
-  });
-  const [nonce, setNonce] = useState<string | null>(null);
-  const [reauthNeeded, setReauthNeeded] = useState(false);
-  const [errors, setErrors] = useState<PasswordErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
+    password: '',
+    confirmPassword: '',
+  })
+  const [nonce, setNonce] = useState<string | null>(null)
+  const [reauthNeeded, setReauthNeeded] = useState(false)
+  const [errors, setErrors] = useState<PasswordErrors>({})
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
 
     // Clear errors when user starts typing
     if (errors[name as keyof PasswordErrors]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: '' }))
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrors({});
+    e.preventDefault()
+    setIsLoading(true)
+    setErrors({})
 
     try {
-      const validatedData = passwordSchema.parse(formData);
-      const supabase = createClient();
+      const validatedData = passwordSchema.parse(formData)
+      const supabase = createClient()
 
       const { data, error } = await supabase.auth.updateUser({
         password: validatedData.password,
         nonce: nonce ?? undefined,
-      });
-      console.log(`"data": ${JSON.stringify(data)}`);
-      console.log(`"error": ${JSON.stringify(error)}`);
-      console.log(`"nonce": ${nonce}`);
+      })
+      console.log(`"data": ${JSON.stringify(data)}`)
+      console.log(`"error": ${JSON.stringify(error)}`)
+      console.log(`"nonce": ${nonce}`)
       if (error) {
         if (
-          error.code === "needs_reauthentication" ||
-          error.code === "reauth_nonce_missing"
+          error.code === 'needs_reauthentication' ||
+          error.code === 'reauth_nonce_missing'
         ) {
-          setReauthNeeded(true);
-          await supabase.auth.reauthenticate();
+          setReauthNeeded(true)
+          await supabase.auth.reauthenticate()
         } else {
-          setErrors({ submit: error.message });
+          setErrors({ submit: error.message })
         }
       } else {
-        router.push("/profile/reset-password/success");
+        router.push('/profile/reset-password/success')
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const fieldErrors: Record<string, string | string[]> = {};
+        const fieldErrors: Record<string, string | string[]> = {}
 
         // Group password errors to show all requirements
-        const passwordErrors: string[] = [];
+        const passwordErrors: string[] = []
 
         error.issues.forEach((issue) => {
-          if (issue.path[0] === "password") {
-            passwordErrors.push(issue.message);
+          if (issue.path[0] === 'password') {
+            passwordErrors.push(issue.message)
           } else if (issue.path[0]) {
-            fieldErrors[issue.path[0] as string] = issue.message;
+            fieldErrors[issue.path[0] as string] = issue.message
           }
-        });
+        })
 
         if (passwordErrors.length > 0) {
-          fieldErrors.password = passwordErrors;
+          fieldErrors.password = passwordErrors
         }
 
-        setErrors(fieldErrors);
+        setErrors(fieldErrors)
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center">
@@ -96,7 +96,7 @@ export default function ResetPasswordPage() {
               htmlFor="password"
               className="mb-1 flex items-center gap-1 font-medium"
             >
-              <LockIcon className="size-4" /> New Password:{" "}
+              <LockIcon className="size-4" /> New Password:{' '}
               <span className="text-red-500">*</span>
             </label>
             <input
@@ -107,7 +107,7 @@ export default function ResetPasswordPage() {
               onChange={handleInputChange}
               required
               className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
-                errors.password ? "border-red-500" : ""
+                errors.password ? 'border-red-500' : ''
               }`}
             />
             <div className="mt-1 text-xs text-gray-500">
@@ -136,7 +136,7 @@ export default function ResetPasswordPage() {
               htmlFor="confirmPassword"
               className="mb-1 flex items-center gap-1 font-medium"
             >
-              <LockIcon className="size-4" /> Confirm Password:{" "}
+              <LockIcon className="size-4" /> Confirm Password:{' '}
               <span className="text-red-500">*</span>
             </label>
             <input
@@ -147,7 +147,7 @@ export default function ResetPasswordPage() {
               onChange={handleInputChange}
               required
               className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
-                errors.confirmPassword ? "border-red-500" : ""
+                errors.confirmPassword ? 'border-red-500' : ''
               }`}
             />
             {errors.confirmPassword && (
@@ -164,7 +164,7 @@ export default function ResetPasswordPage() {
               </div>
               <Input
                 type="text"
-                value={nonce || ""}
+                value={nonce || ''}
                 onChange={(e) => setNonce(e.target.value)}
                 required
                 className="w-full"
@@ -182,10 +182,10 @@ export default function ResetPasswordPage() {
             disabled={isLoading}
             className="w-full rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isLoading ? "Setting password..." : "Set Password"}
+            {isLoading ? 'Setting password...' : 'Set Password'}
           </button>
         </form>
       </div>
     </div>
-  );
+  )
 }

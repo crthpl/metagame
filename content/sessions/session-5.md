@@ -5,7 +5,7 @@ title: Cybersecurity in the Age of Quantum Computing
 format: talk
 duration: 40
 date: 2025-09-07
-time: "09:30"
+time: '09:30'
 venue: Security Auditorium
 stage: 2
 tags: [Cybersecurity, Quantum Computing, Encryption]

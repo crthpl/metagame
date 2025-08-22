@@ -1,6 +1,6 @@
-import ScheduleProvider from "@/app/schedule/ScheduleProvider";
-import { Button } from "@/components/Button";
-import { URLS } from "@/utils/urls";
+import ScheduleProvider from '@/app/schedule/ScheduleProvider'
+import { Button } from '@/components/Button'
+import { URLS } from '@/utils/urls'
 
 export default function ScheduleSection() {
   return (
@@ -23,5 +23,5 @@ export default function ScheduleSection() {
         </Button>
       </div>
     </section>
-  );
+  )
 }

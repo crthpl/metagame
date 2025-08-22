@@ -1,96 +1,96 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { useUser } from "@/hooks/dbQueries";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { createClient } from '@/utils/supabase/client'
+import { useRouter } from 'next/navigation'
+import { z } from 'zod'
+import { useUser } from '@/hooks/dbQueries'
+import { useQueryClient } from '@tanstack/react-query'
 
 const loginSchema = z.object({
-  email: z.email("Please enter a valid email"),
-  password: z.string().min(8, "Please enter a password"),
-});
+  email: z.email('Please enter a valid email'),
+  password: z.string().min(8, 'Please enter a password'),
+})
 
 type LoginErrors = Partial<
   Record<keyof z.infer<typeof loginSchema>, string>
 > & {
-  submit?: string;
-};
+  submit?: string
+}
 
 export default function LoginPage() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
+  const router = useRouter()
+  const queryClient = useQueryClient()
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState<LoginErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const { currentUser } = useUser();
+    email: '',
+    password: '',
+  })
+  const [errors, setErrors] = useState<LoginErrors>({})
+  const [isLoading, setIsLoading] = useState(false)
+  const { currentUser } = useUser()
 
   useEffect(() => {
     if (currentUser) {
-      router.push("/");
+      router.push('/')
     }
-  }, [currentUser, router]);
+  }, [currentUser, router])
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
 
     // Clear errors when user starts typing
     if (errors[name as keyof LoginErrors]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: '' }))
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrors({});
+    e.preventDefault()
+    setIsLoading(true)
+    setErrors({})
 
     try {
-      const validatedData = loginSchema.safeParse(formData);
+      const validatedData = loginSchema.safeParse(formData)
       if (!validatedData.success) {
-        setErrors({ submit: "Invalid email or password" });
-        return;
+        setErrors({ submit: 'Invalid email or password' })
+        return
       }
-      const supabase = createClient();
+      const supabase = createClient()
 
       const { error } = await supabase.auth.signInWithPassword({
         email: validatedData.data.email,
         password: validatedData.data.password,
-      });
+      })
 
       if (error) {
-        if (error.code === "email_not_confirmed") {
+        if (error.code === 'email_not_confirmed') {
           setErrors({
             submit:
-              "Email not confirmed. Please check your email for a confirmation link.",
-          });
-          return;
+              'Email not confirmed. Please check your email for a confirmation link.',
+          })
+          return
         }
-        setErrors({ submit: error.message });
+        setErrors({ submit: error.message })
       } else {
         // Invalidate user queries to refresh authentication state
-        await queryClient.invalidateQueries({ queryKey: ["users"] });
-        router.push("/profile");
+        await queryClient.invalidateQueries({ queryKey: ['users'] })
+        router.push('/profile')
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const fieldErrors: Record<string, string> = {};
+        const fieldErrors: Record<string, string> = {}
         error.issues.forEach((issue) => {
           if (issue.path[0]) {
-            fieldErrors[issue.path[0] as string] = issue.message;
+            fieldErrors[issue.path[0] as string] = issue.message
           }
-        });
-        setErrors(fieldErrors);
+        })
+        setErrors(fieldErrors)
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center">
@@ -109,7 +109,7 @@ export default function LoginPage() {
               onChange={handleInputChange}
               required
               className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
-                errors.email ? "border-red-500" : ""
+                errors.email ? 'border-red-500' : ''
               }`}
             />
             {errors.email && (
@@ -129,7 +129,7 @@ export default function LoginPage() {
               onChange={handleInputChange}
               required
               className={`rounded border p-2 dark:border-gray-600 dark:bg-gray-700 ${
-                errors.password ? "border-red-500" : ""
+                errors.password ? 'border-red-500' : ''
               }`}
             />
             {errors.password && (
@@ -160,7 +160,7 @@ export default function LoginPage() {
               disabled={isLoading}
               className="flex-1 rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isLoading ? "Logging in..." : "Log in"}
+              {isLoading ? 'Logging in...' : 'Log in'}
             </button>
             <Link
               href="/signup"
@@ -173,5 +173,5 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
-  );
+  )
 }

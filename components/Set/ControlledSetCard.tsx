@@ -1,22 +1,22 @@
-import { useState } from "react";
-import SetCard from "./SetCard";
+import { useState } from 'react'
+import SetCard from './SetCard'
 
 type CardProps = {
-  shape: "diamond" | "oval" | "squiggle";
-  color: "red" | "green" | "purple";
-  fill: "solid" | "striped" | "open";
-  number: 1 | 2 | 3;
-};
+  shape: 'diamond' | 'oval' | 'squiggle'
+  color: 'red' | 'green' | 'purple'
+  fill: 'solid' | 'striped' | 'open'
+  number: 1 | 2 | 3
+}
 
 export default function ControlledSetCard() {
   const [card, setCard] = useState<CardProps>({
-    shape: "diamond",
-    color: "red",
-    fill: "solid",
+    shape: 'diamond',
+    color: 'red',
+    fill: 'solid',
     number: 1,
-  });
-  const [size, setSize] = useState<"sm" | "md" | "lg">("lg");
-  const [selected, setSelected] = useState(false);
+  })
+  const [size, setSize] = useState<'sm' | 'md' | 'lg'>('lg')
+  const [selected, setSelected] = useState(false)
 
   return (
     <div className="flex min-h-[140px] flex-col items-center gap-1">
@@ -25,7 +25,7 @@ export default function ControlledSetCard() {
           title="Shape"
           value={card.shape}
           onChange={(e) =>
-            setCard({ ...card, shape: e.target.value as CardProps["shape"] })
+            setCard({ ...card, shape: e.target.value as CardProps['shape'] })
           }
         >
           <option value="diamond">Diamond</option>
@@ -37,7 +37,7 @@ export default function ControlledSetCard() {
           title="Color"
           value={card.color}
           onChange={(e) =>
-            setCard({ ...card, color: e.target.value as CardProps["color"] })
+            setCard({ ...card, color: e.target.value as CardProps['color'] })
           }
         >
           <option value="red">Red</option>
@@ -49,7 +49,7 @@ export default function ControlledSetCard() {
           title="Fill"
           value={card.fill}
           onChange={(e) =>
-            setCard({ ...card, fill: e.target.value as CardProps["fill"] })
+            setCard({ ...card, fill: e.target.value as CardProps['fill'] })
           }
         >
           <option value="solid">Solid</option>
@@ -63,7 +63,7 @@ export default function ControlledSetCard() {
           onChange={(e) =>
             setCard({
               ...card,
-              number: Number(e.target.value) as CardProps["number"],
+              number: Number(e.target.value) as CardProps['number'],
             })
           }
         >
@@ -75,7 +75,7 @@ export default function ControlledSetCard() {
         <select
           title="Size"
           value={size}
-          onChange={(e) => setSize(e.target.value as "sm" | "md" | "lg")}
+          onChange={(e) => setSize(e.target.value as 'sm' | 'md' | 'lg')}
         >
           <option value="lg">Large</option>
           <option value="md">Medium</option>
@@ -87,5 +87,5 @@ export default function ControlledSetCard() {
         <SetCard card={card} size={size} selected={selected} />
       </div>
     </div>
-  );
+  )
 }

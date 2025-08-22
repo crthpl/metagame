@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import ArborContent from "@/components/ArborContent";
+import type { Metadata } from 'next'
+import ArborContent from '@/components/ArborContent'
 
 export const metadata: Metadata = {
-  title: "Arbor",
+  title: 'Arbor',
   description:
-    "Learn about the Arbor team - curious about markets, pedagogy, and game design",
-};
+    'Learn about the Arbor team - curious about markets, pedagogy, and game design',
+}
 
 export default function ArborPage() {
   return (
@@ -25,5 +25,5 @@ export default function ArborPage() {
       />
       <ArborContent />
     </>
-  );
+  )
 }
