@@ -1,8 +1,10 @@
 import { createServerClient } from '@supabase/ssr'
 import { type NextRequest, NextResponse } from 'next/server'
 
-const loggedInOnlyRoutes = ['/profile', '/logout']
+import { usersService } from '@/lib/db/users'
 
+const loggedInOnlyRoutes = ['/profile', '/logout']
+const adminOnlyRoutes = ['/admin']
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -40,17 +42,32 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
   if (
     !user &&
-    loggedInOnlyRoutes.some((route) =>
-      request.nextUrl.pathname.startsWith(route),
-    )
+    loggedInOnlyRoutes
+      .concat(adminOnlyRoutes)
+      .some((route) => request.nextUrl.pathname.startsWith(route))
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
+  }
+  if (
+    adminOnlyRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
+  ) {
+    const userIsAdmin = user?.id
+      ? await usersService.getUserAdminStatus({ userId: user?.id })
+      : false
+    if (!userIsAdmin) {
+      const redirect = NextResponse.redirect(
+        new URL('/unauthorized', request.url),
+      )
+      for (const cookie of supabaseResponse.cookies.getAll()) {
+        redirect.cookies.set(cookie.name, cookie.value)
+      }
+      return redirect
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
