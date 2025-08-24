@@ -1,12 +1,15 @@
 import { DummyTool } from './DummyTool'
 import { IssueTicketForm } from './IssueTicketForm'
 import TicketsInfo from './TicketsInfo'
+import UserProfileTool from './user-profile/UserProfileTool'
 
 export type AdminTool = {
   label: string
   menuDescription: string
   longDescription: string
-  component: React.ComponentType
+  component: React.ComponentType<{
+    searchParams?: Promise<Record<string, string | undefined>>
+  }>
 }
 // Define the admin tools configuration as an object mapping
 export const ADMIN_TOOLS = {
@@ -28,6 +31,13 @@ export const ADMIN_TOOLS = {
     menuDescription: 'View all tickets',
     longDescription: 'View all tickets and their stats',
     component: TicketsInfo,
+  },
+  'user-profile': {
+    label: 'User Profile Viewer',
+    menuDescription: 'View user profiles',
+    longDescription:
+      'Select and view detailed information for any user profile in the system',
+    component: UserProfileTool,
   },
 } satisfies Record<string, AdminTool>
 

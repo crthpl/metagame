@@ -3,11 +3,12 @@ import { AdminToolSelector } from './AdminToolSelector'
 import { type AdminToolId } from './tools/tools'
 
 interface AdminPageProps {
-  searchParams: Promise<{ tool?: string }>
+  searchParams: Promise<{ tool?: string; [key: string]: string | undefined }>
 }
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
-  const selectedTool = (await searchParams).tool as AdminToolId | undefined
+  const params = await searchParams
+  const selectedTool = params.tool as AdminToolId | undefined
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -21,7 +22,12 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       <div className="space-y-6">
         <AdminToolSelector selectedTool={selectedTool} />
 
-        {selectedTool && <AdminToolCard toolId={selectedTool} />}
+        {selectedTool && (
+          <AdminToolCard
+            toolId={selectedTool}
+            searchParams={Promise.resolve(params)}
+          />
+        )}
       </div>
     </div>
   )

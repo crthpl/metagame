@@ -10,7 +10,9 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
 
-export function DummyTool() {
+export function DummyTool({}: {
+  searchParams?: Promise<Record<string, string | undefined>>
+} = {}) {
   const [input1, setInput1] = useState('')
   const [input2, setInput2] = useState('')
   const [toastMessageInput, setToastMessageInput] = useState('')

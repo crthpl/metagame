@@ -20,7 +20,9 @@ import { adminGetAllTickets } from '@/app/actions/db/tickets'
 
 import { DbTicket, DbTicketType } from '@/types/database/dbTypeAliases'
 
-export default async function TicketsInfo() {
+export default async function TicketsInfo({}: {
+  searchParams?: Promise<Record<string, string | undefined>>
+} = {}) {
   const tickets = await adminGetAllTickets()
 
   return (
