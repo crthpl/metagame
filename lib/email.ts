@@ -65,7 +65,7 @@ export async function sendTicketConfirmationEmail({
             <h2 style="margin-top: 0;">Ticket Details</h2>
             <p><strong>Ticket Type:</strong> ${getTicketType(ticketType)?.title}</p>
             ${adminIssued ? '' : `<p><strong>Price Paid:</strong> ${isBtc ? `₿${btcPaid?.toFixed(6)}` : `$${usdPaid?.toFixed(2)}`}</p>`}
-            <p><strong>Your Ticket Code:</strong> <span style="font-size: 20px; font-weight: bold; color: #007bff;">${ticketCode}</span></p>
+            ${forExistingUser ? '' : `<p><strong>Your Ticket Code:</strong> <span style="font-size: 20px; font-weight: bold; color: #007bff;">${ticketCode}</span></p>`}
             ${adminIssued ? '' : isBtc ? `<p><strong>OpenNode Charge ID:</strong> ${opennodeChargeId}</p>` : `<p><strong>Stripe Payment ID:</strong> ${paymentIntentId}</p>`}
           </div>
           
@@ -84,7 +84,7 @@ export async function sendTicketConfirmationEmail({
           </div>`
               : `<div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0;">🎮 Next Steps</h3>
-            <p>Your account already exists and now has an associated ticket. If you haven't logged in before, you can set your password at <a href="${siteUrl}/profile/reset-password">this page</a>.</p>
+            <p>Your account already exists and now has an associated ticket. If you haven't logged in before, you can set your password at <a href="${siteUrl}/login/reset">this page</a>.</p>
           </div>`
           }
 
