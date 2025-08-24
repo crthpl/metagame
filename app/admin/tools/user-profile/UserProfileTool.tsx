@@ -1,3 +1,4 @@
+import { ProfileDataCollapsible } from './ProfileDataCollapsible'
 import { UserSelector } from './UserSelector'
 import Image from 'next/image'
 
@@ -25,7 +26,7 @@ export default async function UserProfileTool({
         <UserSelector users={profiles} selectedUserId={user_id} />
 
         {selectedProfile && (
-          <Card className="p-6">
+          <div className="p-6">
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-lg font-semibold">Profile Details</h3>
@@ -168,7 +169,11 @@ export default async function UserProfileTool({
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
+        )}
+
+        {selectedProfile && (
+          <ProfileDataCollapsible profile={selectedProfile} />
         )}
 
         {!selectedProfile && user_id && (
