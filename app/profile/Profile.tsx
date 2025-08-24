@@ -14,6 +14,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
+import { profileIsIncomplete } from '@/lib/profiles'
 import {
   ProfileFormData,
   initialProfileFormData,
@@ -41,19 +42,6 @@ import {
 } from '@/app/actions/db/users'
 import { ProfileInfoModal } from '@/app/profile/ProfileInfoModal'
 import { useProfileUpdate } from '@/app/profile/hooks/useProfileUpdate'
-
-import { DbProfile } from '@/types/database/dbTypeAliases'
-
-export const requiredProfileFields: (keyof ProfileFormData)[] = [
-  'first_name',
-  'bringing_kids',
-  'opted_in_to_homepage_display',
-  'minor',
-]
-
-export const profileIsIncomplete = (profile: DbProfile) => {
-  return requiredProfileFields.some((field) => profile[field] === null)
-}
 
 export default function Profile() {
   const queryClient = useQueryClient()
