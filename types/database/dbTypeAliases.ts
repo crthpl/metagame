@@ -37,3 +37,7 @@ export type DbOpendnodeOrderUpdate = TablesUpdate<'opennode_orders'>
 export type DbCoupon = Tables<'coupons'>
 export type DbCouponInsert = TablesInsert<'coupons'>
 export type DbCouponUpdate = TablesUpdate<'coupons'>
+
+export type DbTimer = Tables<'timers'>
+export type DbTimerInsert = TablesInsert<'timers'>
+export type DbTimerUpdate = TablesUpdate<'timers'>

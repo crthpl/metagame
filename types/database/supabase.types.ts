@@ -356,6 +356,42 @@ export type Database = {
           },
         ]
       }
+      timers: {
+        Row: {
+          active_team: Database['public']['Enums']['team_color'] | null
+          created_at: string | null
+          id: string
+          is_paused: boolean
+          last_update_time: string
+          name: string
+          orange_time_ms: number
+          purple_time_ms: number
+          updated_at: string | null
+        }
+        Insert: {
+          active_team?: Database['public']['Enums']['team_color'] | null
+          created_at?: string | null
+          id?: string
+          is_paused?: boolean
+          last_update_time?: string
+          name: string
+          orange_time_ms?: number
+          purple_time_ms?: number
+          updated_at?: string | null
+        }
+        Update: {
+          active_team?: Database['public']['Enums']['team_color'] | null
+          created_at?: string | null
+          id?: string
+          is_paused?: boolean
+          last_update_time?: string
+          name?: string
+          orange_time_ms?: number
+          purple_time_ms?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       coupon_emails_view: {
