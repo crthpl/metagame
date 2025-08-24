@@ -16,14 +16,6 @@ Features: speaker profiles, sponsors, interactive games, ticket sales.
 - **Testing**: Playwright
 - **Content**: Markdown files with gray-matter
 
-## Development Commands
-
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm lint` - Run ESLint
-- `pnpm test` - Run Playwright tests
-- `pnpm types:supabase` - Generate Supabase types
-
 ## Project Structure
 
 ### Key Directories
@@ -116,13 +108,11 @@ Storage of static assets should be done though supabase. Like other database que
 Early code was LLM-generated and inconsistent.  
 Claude may suggest refactors when it sees odd patterns — that’s encouraged.
 
-## LLM Assistance
-
-When Claude code finishes implementing a feature thread, especially in bypass permission mode, it should place a log in the /claude/reports folder summarizing everything done especially mutating changes to database. Don't try to run pnpm build after making features, the humans can handle that level of checking.
-
 ## Database particulars
 
-Private server methods live in /lib/db/[table]/service.ts. Then we have server actions in app/actions/db/... which wrap those functions for export in wrappers that check the current user and use their id, or check admin status before running aribtrary functions. For standardization and not messing up id orders, all db funcs should take object arguments, even if just a single arg is passed like {userId}.
+Private server methods live in /lib/db/[table]/service.ts. Then we have server actions in app/actions/db/... which wrap those functions for export in wrappers that check the current user and use their id, or check admin status before running aribtrary functions. For standardization and not messing up id orders, all db funcs should take object arguments, even if just a single arg is passed like {userId}. For select functions, we have api routes for better parallel fetching and avoiding server actions for queries.
+
+The Supabase SDK is typed, and the types of all of our tables are available in /types/database/supabase.types.ts with basic ones aliased in /types/database/dbTypeAliases.ts. Whenever possible, avoid creating ad hoc types and interfaces at the component/function level that can either be referenced from the types file, or obviated entirely by relying on the typed return values of supabase function calls.
 
 ## Misc
 
