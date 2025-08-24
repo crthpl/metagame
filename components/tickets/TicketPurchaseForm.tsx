@@ -62,7 +62,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   const [formData, setFormData] = useState<TicketPurchaseFormData>({
     name: '',
     email: '',
-    discordHandle: '',
     couponCode: '',
   })
   const [errors, setErrors] = useState<
@@ -232,7 +231,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         ticketTypeId: ticketType.id,
         name: formData.name,
         email: formData.email,
-        discordHandle: formData.discordHandle,
         couponCode: appliedCoupon?.code || '',
       })
 
@@ -302,7 +300,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           paymentIntentId: intentId,
           name: formData.name,
           email: formData.email,
-          discordHandle: formData.discordHandle,
           ticketType: ticketType.id,
           price: finalPrice,
         })

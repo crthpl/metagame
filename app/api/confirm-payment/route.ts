@@ -14,8 +14,7 @@ export async function POST(request: NextRequest) {
     // Validate input using Zod schema
     const validatedData = paymentConfirmationSchema.parse(body)
     console.log('VALIDATEDDATA', validatedData)
-    const { paymentIntentId, name, email, discordHandle, ticketType } =
-      validatedData
+    const { paymentIntentId, name, email, ticketType } = validatedData
 
     // Retrieve payment intent from Stripe to check its status
     const paymentIntent = await stripe.paymentIntents.retrieve(
@@ -88,16 +87,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Airtable record
-    const airtableRecord = formatAirtableRecord(
+    const airtableRecord = formatAirtableRecord({
       name,
       email,
       ticketType,
       price,
-      paymentIntentId,
+      stripePaymentId: paymentIntentId,
       success,
-      discordHandle,
       stripeFee,
-    )
+    })
 
     const airtableResult = await createTicketRecord(airtableRecord)
 

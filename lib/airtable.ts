@@ -77,17 +77,27 @@ export const createTicketRecord = async (recordData: AirtableRecord) => {
   }
 }
 
-export const formatAirtableRecord = (
-  name: string,
-  email: string,
-  ticketType: string,
-  price: number,
-  stripePaymentId: string,
-  success: boolean,
-  discordHandle?: string,
-  stripeFee?: number,
-  volunteerRoles?: string[],
-): AirtableRecord => {
+export const formatAirtableRecord = ({
+  name,
+  email,
+  ticketType,
+  price,
+  stripePaymentId,
+  success,
+  discordHandle,
+  stripeFee,
+  volunteerRoles,
+}: {
+  name: string
+  email: string
+  ticketType: string
+  price: number
+  stripePaymentId: string
+  success: boolean
+  discordHandle?: string
+  stripeFee?: number
+  volunteerRoles?: string[]
+}): AirtableRecord => {
   // Format date for Airtable (YYYY-MM-DD format)
   const today = new Date()
   const formattedDate = today.toISOString().split('T')[0] // Gets YYYY-MM-DD format
