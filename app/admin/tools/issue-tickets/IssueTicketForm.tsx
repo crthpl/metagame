@@ -194,6 +194,7 @@ export function IssueTicketForm({}: {
                     (selectedUser
                       ? `${selectedUser.first_name} ${selectedUser.last_name}`.trim()
                       : '') || undefined,
+                  purchaserEmail: selectedUser?.email || undefined,
                 })
               }}
             >
