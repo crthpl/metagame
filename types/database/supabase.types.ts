@@ -172,6 +172,7 @@ export type Database = {
           site_name_2: string | null
           site_url: string | null
           site_url_2: string | null
+          team: Database["public"]["Enums"]["TEAM_COLORS"] | null
         }
         Insert: {
           bringing_kids?: boolean | null
@@ -190,6 +191,7 @@ export type Database = {
           site_name_2?: string | null
           site_url?: string | null
           site_url_2?: string | null
+          team?: Database["public"]["Enums"]["TEAM_COLORS"] | null
         }
         Update: {
           bringing_kids?: boolean | null
@@ -208,6 +210,7 @@ export type Database = {
           site_name_2?: string | null
           site_url?: string | null
           site_url_2?: string | null
+          team?: Database["public"]["Enums"]["TEAM_COLORS"] | null
         }
         Relationships: []
       }
@@ -459,6 +462,7 @@ export type Database = {
         | "processing"
         | "paid"
         | "expired"
+      TEAM_COLORS: "orange" | "purple" | "green"
       ticket_type:
         | "volunteer"
         | "player"
@@ -602,6 +606,7 @@ export const Constants = {
         "paid",
         "expired",
       ],
+      TEAM_COLORS: ["orange", "purple", "green"],
       ticket_type: [
         "volunteer",
         "player",

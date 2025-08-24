@@ -1,6 +1,7 @@
 import {
   DbSessionAges,
   DbSessionView,
+  DbTeamColor,
   DbTicketType,
 } from '@/types/database/dbTypeAliases'
 
@@ -32,6 +33,16 @@ export const SESSION_AGES = {
   ADULTS: 'ADULTS' as const,
   KIDS: 'KIDS' as const,
 } as const satisfies Record<Uppercase<DbSessionAges>, DbSessionAges>
+
+export const SESSION_AGES_ENUM = Object.values(SESSION_AGES) as DbSessionAges[]
+
+export const TEAM_COLORS = {
+  ORANGE: 'orange' as const,
+  PURPLE: 'purple' as const,
+  GREEN: 'green' as const,
+} as const satisfies Record<Uppercase<DbTeamColor>, DbTeamColor>
+
+export const TEAM_COLORS_ENUM = Object.values(TEAM_COLORS) as DbTeamColor[]
 
 export const TICKET_TYPES = {
   VOLUNTEER: 'volunteer' as const,

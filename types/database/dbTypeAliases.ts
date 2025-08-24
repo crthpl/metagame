@@ -24,6 +24,7 @@ export type DbTicketUpdate = TablesUpdate<'tickets'>
 export type DbProfile = Tables<'profiles'>
 export type DbProfileInsert = TablesInsert<'profiles'>
 export type DbProfileUpdate = TablesUpdate<'profiles'>
+export type DbTeamColor = Enums<'TEAM_COLORS'>
 
 export type DbSessionRsvp = Tables<'session_rsvps'>
 export type DbSessionRsvpInsert = TablesInsert<'session_rsvps'>
