@@ -5,7 +5,10 @@ import { DbTicketInsert } from '@/types/database/dbTypeAliases'
 export const ticketsService = {
   getAllTickets: async () => {
     const supabase = createServiceClient()
-    const { data, error } = await supabase.from('tickets').select('*')
+    const { data, error } = await supabase
+      .from('tickets')
+      .select('*')
+      .order('created_at', { ascending: true })
     if (error) {
       throw new Error(error.message)
     }
