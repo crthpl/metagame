@@ -1,13 +1,13 @@
-'use client'
-
-import { useState } from 'react'
-
 import { AdminToolCard } from './AdminToolCard'
 import { AdminToolSelector } from './AdminToolSelector'
 import { type AdminToolId } from './tools/tools'
 
-export default function AdminPage() {
-  const [selectedTool, setSelectedTool] = useState<AdminToolId | null>(null)
+interface AdminPageProps {
+  searchParams: Promise<{ tool?: string }>
+}
+
+export default async function AdminPage({ searchParams }: AdminPageProps) {
+  const selectedTool = (await searchParams).tool as AdminToolId | undefined
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -19,10 +19,7 @@ export default function AdminPage() {
       </div>
 
       <div className="space-y-6">
-        <AdminToolSelector
-          selectedTool={selectedTool}
-          onToolSelect={setSelectedTool}
-        />
+        <AdminToolSelector selectedTool={selectedTool} />
 
         {selectedTool && <AdminToolCard toolId={selectedTool} />}
       </div>

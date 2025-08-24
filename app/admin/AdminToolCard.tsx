@@ -1,5 +1,3 @@
-'use client'
-
 import { ADMIN_TOOLS, type AdminToolId } from './tools/tools'
 
 export function AdminToolCard({ toolId }: { toolId: AdminToolId | null }) {
