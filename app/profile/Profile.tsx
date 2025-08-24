@@ -10,7 +10,6 @@ import {
   LinkIcon,
   XIcon,
 } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
@@ -23,6 +22,7 @@ import { toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
 
 import { URLS } from '@/utils/urls'
 
+import { ProfilePicture } from '@/components/ProfilePicture'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -36,6 +36,7 @@ import { getCurrentUserProfilePictureUploadUrl } from '@/app/actions/db/storage'
 import {
   deleteCurrentUserProfilePicture,
   getCurrentUser,
+  getCurrentUserAdminStatus,
   getCurrentUserProfile,
   updateCurrentUserProfile,
 } from '@/app/actions/db/users'
@@ -52,6 +53,12 @@ export default function Profile() {
   const { data: currentUserProfile } = useQuery({
     queryKey: ['users', 'profile', currentUser?.id],
     queryFn: () => getCurrentUserProfile({}),
+    enabled: !!currentUser?.id,
+  })
+
+  const { data: isAdmin } = useQuery({
+    queryKey: ['users', 'admin-status', currentUser?.id],
+    queryFn: () => getCurrentUserAdminStatus(),
     enabled: !!currentUser?.id,
   })
   const [isEditMode, setIsEditMode] = useState(false)
@@ -268,25 +275,18 @@ export default function Profile() {
             {/* Profile Picture Section */}
             <div className="flex flex-col items-center space-y-4">
               <div className="relative">
-                {currentUserProfile?.profile_pictures_url ? (
-                  <Image
-                    src={currentUserProfile.profile_pictures_url}
-                    alt="Profile picture"
-                    width={128}
-                    height={128}
-                    className="aspect-square rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="bg-muted flex h-32 w-32 items-center justify-center rounded-full">
-                    <span className="text-muted-foreground text-2xl">
-                      {currentUserProfile?.first_name
-                        ?.charAt(0)
-                        ?.toUpperCase() ||
-                        currentUser?.email?.charAt(0)?.toUpperCase() ||
-                        '?'}
-                    </span>
-                  </div>
-                )}
+                <ProfilePicture
+                  src={currentUserProfile?.profile_pictures_url}
+                  alt="Profile picture"
+                  size={128}
+                  team={currentUserProfile?.team}
+                  fallbackText={
+                    currentUserProfile?.first_name?.charAt(0)?.toUpperCase() ||
+                    currentUser?.email?.charAt(0)?.toUpperCase() ||
+                    '?'
+                  }
+                  className="text-2xl"
+                />
               </div>
 
               {isEditMode && (
@@ -615,6 +615,61 @@ export default function Profile() {
                     </Link>
                   )}
                 </div>
+                {/* Team Selection - Admin Only */}
+                {isAdmin && (
+                  <div className="flex items-center gap-2">
+                    <label className="block text-sm font-medium">Team</label>
+                    {isEditMode ? (
+                      <RadioGroup
+                        value={formData.team || ''}
+                        onValueChange={(value) => {
+                          const newValue =
+                            value === '' ? null : (value as 'orange' | 'purple')
+                          setFormData((prev) => ({
+                            ...prev,
+                            team: newValue,
+                          }))
+                        }}
+                        className="flex"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem
+                            value="purple"
+                            id="team-purple"
+                            className="data-[state=checked]:text-[#800080] data-[state=checked]:border-[#800080] [&[data-state=checked]_svg]:fill-[#800080]"
+                          />
+                          <label htmlFor="team-purple" className="text-sm">
+                            Purple
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem
+                            value="orange"
+                            id="team-orange"
+                            className="data-[state=checked]:text-[#FF8C00] data-[state=checked]:border-[#FF8C00] [&[data-state=checked]_svg]:fill-[#FF8C00]"
+                          />
+                          <label htmlFor="team-orange" className="text-sm">
+                            Orange
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="" id="team-none" />
+                          <label htmlFor="team-none" className="text-sm">
+                            None
+                          </label>
+                        </div>
+                      </RadioGroup>
+                    ) : (
+                      <p className="text-lg">
+                        {currentUserProfile?.team === 'orange'
+                          ? 'Orange'
+                          : currentUserProfile?.team === 'purple'
+                            ? 'Purple'
+                            : 'None'}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
               {isEditMode && (
                 <div className="flex flex-col gap-2">

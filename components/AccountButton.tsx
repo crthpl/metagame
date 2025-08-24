@@ -1,8 +1,8 @@
 'use client'
 
 import { NavItem } from './Nav'
+import { ProfilePicture } from './ProfilePicture'
 import { useQuery } from '@tanstack/react-query'
-import Image from 'next/image'
 import Link from 'next/link'
 
 import {
@@ -52,18 +52,16 @@ export default function AccountButton({
       user?.email?.charAt(0)?.toUpperCase() ||
       '?'
 
-    return profile?.profile_pictures_url ? (
-      <Image
-        src={profile.profile_pictures_url}
+    return (
+      <ProfilePicture
+        src={profile?.profile_pictures_url}
         alt="User Profile Picture"
-        width={32}
-        height={32}
-        className="aspect-square rounded-full object-cover"
+        size={32}
+        team={profile?.team}
+        fallbackText={initial}
+        ringSize="small"
+        className="bg-dark-300 text-sm font-bold text-white"
       />
-    ) : (
-      <div className="bg-dark-300 flex size-[32px] items-center justify-center rounded-full text-sm font-bold text-white">
-        {initial}
-      </div>
     )
   }
   return (

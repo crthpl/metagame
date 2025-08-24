@@ -30,7 +30,7 @@ export async function sendTicketConfirmationEmail({
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://metagame.games'
     const isBtc = opennodeChargeId !== undefined
     const { data, error } = await resend.emails.send({
-      from: 'Metagame 2025 <tickets@mail.metagame.games>',
+      from: `Metagame 2025 <${process.env.RESEND_DEFAULT_EMAIL || 'tickets@mail.metagame.games'}>`,
       to,
       bcc: [
         'ricki.heicklen+metagame@gmail.com',

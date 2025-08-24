@@ -3,7 +3,10 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['metagame.games', 'fkarmpoupazxnshofaeg.supabase.co'],
+    domains: [
+      'metagame.games',
+      `${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co`,
+    ],
   },
   webpack: (config) => {
     config.resolve.alias = {
