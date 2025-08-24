@@ -11,9 +11,14 @@ export interface TicketConfirmationEmailData {
   purchaserName: string
   ticketType: string
   ticketCode: string
-  price: number
+  isBtc: boolean
+  usdPaid?: number
+  btcPaid?: number
   paymentIntentId?: string
   opennodeChargeId?: string
+  adminIssued?: boolean
+  forExistingUser?: boolean
+  test?: boolean
 }
 
 export async function sendTicketConfirmationEmail({
@@ -21,14 +26,19 @@ export async function sendTicketConfirmationEmail({
   purchaserName,
   ticketType,
   ticketCode,
-  price,
+  isBtc,
+  usdPaid = 0,
+  btcPaid = 0,
   paymentIntentId,
   opennodeChargeId,
+  adminIssued = false,
+  forExistingUser = false,
+  test = false,
 }: TicketConfirmationEmailData) {
   try {
     const discordUrl = SOCIAL_LINKS.DISCORD
+    const testSubject = test ? 'TEST: ' : ''
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://metagame.games'
-    const isBtc = opennodeChargeId !== undefined
     const { data, error } = await resend.emails.send({
       from: 'Metagame 2025 <tickets@mail.metagame.games>',
       to,
@@ -40,25 +50,28 @@ export async function sendTicketConfirmationEmail({
         'ricki.heicklen+metagame@gmail.com',
         'briantsmiley42+metagame@gmail.com',
       ],
-      subject:
-        'Action required: Claim your Metagame 2025 ticket and register your profile',
+      subject: adminIssued
+        ? `${testSubject}Action required: Your Metagame 2025 ticket has been issued; claim your profile`
+        : `${testSubject}Action required: Claim your Metagame 2025 ticket and register your profile`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #333;">Claim your ticket and complete registration</h1>
+          <h1 style="color: #333;">${adminIssued ? 'Your ticket has been issued; please complete registration' : 'Claim your ticket and complete registration'}</h1>
           
-          <p>Hi ${purchaserName},</p>
+          <p>Hi ${purchaserName || 'there'},</p>
           
           <p>Your Metagame 2025 ticket is confirmed. <strong>Next, claim your ticket and create your account</strong> so we can associate the ticket with your profile and keep you in the loop.</p>
           
           <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h2 style="margin-top: 0;">Ticket Details</h2>
             <p><strong>Ticket Type:</strong> ${getTicketType(ticketType)?.title}</p>
-            <p><strong>Price Paid:</strong> ${isBtc ? `₿${price.toFixed(6)}` : `$${price.toFixed(2)}`}</p>
+            ${adminIssued ? '' : `<p><strong>Price Paid:</strong> ${isBtc ? `₿${btcPaid?.toFixed(6)}` : `$${usdPaid?.toFixed(2)}`}</p>`}
             <p><strong>Your Ticket Code:</strong> <span style="font-size: 20px; font-weight: bold; color: #007bff;">${ticketCode}</span></p>
-            ${isBtc ? `<p><strong>OpenNode Charge ID:</strong> ${opennodeChargeId}</p>` : `<p><strong>Stripe Payment ID:</strong> ${paymentIntentId}</p>`}
+            ${adminIssued ? '' : isBtc ? `<p><strong>OpenNode Charge ID:</strong> ${opennodeChargeId}</p>` : `<p><strong>Stripe Payment ID:</strong> ${paymentIntentId}</p>`}
           </div>
           
-          <div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          ${
+            !forExistingUser
+              ? `<div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0;">🎮 Next Steps</h3>
             <p>To claim your ticket and complete registration:</p>
             <ol>
@@ -68,7 +81,12 @@ export async function sendTicketConfirmationEmail({
               <li>Confirm your account by clicking the verification link sent to your email</li>
             </ol>
             <p> Note: The Ticket Code above allows you to create an account/register for the event. It can be used with <b>any</b> email address and name. To sign up with a different email address than this one, go to the <a href="${siteUrl}/signup?ticketCode=${ticketCode}">signup page</a> and enter the appropriate details with your ticket code. You can also effectively transfer this ticket to someone else by giving them the ticket code to sign up with.</p> 
-          </div>
+          </div>`
+              : `<div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">🎮 Next Steps</h3>
+            <p>Your account already exists and now has an associated ticket. If you haven't logged in before, you can set your password at <a href="${siteUrl}/profile/reset-password">this page</a>.</p>
+          </div>`
+          }
 
           <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0;">Event Information</h3>
@@ -82,7 +100,7 @@ export async function sendTicketConfirmationEmail({
             <p><strong>Contact:</strong> <a href="${discordUrl}">Join our Discord!</a></p>
           </div>
           
-          ${isBtc ? `<p>If you believe there has been a mistake, want a 94% refund on your ticket (available until September 1), reply to this email.</p>` : ''}
+          ${adminIssued ? '' : isBtc ? `<p>If you believe there has been a mistake, want a 94% refund on your ticket (available until September 1), reply to this email.</p>` : ''}
           
           <p>See you at Metagame 2025!</p>
           
@@ -92,17 +110,17 @@ export async function sendTicketConfirmationEmail({
         </div>
       `,
       text: `
-Claim your ticket and complete registration
+${adminIssued ? 'Your ticket has been issued, please complete registration' : 'Claim your ticket and complete registration'}
 
 Hi ${purchaserName},
 
-Your Metagame 2025 ticket is confirmed. NEXT: claim your ticket and create your account so we can associate the ticket with your profile and keep you in the loop.
+'Your Metagame 2025 ticket is confirmed.'} NEXT: claim your ticket and create your account so we can associate the ticket with your profile and keep you in the loop.
 
 Ticket Details:
 - Ticket Type: ${ticketType}
-- Price Paid: $${price.toFixed(2)}
+${!adminIssued && `<p><strong>Price Paid:</strong> ${isBtc ? `₿${btcPaid?.toFixed(6)}` : `$${usdPaid?.toFixed(2)}`}</p>`}
 - Your Ticket Code: ${ticketCode} (you will need this to create your account and associate the ticket)
-- Stripe Payment ID: ${paymentIntentId}
+${!adminIssued && isBtc ? `- OpenNode Charge ID: ${opennodeChargeId}` : `- Stripe Payment ID: ${paymentIntentId}`}
 
 Next Steps:
 1. Go to ${siteUrl}/signup?email=${encodeURIComponent(to)}&ticketCode=${ticketCode}
@@ -121,7 +139,7 @@ Event Information
 - Location: Lighthaven Campus, 2740 Telegraph Avenue, Berkeley, CA
 - Contact: reply to this email
 
-If you believe there has been a mistake, want a 94% refund on your ticket (available until September 1), or have any other questions, just reply to this email.
+${adminIssued ? 'If you have any questions, just reply to this email.' : 'If you believe there has been a mistake, want a 94% refund on your ticket (available until September 1), or have any other questions, just reply to this email.'}
 
 See you at Metagame 2025!
 
@@ -139,4 +157,17 @@ This is not a puzzle.
     console.error('Error sending ticket confirmation email:', error)
     throw error
   }
+}
+
+/** Method so we can get notified of backend failures */
+export const sendAdminErrorEmail = async (errorMessage: string) => {
+  await resend.emails.send({
+    from: 'Metagame 2025 <tickets@mail.metagame.games>',
+    to: [
+      'ricki.heicklen+metagame@gmail.com',
+      'briantsmiley42+metagame@gmail.com',
+    ],
+    subject: '**URGENT** METAGAME Admin Error',
+    html: `<p>An error occurred: ${errorMessage}</p>`,
+  })
 }

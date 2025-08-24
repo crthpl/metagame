@@ -50,3 +50,8 @@ export interface AirtableRecord {
   'Stripe Fee'?: number
   'Volunteer Roles'?: string[]
 }
+
+/** Takes params that contain either an id or an email, but not both */
+export type IdXorEmail =
+  | { id: string; email?: never }
+  | { id?: never; email: string }

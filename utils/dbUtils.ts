@@ -34,7 +34,7 @@ export const SESSION_AGES = {
 } as const satisfies Record<Uppercase<DbSessionAges>, DbSessionAges>
 
 export const TICKET_TYPES = {
-  NPC: 'npc' as const,
+  VOLUNTEER: 'volunteer' as const,
   PLAYER: 'player' as const,
   SUPPORTER: 'supporter' as const,
   STUDENT: 'student' as const,

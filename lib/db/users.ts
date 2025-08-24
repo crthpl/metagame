@@ -1,3 +1,6 @@
+import { IdXorEmail } from '../types'
+import { AuthError, UserResponse } from '@supabase/supabase-js'
+
 import { storageService } from '@/lib/db/storage'
 
 import { createClient } from '@/utils/supabase/server'
@@ -13,6 +16,35 @@ export const usersService = {
       data: { user },
     } = await supabase.auth.getUser()
     return user
+  },
+  /** Look up a user in auth table using id */
+  getUserById: async ({ userId }: { userId: string }) => {
+    const supabase = createServiceClient()
+    return await supabase.auth.admin.getUserById(userId)
+  },
+  getUser: async (idOrEmail: IdXorEmail): Promise<UserResponse> => {
+    const { id, email } = idOrEmail
+    if (id) {
+      return await usersService.getUserById({ userId: id })
+    } else if (email) {
+      const userProfile = await usersService.getUserProfileByEmail({ email })
+      //TODO: handle multiple matching profiles; or enforce that we never will
+      if (!userProfile) {
+        return {
+          data: { user: null },
+          error: new AuthError(
+            'No user found for email',
+            404,
+            'user_n0t_found',
+          ),
+        }
+      }
+      const { id } = userProfile
+      const user = await usersService.getUserById({ userId: id })
+      return user
+    } else {
+      throw new Error('Either id or email must be provided')
+    }
   },
   /** Check if a user has admin status */
   getUserAdminStatus: async ({ userId }: { userId: string }) => {
