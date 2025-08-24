@@ -7,6 +7,8 @@ import { usersService } from '@/lib/db/users'
 
 import { createServiceClient } from '@/utils/supabase/service'
 
+import { DbTicket } from '@/types/database/dbTypeAliases'
+
 export const adminGetAllTickets = adminExportWrapper(
   ticketsService.getAllTickets,
 )
@@ -18,13 +20,17 @@ export const signupByTicketCode = async ({
   email: string
   password: string
   ticketCode: string
-}) => {
+}): Promise<{
+  success: boolean
+  error: string | null
+  ticket: DbTicket | null
+}> => {
   const ticket = await ticketsService.getTicketByCode({ code: ticketCode })
   if (!ticket) {
     throw new Error('Ticket not found')
   }
   if (ticket.owner_id) {
-    throw new Error('Ticket already has an owner')
+    return { success: false, error: 'claimed', ticket: null }
   }
   let userId: string
   const supabase = createServiceClient()
@@ -45,5 +51,5 @@ export const signupByTicketCode = async ({
     userId = user.id
   }
   await ticketsService.updateTicketOwner({ ticketCode, ownerId: userId })
-  return ticket
+  return { success: true, error: null, ticket: ticket }
 }
