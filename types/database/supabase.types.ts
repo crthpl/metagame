@@ -257,6 +257,7 @@ export type Database = {
           max_capacity: number | null
           megagame: boolean
           min_capacity: number | null
+          reserved_spots: number
           start_time: string | null
           title: string | null
         }
@@ -272,6 +273,7 @@ export type Database = {
           max_capacity?: number | null
           megagame?: boolean
           min_capacity?: number | null
+          reserved_spots?: number
           start_time?: string | null
           title?: string | null
         }
@@ -287,6 +289,7 @@ export type Database = {
           max_capacity?: number | null
           megagame?: boolean
           min_capacity?: number | null
+          reserved_spots?: number
           start_time?: string | null
           title?: string | null
         }
@@ -302,6 +305,7 @@ export type Database = {
       }
       tickets: {
         Row: {
+          admin_issued: boolean
           coupons_used: string[]
           created_at: string
           id: string
@@ -310,12 +314,14 @@ export type Database = {
           owner_id: string | null
           price_paid: number | null
           purchaser_email: string | null
+          purchaser_name: string | null
           satoshis_paid: number | null
           stripe_payment_id: string | null
           ticket_code: string
           ticket_type: Database['public']['Enums']['ticket_type']
         }
         Insert: {
+          admin_issued?: boolean
           coupons_used?: string[]
           created_at?: string
           id?: string
@@ -324,12 +330,14 @@ export type Database = {
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
+          purchaser_name?: string | null
           satoshis_paid?: number | null
           stripe_payment_id?: string | null
           ticket_code: string
           ticket_type: Database['public']['Enums']['ticket_type']
         }
         Update: {
+          admin_issued?: boolean
           coupons_used?: string[]
           created_at?: string
           id?: string
@@ -338,6 +346,7 @@ export type Database = {
           owner_id?: string | null
           price_paid?: number | null
           purchaser_email?: string | null
+          purchaser_name?: string | null
           satoshis_paid?: number | null
           stripe_payment_id?: string | null
           ticket_code?: string
@@ -448,7 +457,7 @@ export type Database = {
         | 'paid'
         | 'expired'
       ticket_type:
-        | 'npc'
+        | 'volunteer'
         | 'player'
         | 'supporter'
         | 'friday'
@@ -591,7 +600,7 @@ export const Constants = {
         'expired',
       ],
       ticket_type: [
-        'npc',
+        'volunteer',
         'player',
         'supporter',
         'friday',

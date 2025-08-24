@@ -3,6 +3,7 @@ import { OpenNodeChargeWebhook } from 'opennode/dist/types/v1'
 
 import { opennodeDbService } from '@/lib/db/opennode'
 import { ticketsService } from '@/lib/db/tickets'
+import { sendAdminErrorEmail, sendTicketConfirmationEmail } from '@/lib/email'
 import { opennode } from '@/lib/opennode'
 
 export async function POST(req: NextRequest) {
@@ -31,6 +32,27 @@ export async function POST(req: NextRequest) {
       satoshis_paid: body.amount,
     }
     await ticketsService.createTicket({ ticket: newTicket })
+
+    if (!dbCharge.purchaser_email) {
+      console.error('no purchaser email on opennode charge', dbCharge)
+      await sendAdminErrorEmail(
+        'no purchaser email on opennode charge: \n' + JSON.stringify(dbCharge),
+      )
+      return NextResponse.json({ received: true })
+    }
+
+    await sendTicketConfirmationEmail({
+      to: dbCharge.purchaser_email,
+      purchaserName: '',
+      ticketType: dbCharge.ticket_type!,
+      ticketCode: dbCharge.id,
+      isBtc: false,
+      usdPaid: body.amount,
+      opennodeChargeId: dbCharge.id,
+      adminIssued: false,
+      forExistingUser: false,
+      test: dbCharge.is_test,
+    })
   }
 
   return NextResponse.json({ received: true })

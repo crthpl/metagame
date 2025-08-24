@@ -17,6 +17,11 @@ export const adminGetAllProfiles = adminExportWrapper(
 export const adminGetUserProfileByEmail = adminExportWrapper(
   usersService.getUserProfileByEmail,
 )
+export const adminGetUserProfileById = adminExportWrapper(
+  usersService.getUserProfile,
+)
+
+export const adminGetUser = adminExportWrapper(usersService.getUser)
 
 /* Mutations */
 export const updateCurrentUserProfile = currentUserWrapper(
