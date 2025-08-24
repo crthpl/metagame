@@ -3,6 +3,14 @@ import { createServiceClient } from '@/utils/supabase/service'
 import { DbTicketInsert } from '@/types/database/dbTypeAliases'
 
 export const ticketsService = {
+  getAllTickets: async () => {
+    const supabase = createServiceClient()
+    const { data, error } = await supabase.from('tickets').select('*')
+    if (error) {
+      throw new Error(error.message)
+    }
+    return data
+  },
   createTicket: async ({
     ticket,
   }: {
