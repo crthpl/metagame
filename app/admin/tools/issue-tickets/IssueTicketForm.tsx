@@ -21,7 +21,7 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   AdminIssueTicketInput,
   adminIssueTicket,
-} from '@/app/admin/actions/adminIssueTicket'
+} from '@/app/admin/tools/issue-tickets/actions'
 import { ProfilesResponseSchema } from '@/app/api/queries/profiles/schema'
 
 import { DbProfile } from '@/types/database/dbTypeAliases'

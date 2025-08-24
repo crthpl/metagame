@@ -1,6 +1,6 @@
 import { DummyTool } from './DummyTool'
-import { IssueTicketForm } from './IssueTicketForm'
 import TicketsInfo from './TicketsInfo'
+import { IssueTicketForm } from './issue-tickets/IssueTicketForm'
 import UserProfileTool from './user-profile/UserProfileTool'
 
 export type AdminTool = {
