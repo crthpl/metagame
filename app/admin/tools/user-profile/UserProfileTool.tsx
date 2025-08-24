@@ -1,6 +1,9 @@
 import { ProfileDataCollapsible } from './ProfileDataCollapsible'
 import { UserSelector } from './UserSelector'
+import { CheckIcon, MinusIcon, XIcon } from 'lucide-react'
 import Image from 'next/image'
+
+import { profileIsIncomplete } from '@/lib/profiles'
 
 import { Card } from '@/components/Card'
 
@@ -24,6 +27,19 @@ export default async function UserProfileTool({
   const userTickets = selectedProfile
     ? tickets.filter((t) => t.owner_id === selectedProfile.id)
     : []
+
+  const renderTrueFalseNull = (value: boolean | null) => {
+    switch (value) {
+      case null:
+        return <MinusIcon className="text-gray-500" size={16} />
+      case true:
+        return <CheckIcon className="text-green-500" size={16} />
+      case false:
+        return <XIcon className="text-red-500" size={16} />
+      default:
+        return <MinusIcon className="text-gray-500" size={16} />
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -141,40 +157,45 @@ export default async function UserProfileTool({
                   <div className="flex gap-4 mt-1">
                     <div className="flex items-center gap-1">
                       <span className="text-xs">Homepage:</span>
-                      {selectedProfile.opted_in_to_homepage_display === true ? (
-                        <span className="text-green-500">✓</span>
-                      ) : selectedProfile.opted_in_to_homepage_display ===
-                        false ? (
-                        <span className="text-red-500">✗</span>
-                      ) : (
-                        <span className="text-gray-500">−</span>
+                      {renderTrueFalseNull(
+                        selectedProfile.opted_in_to_homepage_display,
                       )}
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="text-xs">18+:</span>
-                      {selectedProfile.minor === false ? (
-                        <span className="text-green-500">✓</span>
-                      ) : (
-                        <span className="text-red-500">✗</span>
-                      )}
+                      {renderTrueFalseNull(selectedProfile.minor)}
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="text-xs">Bringing Kids:</span>
-                      {selectedProfile.bringing_kids ? (
-                        <span className="text-green-500">✓</span>
-                      ) : (
-                        <span className="text-red-500">✗</span>
-                      )}
+                      {renderTrueFalseNull(selectedProfile.bringing_kids)}
                     </div>
                   </div>
                 </div>
-                <div>
-                  <strong>Info Request:</strong>
-                  <p>
-                    {selectedProfile.dismissed_info_request
-                      ? 'Dismissed'
-                      : 'Not Dismissed'}
-                  </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                  <div>
+                    <strong>Profile Status:</strong>
+                    <div className="flex items-center gap-1 mt-1">
+                      {profileIsIncomplete(selectedProfile) ? (
+                        <>
+                          <span className="text-xs">Incomplete:</span>
+                          <span className="text-red-500">✗</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-xs">Complete:</span>
+                          <span className="text-green-500">✓</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <strong>Modal dismissed:</strong>
+                    <p>
+                      {selectedProfile.dismissed_info_request
+                        ? 'Dismissed'
+                        : 'Not Dismissed'}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
