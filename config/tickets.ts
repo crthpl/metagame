@@ -33,7 +33,7 @@ export const DAY_PASS_OPTIONS: TicketType[] = [
   },
 ]
 
-export const TICKET_TYPES = {
+export const TICKET_TYPES: Record<string, TicketType> = {
   volunteer: {
     id: 'volunteer',
     title: 'Volunteer',
@@ -111,7 +111,7 @@ export const TICKET_TYPES = {
     applicationBased: true,
     description: 'Financial assistance',
   },
-} satisfies Record<string, TicketType>
+}
 
 export const getTicketType = (id: string): TicketType | null => {
   return ['friday', 'saturday', 'sunday'].includes(id)
