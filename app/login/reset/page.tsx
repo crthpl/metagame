@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import { MailIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 
 import { createClient } from '@/utils/supabase/client'
@@ -18,9 +19,19 @@ type ResetErrors = Partial<
   submit?: string
 }
 
-export default function ResetPasswordRequestPage() {
+//Suspense for useSearchParams idk
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordRequestPage />
+    </Suspense>
+  )
+}
+function ResetPasswordRequestPage() {
+  const searchParams = useSearchParams()
+  const initialEmail = (searchParams.get('email') ?? '').trim()
   const [formData, setFormData] = useState({
-    email: '',
+    email: initialEmail,
   })
   const [errors, setErrors] = useState<ResetErrors>({})
   const [isLoading, setIsLoading] = useState(false)
