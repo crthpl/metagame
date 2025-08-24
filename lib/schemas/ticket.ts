@@ -6,7 +6,6 @@ import { TICKET_TYPES_ENUM } from '@/utils/dbUtils'
 export const ticketPurchaseSchema = z.object({
   name: z.string().min(1, 'Name is required').trim(),
   email: z.email('Please enter a valid email address').trim(),
-  discordHandle: z.string().optional(),
   couponCode: z
     .string()
     .optional()
@@ -19,7 +18,6 @@ export const paymentConfirmationSchema = z.object({
   paymentIntentId: z.string(),
   name: z.string().min(1),
   email: z.email(),
-  discordHandle: z.string().optional(),
   ticketType: z.enum(TICKET_TYPES_ENUM),
 })
 
@@ -28,7 +26,6 @@ export const paymentIntentSchema = z.object({
   ticketTypeId: z.string(),
   name: z.string().min(1),
   email: z.email(),
-  discordHandle: z.string().optional(),
   couponCode: z.string().optional(),
 })
 
