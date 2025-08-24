@@ -3,3 +3,4 @@ build
 .next
 node_modules
 coverage
+types/database/supabase.types.ts
