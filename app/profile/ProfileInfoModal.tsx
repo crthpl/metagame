@@ -2,16 +2,11 @@
 
 import { useState } from 'react'
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useProfileUpdate } from './hooks/useProfileUpdate'
 import { ExternalLinkIcon } from 'lucide-react'
 import Link from 'next/link'
-import { toast } from 'sonner'
 
-import {
-  ProfileFormData,
-  initialProfileFormData,
-  profileFormSchema,
-} from '@/lib/schemas/profile'
+import { ProfileFormData, initialProfileFormData } from '@/lib/schemas/profile'
 
 import { cn } from '@/utils/cn'
 import { URLS } from '@/utils/urls'
@@ -20,8 +15,6 @@ import { Modal } from '@/components/Modal'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-
-import { updateCurrentUserProfile } from '@/app/actions/db/users'
 
 import { DbProfile } from '@/types/database/dbTypeAliases'
 
@@ -36,64 +29,28 @@ export function ProfileInfoModal({
   currentProfile,
   currentUserId,
 }: ProfileInfoModalProps) {
-  const queryClient = useQueryClient()
   const [formData, setFormData] = useState<ProfileFormData>(
     currentProfile ?? initialProfileFormData,
   )
 
-  // Profile update mutation
-  const updateProfileMutation = useMutation({
-    mutationFn: updateCurrentUserProfile,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['users', 'profile', currentUserId],
-      })
-      toast.success('Profile updated successfully!')
-      onClose()
-    },
-    onError: (error) => {
-      console.error('Error updating profile:', error)
-      toast.error('Failed to update profile')
-    },
-  })
-
-  // Dismiss modal mutation
-  const dismissModalMutation = useMutation({
-    mutationFn: () =>
-      updateCurrentUserProfile({
-        data: { dismissed_info_request: true },
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['users', 'profile', currentUserId],
-      })
-      toast.success("You won't be prompted again")
-      onClose()
-    },
-    onError: (error) => {
-      console.error('Error dismissing modal:', error)
-      toast.error('Failed to dismiss modal')
-    },
+  const {
+    updateProfile,
+    dismissModal,
+    isLoading,
+    isUpdatingProfile,
+    isDismissingModal,
+  } = useProfileUpdate({
+    currentUserId,
+    onSuccess: onClose,
   })
 
   const handleSave = () => {
-    const result = profileFormSchema.safeParse(formData)
-    if (!result.success) {
-      toast.error('Error saving profile: ' + result.error.message)
-      return
-    }
-
-    updateProfileMutation.mutate({
-      data: result.data,
-    })
+    updateProfile(formData)
   }
 
   const handleDismiss = () => {
-    dismissModalMutation.mutate()
+    dismissModal()
   }
-
-  const isSaving =
-    updateProfileMutation.isPending || dismissModalMutation.isPending
 
   return (
     <Modal onClose={onClose}>
@@ -262,25 +219,23 @@ export function ProfileInfoModal({
 
         {/* Action Buttons */}
         <div className="mt-6 flex flex-col gap-2">
-          <Button onClick={handleSave} disabled={isSaving} className="w-full">
-            {updateProfileMutation.isPending ? 'Saving...' : 'Save Profile'}
+          <Button onClick={handleSave} disabled={isLoading} className="w-full">
+            {isUpdatingProfile ? 'Saving...' : 'Save Profile'}
           </Button>
 
           <Button
             variant="outline"
             onClick={handleDismiss}
-            disabled={isSaving}
+            disabled={isLoading}
             className="w-full"
           >
-            {dismissModalMutation.isPending
-              ? 'Dismissing...'
-              : 'Stop prompting me for this'}
+            {isDismissingModal ? 'Dismissing...' : 'Stop prompting me for this'}
           </Button>
 
           <Button
             variant="ghost"
             onClick={onClose}
-            disabled={isSaving}
+            disabled={isLoading}
             className="w-full"
           >
             Maybe later
