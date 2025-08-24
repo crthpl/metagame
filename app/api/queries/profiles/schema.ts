@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { TEAM_COLORS_ENUM } from '@/utils/dbUtils'
+
 import { DbProfile } from '@/types/database/dbTypeAliases'
 
 export const ProfileSchema = z.object({
@@ -19,6 +21,7 @@ export const ProfileSchema = z.object({
   is_admin: z.boolean(),
   minor: z.boolean().nullable(),
   bringing_kids: z.boolean().nullable(),
+  team: z.enum(TEAM_COLORS_ENUM).nullable(),
 }) satisfies z.ZodType<DbProfile>
 
 export const ProfilesResponseSchema = z.array(ProfileSchema)
