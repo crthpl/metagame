@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
@@ -40,10 +40,25 @@ import {
   updateCurrentUserProfile,
 } from '@/app/actions/db/users'
 import { ProfileInfoModal } from '@/app/profile/ProfileInfoModal'
+import { useProfileUpdate } from '@/app/profile/hooks/useProfileUpdate'
+
+import { DbProfile } from '@/types/database/dbTypeAliases'
+
+export const requiredProfileFields: (keyof ProfileFormData)[] = [
+  'first_name',
+  'bringing_kids',
+  'opted_in_to_homepage_display',
+  'minor',
+]
+
+export const profileIsIncomplete = (profile: DbProfile) => {
+  return requiredProfileFields.some((field) => profile[field] === null)
+}
 
 export default function Profile() {
   const queryClient = useQueryClient()
-
+  const [temporarilyDismissedInfoRequest, setTemporarilyDismissedInfoRequest] =
+    useState(false)
   const { data: currentUser, isLoading: currentUserLoading } = useQuery({
     queryKey: ['users', 'current'],
     queryFn: getCurrentUser,
@@ -55,7 +70,20 @@ export default function Profile() {
     enabled: !!currentUser?.id,
   })
   const [isEditMode, setIsEditMode] = useState(false)
-  const [showCTAModal, setShowCTAModal] = useState(false)
+  const showCTAModal = useMemo(() => {
+    console.log('showCTAModal', currentUserProfile)
+    console.log(
+      'temporarilyDismissedInfoRequest',
+      temporarilyDismissedInfoRequest,
+    )
+    if (
+      !currentUserProfile ||
+      currentUserProfile.dismissed_info_request ||
+      temporarilyDismissedInfoRequest
+    )
+      return false
+    return profileIsIncomplete(currentUserProfile)
+  }, [currentUserProfile, temporarilyDismissedInfoRequest])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Form state using shared schema
@@ -70,32 +98,12 @@ export default function Profile() {
     }
   }, [currentUserProfile, isEditMode])
 
-  // Check if modal should be shown
-  useEffect(() => {
-    if (
-      currentUserProfile &&
-      !currentUserProfile.dismissed_info_request &&
-      !isEditMode &&
-      (!currentUserProfile.first_name ||
-        currentUserProfile.opted_in_to_homepage_display === null)
-    ) {
-      setShowCTAModal(true)
-    }
-  }, [])
-
-  // Profile update mutation
-  const updateProfileMutation = useMutation({
-    mutationFn: updateCurrentUserProfile,
+  // Use shared profile update hook
+  const { updateProfile, isUpdatingProfile } = useProfileUpdate({
+    currentUserId: currentUser?.id,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['users', 'profile', currentUser?.id],
-      })
       setIsEditMode(false)
-      toast.success('Profile updated successfully!')
-    },
-    onError: (error) => {
-      console.error('Error updating profile:', error)
-      toast.error('Failed to update profile')
+      setTemporarilyDismissedInfoRequest(true)
     },
   })
 
@@ -184,26 +192,7 @@ export default function Profile() {
   }
 
   const handleSave = () => {
-    const result = profileFormSchema.safeParse(formData)
-    if (!result.success) {
-      toast.error(
-        <div>
-          <p>Error savinsg profile:</p>
-          <ul className="ml-4 list-disc">
-            {result.error.issues.map((issue, i) => (
-              <li key={i}>
-                {issue.path.join('.')}: {issue.message}
-              </li>
-            ))}
-          </ul>
-        </div>,
-      )
-      return
-    }
-
-    updateProfileMutation.mutate({
-      data: result.data,
-    })
+    updateProfile(formData)
   }
 
   const handleCancel = () => {
@@ -228,15 +217,15 @@ export default function Profile() {
     `${currentUserProfile?.first_name || ''} ${currentUserProfile?.last_name || ''}`.trim() ||
     'No name set'
   const isSaving =
-    updateProfileMutation.isPending ||
+    isUpdatingProfile ||
     uploadPictureMutation.isPending ||
     deletePictureMutation.isPending
-
+  console.log('showCTAModal', showCTAModal)
   return (
     <>
       {showCTAModal && (
         <ProfileInfoModal
-          onClose={() => setShowCTAModal(false)}
+          onClose={() => setTemporarilyDismissedInfoRequest(true)}
           currentProfile={currentUserProfile}
           currentUserId={currentUser?.id}
         />
