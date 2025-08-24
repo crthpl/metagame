@@ -13,6 +13,7 @@ import {
   profileFormSchema,
 } from '@/lib/schemas/profile'
 
+import { cn } from '@/utils/cn'
 import { URLS } from '@/utils/urls'
 
 import { Modal } from '@/components/Modal'
@@ -241,7 +242,10 @@ export function ProfileInfoModal({
 
           {formData.bringing_kids && (
             <Link
-              className={`h-auto py-3 text-center break-words whitespace-normal ${buttonVariants({ variant: 'default' })}`}
+              className={cn(
+                buttonVariants({ variant: 'secondary' }),
+                'h-auto py-3 text-center break-words whitespace-normal text-black',
+              )}
               href={URLS.CHILDREN_REGISTRATION}
               target="_blank"
             >

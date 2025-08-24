@@ -21,6 +21,7 @@ export const opennodeDbService = {
       satoshis: charge.amount,
       status: charge.status,
       purchaser_email: ticketDetails.purchaserEmail,
+      purchaser_name: ticketDetails.purchaserName,
       ticket_type: ticketDetails.ticketType,
       is_test: ticketDetails.isTest,
     })

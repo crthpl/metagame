@@ -6,6 +6,7 @@ export const ticketPurchaseDetailsSchema = z.object({
   ticketType: z.enum(TICKET_TYPES_ENUM),
   isTest: z.boolean(),
   purchaserEmail: z.email(),
+  purchaserName: z.string().optional(),
 })
 
 export type TicketPurchaseDetails = z.infer<typeof ticketPurchaseDetailsSchema>

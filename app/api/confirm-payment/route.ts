@@ -104,6 +104,7 @@ export async function POST(request: NextRequest) {
     const supabaseTicketRecord = {
       stripe_payment_id: paymentIntentId,
       purchaser_email: email,
+      purchaser_name: name,
       ticket_type: ticketType,
       price_paid: price,
       coupons_used: [paymentIntent.metadata.couponCode],
@@ -121,8 +122,9 @@ export async function POST(request: NextRequest) {
         purchaserName: name,
         ticketType: ticketType,
         ticketCode: createdTicket.ticket_code,
-        price: price,
+        usdPaid: price,
         paymentIntentId: paymentIntentId,
+        isBtc: false,
       })
     } catch (emailError) {
       // Log email error but don't fail the purchase
