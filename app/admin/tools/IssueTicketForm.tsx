@@ -40,7 +40,9 @@ const initialFormData: AdminIssueTicketInput = {
   stripePaymentId: undefined,
 }
 
-export function IssueTicketForm() {
+export function IssueTicketForm({}: {
+  searchParams?: Promise<Record<string, string | undefined>>
+} = {}) {
   const [formData, setFormData] =
     useState<AdminIssueTicketInput>(initialFormData)
   const [forExistingUser, setForExistingUser] = useState(false)
