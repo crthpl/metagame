@@ -4,6 +4,9 @@ export function AdminToolCard({ toolId }: { toolId: AdminToolId | null }) {
   if (!toolId) {
     return <div>No tool selected</div>
   }
+  if (!ADMIN_TOOLS[toolId]) {
+    return <div>Tool not found</div>
+  }
 
   const tool = ADMIN_TOOLS[toolId]
 
