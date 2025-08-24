@@ -1,5 +1,6 @@
 import { DummyTool } from './DummyTool'
 import { IssueTicketForm } from './IssueTicketForm'
+import TicketsTable from './TicketsTable'
 
 export type AdminTool = {
   label: string
@@ -21,6 +22,12 @@ export const ADMIN_TOOLS = {
     menuDescription: 'Issue a ticket to a user',
     longDescription: 'Issue a ticket to a user',
     component: IssueTicketForm,
+  },
+  'tickets-table': {
+    label: 'Tickets Table',
+    menuDescription: 'View all tickets',
+    longDescription: 'View all tickets',
+    component: TicketsTable,
   },
 } satisfies Record<string, AdminTool>
 
