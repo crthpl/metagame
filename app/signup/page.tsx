@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react'
 
 import { InfoIcon, LockIcon, MailIcon, TicketIcon } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 
@@ -42,6 +43,7 @@ function SignupForm() {
   })
   const [errors, setErrors] = useState<SignupErrors>({})
   const [isLoading, setIsLoading] = useState(false)
+  const [showResetPasswordLink, setShowResetPasswordLink] = useState(false)
 
   // Pre-fill form with URL parameters
   useEffect(() => {
@@ -79,11 +81,16 @@ function SignupForm() {
     try {
       const validatedData = signupSchema.parse(formData)
 
-      await signupByTicketCode({
+      const res = await signupByTicketCode({
         email: validatedData.email,
         password: validatedData.password,
         ticketCode: validatedData.ticketCode,
       })
+      if (res.error === 'claimed') {
+        setErrors({ submit: 'Ticket already assigned' })
+        setShowResetPasswordLink(true)
+        return
+      }
 
       router.push(`/signup/success?email=${validatedData.email}`)
     } catch (error) {
@@ -188,6 +195,17 @@ function SignupForm() {
                 errors.ticketCode ? 'border-red-500' : ''
               }`}
             />
+            {showResetPasswordLink && (
+              <span>
+                This ticket code is already tied to an account; if it was issued
+                to you, you may need to go to the{' '}
+                <Link href="/login/reset" className="text-blue-500 underline">
+                  {' '}
+                  password reset
+                </Link>{' '}
+                page to get access to your account.
+              </span>
+            )}
             {errors.ticketCode && (
               <span className="mt-1 text-xs text-red-500">
                 {errors.ticketCode}
