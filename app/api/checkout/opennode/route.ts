@@ -73,7 +73,7 @@ function sendChargeCreationEmail(
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h1 style="color: #333;">Complete your Metagame 2025 ticket payment</h1>
         
-        <p>Hi there,</p>
+        <p>Hi ${ticketDetails.purchaserName || 'there'},</p>
         
         <p>Your Metagame 2025 ticket order has been created as an open Bitcoin transaction on OpenNode. Please complete your payment to get your ticket!</p>
         

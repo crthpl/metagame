@@ -369,6 +369,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             ticketType: ticketType.id,
             isTest: process.env.NEXT_PUBLIC_OPENNODE_ENV === 'dev',
             purchaserEmail: formData.email,
+            purchaserName: formData.name,
           },
         }),
       })

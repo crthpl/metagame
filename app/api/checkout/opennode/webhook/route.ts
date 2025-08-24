@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
       opennode_order: dbCharge.id,
       ticket_type: dbCharge.ticket_type!,
       purchaser_email: dbCharge.purchaser_email,
+      purchaser_name: dbCharge.purchaser_name || '',
       is_test: dbCharge.is_test,
       satoshis_paid: body.amount,
     }
@@ -43,11 +44,11 @@ export async function POST(req: NextRequest) {
 
     await sendTicketConfirmationEmail({
       to: dbCharge.purchaser_email,
-      purchaserName: '',
+      purchaserName: dbCharge.purchaser_name || '',
       ticketType: dbCharge.ticket_type!,
       ticketCode: dbCharge.id,
-      isBtc: false,
-      usdPaid: body.amount,
+      isBtc: true,
+      btcPaid: body.amount / 100_000_000,
       opennodeChargeId: dbCharge.id,
       adminIssued: false,
       forExistingUser: false,
