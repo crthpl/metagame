@@ -2,10 +2,17 @@
 
 import { useEffect, useState } from 'react'
 
+import { ChevronDownIcon, ChevronRightIcon } from 'lucide-react'
+
 import { TICKET_TYPES } from '@/utils/dbUtils'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -51,7 +58,7 @@ export function IssueTicketForm({}: {
   const [success, setSuccess] = useState<string | null>(null)
   const [existingUsers, setExistingUsers] = useState<DbProfile[]>([])
   const [loadingUsers, setLoadingUsers] = useState(false)
-
+  const [extraFieldsOpen, setExtraFieldsOpen] = useState(false)
   useEffect(() => {
     const loadUsers = async () => {
       setLoadingUsers(true)
@@ -244,92 +251,104 @@ export function IssueTicketForm({}: {
           />
         </div>
 
-        <div>
-          <Label htmlFor="couponCodes">Coupon Codes</Label>
-          <Input
-            id="couponCodes"
-            type="text"
-            value={(formData.couponCodes || []).join(', ')}
-            onChange={(e) =>
-              updateFormData({
-                couponCodes: e.target.value
-                  .split(',')
-                  .map((code) => code.trim())
-                  .filter((code) => code.length > 0),
-              })
-            }
-            placeholder="Enter coupon codes separated by commas"
-            className="mt-1"
-          />
-        </div>
+        <Collapsible open={extraFieldsOpen} onOpenChange={setExtraFieldsOpen}>
+          <div className="flex items-center">
+            Extra Fields
+            <CollapsibleTrigger>
+              <Button variant="ghost" size="icon">
+                {extraFieldsOpen ? <ChevronDownIcon /> : <ChevronRightIcon />}
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent className="flex flex-col gap-4">
+            <div>
+              <Label htmlFor="couponCodes">Coupon Codes</Label>
+              <Input
+                id="couponCodes"
+                type="text"
+                value={(formData.couponCodes || []).join(', ')}
+                onChange={(e) =>
+                  updateFormData({
+                    couponCodes: e.target.value
+                      .split(',')
+                      .map((code) => code.trim())
+                      .filter((code) => code.length > 0),
+                  })
+                }
+                placeholder="Enter coupon codes separated by commas"
+                className="mt-1"
+              />
+            </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="usdPaid">USD Paid</Label>
-            <Input
-              id="usdPaid"
-              type="number"
-              step="0.01"
-              value={formData.usdPaid || ''}
-              onChange={(e) =>
-                updateFormData({
-                  usdPaid: e.target.value
-                    ? parseFloat(e.target.value)
-                    : undefined,
-                })
-              }
-              placeholder="0.00"
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="btcPaid">BTC Paid</Label>
-            <Input
-              id="btcPaid"
-              type="number"
-              step="0.00000001"
-              value={formData.btcPaid || ''}
-              onChange={(e) =>
-                updateFormData({
-                  btcPaid: e.target.value
-                    ? parseFloat(e.target.value)
-                    : undefined,
-                })
-              }
-              placeholder="0.00000000"
-              className="mt-1"
-            />
-          </div>
-        </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="usdPaid">USD Paid</Label>
+                <Input
+                  id="usdPaid"
+                  type="number"
+                  step="0.01"
+                  value={formData.usdPaid || ''}
+                  onChange={(e) =>
+                    updateFormData({
+                      usdPaid: e.target.value
+                        ? parseFloat(e.target.value)
+                        : undefined,
+                    })
+                  }
+                  placeholder="0.00"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="btcPaid">BTC Paid</Label>
+                <Input
+                  id="btcPaid"
+                  type="number"
+                  step="0.00000001"
+                  value={formData.btcPaid || ''}
+                  onChange={(e) =>
+                    updateFormData({
+                      btcPaid: e.target.value
+                        ? parseFloat(e.target.value)
+                        : undefined,
+                    })
+                  }
+                  placeholder="0.00000000"
+                  className="mt-1"
+                />
+              </div>
+            </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="opennodeOrderId">Opennode Order ID</Label>
-            <Input
-              id="opennodeOrderId"
-              type="text"
-              value={formData.opennodeOrderId || ''}
-              onChange={(e) =>
-                updateFormData({ opennodeOrderId: e.target.value })
-              }
-              placeholder="Enter Opennode order ID"
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="stripePaymentId">Stripe Payment ID</Label>
-            <Input
-              id="stripePaymentId"
-              type="text"
-              value={formData.stripePaymentId || ''}
-              onChange={(e) =>
-                updateFormData({ stripePaymentId: e.target.value })
-              }
-              placeholder="Enter Stripe payment ID"
-              className="mt-1"
-            />
-          </div>
-        </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="opennodeOrderId">Opennode Order ID</Label>
+                <Input
+                  id="opennodeOrderId"
+                  type="text"
+                  value={formData.opennodeOrderId || ''}
+                  onChange={(e) =>
+                    updateFormData({ opennodeOrderId: e.target.value })
+                  }
+                  placeholder="Enter Opennode order ID"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="stripePaymentId">Stripe Payment ID</Label>
+                <Input
+                  id="stripePaymentId"
+                  type="text"
+                  value={formData.stripePaymentId || ''}
+                  onChange={(e) =>
+                    updateFormData({ stripePaymentId: e.target.value })
+                  }
+                  placeholder="Enter Stripe payment ID"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
