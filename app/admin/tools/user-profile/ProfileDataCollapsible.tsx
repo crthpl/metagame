@@ -11,16 +11,23 @@ import {
 } from '@/components/ui/collapsible'
 import { Textarea } from '@/components/ui/textarea'
 
-import { DbProfile } from '@/types/database/dbTypeAliases'
+import { DbProfile, DbTicket } from '@/types/database/dbTypeAliases'
 
 interface ProfileDataCollapsibleProps {
   profile: DbProfile
+  tickets: DbTicket[]
 }
 
 export function ProfileDataCollapsible({
   profile,
+  tickets,
 }: ProfileDataCollapsibleProps) {
   const [isOpen, setIsOpen] = useState(false)
+
+  const combinedData = {
+    ...profile,
+    tickets,
+  }
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -35,7 +42,7 @@ export function ProfileDataCollapsible({
         </CollapsibleTrigger>
         <CollapsibleContent className="px-3 pb-3">
           <Textarea
-            value={JSON.stringify(profile, null, 2)}
+            value={JSON.stringify(combinedData, null, 2)}
             readOnly
             className="min-h-64 font-mono text-xs"
           />
