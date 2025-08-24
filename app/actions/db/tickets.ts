@@ -1,10 +1,15 @@
 'use server'
 
+import { adminExportWrapper } from './auth'
+
 import { ticketsService } from '@/lib/db/tickets'
 import { usersService } from '@/lib/db/users'
 
 import { createServiceClient } from '@/utils/supabase/service'
 
+export const adminGetAllTickets = adminExportWrapper(
+  ticketsService.getAllTickets,
+)
 export const signupByTicketCode = async ({
   email,
   password,
