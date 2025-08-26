@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "db:migrate": "supabase migration up --local && pnpm types:supabase",
-    "db:reset": "supabase db reset --local && pnpm types:supabase",
+    "db:migrate": "npx supabase migration up --local && pnpm types:supabase",
+    "db:migrate:prod": "npx supabase link --project-ref fkarmpoupazxnshofaeg && npx supabase db push && pnpm types:supabase:remote",
+    "db:reset": "npx supabase db reset --local && pnpm types:supabase",
     "dev": "next dev",
     "fmt": "pnpm format",
     "fmt:check": "pnpm format:check",
@@ -17,7 +18,7 @@
     "test": "playwright test",
     "typecheck": "tsc --noEmit",
     "types:supabase": "npx supabase gen types typescript --local --schema public > types/database/supabase.types.ts",
-    "types:supabase:remote": "npx supabase gen types typescript --project-id fkarmpoupazxnshofaeg --schema public > types/database/supabase.types.ts"
+    "types:supabase:prod": "npx supabase gen types typescript --project-id fkarmpoupazxnshofaeg --schema public > types/database/supabase.types.ts"
   },
   "lint-staged": {
     "package.json": [
