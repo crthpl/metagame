@@ -20,48 +20,64 @@ COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
 
-CREATE TYPE "public"."AGES" AS ENUM (
-    'ADULTS',
-    'KIDS',
-    'ALL'
-);
+DO $$ BEGIN
+    CREATE TYPE "public"."AGES" AS ENUM (
+        'ADULTS',
+        'KIDS',
+        'ALL'
+    );
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 
 ALTER TYPE "public"."AGES" OWNER TO "postgres";
 
 
-CREATE TYPE "public"."OPENNODE_CHARGE_STATUS" AS ENUM (
-    'underpaid',
-    'refunded',
-    'processing',
-    'paid',
-    'expired'
-);
+DO $$ BEGIN
+    CREATE TYPE "public"."OPENNODE_CHARGE_STATUS" AS ENUM (
+        'underpaid',
+        'refunded',
+        'processing',
+        'paid',
+        'expired'
+    );
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 
 ALTER TYPE "public"."OPENNODE_CHARGE_STATUS" OWNER TO "postgres";
 
 
-CREATE TYPE "public"."TEAM_COLORS" AS ENUM (
-    'orange',
-    'purple',
-    'green',
-    'unassigned'
-);
+DO $$ BEGIN
+    CREATE TYPE "public"."TEAM_COLORS" AS ENUM (
+        'orange',
+        'purple',
+        'green',
+        'unassigned'
+    );
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 
 ALTER TYPE "public"."TEAM_COLORS" OWNER TO "postgres";
 
 
-CREATE TYPE "public"."ticket_type" AS ENUM (
-    'volunteer',
-    'player',
-    'supporter',
-    'friday',
-    'saturday',
-    'sunday',
-    'student'
-);
+DO $$ BEGIN
+    CREATE TYPE "public"."ticket_type" AS ENUM (
+        'volunteer',
+        'player',
+        'supporter',
+        'friday',
+        'saturday',
+        'sunday',
+        'student'
+    );
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 
 ALTER TYPE "public"."ticket_type" OWNER TO "postgres";
@@ -295,7 +311,9 @@ COMMENT ON COLUMN "public"."sessions"."megagame" IS 'Is this session part of the
 
 
 
-CREATE OR REPLACE VIEW "public"."session_rsvps_view" WITH ("security_invoker"='on') AS
+DROP VIEW IF EXISTS "public"."session_rsvps_view";
+
+CREATE VIEW "public"."session_rsvps_view" WITH ("security_invoker"='on') AS
  SELECT "sr"."created_at",
     "sr"."session_id",
     "sr"."user_id",
@@ -309,35 +327,6 @@ CREATE OR REPLACE VIEW "public"."session_rsvps_view" WITH ("security_invoker"='o
 ALTER VIEW "public"."session_rsvps_view" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."sessions_view" AS
-SELECT
-    NULL::"uuid" AS "id",
-    NULL::"text" AS "title",
-    NULL::"uuid" AS "host_1_id",
-    NULL::timestamp with time zone AS "start_time",
-    NULL::timestamp with time zone AS "end_time",
-    NULL::"text" AS "description",
-    NULL::integer AS "max_capacity",
-    NULL::"uuid" AS "location_id",
-    NULL::"uuid" AS "host_2_id",
-    NULL::"uuid" AS "host_3_id",
-    NULL::bigint AS "min_capacity",
-    NULL::"public"."AGES" AS "ages",
-    NULL::boolean AS "megagame",
-    NULL::"text" AS "host_1_first_name",
-    NULL::"text" AS "host_1_last_name",
-    NULL::"text" AS "host_1_email",
-    NULL::"text" AS "host_2_first_name",
-    NULL::"text" AS "host_2_last_name",
-    NULL::"text" AS "host_2_email",
-    NULL::"text" AS "host_3_first_name",
-    NULL::"text" AS "host_3_last_name",
-    NULL::"text" AS "host_3_email",
-    NULL::"text" AS "location_name",
-    NULL::bigint AS "rsvp_count";
-
-
-ALTER VIEW "public"."sessions_view" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."tickets" (
@@ -365,65 +354,159 @@ COMMENT ON COLUMN "public"."tickets"."is_test" IS 'Transaction created in test e
 
 
 
+DO $$ BEGIN
+    ALTER TABLE "public"."tickets" ADD COLUMN "admin_issued" boolean DEFAULT false NOT NULL;
+EXCEPTION
+    WHEN duplicate_column THEN null;
+END $$;
+
 COMMENT ON COLUMN "public"."tickets"."admin_issued" IS 'was this ticket issued for free rather than purchased';
 
 
+
+DO $$ BEGIN
+    ALTER TABLE "public"."tickets" ADD COLUMN "purchaser_name" text;
+EXCEPTION
+    WHEN duplicate_column THEN null;
+END $$;
 
 COMMENT ON COLUMN "public"."tickets"."purchaser_name" IS 'yeah';
 
 
 
-ALTER TABLE ONLY "public"."coupon_emails"
-    ADD CONSTRAINT "coupon_emails_pkey" PRIMARY KEY ("coupon_id", "email");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'coupon_emails_pkey' 
+        AND conrelid = 'public.coupon_emails'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."coupon_emails"
+            ADD CONSTRAINT "coupon_emails_pkey" PRIMARY KEY ("coupon_id", "email");
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."coupons"
-    ADD CONSTRAINT "coupons_pkey" PRIMARY KEY ("id");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'coupons_pkey' 
+        AND conrelid = 'public.coupons'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."coupons"
+            ADD CONSTRAINT "coupons_pkey" PRIMARY KEY ("id");
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."locations"
-    ADD CONSTRAINT "locations_pkey" PRIMARY KEY ("id");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'locations_pkey' 
+        AND conrelid = 'public.locations'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."locations"
+            ADD CONSTRAINT "locations_pkey" PRIMARY KEY ("id");
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."opennode_orders"
-    ADD CONSTRAINT "opennode_orders_pkey" PRIMARY KEY ("id");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'opennode_orders_pkey' 
+        AND conrelid = 'public.opennode_orders'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."opennode_orders"
+            ADD CONSTRAINT "opennode_orders_pkey" PRIMARY KEY ("id");
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."profiles"
-    ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("id");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'profiles_pkey' 
+        AND conrelid = 'public.profiles'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."profiles"
+            ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("id");
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."session_rsvps"
-    ADD CONSTRAINT "session_rsvps_pkey" PRIMARY KEY ("session_id", "user_id");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'session_rsvps_pkey' 
+        AND conrelid = 'public.session_rsvps'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."session_rsvps"
+            ADD CONSTRAINT "session_rsvps_pkey" PRIMARY KEY ("session_id", "user_id");
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."sessions"
-    ADD CONSTRAINT "sessions_pkey" PRIMARY KEY ("id");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'sessions_pkey' 
+        AND conrelid = 'public.sessions'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."sessions"
+            ADD CONSTRAINT "sessions_pkey" PRIMARY KEY ("id");
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."tickets"
-    ADD CONSTRAINT "tickets_pkey" PRIMARY KEY ("id");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'tickets_pkey' 
+        AND conrelid = 'public.tickets'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."tickets"
+            ADD CONSTRAINT "tickets_pkey" PRIMARY KEY ("id");
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."tickets"
-    ADD CONSTRAINT "tickets_ticket_code_key" UNIQUE ("ticket_code");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'tickets_ticket_code_key' 
+        AND conrelid = 'public.tickets'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."tickets"
+            ADD CONSTRAINT "tickets_ticket_code_key" UNIQUE ("ticket_code");
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."session_bookmarks"
-    ADD CONSTRAINT "user_starred_sessions_pkey" PRIMARY KEY ("user_id", "session_id");
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'user_starred_sessions_pkey' 
+        AND conrelid = 'public.session_bookmarks'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."session_bookmarks"
+            ADD CONSTRAINT "user_starred_sessions_pkey" PRIMARY KEY ("user_id", "session_id");
+    END IF;
+END $$;
 
 
 
-CREATE OR REPLACE VIEW "public"."sessions_view" WITH ("security_invoker"='on') AS
+DROP VIEW IF EXISTS "public"."sessions_view";
+
+CREATE VIEW "public"."sessions_view" WITH ("security_invoker"='on') AS
  SELECT "s"."id",
     "s"."title",
     "s"."host_1_id",
@@ -458,68 +541,172 @@ CREATE OR REPLACE VIEW "public"."sessions_view" WITH ("security_invoker"='on') A
 
 
 
-ALTER TABLE ONLY "public"."coupon_emails"
-    ADD CONSTRAINT "coupon_emails_coupon_id_fkey" FOREIGN KEY ("coupon_id") REFERENCES "public"."coupons"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'coupon_emails_coupon_id_fkey' 
+        AND conrelid = 'public.coupon_emails'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."coupon_emails"
+            ADD CONSTRAINT "coupon_emails_coupon_id_fkey" FOREIGN KEY ("coupon_id") REFERENCES "public"."coupons"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."profiles"
-    ADD CONSTRAINT "profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'profiles_id_fkey' 
+        AND conrelid = 'public.profiles'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."profiles"
+            ADD CONSTRAINT "profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."session_rsvps"
-    ADD CONSTRAINT "session_rsvps_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "public"."sessions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'session_rsvps_session_id_fkey' 
+        AND conrelid = 'public.session_rsvps'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."session_rsvps"
+            ADD CONSTRAINT "session_rsvps_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "public"."sessions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."session_rsvps"
-    ADD CONSTRAINT "session_rsvps_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'session_rsvps_user_id_fkey' 
+        AND conrelid = 'public.session_rsvps'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."session_rsvps"
+            ADD CONSTRAINT "session_rsvps_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."session_rsvps"
-    ADD CONSTRAINT "session_rsvps_user_id_fkey1" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'session_rsvps_user_id_fkey1' 
+        AND conrelid = 'public.session_rsvps'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."session_rsvps"
+            ADD CONSTRAINT "session_rsvps_user_id_fkey1" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."sessions"
-    ADD CONSTRAINT "sessions_host_2_id_fkey" FOREIGN KEY ("host_2_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'sessions_host_2_id_fkey' 
+        AND conrelid = 'public.sessions'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."sessions"
+            ADD CONSTRAINT "sessions_host_2_id_fkey" FOREIGN KEY ("host_2_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."sessions"
-    ADD CONSTRAINT "sessions_host_3_id_fkey" FOREIGN KEY ("host_3_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'sessions_host_3_id_fkey' 
+        AND conrelid = 'public.sessions'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."sessions"
+            ADD CONSTRAINT "sessions_host_3_id_fkey" FOREIGN KEY ("host_3_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."sessions"
-    ADD CONSTRAINT "sessions_host_id_fkey" FOREIGN KEY ("host_1_id") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'sessions_host_id_fkey' 
+        AND conrelid = 'public.sessions'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."sessions"
+            ADD CONSTRAINT "sessions_host_id_fkey" FOREIGN KEY ("host_1_id") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."sessions"
-    ADD CONSTRAINT "sessions_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "public"."locations"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'sessions_location_id_fkey' 
+        AND conrelid = 'public.sessions'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."sessions"
+            ADD CONSTRAINT "sessions_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "public"."locations"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."tickets"
-    ADD CONSTRAINT "tickets_opennode_order_fkey" FOREIGN KEY ("opennode_order") REFERENCES "public"."opennode_orders"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'tickets_opennode_order_fkey' 
+        AND conrelid = 'public.tickets'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."tickets"
+            ADD CONSTRAINT "tickets_opennode_order_fkey" FOREIGN KEY ("opennode_order") REFERENCES "public"."opennode_orders"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."tickets"
-    ADD CONSTRAINT "tickets_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'tickets_owner_id_fkey' 
+        AND conrelid = 'public.tickets'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."tickets"
+            ADD CONSTRAINT "tickets_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."session_bookmarks"
-    ADD CONSTRAINT "user_starred_sessions_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "public"."sessions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'user_starred_sessions_session_id_fkey' 
+        AND conrelid = 'public.session_bookmarks'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."session_bookmarks"
+            ADD CONSTRAINT "user_starred_sessions_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "public"."sessions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    END IF;
+END $$;
 
 
 
-ALTER TABLE ONLY "public"."session_bookmarks"
-    ADD CONSTRAINT "user_starred_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'user_starred_sessions_user_id_fkey' 
+        AND conrelid = 'public.session_bookmarks'::regclass
+    ) THEN
+        ALTER TABLE ONLY "public"."session_bookmarks"
+            ADD CONSTRAINT "user_starred_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    END IF;
+END $$;
 
 
 
