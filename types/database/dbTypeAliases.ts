@@ -8,8 +8,19 @@ import {
 export type DbSession = Tables<'sessions'>
 export type DbSessionInsert = TablesInsert<'sessions'>
 export type DbSessionUpdate = TablesUpdate<'sessions'>
-export type DbSessionView = Tables<'sessions_view'>
 
+export type FullDbSession = Tables<'sessions'> & {
+  host_1: Pick<DbProfile, 'first_name' | 'last_name' | 'email'> | null
+  host_2: Pick<DbProfile, 'first_name' | 'last_name' | 'email'> | null
+  host_3: Pick<DbProfile, 'first_name' | 'last_name' | 'email'> | null
+  bookmarks: Pick<DbSessionBookmark, 'user_id'>[]
+  rsvps: (Pick<DbSessionRsvp, 'on_waitlist'> & {
+    user: Pick<DbProfile, 'id' | 'team'>
+  })[]
+  location: Pick<DbLocation, 'name'> | null
+}
+
+export type DbSessionCategory = Enums<'SESSION_CATEGORY'>
 export type DbSessionAges = Enums<'AGES'>
 export type DbTicketType = Enums<'ticket_type'>
 
@@ -27,12 +38,11 @@ export type DbProfileUpdate = TablesUpdate<'profiles'>
 export type DbTeamColor = Enums<'TEAM_COLORS'>
 
 export type DbSessionRsvp = Tables<'session_rsvps'>
-export type DbSessionRsvpWithTeam = DbSessionRsvp & {
-  profiles: { team: DbProfile['team'] }
+export type DbFullSessionRsvp = DbSessionRsvp & {
+  user: Pick<DbProfile, 'id' | 'team'>
 }
 export type DbSessionRsvpInsert = TablesInsert<'session_rsvps'>
 export type DbSessionRsvpUpdate = TablesUpdate<'session_rsvps'>
-export type DbSessionRsvpView = Tables<'session_rsvps_view'>
 
 export type DbSessionBookmark = Tables<'session_bookmarks'>
 export type DbSessionBookmarkInsert = TablesInsert<'session_bookmarks'>
@@ -45,3 +55,6 @@ export type DbOpendnodeOrderUpdate = TablesUpdate<'opennode_orders'>
 export type DbCoupon = Tables<'coupons'>
 export type DbCouponInsert = TablesInsert<'coupons'>
 export type DbCouponUpdate = TablesUpdate<'coupons'>
+export type DbCouponEmail = Tables<'coupon_emails'>
+export type DbCouponEmailInsert = TablesInsert<'coupon_emails'>
+export type DbCouponEmailUpdate = TablesUpdate<'coupon_emails'>

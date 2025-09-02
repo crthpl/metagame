@@ -1,10 +1,10 @@
 import {
+  DbFullSessionRsvp,
   DbLocation,
   DbProfile,
   DbSessionBookmark,
   DbSessionRsvp,
-  DbSessionRsvpWithTeam,
-  DbSessionView,
+  FullDbSession,
 } from '@/types/database/dbTypeAliases'
 
 // Utility function to handle API errors with detailed information
@@ -26,13 +26,13 @@ const handleApiError = async (
   throw new Error(errorDetails)
 }
 
-export const fetchSessions = async (): Promise<DbSessionView[]> => {
+export const fetchSessions = async (): Promise<FullDbSession[]> => {
   const response = await fetch('/api/queries/sessions')
   if (!response.ok) {
     await handleApiError(response, 'Failed to fetch sessions')
   }
 
-  return (await response.json()) as DbSessionView[]
+  return (await response.json()) as FullDbSession[]
 }
 
 export const fetchLocations = async (): Promise<DbLocation[]> => {
@@ -55,13 +55,13 @@ export const fetchProfiles = async (): Promise<DbProfile[]> => {
 
 export const fetchSessionById = async (
   sessionId: string,
-): Promise<DbSessionView> => {
+): Promise<FullDbSession> => {
   const response = await fetch(`/api/queries/sessions/${sessionId}`)
   if (!response.ok) {
     await handleApiError(response, 'Failed to fetch session')
   }
 
-  return (await response.json()) as DbSessionView
+  return (await response.json()) as FullDbSession
 }
 
 export const fetchCurrentUserSessionBookmarks = async (): Promise<
@@ -115,13 +115,13 @@ export const fetchUserProfile = async (userId: string): Promise<DbProfile> => {
   return (await response.json()) as DbProfile
 }
 
-export const fetchAllRsvps = async (): Promise<DbSessionRsvpWithTeam[]> => {
+export const fetchAllRsvps = async (): Promise<DbFullSessionRsvp[]> => {
   const response = await fetch('/api/queries/rsvps')
   if (!response.ok) {
     await handleApiError(response, 'Failed to fetch all RSVPs')
   }
 
-  return (await response.json()) as DbSessionRsvpWithTeam[]
+  return (await response.json()) as DbFullSessionRsvp[]
 }
 
 export const fetchUserRsvps = async (

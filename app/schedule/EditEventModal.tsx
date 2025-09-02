@@ -10,9 +10,15 @@ import { XIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { dateUtils } from '@/utils/dateUtils'
-import { SESSION_AGES, getAgesDisplayText } from '@/utils/dbUtils'
+import {
+  SESSION_AGES,
+  SESSION_CATEGORIES_ENUM,
+  getAgesDisplayText,
+} from '@/utils/dbUtils'
 
 import { Modal } from '@/components/Modal'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -28,7 +34,11 @@ import {
 } from '@/app/actions/db/sessions'
 
 import { useUser } from '@/hooks/dbQueries'
-import { DbSessionAges } from '@/types/database/dbTypeAliases'
+import {
+  DbSessionAges,
+  DbSessionCategory,
+  FullDbSession,
+} from '@/types/database/dbTypeAliases'
 
 interface AddEventModalProps {
   isOpen: boolean
@@ -55,6 +65,8 @@ type FormData = {
   host_1_id: string | null
   host_2_id: string | null
   host_3_id: string | null
+  megagame: boolean
+  category: DbSessionCategory | null
 }
 export function AddEventModal({
   isOpen,
@@ -80,6 +92,8 @@ export function AddEventModal({
     host_1_id: null,
     host_2_id: null,
     host_3_id: null,
+    megagame: false,
+    category: null,
   }
   const {
     data: profiles,
@@ -142,6 +156,8 @@ export function AddEventModal({
         host_1_id: validateHostId(existingSession.host_1_id),
         host_2_id: validateHostId(existingSession.host_2_id),
         host_3_id: validateHostId(existingSession.host_3_id),
+        megagame: existingSession.megagame || false,
+        category: existingSession.category || null,
       }
       setFormData(newFormData)
     } else if (prefillData) {
@@ -223,37 +239,91 @@ export function AddEventModal({
 
   const userEditSessionMutation = useMutation({
     mutationFn: userEditSession,
+    onMutate: (data) => {
+      const oldData = queryClient.getQueryData<FullDbSession[]>(['sessions'])
+      if (!oldData) return { oldData: oldData }
+      queryClient.setQueryData<FullDbSession[]>(['sessions'], (old) => {
+        if (!old) return old
+        return old.map((session: FullDbSession) =>
+          session.id === data.sessionId
+            ? { ...session, ...data.sessionUpdate }
+            : session,
+        )
+      })
+      return { oldData }
+    },
+    onError: (error, variables, context) => {
+      if (context?.oldData) {
+        queryClient.setQueryData(['sessions'], context.oldData)
+      }
+      toast.error(`Failed to update event: ${error.message}`)
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['sessions'] })
       toast.success('Event updated successfully!')
       onClose()
     },
-    onError: (error) => {
-      toast.error(`Failed to update event: ${error.message}`)
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['sessions'] })
     },
   })
 
-  const updateEventMutation = useMutation({
+  const adminUpdateEventMutation = useMutation({
     mutationFn: adminUpdateSession,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['sessions'] })
       toast.success('Event updated successfully!')
       onClose()
     },
-    onError: (error) => {
+    onMutate: (data) => {
+      // Optimistically update the session in the cache
+      const oldData = queryClient.getQueryData<FullDbSession[]>(['sessions'])
+      if (!oldData) return { oldData: oldData }
+      queryClient.setQueryData<FullDbSession[]>(['sessions'], (old) => {
+        if (!old) return old
+        return old.map((session) =>
+          session.id === data.sessionId
+            ? { ...session, ...data.payload }
+            : session,
+        )
+      })
+
+      // Return context for rollback
+      return { oldData }
+    },
+    onError: (error, variables, context) => {
+      // Rollback to previous state on error
+      if (context?.oldData) {
+        queryClient.setQueryData<FullDbSession[]>(['sessions'], context.oldData)
+      }
       toast.error(`Failed to update event: ${error.message}`)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['sessions'] })
     },
   })
 
-  const deleteEventMutation = useMutation({
+  const deleteSessionMutation = useMutation({
     mutationFn: adminDeleteSession,
+    onMutate: (data) => {
+      const oldData = queryClient.getQueryData<FullDbSession[]>(['sessions'])
+      if (!oldData) return { oldData: oldData }
+      queryClient.setQueryData<FullDbSession[]>(['sessions'], (old) => {
+        if (!old) return old
+        return old.filter((session) => session.id !== data.sessionId)
+      })
+      return { oldData }
+    },
+    onError: (error, variables, context) => {
+      if (context?.oldData) {
+        queryClient.setQueryData<FullDbSession[]>(['sessions'], context.oldData)
+      }
+      toast.error(`Failed to delete event: ${error.message}`)
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['sessions'] })
       toast.success('Event deleted successfully!')
       onClose()
     },
-    onError: (error) => {
-      toast.error(`Failed to delete event: ${error.message}`)
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['sessions'] })
     },
   })
 
@@ -305,11 +375,13 @@ export function AddEventModal({
       host_2_id: formData.host_2_id,
       host_3_id: formData.host_3_id,
       ages: formData.ages,
+      megagame: formData.megagame,
+      category: formData.category,
     }
 
     if (isEditMode && existingSessionId) {
       if (currentUserProfile?.is_admin) {
-        updateEventMutation.mutate({
+        adminUpdateEventMutation.mutate({
           sessionId: existingSessionId,
           payload,
         })
@@ -335,7 +407,7 @@ export function AddEventModal({
         'Are you sure you want to delete this event? This action cannot be undone.',
       )
     ) {
-      deleteEventMutation.mutate({ sessionId: existingSessionId })
+      deleteSessionMutation.mutate({ sessionId: existingSessionId })
     }
   }
 
@@ -401,7 +473,7 @@ export function AddEventModal({
   if (isEditMode && sessionLoading) {
     return (
       <Modal onClose={onClose}>
-        <div className="bg-dark-400 w-full max-w-md rounded-lg p-8 shadow-lg">
+        <div className="w-full max-w-md rounded-lg bg-dark-400 p-8 shadow-lg">
           <div className="text-center">
             <div className="mb-2 text-lg font-semibold">
               Loading event data...
@@ -417,7 +489,7 @@ export function AddEventModal({
 
   return (
     <Modal onClose={onClose}>
-      <div className="bg-dark-400 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg p-8 shadow-lg">
+      <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-dark-400 p-8 shadow-lg">
         <h2 className="mb-6 text-2xl font-bold">
           {isEditMode ? 'Edit Event' : 'Add New Event'}
         </h2>
@@ -453,7 +525,7 @@ export function AddEventModal({
               className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex w-full justify-between">
             <div>
               <label htmlFor="day" className="mb-1 block text-sm font-medium">
                 Day <span className="text-red-500">*</span>
@@ -463,9 +535,12 @@ export function AddEventModal({
                 required
                 value={formData.day}
                 disabled={!currentUserProfile?.is_admin}
-                onValueChange={(value) =>
+                onValueChange={(value) => {
+                  if (!value) {
+                    return
+                  }
                   setFormData((prev) => ({ ...prev, day: value }))
-                }
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a day" />
@@ -749,16 +824,69 @@ export function AddEventModal({
               </Select>
             </div>
           </div>
+          <div className="flex w-full justify-between">
+            <div className="flex flex-col items-start">
+              <Label
+                htmlFor="category"
+                className="mb-1 block text-sm font-medium"
+              >
+                Category
+              </Label>
+              <Select
+                name="category"
+                value={formData.category || ''}
+                onValueChange={(value) => {
+                  if (!value) return
+                  setFormData((prev) => ({
+                    ...prev,
+                    category: value as DbSessionCategory,
+                  }))
+                }}
+              >
+                <SelectTrigger className="capitalize">
+                  <SelectValue placeholder="Select..." />
+                </SelectTrigger>
+                <SelectContent className="z-[70]">
+                  {Object.values(SESSION_CATEGORIES_ENUM).map((category) => (
+                    <SelectItem
+                      key={category}
+                      value={category}
+                      className="capitalize"
+                    >
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {currentUserProfile?.is_admin && (
+              <div className="flex items-center gap-2">
+                <Label
+                  htmlFor="megagame"
+                  className="mb-1 block text-sm font-medium"
+                >
+                  Megagame
+                </Label>
+                <Checkbox
+                  id="megagame"
+                  checked={formData.megagame}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, megagame: !!checked }))
+                  }
+                />
+              </div>
+            )}
+          </div>
 
           <div className="flex gap-4 pt-4">
             <button
               type="submit"
               disabled={
-                addEventMutation.isPending || updateEventMutation.isPending
+                addEventMutation.isPending || adminUpdateEventMutation.isPending
               }
               className="flex-1 rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {addEventMutation.isPending || updateEventMutation.isPending
+              {addEventMutation.isPending || adminUpdateEventMutation.isPending
                 ? isEditMode
                   ? 'Updating...'
                   : 'Creating...'
@@ -775,15 +903,25 @@ export function AddEventModal({
             </button>
           </div>
 
-          {isEditMode && (
+          {isEditMode && currentUserProfile?.is_admin && (
             <div className="border-t border-gray-600 pt-4">
               <button
                 type="button"
                 onClick={handleDelete}
-                disabled={deleteEventMutation.isPending}
-                className="w-full rounded bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={
+                  !currentUserProfile?.is_admin ||
+                  deleteSessionMutation.isPending
+                }
+                title={
+                  !currentUserProfile?.is_admin
+                    ? 'You must be an admin to delete an event'
+                    : 'Delete Event'
+                }
+                className="w-full rounded bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-red-600"
               >
-                {deleteEventMutation.isPending ? 'Deleting...' : 'Delete Event'}
+                {deleteSessionMutation.isPending
+                  ? 'Deleting...'
+                  : 'Delete Event'}
               </button>
             </div>
           )}

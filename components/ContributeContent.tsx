@@ -43,11 +43,11 @@ export default function ContributeContent() {
           className="object-cover"
           priority
         />
-        <div className="from-dark-500 absolute inset-0 bg-gradient-to-t to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-dark-500 to-transparent" />
       </section>
 
       <div className="container mx-auto">
-        <div className="prose lg:prose-xl dark:prose-invert max-w-none p-8 font-semibold">
+        <div className="lg:prose-xl dark:prose-invert prose max-w-none p-8 font-semibold">
           <h1>Run something</h1>
 
           <p>
@@ -70,6 +70,7 @@ export default function ContributeContent() {
                 target="_blank"
                 href="https://en.wikipedia.org/wiki/Senet"
                 rel="noopener noreferrer"
+                className="link"
               >
                 Senet
               </a>{' '}
@@ -78,6 +79,7 @@ export default function ContributeContent() {
                 target="_blank"
                 href="https://en.wikipedia.org/wiki/Ludus_latrunculorum"
                 rel="noopener noreferrer"
+                className="link"
               >
                 Ludus Latrunculorum
               </a>
@@ -100,6 +102,7 @@ export default function ContributeContent() {
               target="_blank"
               href={SOCIAL_LINKS.DISCORD}
               rel="noopener noreferrer"
+              className="link"
             >
               join the Discord
             </a>
@@ -123,6 +126,7 @@ export default function ContributeContent() {
               target="_blank"
               href="https://github.com/RickiHeicklen/metagame"
               rel="noopener noreferrer"
+              className="link"
             >
               here
             </a>

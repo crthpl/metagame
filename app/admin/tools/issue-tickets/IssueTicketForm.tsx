@@ -233,7 +233,9 @@ export function IssueTicketForm({}: {
             id="purchaserEmail"
             type="email"
             value={formData.purchaserEmail}
-            onChange={(e) => updateFormData({ purchaserEmail: e.target.value })}
+            onChange={(e) =>
+              updateFormData({ purchaserEmail: e.target.value.trim() })
+            }
             placeholder="Enter purchaser/destination email address"
             className="mt-1"
           />
@@ -246,7 +248,9 @@ export function IssueTicketForm({}: {
             id="purchaserName"
             type="text"
             value={formData.purchaserName}
-            onChange={(e) => updateFormData({ purchaserName: e.target.value })}
+            onChange={(e) =>
+              updateFormData({ purchaserName: e.target.value.trim() })
+            }
             placeholder="Enter purchaser name (optional)"
             className="mt-1"
           />
@@ -255,7 +259,7 @@ export function IssueTicketForm({}: {
         <Collapsible open={extraFieldsOpen} onOpenChange={setExtraFieldsOpen}>
           <div className="flex items-center">
             Extra Fields
-            <CollapsibleTrigger>
+            <CollapsibleTrigger asChild>
               <Button variant="ghost" size="icon">
                 {extraFieldsOpen ? <ChevronDownIcon /> : <ChevronRightIcon />}
               </Button>
@@ -328,7 +332,7 @@ export function IssueTicketForm({}: {
                   type="text"
                   value={formData.opennodeOrderId || ''}
                   onChange={(e) =>
-                    updateFormData({ opennodeOrderId: e.target.value })
+                    updateFormData({ opennodeOrderId: e.target.value.trim() })
                   }
                   placeholder="Enter Opennode order ID"
                   className="mt-1"
@@ -341,7 +345,7 @@ export function IssueTicketForm({}: {
                   type="text"
                   value={formData.stripePaymentId || ''}
                   onChange={(e) =>
-                    updateFormData({ stripePaymentId: e.target.value })
+                    updateFormData({ stripePaymentId: e.target.value.trim() })
                   }
                   placeholder="Enter Stripe payment ID"
                   className="mt-1"
@@ -384,13 +388,13 @@ export function IssueTicketForm({}: {
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 rounded-md p-4">
+        <div className="rounded-md border border-red-500/20 bg-red-500/10 p-4">
           <p className="text-red-400">{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="bg-green-500/10 border border-green-500/20 rounded-md p-4">
+        <div className="rounded-md border border-green-500/20 bg-green-500/10 p-4">
           <Textarea className="text-green-400" value={success} readOnly />
         </div>
       )}

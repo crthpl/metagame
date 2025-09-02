@@ -20,13 +20,14 @@ import {
   initialProfileFormData,
   profileFormSchema,
 } from '@/lib/schemas/profile'
-import { toExternalLink, uploadFileWithSignedUrl } from '@/lib/utils'
+import { downscaleAndUploadImage, toExternalLink } from '@/lib/utils'
 
 import { URLS } from '@/utils/urls'
 
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Tooltip,
   TooltipContent,
@@ -103,13 +104,11 @@ export default function Profile() {
         throw new Error('User not found')
       }
 
-      // Extract file extension from the uploaded file
-      const fileExtension = file.name.split('.').pop()?.toLowerCase() || null
-
       const { signedUrl, storageUrl } =
-        await getCurrentUserProfilePictureUploadUrl({ fileExtension })
+        await getCurrentUserProfilePictureUploadUrl({})
+
       // Upload file directly to storage using signed URL
-      await uploadFileWithSignedUrl(signedUrl, file)
+      await downscaleAndUploadImage(signedUrl, file)
 
       // Update profile with new picture URL directly without triggering the profile update mutation
       await updateCurrentUserProfile({
@@ -240,7 +239,7 @@ export default function Profile() {
           )}
         </div>
 
-        <div className="bg-card border-border-primary w-full rounded-lg border p-6">
+        <div className="w-full rounded-lg border border-border-primary bg-card p-6">
           <div className="flex flex-col items-center gap-8 md:flex-row">
             {/* Profile Picture Section */}
             <div className="flex flex-col items-center space-y-4">
@@ -254,8 +253,8 @@ export default function Profile() {
                     className="aspect-square rounded-full object-cover"
                   />
                 ) : (
-                  <div className="bg-muted flex h-32 w-32 items-center justify-center rounded-full">
-                    <span className="text-muted-foreground text-2xl">
+                  <div className="flex h-32 w-32 items-center justify-center rounded-full bg-muted">
+                    <span className="text-2xl text-muted-foreground">
                       {currentUserProfile?.first_name
                         ?.charAt(0)
                         ?.toUpperCase() ||
@@ -301,7 +300,9 @@ export default function Profile() {
             <div className="flex-1 space-y-6">
               {/* Full Name */}
               <div>
-                <label className="mb-2 block text-sm font-medium">Name</label>
+                <label className="label">
+                  <span className="label-text">Name</span>
+                </label>
                 {isEditMode ? (
                   <div className="grid grid-cols-2 gap-2">
                     <Input
@@ -329,7 +330,28 @@ export default function Profile() {
                   <p className="text-lg">{fullName}</p>
                 )}
               </div>
-
+              {/* Bio */}
+              <div>
+                <label className="label">
+                  <span className="label-text">Bio</span>
+                </label>
+                {isEditMode ? (
+                  <Textarea
+                    placeholder="Bio"
+                    value={formData.bio ?? ''}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        bio: e.target.value || null,
+                      }))
+                    }
+                  />
+                ) : (
+                  <p className="text-lg">
+                    {currentUserProfile?.bio || 'Not set'}
+                  </p>
+                )}
+              </div>
               {/* Discord Handle */}
               <div>
                 <label className="label">

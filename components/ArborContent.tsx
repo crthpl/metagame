@@ -13,7 +13,7 @@ export default function ArborContent() {
       <div className="container mx-auto px-4 py-16">
         {/* Hero Section */}
         <section className="mb-8 text-center">
-          <h1 className="text-secondary-200 mb-6 text-5xl font-bold">Arbor</h1>
+          <h1 className="mb-6 text-5xl font-bold text-secondary-200">Arbor</h1>
         </section>
 
         {/* Projects Section */}
@@ -25,7 +25,7 @@ export default function ArborContent() {
               href="https://rickiheicklen.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-secondary-500 transition-colors hover:text-fuchsia-500 hover:underline"
+              className="link"
             >
               Ricki Heicklen
             </a>
@@ -35,14 +35,14 @@ export default function ArborContent() {
             Some projects of ours include:
             <ul className="mt-6 space-y-6 text-lg leading-relaxed text-gray-300">
               <li className="flex items-start">
-                <span className="text-secondary-200 mr-3">•</span>
+                <span className="mr-3 text-secondary-200">•</span>
                 <span>
                   A{' '}
                   <a
                     href="https://trading.camp"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-secondary-500 transition-colors hover:text-fuchsia-500 hover:underline"
+                    className="link"
                   >
                     trading bootcamp
                   </a>
@@ -51,14 +51,14 @@ export default function ArborContent() {
                 </span>
               </li>
               <li className="flex items-start">
-                <span className="text-secondary-200 mr-3">•</span>
+                <span className="mr-3 text-secondary-200">•</span>
                 <span>
                   A{' '}
                   <a
                     href="https://arborsummer.camp/incubator"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-secondary-500 transition-colors hover:text-fuchsia-500 hover:underline"
+                    className="link"
                   >
                     pedagogy incubator
                   </a>
@@ -67,7 +67,7 @@ export default function ArborContent() {
                 </span>
               </li>
               <li className="flex items-start">
-                <span className="text-secondary-200 mr-3">•</span>
+                <span className="mr-3 text-secondary-200">•</span>
                 <span>
                   A{' '}
                   <Link

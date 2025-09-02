@@ -1,7 +1,6 @@
 'use client'
 
 import { NavItem } from './Nav'
-import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -13,8 +12,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-import { getCurrentUserProfile } from '@/app/actions/db/users'
-
 import { useUser } from '@/hooks/dbQueries'
 import { useLogout } from '@/hooks/useLogout'
 
@@ -23,14 +20,13 @@ export default function AccountButton({
 }: {
   closeMenu: () => void
 }) {
-  const { currentUser: user, currentUserLoading: userLoading } = useUser()
+  const {
+    currentUser: user,
+    currentUserLoading: userLoading,
+    currentUserProfile: profile,
+  } = useUser()
   const { handleLogout, isLoggingOut } = useLogout()
 
-  const { data: profile } = useQuery({
-    queryKey: ['users', 'profiles', user?.id],
-    queryFn: () => getCurrentUserProfile(),
-    enabled: !!user?.id,
-  })
   if (!userLoading && !user) {
     return (
       <NavItem href="/login" closeMenu={closeMenu}>
@@ -42,7 +38,7 @@ export default function AccountButton({
   const dropdownTriggerElement = () => {
     if (userLoading || !user) {
       return (
-        <div className="bg-dark-400 size-[32px] animate-pulse rounded-full" />
+        <div className="size-[32px] animate-pulse rounded-full bg-dark-400" />
       )
     }
 
@@ -61,7 +57,7 @@ export default function AccountButton({
         className="aspect-square rounded-full object-cover"
       />
     ) : (
-      <div className="bg-dark-300 flex size-[32px] items-center justify-center rounded-full text-sm font-bold text-white">
+      <div className="flex size-[32px] items-center justify-center rounded-full bg-dark-300 text-sm font-bold text-white">
         {initial}
       </div>
     )
@@ -75,6 +71,11 @@ export default function AccountButton({
         <DropdownMenuItem asChild onClick={closeMenu}>
           <Link href="/profile">Profile</Link>
         </DropdownMenuItem>
+        {profile?.is_admin && (
+          <DropdownMenuItem asChild onClick={closeMenu}>
+            <Link href="/admin">Admin</Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {

@@ -1,15 +1,17 @@
+import { getSiteUrl } from './env'
 import { Resend } from 'resend'
 
 import { SOCIAL_LINKS } from '@/utils/urls'
 
-import { getTicketType } from '@/config/tickets'
+import { ticketTypeDetails } from '@/config/tickets'
+import { DbTicketType } from '@/types/database/dbTypeAliases'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export interface TicketConfirmationEmailData {
   to: string
   purchaserName: string
-  ticketType: string
+  ticketType: DbTicketType
   ticketCode: string
   isBtc: boolean
   usdPaid?: number
@@ -38,15 +40,15 @@ export async function sendTicketConfirmationEmail({
   try {
     const discordUrl = SOCIAL_LINKS.DISCORD
     const testSubject = test ? 'TEST: ' : ''
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://metagame.games'
+    const siteUrl = getSiteUrl()
     const { data, error } = await resend.emails.send({
       from: 'Metagame 2025 <tickets@mail.metagame.games>',
       to,
       bcc: ['team@metagame.games'],
       replyTo: ['team@metagame.games'],
       subject: adminIssued
-        ? `${testSubject}Action required: Your Metagame 2025 ticket has been issued; claim your profile`
-        : `${testSubject}Action required: Claim your Metagame 2025 ticket and register your profile`,
+        ? `${testSubject}Actions required: Your Metagame 2025 ticket has been issued; claim your profile`
+        : `${testSubject}Actions required: Claim your Metagame 2025 ticket and register your profile`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333;">${adminIssued ? 'Your ticket has been issued; please complete registration' : 'Claim your ticket and complete registration'}</h1>
@@ -57,7 +59,7 @@ export async function sendTicketConfirmationEmail({
           
           <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h2 style="margin-top: 0;">Ticket Details</h2>
-            <p><strong>Ticket Type:</strong> ${getTicketType(ticketType)?.title}</p>
+            <p><strong>Ticket Type:</strong> ${ticketTypeDetails[ticketType].title}</p>
             ${adminIssued ? '' : `<p><strong>Price Paid:</strong> ${isBtc ? `₿${btcPaid?.toFixed(6)}` : `$${usdPaid?.toFixed(2)}`}</p>`}
             ${forExistingUser ? '' : `<p><strong>Your Ticket Code:</strong> <span style="font-size: 20px; font-weight: bold; color: #007bff;">${ticketCode}</span></p>`}
             ${adminIssued ? '' : isBtc ? `<p><strong>OpenNode Charge ID:</strong> ${opennodeChargeId}</p>` : `<p><strong>Stripe Payment ID:</strong> ${paymentIntentId}</p>`}
@@ -89,7 +91,6 @@ export async function sendTicketConfirmationEmail({
             <p><strong>Lodging:</strong> Rooms at and near the venue can be booked via <a href="https://www.havenbookings.space/events/metagame">Haven Bookings</a>. You can also coordinate with others in the <a href="https://discord.gg/GsT3yRrxR9">#housing</a> Discord channel.</p>
             <p><strong>Food:</strong> Snacks are available and included with your ticket, but meals are not. There will be food trucks on site with meals available for purchase.</p>
             <p><strong>Schedule:</strong> A preliminary schedule is available <a href="https://metagame.games/schedule">here</a> but highly subject to chage.</p>
-            <p><strong>Speaking of which:</strong> If you want to speak or run something, submit a proposal <a href="https://airtable.com/appTvPARUssZp4qiB/pagVuzTEXODlUwoi0/form">here</a> by August 25th.</p>
             <p><strong>Children:</strong> Metagame is free for children under 13, and free childcare for kids ages 5-12 is available for much of the weekend! If you are planning to bring children of any age or are a child yourself, please fill out <a href="https://airtable.com/appTvPARUssZp4qiB/pagZ9WbXLji0eBqDU/form">this form</a> as soon as possible, and no later than Monday, September 1st to help us plan accordingly.</p>
             <p><strong>Contact:</strong> <a href="${discordUrl}">Join our Discord!</a></p>
           </div>

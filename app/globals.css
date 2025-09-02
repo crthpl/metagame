@@ -34,7 +34,7 @@
     --color-dark-400
   ); /* Cards, modals, elevated surfaces */
   --color-bg-tertiary: var(
-    --color-dark-300
+    --color-slate-800
   ); /* Hover states, subtle highlights */
   --color-bg-surface: var(--color-dark-600); /* Alternative surface color */
 
@@ -534,4 +534,17 @@ html::before {
 .dark {
   /* Dark mode uses the same semantic color system - no need to override */
   /* The semantic colors are already designed for dark theme */
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .link {
+    @apply cursor-pointer text-secondary-300 underline;
+  }
 }

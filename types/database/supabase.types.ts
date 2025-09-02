@@ -151,6 +151,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          bio: string | null
           bringing_kids: boolean | null
           discord_handle: string | null
           dismissed_info_request: boolean
@@ -170,6 +171,7 @@ export type Database = {
           team: Database["public"]["Enums"]["TEAM_COLORS"]
         }
         Insert: {
+          bio?: string | null
           bringing_kids?: boolean | null
           discord_handle?: string | null
           dismissed_info_request?: boolean
@@ -189,6 +191,7 @@ export type Database = {
           team?: Database["public"]["Enums"]["TEAM_COLORS"]
         }
         Update: {
+          bio?: string | null
           bringing_kids?: boolean | null
           discord_handle?: string | null
           dismissed_info_request?: boolean
@@ -227,17 +230,24 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "user_starred_sessions_session_id_fkey"
+            foreignKeyName: "session_bookmarks_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "user_starred_sessions_session_id_fkey"
+            foreignKeyName: "session_bookmarks_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "sessions_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -277,7 +287,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "session_rsvps_user_id_fkey1"
+            foreignKeyName: "session_rsvps_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -288,6 +298,7 @@ export type Database = {
       sessions: {
         Row: {
           ages: Database["public"]["Enums"]["AGES"] | null
+          category: Database["public"]["Enums"]["SESSION_CATEGORY"] | null
           description: string | null
           end_time: string | null
           host_1_id: string | null
@@ -304,6 +315,7 @@ export type Database = {
         }
         Insert: {
           ages?: Database["public"]["Enums"]["AGES"] | null
+          category?: Database["public"]["Enums"]["SESSION_CATEGORY"] | null
           description?: string | null
           end_time?: string | null
           host_1_id?: string | null
@@ -320,6 +332,7 @@ export type Database = {
         }
         Update: {
           ages?: Database["public"]["Enums"]["AGES"] | null
+          category?: Database["public"]["Enums"]["SESSION_CATEGORY"] | null
           description?: string | null
           end_time?: string | null
           host_1_id?: string | null
@@ -335,6 +348,27 @@ export type Database = {
           title?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "sessions_host_1_id_fkey"
+            columns: ["host_1_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_host_2_id_fkey"
+            columns: ["host_2_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_host_3_id_fkey"
+            columns: ["host_3_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sessions_location_id_fkey"
             columns: ["location_id"]
@@ -447,7 +481,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "session_rsvps_user_id_fkey1"
+            foreignKeyName: "session_rsvps_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -484,6 +518,27 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "sessions_host_1_id_fkey"
+            columns: ["host_1_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_host_2_id_fkey"
+            columns: ["host_2_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_host_3_id_fkey"
+            columns: ["host_3_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "sessions_location_id_fkey"
             columns: ["location_id"]
             isOneToOne: false
@@ -504,6 +559,7 @@ export type Database = {
         | "processing"
         | "paid"
         | "expired"
+      SESSION_CATEGORY: "talk" | "workshop" | "game" | "other"
       TEAM_COLORS: "orange" | "purple" | "green" | "unassigned"
       ticket_type:
         | "volunteer"
@@ -648,6 +704,7 @@ export const Constants = {
         "paid",
         "expired",
       ],
+      SESSION_CATEGORY: ["talk", "workshop", "game", "other"],
       TEAM_COLORS: ["orange", "purple", "green", "unassigned"],
       ticket_type: [
         "volunteer",
